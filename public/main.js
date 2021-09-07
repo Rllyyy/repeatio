@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -12,6 +12,9 @@ function createWindow() {
   win.maximize();
   win.show();
 }
+
+//Hide the menu bar
+Menu.setApplicationMenu(false);
 
 app.on("ready", createWindow);
 
