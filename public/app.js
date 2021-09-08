@@ -8,6 +8,8 @@ function createWindow() {
     },
   });
 
+  win.webContents.openDevTools();
+
   win.loadURL("http://localhost:3000");
   win.maximize();
   win.show();

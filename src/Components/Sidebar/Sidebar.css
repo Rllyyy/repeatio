@@ -1,0 +1,90 @@
+nav{
+  max-width: 70px;
+  color: white;
+  background-color: rgb(12, 12, 20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 12px;
+  user-select: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  transition: max-width .3s ease-in-out;
+}
+
+.sidebar-expanded{
+  max-width: 500px;
+  transition: max-width .3s ease-in-out;
+}
+
+/* Target the child element of the nav */
+nav > button {
+  appearance: none;
+  outline: none;
+  border: none;
+  position: relative;
+  background-color: transparent;
+  transition: background-color 0.3s linear;
+  margin-bottom: 8px;
+  padding: 0 10px; /* ((min-width) - svg width) / 2 to center  */
+  border-radius: 8px;
+  width: 100%;
+  height: 46px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+}
+
+nav > button:hover{
+  transition: background-color 0.3s linear;
+  background-color: rgb(227, 233, 245);
+}
+
+nav > button:hover svg{
+  transition: color .3s linear;
+  color: rgb(12, 12, 20);
+}
+
+button > h2 {
+  font-weight: 300;
+  padding-left: 10px;
+  opacity: 0;
+  transition: opacity 1s;
+  color: rgb(227, 233, 245);
+  white-space: nowrap;
+}
+
+nav > button:hover h2{
+  transition: color .3s linear;
+  color: rgb(12, 12, 20);
+}
+
+.sidebar-button-expanded{
+  opacity: 1;
+}
+
+.currentView{
+  background-color: rgb(33, 31, 51);
+}
+
+svg{
+  height: 26px;
+  min-width: 26px;
+  color: rgb(227, 233, 245);;
+  transition: color .3s linear;
+}
+
+.settings{
+  margin: auto 0 0px 0
+}
+
+.sponsor-icon{
+  color: rgb(226, 122, 122);
+}
+
+
+.sponsor:hover > .sponsor-icon{
+  color: rgb(182, 3, 3);
+}
