@@ -12,7 +12,7 @@ import { FaHandshake } from "react-icons/fa";
 
 const Sidebar = () => {
   //useState
-  const [expandSidebar, setExpandSidebar] = useState(false); //TODO make this dependent on user settings
+  const [expandSidebar, setExpandSidebar] = useState(true); //TODO make this dependent on user settings
   //JSX
   return (
     <nav className={`${expandSidebar && "sidebar-expanded"}`}>
@@ -34,7 +34,7 @@ const Sidebar = () => {
       </button>
       <button className='thanks'>
         <FaHandshake className='thanks-icon ' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Thank You</h2>
+        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Special Thanks</h2>
       </button>
       <button className='news'>
         <BiNews className='news-icon' />

@@ -8,11 +8,21 @@ function createWindow() {
     },
   });
 
-  win.webContents.openDevTools();
+  //TODO check if User is developer
+  win.webContents.on("before-input-event", (event, input) => {
+    if (input.key === "F12") {
+      win.webContents.openDevTools();
+    }
+  });
 
   win.loadURL("http://localhost:3000");
   win.maximize();
   win.show();
+
+  //TODO Only run on port 3000 when in development
+  /*yard add electron-is-dev
+  mainWindow.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
+  */
 }
 
 //Hide the menu bar
