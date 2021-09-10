@@ -24,3 +24,9 @@ code {
   flex-direction: row;
   position: relative;
 }
+
+main{
+  width: 100%;
+  padding: 15px;
+}
+

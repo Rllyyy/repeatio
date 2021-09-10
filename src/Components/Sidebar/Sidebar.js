@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Sidebar.css";
 
 //Import Icons
@@ -20,30 +21,30 @@ const Sidebar = () => {
         <GiHamburgerMenu className='hamburger-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>repeatio</h2>
       </button>
-      <button className='home currentView'>
+      <Link to='/' className='home currentView'>
         <FaHome className='home-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Home</h2>
-      </button>
-      <button className='tutorials'>
+      </Link>
+      <Link to='/tutorials' className='tutorials'>
         <BsCameraVideo className='tutorials-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Tutorials</h2>
-      </button>
-      <button className='sponsor highlighted'>
-        <AiOutlineHeart className='sponsor-icon' />
+      </Link>
+      <Link to='/support' className='support highlighted'>
+        <AiOutlineHeart className='support-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Support this Project</h2>
-      </button>
-      <button className='thanks'>
+      </Link>
+      <Link to='/thanks' className='thanks'>
         <FaHandshake className='thanks-icon ' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Special Thanks</h2>
-      </button>
-      <button className='news'>
+      </Link>
+      <Link to='/news' className='news'>
         <BiNews className='news-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>News</h2>
-      </button>
-      <button className='settings'>
+      </Link>
+      <Link to='/settings' className='settings'>
         <RiSettings4Fill className='settings-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Settings</h2>
-      </button>
+      </Link>
     </nav>
   );
 };

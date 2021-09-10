@@ -20,6 +20,8 @@ function createWindow() {
   win.show();
 
   //TODO Only run on port 3000 when in development
+  //https://github.com/willjw3/react-electron/blob/master/public/electron.js
+  //https://www.youtube.com/watch?v=Cdu2O6o2DCg
   /*yard add electron-is-dev
   mainWindow.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
   */

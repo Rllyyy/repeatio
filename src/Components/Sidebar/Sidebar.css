@@ -24,11 +24,9 @@ nav{
 }
 
 /* Target the child element of the nav */
-nav > button {
-  appearance: none;
-  outline: none;
-  border: none;
-  position: relative;
+nav > a, nav > button{
+  text-decoration: none;
+  color: rgb(227, 233, 245);
   background-color: transparent;
   transition: background-color 0.3s linear;
   margin-bottom: 8px;
@@ -43,17 +41,24 @@ nav > button {
   overflow: hidden;
 }
 
-nav > button:hover{
+nav button{
+  appearance: none;
+  outline: none;
+  border: none;
+}
+
+nav a:hover, nav button:hover{
   transition: background-color 0.3s linear;
   background-color: rgb(227, 233, 245);
 }
 
-nav > button:hover svg{
+nav a:hover svg, nav button:hover svg{
   transition: color .3s linear;
   color: rgb(12, 12, 20);
 }
 
-button > h2 {
+a h2, button h2 {
+  font-size: 20px;
   font-weight: 400;
   padding-left: 10px;
   opacity: 0;
@@ -63,7 +68,7 @@ button > h2 {
   letter-spacing: .6px;
 }
 
-nav > button:hover h2{
+nav a:hover h2, nav button:hover h2{
   transition: color .3s linear;
   color: rgb(12, 12, 20);
 }
@@ -79,18 +84,18 @@ nav > button:hover h2{
 svg{
   height: 26px;
   min-width: 26px;
-  color: rgb(227, 233, 245);;
+  color: rgb(227, 233, 245);
   transition: color .3s linear;
 }
 
 .settings{
-  margin: auto 0 0px 0
+  margin: auto 0 0px 0;
 }
 
-.sponsor-icon{
+.support svg{
   color: rgb(226, 122, 122);
 }
 
-.sponsor:hover > .sponsor-icon{
+.support:hover svg{
   color: rgb(182, 3, 3);
 }
