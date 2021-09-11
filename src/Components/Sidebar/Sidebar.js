@@ -1,19 +1,31 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 
 //Import Icons
-import { FaHome } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { RiSettings4Fill } from "react-icons/ri";
-import { BiNews } from "react-icons/bi";
-import { AiOutlineHeart } from "react-icons/ai";
+import { FaHome } from "react-icons/fa";
 import { BsCameraVideo } from "react-icons/bs";
+import { AiOutlineHeart } from "react-icons/ai";
 import { FaHandshake } from "react-icons/fa";
+import { BiNews } from "react-icons/bi";
+import { RiSettings4Fill } from "react-icons/ri";
+
+//Navbar categories
+//TODO if custom navbar comes, this has to be moved into the component as a state
+const navbarCategories = [
+  { className: "home", linkTo: "", icon: <FaHome />, text: "Home" },
+  { className: "tutorials", linkTo: "tutorials", icon: <BsCameraVideo />, text: "Tutorials" },
+  { className: "support", linkTo: "support", icon: <AiOutlineHeart />, text: "Support this Project" },
+  { className: "thanks", linkTo: "thanks", icon: <FaHandshake />, text: "Special Thanks" },
+  { className: "news", linkTo: "news", icon: <BiNews />, text: "News" },
+  { className: "settings", linkTo: "settings", icon: <RiSettings4Fill />, text: "Settings" },
+];
 
 const Sidebar = () => {
   //useState
   const [expandSidebar, setExpandSidebar] = useState(true); //TODO make this dependent on user settings
+
   //JSX
   return (
     <nav className={`${expandSidebar && "sidebar-expanded"}`}>
@@ -21,30 +33,16 @@ const Sidebar = () => {
         <GiHamburgerMenu className='hamburger-icon' />
         <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>repeatio</h2>
       </button>
-      <Link to='/' className='home currentView'>
-        <FaHome className='home-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Home</h2>
-      </Link>
-      <Link to='/tutorials' className='tutorials'>
-        <BsCameraVideo className='tutorials-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Tutorials</h2>
-      </Link>
-      <Link to='/support' className='support highlighted'>
-        <AiOutlineHeart className='support-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Support this Project</h2>
-      </Link>
-      <Link to='/thanks' className='thanks'>
-        <FaHandshake className='thanks-icon ' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Special Thanks</h2>
-      </Link>
-      <Link to='/news' className='news'>
-        <BiNews className='news-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>News</h2>
-      </Link>
-      <Link to='/settings' className='settings'>
-        <RiSettings4Fill className='settings-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>Settings</h2>
-      </Link>
+      {navbarCategories.map((category) => {
+        //destructure category
+        const { className, linkTo, icon, text } = category;
+        return (
+          <Link to={`/${linkTo}`} key={className} className={`${className}`}>
+            {icon}
+            <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
+          </Link>
+        );
+      })}
     </nav>
   );
 };
