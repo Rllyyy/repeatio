@@ -25,6 +25,32 @@ const navbarCategories = [
 const Sidebar = () => {
   //useState
   const [expandSidebar, setExpandSidebar] = useState(true); //TODO make this dependent on user settings
+  const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
+
+  //Detect url changes to highlight background of current component in navbar
+  //! This might break when using longer sub path (/../...)
+  const location = useLocation();
+
+  //Update the useState value every time the url changes
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    //Remove dash that is in-front of the url
+    let pathNoDash = currentPath.substring(1);
+
+    setCurrentlyViewedCategory(pathNoDash);
+  }, [location.pathname]);
+
+  //Return true if the current url is equal to the currently viewed category
+  const isCurrentCategoryView = useCallback(
+    (category) => {
+      if (currentlyViewedCategory === category) {
+        return true;
+      }
+      return false;
+    },
+    [currentlyViewedCategory]
+  );
 
   //JSX
   return (
@@ -37,7 +63,7 @@ const Sidebar = () => {
         //destructure category
         const { className, linkTo, icon, text } = category;
         return (
-          <Link to={`/${linkTo}`} key={className} className={`${className}`}>
+          <Link to={`/${linkTo}`} key={className} className={`${className} ${isCurrentCategoryView(linkTo) && "currentView"}`}>
             {icon}
             <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
           </Link>
