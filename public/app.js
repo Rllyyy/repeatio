@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu } = require("electron");
+const { default: installExtension, REACT_DEVELOPER_TOOLS } = require("electron-devtools-installer");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -31,6 +32,15 @@ function createWindow() {
 Menu.setApplicationMenu(false);
 
 app.on("ready", createWindow);
+
+//Add react dev devtools
+//TODO check if user is dev
+//https://github.com/MarshallOfSound/electron-devtools-installer
+app.whenReady().then(() => {
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log("An error occurred: ", err));
+});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", function () {
