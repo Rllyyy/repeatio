@@ -1,0 +1,104 @@
+.grid-cards{
+  margin-top: 17px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-gap: 25px;
+}
+
+.card{
+  border-radius: 8px;
+  background-color: var(--custom-prime-color);
+  color: whitesmoke;
+  padding: 18px 18px 14px 18px;
+  user-select: none;
+  min-height: 180px;
+  display: flex;
+  flex-direction: row;
+}
+
+.card-info{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+h3{
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  display: block;
+  word-wrap: break-word;
+  line-height: 1em;
+}
+
+.card-description{
+  line-height: 1.3em;
+  letter-spacing: 0.03em;
+}
+
+.updated-total-questions-wrapper{
+  margin-top: 15px;
+  line-height: 1.5em;
+}
+
+.card-buttons{
+  margin-left: 5px;
+  min-width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-buttons > * {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px;
+  height: 40px;
+  width: 100%;
+}
+
+.card-buttons > *:hover{
+  background-color: rgba(255,255,255,0.3);
+  color: white;
+}
+
+.buttons-arrow{
+  color: var(--custom-prime-color);
+  transition: all .2s ease-in-out;
+  background-color: rgba(255,255,255,0.8);
+}
+
+.buttons-arrow:hover{ 
+  transition: all .2s ease-in-out;
+  background-color: var(--custom-prime-color);
+  color: white;
+}
+
+.card-empty{
+  position: relative;
+  border-radius: 8px;
+  background-color: rgb(40, 42, 57);
+  color: whitesmoke;
+  padding: 14px 18px;
+  min-height: 180px;
+  user-select: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-empty-circle{
+  height: 35px;
+  width: 35px;
+  margin-bottom: 10px;
+}
+.card-empty:hover{
+  background-color: rgb(61, 64, 82);
+  color: white;
+}
