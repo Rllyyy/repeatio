@@ -9,25 +9,29 @@
   border-radius: 8px;
   background-color: var(--custom-prime-color);
   color: whitesmoke;
-  padding: 18px 18px 14px 18px;
   user-select: none;
   min-height: 180px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
 }
 
 .card-info{
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 20px 20px 5px 20px;
 }
 
 h3{
   color: white;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: 1px;
+  font-size: 22px;
+  font-weight: 550;
+  letter-spacing: 0.02em;
   margin-bottom: 15px;
   display: block;
   word-wrap: break-word;
@@ -45,18 +49,18 @@ h3{
 }
 
 .card-buttons{
-  margin-left: 5px;
   min-width: 40px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  margin: 0;
+  margin-top: 5px;
   justify-content: space-between;
+  background-color: rgb(40, 42, 57);
 }
 
 .card-buttons > * {
   cursor: pointer;
-  border-radius: 8px;
-  padding: 8px;
+  padding: 10px;
   height: 40px;
   width: 100%;
 }
@@ -67,21 +71,19 @@ h3{
 }
 
 .buttons-arrow{
-  color: var(--custom-prime-color);
-  transition: all .2s ease-in-out;
-  background-color: rgba(255,255,255,0.8);
+  color: white;
+  transition: background-color .2s ease-in-out;
 }
 
 .buttons-arrow:hover{ 
-  transition: all .2s ease-in-out;
-  background-color: var(--custom-prime-color);
-  color: white;
+  background-color: rgba(90, 90, 245, 0.3);  
 }
 
 .card-empty{
   position: relative;
   border-radius: 8px;
   background-color: rgb(40, 42, 57);
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
   color: whitesmoke;
   padding: 14px 18px;
   min-height: 180px;
@@ -101,4 +103,30 @@ h3{
 .card-empty:hover{
   background-color: rgb(61, 64, 82);
   color: white;
+}
+
+.card:nth-child(3), .card:nth-child(4){
+  flex-direction: row;
+}
+
+.card:nth-child(3) .card-info,
+.card:nth-child(4) .card-info{ 
+  padding: 20px;
+}
+
+.card:nth-child(3) .card-buttons,
+.card:nth-child(4) .card-buttons
+{
+  width: 60px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  margin: 0;
+}
+
+.card:nth-child(3) .card-buttons > *,
+.card:nth-child(4) .card-buttons > * {
+  padding: 15px;
+  height: 33%;
 }
