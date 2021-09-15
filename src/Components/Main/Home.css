@@ -55,7 +55,7 @@ h3{
   margin: 0;
   margin-top: 5px;
   justify-content: space-between;
-  background-color: rgb(40, 42, 57);
+  background-color: var(--custom-secondary-color);
 }
 
 .card-buttons > * {
@@ -82,7 +82,7 @@ h3{
 .card-empty{
   position: relative;
   border-radius: 8px;
-  background-color: rgb(40, 42, 57);
+  background-color: var(--custom-secondary-color);
   box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 8px;
   color: whitesmoke;
   padding: 14px 18px;

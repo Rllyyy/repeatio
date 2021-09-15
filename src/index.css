@@ -6,6 +6,8 @@ Variables
 
 :root {
   --custom-prime-color: rgb(90, 90, 245);
+  --custom-secondary-color: rgb(40, 42, 57);
+  --custom-tertiary-color: rgb(225, 225, 235);
 }
 
 /* 
@@ -76,7 +78,6 @@ https://google-webfonts-helper.herokuapp.com/fonts
        url('./fonts/roboto-v27-latin-700.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
-
 /*
 =============== 
 Global Styles
@@ -94,7 +95,11 @@ Global Styles
 body {
   margin: 0;
   font-family: 'Roboto', 'Helvetica', 'Arial' ;
-  background-color: rgb(227, 233, 245);
+  line-height: 1.5;
+  /* background-color: rgb(227, 233, 245); */
+  background-color: var(--custom-tertiary-color);
+  /* //!Remove before official Release just makes development easier at night*/
+  /* background-color: rgb(127, 130, 134);  */
 }
 
 code {
@@ -113,7 +118,26 @@ main{
   padding: 20px 20px;
 }
 
+h1, h2, h3{
+  line-height: 1.1;
+}
+
 p{
   font-size: 18px;
 }
 
+/* 
+===============
+Mobile CSS
+=============== 
+*/
+
+@media only screen and (max-width: 650px) {
+  #root{
+    flex-direction: column;
+  }
+
+  main{
+    padding: 20px 12px;
+  }
+}

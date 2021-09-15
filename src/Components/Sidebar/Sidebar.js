@@ -24,8 +24,17 @@ const navbarCategories = [
 
 const Sidebar = () => {
   //useState
-  const [expandSidebar, setExpandSidebar] = useState(true); //TODO make this dependent on user settings
+  const [expandSidebar, setExpandSidebar] = useState(false); //TODO make this dependent on user settings
   const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  //Close the navbar when on mobile when the users clicks on a category.
+  //Only runs when the viewport is smaller than 650px
+  const closeMenuOnMobileClick = () => {
+    if (!isMobile) return;
+
+    setExpandSidebar(false);
+  };
 
   //Detect url changes to highlight background of current component in navbar
   //! This might break when using longer sub path (/../...)
@@ -52,6 +61,24 @@ const Sidebar = () => {
     [currentlyViewedCategory]
   );
 
+  //Set is mobile to true when the viewport is smaller than 650px
+  const handleWindowResize = useCallback((event) => {
+    if (window.innerWidth <= 650) {
+      setIsMobile(true);
+    }
+  }, []);
+
+  //Check if the size of the window is smaller than 650px so the special mobile navbar behavior is applied
+  //One might argue that this useEffect could also just run on the first mount
+  //as the viewport of a users usually doesn't change. They would be right but that would make testing harder.
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, [handleWindowResize]);
+
   //JSX
   return (
     <nav className={`${expandSidebar && "sidebar-expanded"}`}>
@@ -63,7 +90,7 @@ const Sidebar = () => {
         //destructure category
         const { className, linkTo, icon, text } = category;
         return (
-          <Link to={`/${linkTo}`} key={className} className={`${className} ${isCurrentCategoryView(linkTo) && "currentView"}`}>
+          <Link to={`/${linkTo}`} key={className} onClick={() => closeMenuOnMobileClick()} className={`${className} ${isCurrentCategoryView(linkTo) && "currentView"}`}>
             {icon}
             <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
           </Link>
