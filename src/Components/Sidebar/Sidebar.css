@@ -1,7 +1,8 @@
 nav{
   position: sticky;
   position: -webkit-sticky;
-  top: 0;
+  position: -moz-sticky;
+  top: 0px;
   max-width: 70px;
   min-height: 100vh;
   color: white;
@@ -98,7 +99,7 @@ svg{
   color: rgb(182, 3, 3);
 }
 
-/*Discoverd later that apps developed in electron ca easily be ported to run in any other browser and therefore on mobile.
+/*Discoverd later that apps developed in electron can easily be ported to run in any other browser and therefore on mobile.
   If you want to change any of the css make sure that it runs in all viewports.
 */
 /* Mobile CSS */

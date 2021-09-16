@@ -30,9 +30,15 @@ const Sidebar = () => {
 
   //Close the navbar when on mobile when the users clicks on a category.
   //Only runs when the viewport is smaller than 650px
+  // const closeMenuOnMobileClick = useCallback(() => {
+  //   if (!isMobile) return;
+
+  //   console.log(isMobile);
+  //   setExpandSidebar(false);
+  // }, [isMobile]);
+
   const closeMenuOnMobileClick = () => {
     if (!isMobile) return;
-
     setExpandSidebar(false);
   };
 
@@ -65,6 +71,8 @@ const Sidebar = () => {
   const handleWindowResize = useCallback((event) => {
     if (window.innerWidth <= 650) {
       setIsMobile(true);
+    } else {
+      setIsMobile(false);
     }
   }, []);
 

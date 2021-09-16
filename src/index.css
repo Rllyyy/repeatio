@@ -99,7 +99,9 @@ body {
   /* background-color: rgb(227, 233, 245); */
   background-color: var(--custom-tertiary-color);
   /* //!Remove before official Release just makes development easier at night*/
-  /* background-color: rgb(127, 130, 134);  */
+  background-color: rgb(128, 127, 134); 
+  background-color: rgb(25, 27, 37);
+  background-color: whitesmoke;
 }
 
 code {
