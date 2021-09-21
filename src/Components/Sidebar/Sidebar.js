@@ -30,17 +30,11 @@ const Sidebar = () => {
 
   //Close the navbar when on mobile when the users clicks on a category.
   //Only runs when the viewport is smaller than 650px
-  // const closeMenuOnMobileClick = useCallback(() => {
-  //   if (!isMobile) return;
-
-  //   console.log(isMobile);
-  //   setExpandSidebar(false);
-  // }, [isMobile]);
-
-  const closeMenuOnMobileClick = () => {
+  const closeMenuOnMobileClick = useCallback(() => {
     if (!isMobile) return;
+
     setExpandSidebar(false);
-  };
+  }, [isMobile]);
 
   //Detect url changes to highlight background of current component in navbar
   //! This might break when using longer sub path (/../...)

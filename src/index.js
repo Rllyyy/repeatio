@@ -14,6 +14,7 @@ import Tutorials from "./Components/Main/Tutorials";
 import Support from "./Components/Main/Support";
 import Thanks from "./Components/Main/Thanks";
 import News from "./Components/Main/News";
+import Module from "./Components/Main/Module/Module.js";
 
 //
 import reportWebVitals from "./reportWebVitals";
@@ -30,6 +31,7 @@ ReactDOM.render(
           <Route exact path='/thanks' component={Thanks} />
           <Route exact path='/news' component={News} />
           <Route exact path='/settings' component={Settings} />
+          <Route exact path='/module/:id' component={Module} />
         </Switch>
       </main>
     </HashRouter>

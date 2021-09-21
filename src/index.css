@@ -99,9 +99,10 @@ body {
   /* background-color: rgb(227, 233, 245); */
   background-color: var(--custom-tertiary-color);
   /* //!Remove before official Release just makes development easier at night*/
-  background-color: rgb(128, 127, 134); 
-  background-color: rgb(25, 27, 37);
+  /* background-color: rgb(128, 127, 134);  */
+  /*possible darkmode background-color: rgb(25, 27, 37);  */
   background-color: whitesmoke;
+  color: black;
 }
 
 code {
@@ -120,11 +121,25 @@ main{
   padding: 20px 20px;
 }
 
+h1{
+  text-align: center;
+}
+
+h3{
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 h1, h2, h3{
   line-height: 1.1;
 }
 
 p{
+  font-size: 18px;
+}
+
+label, input{
   font-size: 18px;
 }
 
