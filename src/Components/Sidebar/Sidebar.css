@@ -2,9 +2,10 @@ nav{
   position: sticky;
   position: -webkit-sticky;
   position: -moz-sticky;
-  top: 0px;
+  top: 0;
+  bottom: 0;
   max-width: 70px;
-  min-height: 100vh;
+  height: 100vh;
   color: white;
   background-color: rgb(12, 12, 20);
 
@@ -107,11 +108,13 @@ svg{
   nav{
     position: sticky;
     top: 0;
+    bottom: auto;
     min-height: 0;
+    height: auto;
     max-height: 50px;
     min-width: 100vw;
     justify-content: flex-start;
-    padding: 0 15px;
+    padding: 0 25px;
   }
 
   nav > a{

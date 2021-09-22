@@ -32,8 +32,6 @@ const Module = () => {
     (e) => {
       if (!showPracticeOptions) return;
 
-      console.log(e.target.parentNode.className);
-
       //Check if the event is mousedown (click away) or escape key
       if (
         e.type === "mousedown" &&
@@ -43,6 +41,7 @@ const Module = () => {
         e.target.parentNode.className !== "practice-random"
       ) {
         setShowPracticeOptions(false);
+        //keyCode 27 = escape key
       } else if (e.keyCode === 27) {
         setShowPracticeOptions(false);
       }
