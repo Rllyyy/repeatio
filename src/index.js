@@ -16,12 +16,16 @@ import Thanks from "./Components/Main/Thanks";
 import News from "./Components/Main/News";
 import Module from "./Components/Main/Module/Module.js";
 
+//Import functions
+import ScrollToTop from "./functions/ScrollToTop";
+
 //
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
+      <ScrollToTop />
       <Sidebar />
       <main>
         <Switch>
