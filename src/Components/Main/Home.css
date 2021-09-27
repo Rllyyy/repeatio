@@ -50,6 +50,7 @@
   margin: 0;
   margin-top: 5px;
   justify-content: space-between;
+  align-items: center;
   background-color: var(--custom-secondary-color);
 }
 
@@ -60,13 +61,18 @@
 }
 
 .card-buttons > svg{
+  height: 100%;
+  max-height: 40px;
   padding: 10px;
 }
 
-.card-buttons > *:hover{
-  /* background-color: rgba(255,255,255,0.3); */
-  background-color: rgb(79, 82, 100);
+.card-buttons svg{
+  /* height: 26px; */
+  min-width: 26px;
+}
 
+.card-buttons > *:hover{
+  background-color: rgb(79, 82, 100);
   color: white;
 }
 
@@ -76,12 +82,12 @@
   align-items: center;
 }
 
-
 .buttons-arrow{
   color: white;
-  max-height: 21px;
+  /* max-height: 26px; */
+  height: 100%;
+  padding: 4px;
 }
-
 
 .card-empty{
   position: relative;

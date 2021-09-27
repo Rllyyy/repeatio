@@ -14,12 +14,12 @@ import { RiSettings4Fill } from "react-icons/ri";
 //Navbar categories
 //TODO if custom navbar comes, this has to be moved into the component as a state
 const navbarCategories = [
-  { className: "home", linkTo: "", icon: <FaHome />, text: "Home" },
-  { className: "tutorials", linkTo: "tutorials", icon: <BsCameraVideo />, text: "Tutorials" },
-  { className: "support", linkTo: "support", icon: <AiOutlineHeart />, text: "Support this Project" },
-  { className: "thanks", linkTo: "thanks", icon: <FaHandshake />, text: "Special Thanks" },
-  { className: "news", linkTo: "news", icon: <BiNews />, text: "News" },
-  { className: "settings", linkTo: "settings", icon: <RiSettings4Fill />, text: "Settings" },
+  { className: "home", linkTo: "", icon: <FaHome className='category-icon' />, text: "Home" },
+  { className: "tutorials", linkTo: "tutorials", icon: <BsCameraVideo className='category-icon' />, text: "Tutorials" },
+  { className: "support", linkTo: "support", icon: <AiOutlineHeart className='category-icon' />, text: "Support this Project" },
+  { className: "thanks", linkTo: "thanks", icon: <FaHandshake className='category-icon' />, text: "Special Thanks" },
+  { className: "news", linkTo: "news", icon: <BiNews className='category-icon' />, text: "News" },
+  { className: "settings", linkTo: "settings", icon: <RiSettings4Fill className='category-icon' />, text: "Settings" },
 ];
 
 const Sidebar = () => {
@@ -83,18 +83,18 @@ const Sidebar = () => {
 
   //JSX
   return (
-    <nav className={`${expandSidebar && "sidebar-expanded"}`}>
+    <nav className={`sidebar ${expandSidebar && "sidebar-expanded"}`}>
       <button className='hamburger' onClick={() => setExpandSidebar(!expandSidebar)}>
-        <GiHamburgerMenu className='hamburger-icon' />
-        <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>repeatio</h2>
+        <GiHamburgerMenu className='hamburger-icon category-icon' />
+        <h2 className={`${expandSidebar ? "sidebar-button-expanded" : ""}`}>repeatio</h2>
       </button>
       {navbarCategories.map((category) => {
         //destructure category
         const { className, linkTo, icon, text } = category;
         return (
-          <Link to={`/${linkTo}`} key={className} onClick={() => closeMenuOnMobileClick()} className={`${className} ${isCurrentCategoryView(linkTo) && "currentView"}`}>
+          <Link to={`/${linkTo}`} key={className} onClick={() => closeMenuOnMobileClick()} className={`${className}${isCurrentCategoryView(linkTo) ? " currentView" : ""}`}>
             {icon}
-            <h2 className={`${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
+            <h2 className={`category-title ${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
           </Link>
         );
       })}

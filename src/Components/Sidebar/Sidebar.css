@@ -1,4 +1,4 @@
-nav{
+.sidebar{
   position: sticky;
   position: -webkit-sticky;
   position: -moz-sticky;
@@ -6,6 +6,7 @@ nav{
   bottom: 0;
   max-width: 70px;
   height: 100vh;
+  z-index: 100;
   color: white;
   background-color: rgb(12, 12, 20);
 
@@ -13,7 +14,7 @@ nav{
   flex-direction: column;
   align-items: center;
 
-  padding: 10px 12px;
+  padding: 10px 12px 2px 12px;
   user-select: none;
   transition: max-width .3s ease-in-out;
 }
@@ -24,7 +25,7 @@ nav{
 }
 
 /* Target the child element of the nav */
-nav > a, nav > button{
+.sidebar > a, .sidebar > .hamburger{
   text-decoration: none;
   color: var(--custom-tertiary-color);
   background-color: transparent;
@@ -41,47 +42,48 @@ nav > a, nav > button{
   overflow: hidden;
 }
 
-nav button{
+.sidebar .hamburger{
   appearance: none;
   outline: none;
   border: none;
 }
 
-nav a:hover, nav button:hover{
+.sidebar a:hover, .sidebar > .hamburger:hover{
   transition: background-color 0.3s linear;
   background-color: var(--custom-tertiary-color);
 }
 
-nav a:hover svg, nav button:hover svg{
+.sidebar a:hover .category-icon, .sidebar .hamburger:hover .category-icon{
   transition: color .3s linear;
   color: rgb(12, 12, 20);
 }
 
-a h2, button h2 {
+a > .category-title, .hamburger > h2 {
   font-size: 20px;
   font-weight: 400;
   padding-left: 10px;
   opacity: 0;
   transition: opacity 1s;
   color: var(--custom-tertiary-color);
+  color: white;
   white-space: nowrap;
   letter-spacing: .6px;
 }
 
-nav a:hover h2, nav button:hover h2{
+.sidebar > a:hover > .category-title , .sidebar .hamburger:hover h2{
   transition: color .3s linear;
   color: rgb(12, 12, 20);
 }
 
-.sidebar-button-expanded{
+.hamburger > .sidebar-button-expanded, a > .sidebar-button-expanded{
   opacity: 1;
 }
 
-.currentView{
+.sidebar >.currentView{
   background-color: rgb(40, 38, 61);
 }
 
-svg{
+.category-icon{
   height: 26px;
   min-width: 26px;
   color: var(--custom-tertiary-color);
@@ -92,11 +94,11 @@ svg{
   margin: auto 0 0px 0;
 }
 
-.support svg{
+.support .category-icon{
   color: rgb(226, 122, 122);
 }
 
-.support:hover svg{
+.support:hover .category-icon{
   color: rgb(182, 3, 3);
 }
 
@@ -105,7 +107,7 @@ svg{
 */
 /* Mobile CSS */
 @media only screen and (max-width: 650px) {
-  nav{
+  .sidebar{
     position: sticky;
     top: 0;
     bottom: auto;
@@ -114,35 +116,35 @@ svg{
     max-height: 50px;
     min-width: 100vw;
     justify-content: flex-start;
-    padding: 0 25px;
+    padding: 0 20px;
   }
 
-  nav > a{
+  .sidebar > a{
     display: none;
   }
 
-  nav > button, nav > a {
+  .sidebar > .hamburger, .sidebar > a {
     margin: 1px;
     flex-direction: row-reverse;
   }
 
-  nav > button > h2, nav > a > h2{
+  .sidebar > .hamburger > h2, .sidebar > a > .category-title{
     padding-right: 10px;
   }
 
-  nav a:hover, nav button:hover{
+  .sidebar a:hover, .sidebar .hamburger:hover{
     background-color: transparent;
   }
 
-  nav a:hover svg, nav button:hover svg{
+  .sidebar a:hover .category-icon, .sidebar .hamburger:hover .category-icon{
     color: white;
   }
 
-  nav a:hover h2, nav button:hover h2{
+  .sidebar a:hover .category-title, .sidebar .hamburger:hover h2{
   color: white;
 }
 
-  nav > a{
+  .sidebar > a{
     display: none;
   }
 
