@@ -6,7 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 const data = [
   {
-    title: "Title",
+    title: "Titleä?ß",
     description: "This is the description of a cart that is longer than one line",
     questionsTotal: 9,
   },
@@ -45,17 +45,7 @@ function Home() {
               </div>
               <div className='card-buttons'>
                 {/* //!URL might not work with special characters (äöß/*....)*/}
-                <Link
-                  to={{
-                    pathname: `/module/${title.split(" ").join("-").toLowerCase()}`,
-                    state: {
-                      title: title,
-                      description: description,
-                      questionsTotal: questionsTotal,
-                    },
-                  }}
-                  className='card-link'
-                >
+                <Link to={`/module/${title.split(" ").join("-").toLowerCase()}`} className='card-link'>
                   <FaArrowRight className='buttons-arrow' />
                 </Link>
                 <BsPencil className='buttons-edit' />

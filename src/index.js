@@ -35,7 +35,7 @@ ReactDOM.render(
           <Route exact path='/thanks' component={Thanks} />
           <Route exact path='/news' component={News} />
           <Route exact path='/settings' component={Settings} />
-          <Route exact path='/module/:id' component={Module} />
+          <Route exact path='/module/:moduleName' component={Module} />
         </Switch>
       </main>
     </HashRouter>

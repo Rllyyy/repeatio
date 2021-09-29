@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 import "./Module.css";
 
 //Icons
@@ -14,14 +13,9 @@ import { MdBookmark } from "react-icons/md";
 import { BiStats } from "react-icons/bi";
 import { AiOutlineEdit } from "react-icons/ai";
 
-const Module = () => {
+const Module = ({ match }) => {
   //useState
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
-
-  //useLocation
-  const location = useLocation();
-  //TODO Fix when just entering url
-  const { title, description, questionsTotal } = location.state;
 
   //events
   const practiceClick = () => {
@@ -67,8 +61,8 @@ const Module = () => {
   //JSX
   return (
     <>
-      <h1>{title}</h1>
-      <h3 className='module-description'>{description}</h3>
+      <h1>{match.params.moduleName}</h1>
+      {/* <h3 className='module-description'>{description}</h3> */}
       {/* //TODO Add Bookmark */}
       <div className='module-cards'>
         {/* practice */}
