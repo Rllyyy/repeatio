@@ -4,7 +4,10 @@ import "./Settings.css";
 const Settings = () => {
   return (
     <>
-      <h2>Settings</h2>
+      <div className='main-heading-wrapper'>
+        <h1>Settings</h1>
+        <div className='heading-underline'></div>
+      </div>
     </>
   );
 };

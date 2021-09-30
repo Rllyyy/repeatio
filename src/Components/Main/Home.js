@@ -6,7 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 const data = [
   {
-    title: "Titleä?ß",
+    title: "Titleä?ß.!/",
     description: "This is the description of a cart that is longer than one line",
     questionsTotal: 9,
   },
@@ -30,7 +30,10 @@ const data = [
 function Home() {
   return (
     <>
-      <h1>Your Modules</h1>
+      <div className='main-heading-wrapper'>
+        <h1>Your Modules</h1>
+        <div className='heading-underline'></div>
+      </div>
       <div className='grid-cards'>
         {data.map((item) => {
           const { title, description, questionsTotal } = item;

@@ -1,8 +1,8 @@
 .grid-cards{
-  margin-top: 17px;
+  margin-top: 25px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  grid-gap: 25px;
+  grid-gap: 12px;
 }
 
 .card{
@@ -15,7 +15,6 @@
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  box-shadow: rgba(0, 0, 0, 0.65) 2px 4px 8px;
 }
 
 .card-info{
@@ -67,7 +66,6 @@
 }
 
 .card-buttons svg{
-  /* height: 26px; */
   min-width: 26px;
 }
 
@@ -84,7 +82,6 @@
 
 .buttons-arrow{
   color: white;
-  /* max-height: 26px; */
   height: 100%;
   padding: 4px;
 }
@@ -93,7 +90,6 @@
   position: relative;
   border-radius: 8px;
   background-color: var(--custom-secondary-color);
-  box-shadow: rgba(0, 0, 0, 0.65) 2px 4px 8px;
   color: whitesmoke;
   padding: 14px 18px;
   min-height: 180px;
@@ -115,7 +111,7 @@
   color: white;
 }
 
-.card:nth-child(3), .card:nth-child(4){
+/* .card:nth-child(3), .card:nth-child(4){
   flex-direction: row;
 }
 
@@ -139,4 +135,4 @@
 .card:nth-child(4) .card-buttons > * {
   padding: 16px;
   height: 33%;
-}
+} */

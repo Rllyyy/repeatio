@@ -4,7 +4,10 @@ import "./Support.css";
 const Support = () => {
   return (
     <>
-      <h2>Support</h2>
+      <div className='main-heading-wrapper'>
+        <h1>Support</h1>
+        <div className='heading-underline'></div>
+      </div>
     </>
   );
 };

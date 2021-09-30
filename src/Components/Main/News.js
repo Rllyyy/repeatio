@@ -4,7 +4,10 @@ import "./News.css";
 const News = () => {
   return (
     <>
-      <h2>News</h2>
+      <div className='main-heading-wrapper'>
+        <h1>News</h1>
+        <div className='heading-underline'></div>
+      </div>
     </>
   );
 };

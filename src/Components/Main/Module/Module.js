@@ -61,7 +61,10 @@ const Module = ({ match }) => {
   //JSX
   return (
     <>
-      <h1>{match.params.moduleName}</h1>
+      <div className='module-heading-wrapper'>
+        <h1 className='module-heading'>{match.params.moduleName}</h1>
+        <div className='heading-underline'></div>
+      </div>
       {/* <h3 className='module-description'>{description}</h3> */}
       {/* //TODO Add Bookmark */}
       <div className='module-cards'>
@@ -104,10 +107,10 @@ const Module = ({ match }) => {
           <BsExclamationTriangle />
           <h3>Last 30 Mistakes</h3>
         </button>
-        {/* View marked Questions*/}
-        <button className='card-marked-questions'>
+        {/* View saved Questions*/}
+        <button className='card-saved-questions'>
           <MdBookmark />
-          <h3>Marked Questions</h3>
+          <h3>Saved Questions</h3>
         </button>
         {/* Statistics */}
         <button className='card-statistics'>

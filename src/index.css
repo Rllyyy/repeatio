@@ -122,6 +122,11 @@ main{
 }
 
 h1{
+  line-height: 1;
+  text-transform: capitalize;
+  font-weight: 300;
+  font-size: 42px;
+  display: inline;
   text-align: center;
 }
 
@@ -131,7 +136,7 @@ h3{
   letter-spacing: 0.02em;
 }
 
-h1, h2, h3{
+h2, h3{
   line-height: 1.1;
 }
 
@@ -141,6 +146,34 @@ p{
 
 label, input{
   font-size: 18px;
+}
+
+/* Heading with underline */
+.main-heading-wrapper, .module-heading-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.heading-underline{
+  margin-top: 10px;
+  height: 4px;
+  border-radius: 100vh;
+  width: 80%;
+  background-color: var(--custom-prime-color);
+  animation: underline-in .3s ease-in-out 0s 1;
+}
+
+/* Animation */
+@keyframes underline-in {
+  0%{
+    width: 0%;
+  } 100%{
+    width: 80%;
+  }
+  
 }
 
 /* 

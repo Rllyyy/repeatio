@@ -4,7 +4,10 @@ import "./Tutorials.css";
 const Tutorials = () => {
   return (
     <>
-      <h2>Tutorials</h2>
+      <div className='main-heading-wrapper'>
+        <h1>Tutorials</h1>
+        <div className='heading-underline'></div>
+      </div>
     </>
   );
 };

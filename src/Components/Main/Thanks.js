@@ -4,7 +4,10 @@ import "./Thanks.css";
 const Thanks = () => {
   return (
     <>
-      <h2>Thanks</h2>
+      <div className='main-heading-wrapper'>
+        <h1>Thanks</h1>
+        <div className='heading-underline'></div>
+      </div>
     </>
   );
 };
