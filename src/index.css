@@ -7,7 +7,8 @@ Variables
 :root {
   --custom-prime-color: rgb(90, 90, 245);
   --custom-secondary-color: rgb(40, 42, 57);
-  --custom-tertiary-color: rgb(225, 225, 235);
+  --custom-tertiary-color: rgb(245, 245, 245);
+
 }
 
 /* 
@@ -92,6 +93,13 @@ Global Styles
   box-sizing: border-box;
 }
 
+html, body{
+  width: 100vw;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: 'Roboto', 'Helvetica', 'Arial' ;
@@ -103,6 +111,7 @@ body {
   /*possible darkmode background-color: rgb(25, 27, 37);  */
   background-color: whitesmoke;
   color: black;
+
 }
 
 code {
@@ -114,11 +123,14 @@ code {
   display: flex;
   flex-direction: row;
   position: relative;
+  width: 100%;
 }
 
 main{
+  /* min-width: 100%; */
   width: 100%;
   padding: 20px 20px;
+  min-height: 100vh;
 }
 
 h1{
@@ -148,8 +160,27 @@ label, input{
   font-size: 18px;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(194, 194, 194);
+  border: 4px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  margin-bottom: 500px;
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(194, 194, 194) rgba(2, 34, 46, 0);
+}
+
 /* Heading with underline */
-.main-heading-wrapper, .module-heading-wrapper{
+.main-heading-wrapper, .module-heading-wrapper, .question-heading-wrapper{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -189,5 +220,6 @@ Mobile CSS
 
   main{
     padding: 20px 12px;
+    min-height: auto;
   }
 }

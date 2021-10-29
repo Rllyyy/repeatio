@@ -1,0 +1,295 @@
+.question-form{
+  position: relative;
+  height: calc(100vh - 40px); /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
+  width: 100%;
+  /* padding-bottom: 40px; */
+  background-color: white;
+  border-radius: 25px;
+  padding: 15px 15px 15px 20px;
+  border: 1px solid rgb(221, 219, 219);
+  overflow: hidden;
+}
+
+.question-form button{
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.question-data{
+  position: relative;
+  height: 100%;
+  padding-bottom: 80px; /*Cancel out the navigation at the bottom */
+  overflow-y: scroll;
+}
+
+.question-form h1{
+  display: block;
+}
+
+.question-title{
+  -ms-word-break: break-all;
+  -ms-word-wrap: break-all;
+  -webkit-word-break: break-word;
+  -webkit-word-wrap: break-word;
+  word-break: break-word;
+  word-wrap: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+.question-id-progress-wrapper{
+  margin: 20px 0 5px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.question-type-help{
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.question-scrollToBottom-button{
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  bottom: 80px;
+  left: 0; 
+  right: 0; 
+  margin: 0 auto;
+}
+
+.question-bottom{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: space-between;
+  
+  padding: 12px 20px;
+  border-top: 1px solid rgb(221, 219, 219);
+  background-color: white;
+}
+
+.question-bottom-when-expanded{
+  /* When width of form is more than 800px */
+  max-height: 69px; /*Don't know why it's 69 but (rounding error?) but height auto is 69px when show nav is false. 69 doesn't make the ui jump */
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.question-bottom-when-collapsed{
+  /* When width of form is less than 800px */
+    height: auto;
+    max-height: 120px;
+    
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+
+.question-check-reveal-wrapper{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.question-check-reveal-wrapper > .question-check,
+.question-check-reveal-wrapper > .question-reveal,
+.question-check-reveal-wrapper > .question-retry
+ {
+  height: 100%;
+  width: 100%;
+  max-width: 160px;
+
+  display: flex;
+  justify-content: center;
+  
+  margin-right: 5px;
+  padding: 2px 0;
+  color: white;
+  border: 2px solid var(--custom-prime-color);
+  border-radius: 100vh;
+  background-color: white;
+  transition: background-color .2s ease-in-out,
+}
+
+.question-check-reveal-wrapper > button:last-child{
+  margin-right: 0;
+}
+
+.question-check-reveal-wrapper > .question-check{
+  flex-shrink: 0;
+  background-color: var(--custom-prime-color);
+  padding: 0;
+  transition: none;
+}
+
+.check-icon, .reveal-icon, .retry-icon{  
+  height: 100%;
+  max-height: 36px;
+  width: 40px;
+}
+
+.reveal-icon, .retry-icon{
+  stroke-width: 0.6;
+  color: var(--custom-prime-color);
+  fill: var(--custom-prime-color);
+  transition: fill .2s ease-in-out, color .2 ease-in-out;
+}
+
+.question-reveal:hover, .question-reveal:focus, .question-retry:hover, .question-retry:focus{
+  background-color: var(--custom-prime-color);
+}
+
+.question-reveal:hover > .reveal-icon, 
+.question-reveal:focus > .reveal-icon, 
+.question-retry:hover > .retry-icon, 
+.question-retry:focus > .retry-icon{
+  color: rgb(235, 235, 235);
+  fill: rgb(235, 235, 235);
+}
+
+.question-check-reveal-wrapper > .question-check > .check-icon{
+  max-height: 40px;
+  stroke-width: 1.5;
+}
+
+.question-check:hover, .question-check:focus{
+  background-color:rgb(117, 117, 247);
+  border: 2px solid rgb(117, 117, 247);
+}
+
+.show-question-nav{
+  display: flex;
+  min-width: 40px;
+  width: 40px;
+  padding: 5px;
+  margin-left: auto;
+
+  color: var(--custom-secondary-color);
+
+  /* remove default 3d button effect */
+  outline: none;
+  border: none;
+  background-color: transparent;
+
+  border-radius: 0px;
+}
+
+.show-question-nav > .show-question-nav-icon{
+  width: 100%;
+  height: 100%;
+  
+  stroke-width: .5;
+
+  pointer-events: none;
+}
+
+.show-question-nav > .up{
+  transform: rotate(180deg);
+}
+
+.show-question-nav > .down{
+  transform: rotate(0deg);
+}
+
+/* Navigation */
+.question-navigation{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.nav-collapsed{
+  margin-bottom: 10px;
+}
+
+.question-navigation > *{
+  height: 100%;
+}
+
+.question-navigation > button{
+  /* Reset default button values*/
+  border: none;
+  appearance: none;
+  outline: none;
+  background-color: transparent;
+
+  width: 40px;
+}
+
+.question-navigation > button > svg{
+  height: 100%;
+  width: 100%;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  /* stroke: #1C1A27; */
+  stroke: var(--custom-secondary-color);
+  stroke-width: 1;
+}
+
+.navigation-before{
+  fill: var(--custom-secondary-color);
+  transform: rotate(180deg);
+}
+
+.question-navigation > input{
+  margin: 0 5px 0 5px;
+  padding: 5px;
+  max-width: 70px;
+  border: 1.5px solid var(--custom-secondary-color);
+}
+
+.question-navigation > input:focus, 
+.question-navigation > input:hover
+{
+  border-color: var(--custom-prime-color);
+  outline: var(--custom-prime-color);     
+  outline-width: thin;
+}
+
+.navigation-skip{
+  fill: var(--custom-secondary-color);
+  /* transform: rotate(90deg); */
+}
+
+.question-navigation > button:hover svg, .question-navigation > button:focus svg{
+  color: var(--custom-prime-color);
+  stroke: var(--custom-prime-color);
+  fill: var(--custom-prime-color);
+}
+
+/* Media query for phones */
+@media only screen and (max-width: 650px) {
+  .question-form{
+    height: calc(100vh - 138px); /*The viewport of mobile devices includes the address bar. Because why not. */
+    margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a back background at the bottom*/
+    padding: 15px 12px 15px 15px;
+  }
+
+  .question-check-reveal-wrapper > .question-check, 
+  .question-check-reveal-wrapper > .question-reveal, 
+  .question-check-reveal-wrapper > .question-retry {
+    max-width: 140px;
+  }
+
+  .question-bottom{
+    height: auto;
+    
+    flex-direction: column-reverse;
+    align-items: center;
+    
+    padding: 15px 10px;
+  }
+
+  .question-check-reveal-wrapper{
+    justify-content: space-between; 
+  }
+}

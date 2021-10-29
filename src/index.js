@@ -15,6 +15,7 @@ import Support from "./Components/Main/Support";
 import Thanks from "./Components/Main/Thanks";
 import News from "./Components/Main/News";
 import Module from "./Components/Main/Module/Module.js";
+import Question from "./Components/Main/Question/Question";
 
 //Import functions
 import ScrollToTop from "./functions/ScrollToTop";
@@ -36,6 +37,7 @@ ReactDOM.render(
           <Route exact path='/news' component={News} />
           <Route exact path='/settings' component={Settings} />
           <Route exact path='/module/:moduleName' component={Module} />
+          <Route exact path='/module/:moduleName/:questionID' component={Question} />
         </Switch>
       </main>
     </HashRouter>

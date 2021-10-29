@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import "./Module.css";
 
 //Icons
@@ -43,10 +44,6 @@ const Module = ({ match }) => {
     [showPracticeOptions]
   );
 
-  const startPractice = (type) => {
-    console.log(`${type} is not supported yet`);
-  };
-
   //useEffects
   useEffect(() => {
     window.addEventListener("mousedown", hidePracticeOptions, false);
@@ -76,10 +73,10 @@ const Module = ({ match }) => {
           </button>
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
-              <button className='practice-chronological' onClick={() => startPractice("chronological")}>
+              <Link to={`/module/${match.params.moduleName}/test`} className='practice-chronological'>
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
-              </button>
+              </Link>
               <button className='practice-random'>
                 <GiPerspectiveDiceSixFacesRandom />
                 <h3>Random</h3>

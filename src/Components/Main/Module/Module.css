@@ -1,3 +1,8 @@
+/* Remove underline from react-router-dom links */
+a{
+  text-decoration: none;
+}
+
 .module-description{
   margin-top: 5px;
   text-align: center;
