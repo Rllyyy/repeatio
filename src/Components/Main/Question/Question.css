@@ -5,7 +5,7 @@
   /* padding-bottom: 40px; */
   background-color: white;
   border-radius: 25px;
-  padding: 15px 15px 15px 20px;
+  padding-right: 15px;
   border: 1px solid rgb(221, 219, 219);
   overflow: hidden;
 }
@@ -20,23 +20,8 @@
   position: relative;
   height: 100%;
   padding-bottom: 80px; /*Cancel out the navigation at the bottom */
+  padding: 15px 10px 80px 20px;
   overflow-y: scroll;
-}
-
-.question-form h1{
-  display: block;
-}
-
-.question-title{
-  -ms-word-break: break-all;
-  -ms-word-wrap: break-all;
-  -webkit-word-break: break-word;
-  -webkit-word-wrap: break-word;
-  word-break: break-word;
-  word-wrap: break-word;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  hyphens: auto;
 }
 
 .question-id-progress-wrapper{
@@ -44,11 +29,29 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+}
+
+.question-id-progress-wrapper > p{ 
+  color: var(--custom-secondary-color);
+}
+
+.question-id-progress-wrapper > .question-id{
+  font-size: 1rem; 
+}
+
+.question-id-progress-wrapper > .question-progress{
+  font-size: 1.3rem;
+}
+
+.question-points{
+  margin-top: 2px;
 }
 
 .question-type-help{
-  margin-top: 5px;
+  margin: 2px 0 5px 0;
   font-style: italic;
+  color: var(--custom-secondary-color);
 }
 
 .question-scrollToBottom-button{
@@ -155,7 +158,7 @@
 
 .question-check-reveal-wrapper > .question-check > .check-icon{
   max-height: 40px;
-  stroke-width: 1.5;
+  stroke-width: 1;
 }
 
 .question-check:hover, .question-check:focus{
@@ -271,7 +274,11 @@
   .question-form{
     height: calc(100vh - 138px); /*The viewport of mobile devices includes the address bar. Because why not. */
     margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a back background at the bottom*/
-    padding: 15px 12px 15px 15px;
+    /* padding: 15px 12px 15px 15px; */
+  }
+
+  .question-data{
+    padding: 15px 10px 80px 15px;
   }
 
   .question-check-reveal-wrapper > .question-check, 
@@ -293,3 +300,5 @@
     justify-content: space-between; 
   }
 }
+
+

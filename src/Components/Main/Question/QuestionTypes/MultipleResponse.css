@@ -1,0 +1,45 @@
+/* ! To manipulate material UI components sometimes a !important is required */
+/* ! Some css properties (mui-checkcolor, color) are defined in the react component  */
+
+.question-multiple-response > .formControlLabel{
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.question-multiple-response > .formControlLabel > .formControlLabel-label{
+  font-size: 18px;
+  padding-top: 10px;
+  padding-left: 2px;
+}
+
+.question-multiple-response  > .formControlLabel> .formControlLabel-checkbox:hover{ 
+  background-color: rgba(90, 90, 245, 0.12);
+}
+
+.question-multiple-response .MuiSvgIcon-root{
+  font-size: 26px;
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) { 
+  .question-multiple-response > .formControlLabel{ 
+    padding: 2px 0 !important;
+  }
+
+  /* Override the checkbox size of mui */
+  .question-multiple-response .MuiSvgIcon-root{
+    font-size: 30px !important;
+  }
+
+  .question-multiple-response > .formControlLabel > .formControlLabel-label{
+    font-size: 20px;
+    padding-top: 10px;
+    padding-left: 0;
+  }
+
+  .question-multiple-response  > .formControlLabel > .formControlLabel-checkbox:hover{ 
+    background-color: transparent;
+  }
+}

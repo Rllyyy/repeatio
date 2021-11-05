@@ -1,26 +1,43 @@
 //Import
 import React, { useState, useRef, useEffect } from "react";
-
 import { useSize } from "../../../hooks/useSize";
+
+//Import Question Types
+import MultipleResponse from "./QuestionTypes/MultipleResponse";
 
 //Import css
 import "./Question.css";
 
 //Import SCG
-import { MdBookmark } from "react-icons/md";
 import { AiFillEye } from "react-icons/ai";
 import { BiCheck, BiReset } from "react-icons/bi";
-import { BsArrowRepeat, BsChevronDoubleDown } from "react-icons/bs";
-import { FiEdit } from "react-icons/fi";
+import { BsChevronDoubleDown } from "react-icons/bs";
 // import { BsCheckLg } from "react-icons/bs";
 
 //Placeholder
 const question = {
   modulename: "Placeholder Name",
   questionID: "qID-1",
-  questionTitle: "Test Title",
+  questionTitle:
+    "Test Title: What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
   questionPoints: 5,
-  questionTypeHelp: "Wählen Sie die richtige(n) Aussage(n) aus.",
+  type: "multiple-response",
+  questionTypeHelp: "Choose the correct answer(s).",
+  answerOptions: [
+    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+    "Lorem ipsum dolor sit amet consectetur adipisicing.",
+    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+  ],
+};
+
+//Decide what Question Type to return
+const questionType = (type, options) => {
+  switch (type) {
+    case "multiple-response":
+      return <MultipleResponse answerOptions={options} />;
+    default:
+      throw new Error("No matching question Type");
+  }
 };
 
 //Navigation svg from https://tablericons.com
@@ -46,7 +63,7 @@ const Question = () => {
   const preventDef = (e) => {
     e.preventDefault();
   };
-  // lose focus onclick
+  // lose focus onclick --> :active
   //stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-click
 
   //JSX
@@ -64,15 +81,15 @@ const Question = () => {
         {/* <button>
           <MdBookmark />
         </button> */}
-        <h2 className='question-title'>{question.questionTitle}</h2>
+        <h2 className='question-title'>
+          {question.questionTitle} ({question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"})
+        </h2>
         <p className='question-points'>
           {question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"}
         </p>
         <p className='question-type-help'>{question.questionTypeHelp}</p>
-        <div>
-          <p>Question</p>
-        </div>
-        {/* <h1>{navigationWidth}</h1> */}
+        {/* <p>Question</p> */}
+        <section className='question-user-response'>{questionType(question.type, question.answerOptions)}</section>
         {/* <div>Answer</div>
       <div>Tip</div> */}
       </div>
