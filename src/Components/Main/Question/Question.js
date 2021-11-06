@@ -4,6 +4,7 @@ import { useSize } from "../../../hooks/useSize";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse";
+import MultipleChoice from "./QuestionTypes/MultipleChoice";
 
 //Import css
 import "./Question.css";
@@ -21,7 +22,7 @@ const question = {
   questionTitle:
     "Test Title: What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
   questionPoints: 5,
-  type: "multiple-response",
+  type: "multiple-choice",
   questionTypeHelp: "Choose the correct answer(s).",
   answerOptions: [
     "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
@@ -35,6 +36,8 @@ const questionType = (type, options) => {
   switch (type) {
     case "multiple-response":
       return <MultipleResponse answerOptions={options} />;
+    case "multiple-choice":
+      return <MultipleChoice answerOptions={options} />;
     default:
       throw new Error("No matching question Type");
   }
