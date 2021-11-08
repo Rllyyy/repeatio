@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 
+//Import css
 import "./MultipleChoice.css";
 
-const MultipleChoice = ({ answerOptions }) => {
+//Import functions
+import shuffleArray from "../../../../functions/shuffleArray.js";
+
+//Component
+const MultipleChoice = ({ options }) => {
+  //states
+  const [shuffledOptions, setShuffledOptions] = useState([]);
+
+  //Run shuffle function on first render of
+  //Future needs to be depended on question id
+  useEffect(() => {
+    setShuffledOptions(shuffleArray(options));
+  }, [options]);
+
+  //JSX
   return (
     <div className='question-multiple-choice'>
       <FormControl>
         <RadioGroup>
-          {answerOptions.map((option, index) => {
+          {shuffledOptions.map((option, index) => {
             return (
               <FormControlLabel
                 key={index}

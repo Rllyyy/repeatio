@@ -35,9 +35,9 @@ const question = {
 const questionType = (type, options) => {
   switch (type) {
     case "multiple-response":
-      return <MultipleResponse answerOptions={options} />;
+      return <MultipleResponse options={options} />;
     case "multiple-choice":
-      return <MultipleChoice answerOptions={options} />;
+      return <MultipleChoice options={options} />;
     default:
       throw new Error("No matching question Type");
   }
