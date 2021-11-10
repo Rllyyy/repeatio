@@ -1,5 +1,5 @@
 //Import
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useSize } from "../../../hooks/useSize";
 
 //Import Question Types
@@ -25,22 +25,14 @@ const question = {
   type: "multiple-choice",
   questionTypeHelp: "Choose the correct answer(s).",
   answerOptions: [
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
-    "Lorem ipsum dolor sit amet consectetur adipisicing.",
-    "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+    { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+    { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+    {
+      id: "option-3",
+      text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+      isCorrect: false,
+    },
   ],
-};
-
-//Decide what Question Type to return
-const questionType = (type, options) => {
-  switch (type) {
-    case "multiple-response":
-      return <MultipleResponse options={options} />;
-    case "multiple-choice":
-      return <MultipleChoice options={options} />;
-    default:
-      throw new Error("No matching question Type");
-  }
 };
 
 //Navigation svg from https://tablericons.com
@@ -49,8 +41,11 @@ const Question = () => {
   //States
   const [showNav, setShowNav] = useState(false);
   const [collapsedNav, setCollapsedNav] = useState();
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [answerCorrect, setAnswerCorrect] = useState();
 
   const questionBottomRef = useRef(null);
+  const checkRef = useRef(); //Checking if an answer is correct id done in the child component
   const size = useSize(questionBottomRef);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
@@ -68,6 +63,18 @@ const Question = () => {
   };
   // lose focus onclick --> :active
   //stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-click
+
+  //Decide what Question Type to return
+  const questionType = useCallback((type, options) => {
+    switch (type) {
+      case "multiple-response":
+        return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} />;
+      case "multiple-choice":
+        return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} />;
+      default:
+        throw new Error("No matching question Type");
+    }
+  }, []);
 
   //JSX
   return (
@@ -93,6 +100,7 @@ const Question = () => {
         <p className='question-type-help'>{question.questionTypeHelp}</p>
         {/* <p>Question</p> */}
         <section className='question-user-response'>{questionType(question.type, question.answerOptions)}</section>
+        {showAnswer && <section className='question-correction'>{answerCorrect ? <p>The Answer is correct</p> : <p>The Answer is false</p>}</section>}
         {/* <div>Answer</div>
       <div>Tip</div> */}
       </div>
@@ -102,7 +110,7 @@ const Question = () => {
       <div className={`question-bottom ${collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"}`} ref={questionBottomRef}>
         <div className='question-check-reveal-wrapper'>
           {/* Check */}
-          <button className='question-check'>
+          <button className='question-check' onClick={() => checkRef.current.checkAnswer()}>
             <BiCheck className='check-icon' />
           </button>
           {/* Reveal */}

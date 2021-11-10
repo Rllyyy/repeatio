@@ -14,7 +14,7 @@
   padding-left: 2px;
 }
 
-.question-multiple-response  .formControlLabel> .formControlLabel-checkbox:hover{ 
+.question-multiple-response  .formControlLabel > .formControlLabel-checkbox:hover{ 
   background-color: rgba(90, 90, 245, 0.12);
 }
 
