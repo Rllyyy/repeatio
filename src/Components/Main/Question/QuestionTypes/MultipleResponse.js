@@ -32,7 +32,6 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer 
 
   //Update the isChecked value of shuffledOptions state
   const updateIsChecked = (optionID) => {
-    // console.log(optionID);
     let updatedShuffleOptions = shuffledOptions.map((item) => {
       //Set the state of the state to true where the ids are equal else change it to false (because only one option can be checked at the time => multiple Choice)
       if (item.id === optionID) {
@@ -65,6 +64,25 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer 
         setShowAnswer(true);
         setAnswerCorrect(true);
       }
+    },
+
+    //Return the correct answer in JSX so it can be displayed in the parent component
+    returnAnswer() {
+      return (
+        <ul className='correction-multipleResponse-list'>
+          {shuffledOptions.map((item) => {
+            if (item.isCorrect) {
+              return (
+                <li className='correction-multipleResponse-list-item' key={item.id}>
+                  {item.text}
+                </li>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </ul>
+      );
     },
   }));
 

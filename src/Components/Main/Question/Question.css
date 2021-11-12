@@ -4,7 +4,7 @@
   width: 100%;
   /* padding-bottom: 40px; */
   background-color: white;
-  border-radius: 25px;
+  border-radius: 10px;
   padding-right: 15px;
   border: 1px solid rgb(221, 219, 219);
   overflow: hidden;
@@ -52,6 +52,26 @@
   margin: 2px 0 5px 0;
   font-style: italic;
   color: var(--custom-secondary-color);
+}
+
+.question-correction{
+  margin: 20px 0 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.question-form .answer-correct{
+  background-color: rgb(145, 202, 172);
+  border: 2px solid rgb(21, 104, 60);
+}
+
+.question-form .answer-false{
+  background-color: rgb(241, 177, 170);
+  border: 2px solid rgb(173, 31, 15);
+}
+
+.question-correction-title{
+  font-weight: 550;
 }
 
 .question-scrollToBottom-button{

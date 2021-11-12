@@ -22,6 +22,20 @@
   font-size: 26px;
 }
 
+.correction-multipleResponse-list-item {
+  list-style: none;
+  position: relative;
+  padding-left: 18px;
+}
+
+.correction-multipleResponse-list-item::before {
+  content: '■';
+  position: absolute;
+  left: 0px;
+  top: -1px;
+  font-size: 14px;
+}
+
 /* Media Query for phones */
 @media only screen and (max-width: 650px) { 
   .question-multiple-response .formControlLabel{ 

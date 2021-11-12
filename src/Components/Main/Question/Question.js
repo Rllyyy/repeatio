@@ -98,9 +98,16 @@ const Question = () => {
           {question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"}
         </p>
         <p className='question-type-help'>{question.questionTypeHelp}</p>
-        {/* <p>Question</p> */}
+        {/* Question */}
         <section className='question-user-response'>{questionType(question.type, question.answerOptions)}</section>
-        {showAnswer && <section className='question-correction'>{answerCorrect ? <p>The Answer is correct</p> : <p>The Answer is false</p>}</section>}
+        {/* On Check click show if the answer was correct */}
+        {showAnswer && (
+          <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`}>
+            <p className='question-correction-title'>{answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}</p>
+            <>{checkRef.current.returnAnswer()}</>
+            {/* <p>The Answer is false</p> */}
+          </section>
+        )}
         {/* <div>Answer</div>
       <div>Tip</div> */}
       </div>
