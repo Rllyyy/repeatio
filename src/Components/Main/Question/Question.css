@@ -5,7 +5,7 @@
   /* padding-bottom: 40px; */
   background-color: white;
   border-radius: 10px;
-  padding-right: 15px;
+  padding-right: 8px;
   border: 1px solid rgb(221, 219, 219);
   overflow: hidden;
 }
@@ -19,8 +19,7 @@
 .question-data{
   position: relative;
   height: 100%;
-  padding-bottom: 80px; /*Cancel out the navigation at the bottom */
-  padding: 15px 10px 80px 20px;
+  padding: 15px 15px 80px 20px; /*Cancel out the navigation at the bottom */
   overflow-y: scroll;
 }
 
@@ -55,7 +54,7 @@
 }
 
 .question-correction{
-  margin: 20px 0 5px 0;
+  margin: 15px 0 5px 0;
   padding: 10px;
   border-radius: 5px;
 }
@@ -294,11 +293,14 @@
   .question-form{
     height: calc(100vh - 138px); /*The viewport of mobile devices includes the address bar. Because why not. */
     margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a back background at the bottom*/
-    /* padding: 15px 12px 15px 15px; */
   }
 
   .question-data{
-    padding: 15px 10px 80px 15px;
+    padding: 15px 20px 80px 15px;
+  }
+
+  .question-correction{
+  margin: 10px 0 5px 0; 
   }
 
   .question-check-reveal-wrapper > .question-check, 
