@@ -17,10 +17,10 @@ import { BsChevronDoubleDown } from "react-icons/bs";
 
 //Placeholder
 const question = {
-  modulename: "Placeholder Name",
+  modulename: "ABC12",
   questionID: "qID-1",
   questionTitle:
-    "Test Title: What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
+    "What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
   questionPoints: 5,
   type: "multiple-choice",
   questionTypeHelp: "Choose the correct answer(s).",
@@ -46,6 +46,8 @@ const Question = () => {
 
   const questionBottomRef = useRef(null);
   const checkRef = useRef(); //Checking if an answer is correct id done in the child component
+  const questionCorrectionRef = useRef();
+  const hello = useRef();
   const size = useSize(questionBottomRef);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
@@ -62,7 +64,20 @@ const Question = () => {
     e.preventDefault();
   };
   // lose focus onclick --> :active
-  //stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-click
+  //stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-
+
+  //Scroll to question correction on check click
+  const questionCheckButtonOnClick = () => {
+    checkRef.current.checkAnswer();
+  };
+
+  // scroll to correction feedback for user after show answer is updated and only
+  useEffect(() => {
+    if (showAnswer) {
+      // hello.current.focus();
+      questionCorrectionRef.current.scrollIntoView();
+    }
+  }, [showAnswer]);
 
   //Decide what Question Type to return
   const questionType = useCallback((type, options) => {
@@ -79,10 +94,11 @@ const Question = () => {
   //JSX
   return (
     <form className='question-form' onSubmit={preventDef}>
-      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}}>
+      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}} ref={hello}>
+        {/* <p>Module: {question.modulename}</p> */}
         <div className='question-heading-wrapper'>
-          <h1>{question.modulename} | Practice</h1>
-          <div className='heading-underline'></div>
+          {/* <h2 className='question-module-heading'>{question.modulename} | Practice</h2>
+          <div className='heading-underline'></div> */}
         </div>
         <div className='question-id-progress-wrapper'>
           <p className='question-id'>ID: {question.questionID}</p>
@@ -91,21 +107,19 @@ const Question = () => {
         {/* <button>
           <MdBookmark />
         </button> */}
-        <h2 className='question-title'>
-          {question.questionTitle} ({question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"})
-        </h2>
+        <h2 className='question-title'>{question.questionTitle}</h2>
         <p className='question-points'>
           {question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"}
         </p>
+        <p className='question-id'>ID: {question.questionID}</p>
         <p className='question-type-help'>{question.questionTypeHelp}</p>
         {/* Question */}
         <section className='question-user-response'>{questionType(question.type, question.answerOptions)}</section>
         {/* On Check click show if the answer was correct */}
         {showAnswer && (
-          <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`}>
+          <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`} ref={questionCorrectionRef}>
             <p className='question-correction-title'>{answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}</p>
             <>{checkRef.current.returnAnswer()}</>
-            {/* <p>The Answer is false</p> */}
           </section>
         )}
         {/* <div>Answer</div>
@@ -117,7 +131,7 @@ const Question = () => {
       <div className={`question-bottom ${collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"}`} ref={questionBottomRef}>
         <div className='question-check-reveal-wrapper'>
           {/* Check */}
-          <button className='question-check' onClick={() => checkRef.current.checkAnswer()}>
+          <button className='question-check' onClick={() => questionCheckButtonOnClick()}>
             <BiCheck className='check-icon' />
           </button>
           {/* Reveal */}

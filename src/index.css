@@ -91,6 +91,7 @@ Global Styles
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 html, body{
@@ -140,13 +141,17 @@ h1{
   line-height: 1;
   text-transform: capitalize;
   font-weight: 300;
-  font-size: 42px;
+  font-size: 36px;
   display: inline;
   text-align: center;
 }
 
+h2{
+  font-size: 1.55rem;
+}
+
 h3{
-  font-size: 22px;
+  font-size: 1.4rem;
   font-weight: 500;
   letter-spacing: 0.02em;
 }
@@ -155,7 +160,7 @@ h2, h3{
   line-height: 1.1;
 }
 
-p{
+p, li{
   font-size: 18px;
 }
 
@@ -192,8 +197,8 @@ label, input{
 }
 
 .heading-underline{
-  margin-top: 10px;
-  height: 4px;
+  margin-top: 5px;
+  height: 3px;
   border-radius: 100vh;
   width: 80%;
   background-color: var(--custom-prime-color);
@@ -221,10 +226,46 @@ Mobile CSS
     flex-direction: column;
   }
 
+  h2{
+    font-size: 1.5rem;
+  }
+
+  h3{
+  font-size: 1.3rem;
+  }
+
+  p{
+    font-size: 18px;
+  }
+
   main{
     margin-top: 46px;
     margin-bottom: 0;
-    padding: 20px 2px 20px 12px;
+    padding: 15px 2px 5px 10px;
     min-height: auto;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(204, 204, 204);
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    border-radius: 9999px;
+    margin-bottom: 500px;
+  }
+}
+
+/* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
+@media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
+  main{
+    padding: 15px 10px 50px 10px;
+  }
+
+  html, body{
+    max-width: 100vw; 
+    overflow-x: hidden;
   }
 }

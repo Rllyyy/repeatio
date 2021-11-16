@@ -19,12 +19,20 @@
 .question-data{
   position: relative;
   height: 100%;
-  padding: 15px 15px 80px 20px; /*Cancel out the navigation at the bottom */
+  padding: 20px 15px 80px 20px; /*Cancel out the navigation at the bottom */
   overflow-y: scroll;
 }
 
+.question-module-heading{
+  text-align: center;
+}
+
+.heading-underline{
+  margin-top: 5px;
+}
+
 .question-id-progress-wrapper{
-  margin: 10px 0 5px 0;
+  margin-bottom: 5px; 
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -41,6 +49,10 @@
 
 .question-id-progress-wrapper > .question-progress{
   font-size: 1.2rem;
+}
+
+.question-title{
+  font-weight: 500;
 }
 
 .question-points{
@@ -105,13 +117,13 @@
 }
 
 .question-bottom-when-collapsed{
-  /* When width of form is less than 800px */
-    height: auto;
-    max-height: 120px;
-    
-    flex-direction: column-reverse;
-    align-items: center;
-  }
+/* When width of form is less than 800px */
+  height: auto;
+  max-height: 120px;
+  
+  flex-direction: column-reverse;
+  align-items: center;
+}
 
 .question-check-reveal-wrapper{
   display: flex;
@@ -251,8 +263,6 @@
 
   stroke-linecap: round;
   stroke-linejoin: round;
-
-  /* stroke: #1C1A27; */
   stroke: var(--custom-secondary-color);
   stroke-width: 1;
 }
@@ -279,7 +289,6 @@
 
 .navigation-skip{
   fill: var(--custom-secondary-color);
-  /* transform: rotate(90deg); */
 }
 
 .question-navigation > button:hover svg, .question-navigation > button:focus svg{
@@ -291,12 +300,14 @@
 /* Media query for phones */
 @media only screen and (max-width: 650px) {
   .question-form{
-    height: calc(100vh - 138px); /*The viewport of mobile devices includes the address bar. Because why not. */
-    margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a back background at the bottom*/
+    height: calc(100vh - 130px); /*The viewport of mobile devices includes the address bar. Because why not. */
+    padding-right: 4px;
+    margin-bottom: 0;
+    -moz-margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a black background at the bottom*/
   }
 
   .question-data{
-    padding: 15px 20px 80px 15px;
+    padding: 15px 7px 80px 12px;
   }
 
   .question-correction{
