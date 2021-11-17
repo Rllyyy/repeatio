@@ -47,7 +47,6 @@ const Question = () => {
   const questionBottomRef = useRef(null);
   const checkRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
-  const hello = useRef();
   const size = useSize(questionBottomRef);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
@@ -74,7 +73,6 @@ const Question = () => {
   // scroll to correction feedback for user after show answer is updated and only
   useEffect(() => {
     if (showAnswer) {
-      // hello.current.focus();
       questionCorrectionRef.current.scrollIntoView();
     }
   }, [showAnswer]);
@@ -94,7 +92,7 @@ const Question = () => {
   //JSX
   return (
     <form className='question-form' onSubmit={preventDef}>
-      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}} ref={hello}>
+      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}}>
         {/* <p>Module: {question.modulename}</p> */}
         <div className='question-heading-wrapper'>
           {/* <h2 className='question-module-heading'>{question.modulename} | Practice</h2>

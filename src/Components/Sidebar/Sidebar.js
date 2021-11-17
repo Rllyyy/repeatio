@@ -26,12 +26,13 @@ const Sidebar = () => {
   //useState
   const [expandSidebar, setExpandSidebar] = useState(false); //TODO make this dependent on user settings
   const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState();
 
   //Close the navbar when on mobile when the users clicks on a category.
   //Only runs when the viewport is smaller than 650px
   const closeMenuOnMobileClick = useCallback(() => {
     if (!isMobile) return;
+    // throw new Error("hello");
 
     setExpandSidebar(false);
   }, [isMobile]);
@@ -71,7 +72,15 @@ const Sidebar = () => {
   }, []);
 
   //Check if the size of the window is smaller than 650px so the special mobile navbar behavior is applied
-  //One might argue that this useEffect could also just run on the first mount
+  useEffect(() => {
+    if (window.innerWidth <= 650) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, []);
+
+  //One might argue that this useEffect could also just run on the first mount (like above)
   //as the viewport of a users usually doesn't change. They would be right but that would make testing harder.
   useEffect(() => {
     window.addEventListener("resize", handleWindowResize);

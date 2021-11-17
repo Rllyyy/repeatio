@@ -44,11 +44,11 @@
 }
 
 .question-id-progress-wrapper > .question-id{
-  font-size: 1rem; 
+  font-size: 0.9rem; 
 }
 
 .question-id-progress-wrapper > .question-progress{
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .question-title{
@@ -103,6 +103,8 @@
 
   display: flex;
   justify-content: space-between;
+
+  z-index: 10;
   
   padding: 12px 20px;
   border-top: 1px solid rgb(221, 219, 219);
@@ -307,7 +309,7 @@
   }
 
   .question-data{
-    padding: 15px 7px 80px 12px;
+    padding: 10px 7px 80px 12px;
   }
 
   .question-correction{
@@ -331,6 +333,13 @@
 
   .question-check-reveal-wrapper{
     justify-content: space-between; 
+  }
+}
+
+/* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
+@media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
+  .question-data{
+    padding: 10px 12px 80px 12px;
   }
 }
 
