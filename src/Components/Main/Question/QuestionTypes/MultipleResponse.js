@@ -11,8 +11,8 @@ import "./MultipleResponse.css";
 //Import functions
 import shuffleArray from "../../../../functions/shuffleArray.js";
 
-const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer }, ref) => {
-  //states
+const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+  //States
   const [shuffledOptions, setShuffledOptions] = useState([]);
 
   //Run shuffle function on first render of component and add isChecked state
@@ -84,31 +84,41 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer 
         </ul>
       );
     },
+
+    //Reset User selection
+    resetSelection() {
+      const unselectedOption = shuffledOptions.map((item) => {
+        return { ...item, isChecked: false };
+      });
+
+      setShuffledOptions(unselectedOption);
+    },
   }));
 
   //JSX
   return (
     <div className='question-multiple-response'>
-      <FormControl>
+      <FormControl disabled={formDisabled}>
         <FormGroup>
           {shuffledOptions.map((option) => {
             return (
               <FormControlLabel
                 key={option.id}
                 className='formControlLabel'
+                checked={option.isChecked || false} //fallback (so it's a controlled input)
                 onChange={() => updateIsChecked(option.id)}
                 control={
                   <Checkbox
                     className='formControlLabel-checkbox'
                     sx={{
-                      color: "var(--custom-prime-color)",
+                      color: `${!formDisabled ? "var(--custom-prime-color)" : "rgb(189, 189, 189)"} `,
                       "&.Mui-checked": {
-                        color: "var(--custom-prime-color)",
+                        color: `${!formDisabled ? "var(--custom-prime-color)" : "rgb(189, 189, 189)"} `,
                       },
                     }}
                   />
                 }
-                label={<Typography className='formControlLabel-label'>{option.text}</Typography>}
+                label={<Typography className={`formControlLabel-label ${formDisabled && "label-disabled"}`}>{option.text}</Typography>}
               />
             );
           })}

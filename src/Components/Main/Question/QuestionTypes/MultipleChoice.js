@@ -12,7 +12,7 @@ import "./MultipleChoice.css";
 import shuffleArray from "../../../../functions/shuffleArray.js";
 
 /* Component */
-const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer }, ref) => {
+const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //states
   const [shuffledOptions, setShuffledOptions] = useState([]);
 
@@ -86,12 +86,21 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer },
         </ul>
       );
     },
+
+    //Reset User selection
+    resetSelection() {
+      const unselectedOption = shuffledOptions.map((item) => {
+        return { ...item, isChecked: false };
+      });
+
+      setShuffledOptions(unselectedOption);
+    },
   }));
 
   //JSX
   return (
     <div className='question-multiple-choice'>
-      <FormControl>
+      <FormControl disabled={formDisabled}>
         <RadioGroup>
           {shuffledOptions.map((option) => {
             return (
@@ -111,7 +120,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer },
                     }}
                   />
                 }
-                label={<Typography className='formControlLabel-label'>{option.text}</Typography>}
+                label={<Typography className={`formControlLabel-label ${formDisabled && "label-disabled"}`}>{option.text}</Typography>}
               />
             );
           })}

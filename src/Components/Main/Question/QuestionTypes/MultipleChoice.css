@@ -22,6 +22,10 @@
   font-size: 26px;
 }
 
+.question-multiple-choice .label-disabled{
+  color: grey;
+}
+
 .correction-multipleChoice-list-item {
   list-style: none;
   position: relative;

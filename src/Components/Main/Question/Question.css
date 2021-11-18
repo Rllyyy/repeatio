@@ -177,14 +177,14 @@
   transition: fill .2s ease-in-out, color .2 ease-in-out;
 }
 
-.question-reveal:hover, .question-reveal:focus, .question-retry:hover, .question-retry:focus{
+.question-reveal:hover, .question-reveal:active, .question-retry:hover, .question-retry:active{
   background-color: var(--custom-prime-color);
 }
 
 .question-reveal:hover > .reveal-icon, 
-.question-reveal:focus > .reveal-icon, 
+.question-reveal:active > .reveal-icon, 
 .question-retry:hover > .retry-icon, 
-.question-retry:focus > .retry-icon{
+.question-retry:active > .retry-icon{
   color: rgb(235, 235, 235);
   fill: rgb(235, 235, 235);
 }
@@ -194,7 +194,7 @@
   stroke-width: 1;
 }
 
-.question-check:hover, .question-check:focus{
+.question-check:hover, .question-check:active{
   background-color:rgb(117, 117, 247);
   border: 2px solid rgb(117, 117, 247);
 }
@@ -281,7 +281,7 @@
   border: 1.5px solid var(--custom-secondary-color);
 }
 
-.question-navigation > input:focus, 
+.question-navigation > input:active, 
 .question-navigation > input:hover
 {
   border-color: var(--custom-prime-color);
@@ -293,7 +293,7 @@
   fill: var(--custom-secondary-color);
 }
 
-.question-navigation > button:hover svg, .question-navigation > button:focus svg{
+.question-navigation > button:hover svg, .question-navigation > button:active svg{
   color: var(--custom-prime-color);
   stroke: var(--custom-prime-color);
   fill: var(--custom-prime-color);

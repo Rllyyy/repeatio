@@ -22,7 +22,7 @@ const question = {
   questionTitle:
     "What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
   questionPoints: 5,
-  type: "multiple-choice",
+  type: "multiple-response",
   questionTypeHelp: "Choose the correct answer(s).",
   answerOptions: [
     { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
@@ -43,10 +43,14 @@ const Question = () => {
   const [collapsedNav, setCollapsedNav] = useState();
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerCorrect, setAnswerCorrect] = useState();
+  const [formDisabled, setFormDisabled] = useState(false);
 
+  //Refs
   const questionBottomRef = useRef(null);
   const checkRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
+
+  //Custom Hooks
   const size = useSize(questionBottomRef);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
@@ -62,12 +66,21 @@ const Question = () => {
   const preventDef = (e) => {
     e.preventDefault();
   };
-  // lose focus onclick --> :active
-  //stackoverflow.com/questions/19053181/how-to-remove-focus-around-buttons-on-
 
-  //Scroll to question correction on check click
+  //Check answer
   const questionCheckButtonOnClick = () => {
     checkRef.current.checkAnswer();
+    setFormDisabled(true);
+  };
+
+  const questionRetryOnClick = () => {
+    //Reset states
+    setFormDisabled(false);
+    setShowAnswer(false);
+    setAnswerCorrect();
+
+    //Deselect answer
+    checkRef.current.resetSelection();
   };
 
   // scroll to correction feedback for user after show answer is updated and only
@@ -78,12 +91,12 @@ const Question = () => {
   }, [showAnswer]);
 
   //Decide what Question Type to return
-  const questionType = useCallback((type, options) => {
+  const questionType = useCallback((type, options, formDisabled) => {
     switch (type) {
       case "multiple-response":
-        return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} />;
+        return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
       case "multiple-choice":
-        return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} />;
+        return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
       default:
         throw new Error("No matching question Type");
     }
@@ -109,10 +122,9 @@ const Question = () => {
         <p className='question-points'>
           {question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"}
         </p>
-        <p className='question-id'>ID: {question.questionID}</p>
         <p className='question-type-help'>{question.questionTypeHelp}</p>
         {/* Question */}
-        <section className='question-user-response'>{questionType(question.type, question.answerOptions)}</section>
+        <section className='question-user-response'>{questionType(question.type, question.answerOptions, formDisabled)}</section>
         {/* On Check click show if the answer was correct */}
         {showAnswer && (
           <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`} ref={questionCorrectionRef}>
@@ -137,7 +149,7 @@ const Question = () => {
             <AiFillEye className='reveal-icon' />
           </button>
           {/* Retry */}
-          <button className='question-retry'>
+          <button className='question-retry' onClick={() => questionRetryOnClick()}>
             <BiReset className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}
