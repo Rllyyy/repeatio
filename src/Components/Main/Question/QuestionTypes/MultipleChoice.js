@@ -113,9 +113,9 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                   <Radio
                     className='formControlLabel-radio'
                     sx={{
-                      color: "var(--custom-prime-color)",
+                      color: `${!formDisabled ? "var(--custom-prime-color)" : "rgb(189, 189, 189)"}`,
                       "&.Mui-checked": {
-                        color: "var(--custom-prime-color)",
+                        color: `${!formDisabled ? "var(--custom-prime-color)" : "rgb(189, 189, 189)"}`,
                       },
                     }}
                   />

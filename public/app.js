@@ -10,9 +10,17 @@ function createWindow() {
   });
 
   //TODO check if User is developer
-  win.webContents.on("before-input-event", (event, input) => {
+  //Open developer tools
+  win.webContents.on("before-input-event", (input) => {
     if (input.key === "F12") {
       win.webContents.openDevTools();
+    }
+  });
+
+  //Reload the page (useful for electron because the app doesn't update/refresh sometimes)
+  win.webContents.on("before-input-event", (input) => {
+    if (input.key === "F5") {
+      win.webContents.reloadIgnoringCache();
     }
   });
 
