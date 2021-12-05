@@ -100,16 +100,18 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     <div className='question-multiple-response'>
       <FormControl disabled={formDisabled}>
         <FormGroup>
-          {shuffledOptions.map((option) => {
+          {shuffledOptions.map((option, index) => {
             return (
               <FormControlLabel
                 key={option.id}
                 className='formControlLabel'
+                data-testid={`formControlLabel-${index}`}
                 checked={option.isChecked || false} //fallback (so it's a controlled input)
                 onChange={() => updateIsChecked(option.id)}
                 control={
                   <Checkbox
                     className='formControlLabel-checkbox'
+                    data-testid={`formControlLabel-checkbox-${index}`}
                     sx={{
                       color: `${!formDisabled ? "var(--custom-prime-color)" : "rgb(189, 189, 189)"} `,
                       "&.Mui-checked": {
@@ -118,7 +120,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                     }}
                   />
                 }
-                label={<Typography className={`formControlLabel-label ${formDisabled && "label-disabled"}`}>{option.text}</Typography>}
+                label={<Typography className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}>{option.text}</Typography>}
               />
             );
           })}

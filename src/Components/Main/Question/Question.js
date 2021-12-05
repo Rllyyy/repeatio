@@ -112,7 +112,9 @@ const Question = () => {
           <div className='heading-underline'></div> */}
         </div>
         <div className='question-id-progress-wrapper'>
-          <p className='question-id'>ID: {question.questionID}</p>
+          <p className='question-id' data-testid='question-id'>
+            ID: {question.questionID}
+          </p>
           <p className='question-progress'>1/20 Questions</p>
         </div>
         {/* <button>
@@ -127,7 +129,7 @@ const Question = () => {
         <section className='question-user-response'>{questionType(question.type, question.answerOptions, formDisabled)}</section>
         {/* On Check click show if the answer was correct */}
         {showAnswer && (
-          <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`} ref={questionCorrectionRef}>
+          <section className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`} ref={questionCorrectionRef} data-testid='question-correction'>
             <p className='question-correction-title'>{answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}</p>
             <>{checkRef.current.returnAnswer()}</>
           </section>
@@ -141,7 +143,7 @@ const Question = () => {
       <div className={`question-bottom ${collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"}`} ref={questionBottomRef}>
         <div className='question-check-reveal-wrapper'>
           {/* Check */}
-          <button className='question-check' onClick={() => questionCheckButtonOnClick()}>
+          <button className='question-check' data-testid='question-check' onClick={() => questionCheckButtonOnClick()}>
             <BiCheck className='check-icon' />
           </button>
           {/* Reveal */}
@@ -149,7 +151,7 @@ const Question = () => {
             <AiFillEye className='reveal-icon' />
           </button>
           {/* Retry */}
-          <button className='question-retry' onClick={() => questionRetryOnClick()}>
+          <button className='question-retry' data-testid='question-retry' onClick={() => questionRetryOnClick()}>
             <BiReset className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}
