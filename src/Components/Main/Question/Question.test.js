@@ -1,4 +1,3 @@
-import { imageListItemClasses } from "@mui/material";
 import { screen, render, fireEvent } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import Question from "./Question.js";
@@ -148,4 +147,5 @@ describe("<Question />", () => {
 
   //Expect reveal button to work
   //Expect Navigation
+  //Test Scroll (custom hook has been called one time)
 });
