@@ -6,7 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 const data = [
   {
-    title: "Titleä?ß.!/",
+    title: "Title",
     description: "This is the description of a cart that is longer than one line",
     questionsTotal: 9,
   },

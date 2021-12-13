@@ -73,7 +73,7 @@ const Module = ({ match }) => {
           </button>
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
-              <Link to={`/module/${match.params.moduleName}/test`} className='practice-chronological'>
+              <Link to={`/module/${match.params.moduleName}/qID-1`} className='practice-chronological'>
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
               </Link>

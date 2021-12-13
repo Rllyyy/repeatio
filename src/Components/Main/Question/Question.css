@@ -133,11 +133,11 @@
   width: 100%;
 }
 
-.question-check-reveal-wrapper > .question-check,
+.question-check-reveal-wrapper > .question-check-next,
 .question-check-reveal-wrapper > .question-reveal,
 .question-check-reveal-wrapper > .question-retry
  {
-  height: 100%;
+  height: 44px;
   width: 100%;
   max-width: 160px;
 
@@ -157,20 +157,20 @@
   margin-right: 0;
 }
 
-.question-check-reveal-wrapper > .question-check{
+.question-check-reveal-wrapper > .question-check-next{
   flex-shrink: 0;
   background-color: var(--custom-prime-color);
   padding: 0;
   transition: none;
 }
 
-.check-icon, .reveal-icon, .retry-icon{  
+.question-check-reveal-wrapper .check-icon, .question-check-reveal-wrapper .reveal-icon, .question-check-reveal-wrapper .retry-icon, .question-check-reveal-wrapper .buttons-arrow{  
   height: 100%;
   max-height: 36px;
   width: 40px;
 }
 
-.reveal-icon, .retry-icon{
+.question-form .reveal-icon, .question-form .retry-icon{
   stroke-width: 0.6;
   color: var(--custom-prime-color);
   fill: var(--custom-prime-color);
@@ -189,12 +189,12 @@
   fill: rgb(235, 235, 235);
 }
 
-.question-check-reveal-wrapper > .question-check > .check-icon{
+.question-check-reveal-wrapper > .question-check-next > .check-icon{
   max-height: 40px;
   stroke-width: 1;
 }
 
-.question-check:hover, .question-check:active{
+.question-check-next:hover, .question-check-next:active{
   background-color:rgb(117, 117, 247);
   border: 2px solid rgb(117, 117, 247);
 }

@@ -17,10 +17,13 @@ import News from "./Components/Main/News";
 import Module from "./Components/Main/Module/Module.js";
 import Question from "./Components/Main/Question/Question";
 
+//Context
+import { QuestionProvider } from "./Context/QuestionContext.js";
+
 //Import functions
 import ScrollToTop from "./functions/ScrollToTop";
 
-//
+//Web vitals
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
@@ -36,8 +39,10 @@ ReactDOM.render(
           <Route exact path='/thanks' component={Thanks} />
           <Route exact path='/news' component={News} />
           <Route exact path='/settings' component={Settings} />
-          <Route exact path='/module/:moduleName' component={Module} />
-          <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          <QuestionProvider>
+            <Route exact path='/module/:moduleName' component={Module} />
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionProvider>
         </Switch>
       </main>
     </HashRouter>

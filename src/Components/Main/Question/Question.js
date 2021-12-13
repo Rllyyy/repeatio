@@ -1,6 +1,8 @@
 //Import
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import { useSize } from "../../../hooks/useSize";
+import { QuestionContext } from "../../../Context/QuestionContext.js";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse";
@@ -13,37 +15,28 @@ import "./Question.css";
 import { AiFillEye } from "react-icons/ai";
 import { BiCheck, BiReset } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
-// import { BsCheckLg } from "react-icons/bs";
-
-//Placeholder
-const question = {
-  modulename: "ABC12",
-  questionID: "qID-1",
-  questionTitle:
-    "What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
-  questionPoints: 5,
-  type: "multiple-response",
-  questionTypeHelp: "Choose the correct answer(s).",
-  answerOptions: [
-    { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
-    { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
-    {
-      id: "option-3",
-      text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
-      isCorrect: false,
-    },
-  ],
-};
+import { FaArrowRight } from "react-icons/fa";
 
 //Navigation svg from https://tablericons.com
 
 const Question = () => {
+  /* HOOKS */
   //States
+  const [question, setQuestion] = useState({});
   const [showNav, setShowNav] = useState(false);
   const [collapsedNav, setCollapsedNav] = useState();
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerCorrect, setAnswerCorrect] = useState();
   const [formDisabled, setFormDisabled] = useState(false);
+
+  //Params
+  const params = useParams();
+
+  //History
+  let history = useHistory();
+
+  //Context
+  const questionData = useContext(QuestionContext);
 
   //Refs
   const questionBottomRef = useRef(null);
@@ -52,6 +45,12 @@ const Question = () => {
 
   //Custom Hooks
   const size = useSize(questionBottomRef);
+
+  useEffect(() => {
+    if (questionData.length === 0) return;
+    const returnQuestion = questionData.find((questionItem) => questionItem.questionID === params.questionID);
+    setQuestion(returnQuestion);
+  }, [questionData, params.questionID]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -62,18 +61,48 @@ const Question = () => {
     }
   }, [size?.width]);
 
-  //Prevent default form submission (reload)
-  const preventDef = (e) => {
-    e.preventDefault();
-  };
+  //Scroll to correction feedback for user after show answer is updated and only
+  useEffect(() => {
+    if (showAnswer) {
+      questionCorrectionRef.current.scrollIntoView();
+    }
+  }, [showAnswer]);
 
-  //Check answer
-  const questionCheckButtonOnClick = () => {
-    checkRef.current.checkAnswer();
-    setFormDisabled(true);
-  };
+  /* FUNCTIONS */
+  //Decide what Question Type to return
+  const questionType = useCallback(
+    (type, options, formDisabled) => {
+      //Guard: return if initial question object is empty to not throw the default error
+      if (Object.keys(question).length === 0) return;
+      //decide what question type to return
+      switch (type) {
+        case "multiple-response":
+          return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
+        case "multiple-choice":
+          return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
+        default:
+          throw new Error("No matching question Type");
+      }
+    },
+    [question]
+  );
 
-  const questionRetryOnClick = () => {
+  //Go to the next question
+  const nextQuestion = () => {
+    //get Current index
+    const currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
+
+    //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
+    if (currentIndex + 1 < questionData.length) {
+      history.push({
+        pathname: `/module/title/${questionData[currentIndex + 1].questionID}`,
+      });
+    } else {
+      history.push({
+        pathname: `/module/title/${questionData[0].questionID}`,
+      });
+    }
+
     //Reset states
     setFormDisabled(false);
     setShowAnswer(false);
@@ -83,24 +112,32 @@ const Question = () => {
     checkRef.current.resetSelection();
   };
 
-  // scroll to correction feedback for user after show answer is updated and only
-  useEffect(() => {
-    if (showAnswer) {
-      questionCorrectionRef.current.scrollIntoView();
-    }
-  }, [showAnswer]);
+  /* EVENT HANDLERS */
+  //Prevent default form submission (reload)
+  const preventDef = (e) => {
+    e.preventDefault();
+  };
 
-  //Decide what Question Type to return
-  const questionType = useCallback((type, options, formDisabled) => {
-    switch (type) {
-      case "multiple-response":
-        return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
-      case "multiple-choice":
-        return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
-      default:
-        throw new Error("No matching question Type");
+  //Check answer or click to go to next question
+  const questionCheckButtonOnClick = () => {
+    //If the show answer box is show the svg of the button will change to an arrow and a click will go to the next question
+    if (showAnswer) {
+      nextQuestion();
+    } else {
+      checkRef.current.checkAnswer();
+      setFormDisabled(true);
     }
-  }, []);
+  };
+
+  const onQuestionRetryClick = () => {
+    //Reset states
+    setFormDisabled(false);
+    setShowAnswer(false);
+    setAnswerCorrect();
+
+    //Deselect answer
+    checkRef.current.resetSelection();
+  };
 
   //JSX
   return (
@@ -134,8 +171,6 @@ const Question = () => {
             <>{checkRef.current.returnAnswer()}</>
           </section>
         )}
-        {/* <div>Answer</div>
-      <div>Tip</div> */}
       </div>
       {/* <button className='question-scrollToBottom-button'>
         <BsChevronBarDown />
@@ -143,15 +178,16 @@ const Question = () => {
       <div className={`question-bottom ${collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"}`} ref={questionBottomRef}>
         <div className='question-check-reveal-wrapper'>
           {/* Check */}
-          <button className='question-check' data-testid='question-check' onClick={() => questionCheckButtonOnClick()}>
-            <BiCheck className='check-icon' />
+          <button className='question-check-next' data-testid='question-check' onClick={() => questionCheckButtonOnClick()}>
+            {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
+            {showAnswer ? <FaArrowRight className='buttons-arrow' /> : <BiCheck className='check-icon' />}
           </button>
           {/* Reveal */}
-          <button className='question-reveal'>
+          <button className='question-reveal' onClick={() => nextQuestion()}>
             <AiFillEye className='reveal-icon' />
           </button>
           {/* Retry */}
-          <button className='question-retry' data-testid='question-retry' onClick={() => questionRetryOnClick()}>
+          <button className='question-retry' data-testid='question-retry' onClick={() => onQuestionRetryClick()}>
             <BiReset className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}

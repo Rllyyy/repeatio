@@ -1,11 +1,20 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require("electron-devtools-installer");
+const path = require("path");
+const fs = require("fs");
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win;
 
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     show: false,
     webPreferences: {
-      enableRemoteModule: true,
+      nodeIntegration: false, // is default value after Electron v5
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
@@ -24,7 +33,7 @@ function createWindow() {
     }
   });
 
-  win.loadURL("http://localhost:3000");
+  win.loadURL("http://localhost:3000"); //TODO remove this (see below)
   win.maximize();
   win.show();
 
@@ -63,4 +72,23 @@ app.on("activate", function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
+/* Inter Process Communication between the main process (this file) and the renderer */
+ipcMain.on("toMain", (event, args) => {
+  switch (args) {
+    case "getQuestion":
+      //Get the data (all questions) from json question file with the file system
+      fs.readFile(path.join(__dirname, "data.json"), "utf-8", (error, data) => {
+        if (error) {
+          throw new Error(error);
+        }
+        // Send the data back to the renderer
+        win.webContents.send("fromMain", JSON.parse(data));
+      });
+      break;
+    default:
+      throw new Error("No matching ipcMain type");
+      break;
+  }
 });
