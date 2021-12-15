@@ -9,7 +9,7 @@
     "questionTypeHelp": "Choose the correct answer(s).",
     "answerOptions": [
       { "id": "option-1", "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", "isCorrect": true },
-      { "id": "option-2", "text": "Lorem ipsum dolor sit amet consectetur adipisicing.", "isCorrect": false },
+      { "id": "option-2", "text": "Lorem ipsum dolor sit amet consectetur adipisicing.", "isCorrect": false },   
       {
         "id": "option-3",
         "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
@@ -23,7 +23,7 @@
     "questionTitle":
       "This is the second Question",
     "questionPoints": 5,
-    "type": "multiple-response",
+    "type": "multiple-choice",
     "questionTypeHelp": "Choose the correct answer(s).",
     "answerOptions": [
       { "id": "option-1", "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", "isCorrect": true },

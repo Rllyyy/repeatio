@@ -136,7 +136,12 @@ const Question = () => {
     setAnswerCorrect();
 
     //Deselect answer
-    checkRef.current.resetSelection();
+    // checkRef.current.resetSelection();
+    if (showAnswer) {
+      checkRef.current.resetAndShuffleOptions();
+    } else {
+      checkRef.current.resetSelection();
+    }
   };
 
   //JSX

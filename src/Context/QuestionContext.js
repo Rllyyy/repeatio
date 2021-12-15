@@ -28,7 +28,9 @@ export const QuestionProvider = (props) => {
 
     //TODO: Read the data from the public folder (future maybe from localeStorage) and not through ipc
     if (!canReadThroughIPC) {
-      fetch(path.join(__dirname, "data.json"), { mode: "no-cors" }).then((res) => res.text().then((text) => setInitialData(JSON.parse(text))));
+      fetch(path.join(__dirname, "data.json"), { mode: "no-cors" })
+        .then((res) => res.json())
+        .then((jsonResponse) => setInitialData(jsonResponse));
     }
 
     //Cleanup

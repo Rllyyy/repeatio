@@ -11,15 +11,33 @@ import "./MultipleResponse.css";
 //Import functions
 import shuffleArray from "../../../../functions/shuffleArray.js";
 
+//Component
 const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [shuffledOptions, setShuffledOptions] = useState([]);
+  const [shuffleCounter, setShuffleCounter] = useState(1);
 
-  //Run shuffle function on first render of component and add isChecked state
-  //Future needs to be depended on question id
+  //Run shuffle function on first render of component or when the user clicks the retry button
+  //Also add isChecked state (to false which means unchecked)
   useEffect(() => {
-    //Shuffle Array with imported function
-    const shuffledArray = shuffleArray(options);
+    let shuffledArray = shuffleArray(options);
+
+    //Check if the previous shuffled array is equal to the current shuffled one but not on the first render
+    if (shuffledOptions.length !== 0) {
+      //check if the old (shuffledOptions) and new (shuffledArray) array are equal
+      let equal = shuffledArray.every((value, index) => value.id === shuffledOptions[index].id);
+
+      //loop until the old and new array aren't equal anymore
+      while (equal) {
+        shuffledArray = shuffleArray(options);
+
+        if (shuffledArray.every((value, index) => value.id === shuffledOptions[index].id)) {
+          equal = true;
+        } else {
+          equal = false;
+        }
+      }
+    }
 
     //Add is checked to each object in array
     let shuffleArrayChecked = shuffledArray.map((item) => {
@@ -28,12 +46,12 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
     //Update the state with the new shuffled array
     setShuffledOptions(shuffleArrayChecked);
-  }, [options]);
+  }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
   const updateIsChecked = (optionID) => {
     let updatedShuffleOptions = shuffledOptions.map((item) => {
-      //Set the state of the state to true where the ids are equal else change it to false (because only one option can be checked at the time => multiple Choice)
+      //Set the isChecked state of the answer option to the opposite of the current value (true/false) where the ids are equal else just return the object as it is
       if (item.id === optionID) {
         return { ...item, isChecked: !item.isChecked };
       } else {
@@ -45,24 +63,19 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     setShuffledOptions(updatedShuffleOptions);
   };
 
-  //Check if the answer is correct. Called by the parent form (check button) in a ref
+  //Method so the parent can interact with this component
   useImperativeHandle(ref, () => ({
+    //Check if the answer is correct.
     checkAnswer() {
-      const checkArray = shuffledOptions.map((item) => {
-        if (item.isChecked === item.isCorrect) {
-          return "correct";
-        } else {
-          return "false";
-        }
-      });
+      //every value should be the same (true/false) in the properties isChecked and isCorrect
+      const answeredCorrect = shuffledOptions.every((option, index) => option.isChecked === shuffledOptions[index].isCorrect);
 
       //Show if the answer is correct in the parent component
-      if (checkArray.includes("false")) {
-        setShowAnswer(true);
-        setAnswerCorrect(false);
-      } else {
-        setShowAnswer(true);
+      setShowAnswer(true);
+      if (answeredCorrect) {
         setAnswerCorrect(true);
+      } else {
+        setAnswerCorrect(false);
       }
     },
 
@@ -92,6 +105,11 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
       });
 
       setShuffledOptions(unselectedOption);
+    },
+
+    //Trigger a useEffect (rerender) by increasing a state value
+    resetAndShuffleOptions() {
+      setShuffleCounter((prev) => prev + 1);
     },
   }));
 
