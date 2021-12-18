@@ -1,5 +1,6 @@
 import { createContext, useMemo, useState, useEffect } from "react";
 const path = require("path");
+const isElectron = require("is-electron");
 
 //Create Question Context
 export const QuestionContext = createContext([]);
@@ -13,8 +14,8 @@ export const QuestionProvider = (props) => {
 
   //Get all Questions from the file system and provide them
   useEffect(() => {
-    let canReadThroughIPC = true;
-    try {
+    //Get the data from the locale file system when using the electron application else (when using the website) get the data from the public folder/browser storage
+    if (isElectron()) {
       // Send a message to the main process
       window.api.request("toMain", "getQuestion");
 
@@ -22,12 +23,7 @@ export const QuestionProvider = (props) => {
       window.api.response("fromMain", (data) => {
         setInitialData(data);
       });
-    } catch (error) {
-      canReadThroughIPC = false;
-    }
-
-    //TODO: Read the data from the public folder (future maybe from localeStorage) and not through ipc
-    if (!canReadThroughIPC) {
+    } else {
       fetch(path.join(__dirname, "data.json"), { mode: "no-cors" })
         .then((res) => res.json())
         .then((jsonResponse) => setInitialData(jsonResponse));
