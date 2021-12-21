@@ -60,7 +60,7 @@ const MockQuestionWithRouter = ({ id }) => {
 
 //Override the default useSize hook
 jest.mock("../../../hooks/useSize.js", () => ({
-  useSize: () => ({ x: 10, y: 15, width: 517, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),
+  useSize: () => ({ x: 10, y: 15, width: 917, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),
 }));
 
 /* TESTING */
@@ -200,34 +200,6 @@ describe("<Question />", () => {
     expect(checkedArray).toContain(true);
   });
 
-  //Expect the url to change to new params when checking a question
-  //This test only check if the url updates
-  //The UI doesn't actually update because the params don't change
-  it("should update the url (useHistory hook) when clicking the next button", () => {
-    //mocks
-    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
-
-    const history = createMemoryHistory();
-    history.push("/module/title/qID-1");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
-
-    //click the check button twice
-    const buttonElement = screen.getByTestId("question-check");
-    user.click(buttonElement);
-    user.click(buttonElement);
-
-    expect(history.location.pathname).toBe("/module/title/qID-2");
-  });
-
   //Expect the next question to render if the first answer is answered and next button is clicked
   it("should go to the next question when clicking the next button ", () => {
     render(<MockQuestionWithRouter id='qID-1' />);
@@ -265,9 +237,200 @@ describe("<Question />", () => {
     expect(idElement).toBeInTheDocument();
   });
 
-  //Expect checkbox to change on label/checkbox click (multiple-response unit test)
+  //Expect question reveal no to be visible
+  it("should not render question correction element when clicking on next question button", () => {
+    render(<MockQuestionWithRouter id='qID-1' />);
+
+    //Click the question check button twice to trigger a false answer and the question correction to be visible
+    const buttonElement = screen.getByTestId("question-check");
+    user.click(buttonElement);
+
+    let questionRevealElement;
+    questionRevealElement = screen.getByTestId("question-correction");
+    expect(questionRevealElement).toBeInTheDocument();
+
+    user.click(buttonElement);
+
+    //Reveal element should not be in the document
+    questionRevealElement = screen.queryByTestId("question-correction");
+    expect(questionRevealElement).not.toBeInTheDocument();
+  });
+
+  //Expect highlight selection to go away when going to next question
+  it("should deselect selection when going to next question but a answer was selected (clicked)", () => {
+    render(<MockQuestionWithRouter id='qID-1' />);
+
+    //select an element
+    const selectedElement = screen.getByText("Lorem ipsum dolor sit amet consectetur adipisicing.");
+    user.click(selectedElement);
+
+    //click next question arrow in the navigation
+    const nextQuestionButton = screen.getByTestId("next-question-button");
+    user.click(nextQuestionButton);
+
+    //Get all elements with the regex match
+    const answerElements = screen.getAllByTestId(/formControlLabel-checkbox-./);
+
+    //Every element should be unchecked and the following array.every should return true
+    //It would return false if one ore more elements is checked
+    const allUnchecked = answerElements.every((element) => element.firstChild.checked === false);
+
+    expect(allUnchecked).toBeTruthy();
+  });
+
+  //Expect highlight selection to go away when going to next question
+  it("should deselect selection when going to next question after submitting answer and clicking next", () => {
+    render(<MockQuestionWithRouter id='qID-1' />);
+
+    //select an element
+    const selectedElement = screen.getByText("Lorem ipsum dolor sit amet consectetur adipisicing.");
+    user.click(selectedElement);
+
+    //Click the question check button twice to check the question and go to next question
+    const checkButtonElement = screen.getByTestId("question-check");
+    user.click(checkButtonElement);
+    user.click(checkButtonElement);
+
+    //Get all elements with the regex match
+    const answerElements = screen.getAllByTestId(/formControlLabel-checkbox-./);
+
+    //Every element should be unchecked and the following array.every should return true
+    //It would return false if one ore more elements is checked
+    const allUnchecked = answerElements.every((element) => element.firstChild.checked === false);
+
+    expect(allUnchecked).toBeTruthy();
+  });
+
+  //Expect the url to change to new params when checking a question
+  //This test only check if the url updates
+  //The UI doesn't actually update because the params don't change
+  it("should update the url (useHistory hook) when clicking the next button", () => {
+    //mocks
+    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
+
+    const history = createMemoryHistory();
+    history.push("/module/title/qID-1");
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <QuestionContext.Provider value={data}>
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionContext.Provider>
+        </Switch>
+      </Router>
+    );
+
+    //click the check button twice
+    const buttonElement = screen.getByTestId("question-check");
+    user.click(buttonElement);
+    user.click(buttonElement);
+
+    expect(history.location.pathname).toBe("/module/title/qID-2");
+  });
+
+  //Expect the url to change to previous element in array
+  it("should go to previous url when clicking the previous question button", () => {
+    //to make scroll into view work
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+    const history = createMemoryHistory();
+    history.push("/module/title/qID-2");
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <QuestionContext.Provider value={data}>
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionContext.Provider>
+        </Switch>
+      </Router>
+    );
+
+    //click the previous check button twice
+    const buttonElement = screen.getByTestId("previous-question-button");
+    user.click(buttonElement);
+
+    expect(history.location.pathname).toBe("/module/title/qID-1");
+  });
+
+  //Expect the array to restart at the last element when clicking the previous question button when on the first element on the array (only test the url not UI)
+  it("should restart the array when clicking previous question on the first element in the array", () => {
+    //to make scroll into view work
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+    const history = createMemoryHistory();
+    history.push("/module/title/qID-1");
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <QuestionContext.Provider value={data}>
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionContext.Provider>
+        </Switch>
+      </Router>
+    );
+
+    //click the previous question button
+    const buttonElement = screen.getByTestId("previous-question-button");
+    user.click(buttonElement);
+
+    expect(history.location.pathname).toBe("/module/title/qID-2");
+  });
+
+  //Expect the url to change to first element in array when clicking the to first Question Button
+  it("should go to the first url in array when clicking the to first Question Button", () => {
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+    const history = createMemoryHistory();
+    history.push("/module/title/qID-2");
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <QuestionContext.Provider value={data}>
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionContext.Provider>
+        </Switch>
+      </Router>
+    );
+
+    //Click the to first Question Button
+    const toFirstQuestionButton = screen.getByTestId("first-question-button");
+    user.click(toFirstQuestionButton);
+
+    expect(history.location.pathname).toBe("/module/title/qID-1");
+  });
+
+  //Expect the url to change to the last element in array when clicking the to last Question Button
+  it("should go to the last url in array when clicking the to last Question Button", () => {
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+
+    const history = createMemoryHistory();
+    history.push("/module/title/qID-1");
+
+    render(
+      <Router history={history}>
+        <Switch>
+          <QuestionContext.Provider value={data}>
+            <Route exact path='/module/:moduleName/:questionID' component={Question} />
+          </QuestionContext.Provider>
+        </Switch>
+      </Router>
+    );
+
+    //Click the to last Question Button
+    const toLastQuestionButton = screen.getByTestId("last-question-button");
+    user.click(toLastQuestionButton);
+
+    expect(history.location.pathname).toBe("/module/title/qID-2");
+  });
+
+  //Expect Navigation (input)
+
   //Unit test in multiple choice that only one is checked / multiple Choice if clicking on one resets it
   //Expect reveal button to work
-  //Expect Navigation (start, prev, input, next, last)
+  //Expect the (navigation) arrow to be not visible
   //Test Scroll (custom hook has been called one time)
 });

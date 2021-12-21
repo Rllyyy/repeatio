@@ -46,11 +46,20 @@ const Question = () => {
   //Custom Hooks
   const size = useSize(questionBottomRef);
 
+  /* USEEFFECTS */
+  //Set the question state by finding the correct question with the url parameters
   useEffect(() => {
     if (questionData.length === 0) return;
     const returnQuestion = questionData.find((questionItem) => questionItem.questionID === params.questionID);
     setQuestion(returnQuestion);
   }, [questionData, params.questionID]);
+
+  //Reset the states when rendering a new question
+  useEffect(() => {
+    setFormDisabled(false);
+    setShowAnswer(false);
+    setAnswerCorrect();
+  }, [params.questionID]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -87,28 +96,78 @@ const Question = () => {
     [question]
   );
 
+  //Navigation
+  //Go to first question in module
+  const toFirstQuestion = () => {
+    const firstIDInQuestionArray = questionData[0].questionID;
+
+    //Only push to history if not already at the first question
+    //TODO notify the user that the already is at the beginning
+    if (params.questionID !== firstIDInQuestionArray) {
+      history.push({
+        pathname: `/module/${params.moduleName}/${firstIDInQuestionArray}`,
+      });
+    }
+
+    //Reset the current selection (resetting states is handled by a useEffect)
+    checkRef.current.resetSelection();
+  };
+
+  //Go to the previous question
+  const toPreviousQuestion = () => {
+    //get Current index
+    const currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
+
+    //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
+    if (currentIndex - 1 >= 0) {
+      history.push({
+        pathname: `/module/${params.moduleName}/${questionData[currentIndex - 1].questionID}`,
+      });
+    } else {
+      history.push({
+        pathname: `/module/${params.moduleName}/${questionData[questionData.length - 1].questionID}`,
+      });
+    }
+
+    //Reset the current selection (resetting states is handled by a useEffect)
+    checkRef.current.resetSelection();
+  };
+
+  //TODO: Go to provided input
+
   //Go to the next question
   const nextQuestion = () => {
     //get Current index
     const currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
 
-    //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
+    //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
     if (currentIndex + 1 < questionData.length) {
       history.push({
-        pathname: `/module/title/${questionData[currentIndex + 1].questionID}`,
+        pathname: `/module/${params.moduleName}/${questionData[currentIndex + 1].questionID}`,
       });
     } else {
       history.push({
-        pathname: `/module/title/${questionData[0].questionID}`,
+        pathname: `/module/${params.moduleName}/${questionData[0].questionID}`,
       });
     }
 
-    //Reset states
-    setFormDisabled(false);
-    setShowAnswer(false);
-    setAnswerCorrect();
+    //Reset the current selection (resetting states is handled by a useEffect)
+    checkRef.current.resetSelection();
+  };
 
-    //Deselect answer
+  //Go to last question
+  const toLastQuestion = () => {
+    const lastIDInQuestionArray = questionData[questionData.length - 1].questionID;
+
+    //Only push to history if not already at the last point
+    //TODO notify the user that the end was reached
+    if (params.questionID !== lastIDInQuestionArray) {
+      history.push({
+        pathname: `/module/${params.moduleName}/${lastIDInQuestionArray}`,
+      });
+    }
+
+    //Reset the current selection (resetting states is handled by a useEffect)
     checkRef.current.resetSelection();
   };
 
@@ -188,7 +247,7 @@ const Question = () => {
             {showAnswer ? <FaArrowRight className='buttons-arrow' /> : <BiCheck className='check-icon' />}
           </button>
           {/* Reveal */}
-          <button className='question-reveal' onClick={() => nextQuestion()}>
+          <button className='question-reveal'>
             <AiFillEye className='reveal-icon' />
           </button>
           {/* Retry */}
@@ -204,7 +263,7 @@ const Question = () => {
         </div>
         {(showNav || !collapsedNav) && (
           <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
-            <button>
+            <button data-testid='first-question-button' onClick={() => toFirstQuestion()}>
               {/* <BsSkipStartFill className='navigation-start' /> */}
               <svg xmlns='http://www.w3.org/2000/svg' className='navigation-start' width='48' height='48' viewBox='0 0 24 24' fill='none'>
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
@@ -212,7 +271,7 @@ const Question = () => {
                 <line x1='5' y1='5' x2='5' y2='19' />
               </svg>
             </button>
-            <button>
+            <button data-testid='previous-question-button' onClick={() => toPreviousQuestion()}>
               {/* <BsTriangleFill className='navigation-before' /> */}
               <svg xmlns='http://www.w3.org/2000/svg' className='navigation-before' width='48' height='48' viewBox='0 0 24 24' fill='true'>
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
@@ -220,14 +279,14 @@ const Question = () => {
               </svg>
             </button>
             <input type='number' placeholder={question.questionID} min='1' />
-            <button>
+            <button data-testid='next-question-button' onClick={() => nextQuestion()}>
               {/* <BsTriangleFill className='navigation-skip' /> */}
               <svg xmlns='http://www.w3.org/2000/svg' className='navigation-skip' width='48' height='48' viewBox='0 0 24 24' fill='none'>
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <button>
+            <button data-testid='last-question-button' onClick={() => toLastQuestion()}>
               {/* <BsSkipEndFill /> */}
               <svg xmlns='http://www.w3.org/2000/svg' className='icon icon-tabler icon-tabler-player-skip-forward' width='48' height='48' viewBox='0 0 24 24' fill='none'>
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
