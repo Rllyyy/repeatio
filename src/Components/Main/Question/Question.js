@@ -28,6 +28,7 @@ const Question = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [answerCorrect, setAnswerCorrect] = useState();
   const [formDisabled, setFormDisabled] = useState(false);
+  const [currentQuestionPage, setCurrentQuestionPage] = useState();
 
   //Params
   const params = useParams();
@@ -59,7 +60,18 @@ const Question = () => {
     setFormDisabled(false);
     setShowAnswer(false);
     setAnswerCorrect();
+    if (checkRef.current !== undefined) {
+      checkRef.current.resetSelection();
+    }
   }, [params.questionID]);
+
+  //Show the index of the current question
+  useEffect(() => {
+    let currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
+
+    //Add 1 because arrays are zero based
+    setCurrentQuestionPage(currentIndex + 1);
+  }, [params.questionID, questionData]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -109,8 +121,7 @@ const Question = () => {
       });
     }
 
-    //Reset the current selection (resetting states is handled by a useEffect)
-    checkRef.current.resetSelection();
+    //Resetting the states and current selection is handled by a useEffect
   };
 
   //Go to the previous question
@@ -129,8 +140,7 @@ const Question = () => {
       });
     }
 
-    //Reset the current selection (resetting states is handled by a useEffect)
-    checkRef.current.resetSelection();
+    //Resetting the states and current selection is handled by a useEffect
   };
 
   //TODO: Go to provided input
@@ -151,8 +161,7 @@ const Question = () => {
       });
     }
 
-    //Reset the current selection (resetting states is handled by a useEffect)
-    checkRef.current.resetSelection();
+    //Resetting the states and current selection is handled by a useEffect
   };
 
   //Go to last question
@@ -167,8 +176,7 @@ const Question = () => {
       });
     }
 
-    //Reset the current selection (resetting states is handled by a useEffect)
-    checkRef.current.resetSelection();
+    //Resetting the states and current selection is handled by a useEffect
   };
 
   /* EVENT HANDLERS */
@@ -195,7 +203,6 @@ const Question = () => {
     setAnswerCorrect();
 
     //Deselect answer
-    // checkRef.current.resetSelection();
     if (showAnswer) {
       checkRef.current.resetAndShuffleOptions();
     } else {
@@ -216,7 +223,9 @@ const Question = () => {
           <p className='question-id' data-testid='question-id'>
             ID: {question.questionID}
           </p>
-          <p className='question-progress'>1/20 Questions</p>
+          <p className='question-progress'>
+            {currentQuestionPage}/{questionData.length} Questions
+          </p>
         </div>
         {/* <button>
           <MdBookmark />
@@ -278,7 +287,7 @@ const Question = () => {
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <input type='number' placeholder={question.questionID} min='1' />
+            <input type='number' placeholder={currentQuestionPage} min='1' />
             <button data-testid='next-question-button' onClick={() => nextQuestion()}>
               {/* <BsTriangleFill className='navigation-skip' /> */}
               <svg xmlns='http://www.w3.org/2000/svg' className='navigation-skip' width='48' height='48' viewBox='0 0 24 24' fill='none'>
