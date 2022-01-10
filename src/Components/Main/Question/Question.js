@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useSize } from "../../../hooks/useSize";
-import { QuestionContext } from "../../../Context/QuestionContext.js";
+import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse";
@@ -37,7 +37,7 @@ const Question = () => {
   let history = useHistory();
 
   //Context
-  const questionData = useContext(QuestionContext);
+  const { moduleData, setContextModuleID } = useContext(ModuleContext);
 
   //Refs
   const questionBottomRef = useRef(null);
@@ -50,10 +50,17 @@ const Question = () => {
   /* USEEFFECTS */
   //Set the question state by finding the correct question with the url parameters
   useEffect(() => {
-    if (questionData.length === 0) return;
-    const returnQuestion = questionData.find((questionItem) => questionItem.questionID === params.questionID);
+    //Guard to refetch context (could for example happen on F5)
+    if (moduleData.length === 0 || moduleData === undefined) {
+      setContextModuleID(params.moduleID);
+      return;
+    }
+    //Find the correct question in the moduleData context
+    const returnQuestion = moduleData.questions.find((questionItem) => questionItem.id === params.questionID);
+
+    //Set the locale storage
     setQuestion(returnQuestion);
-  }, [questionData, params.questionID]);
+  }, [moduleData, params.questionID, params.moduleID, setContextModuleID]);
 
   //Reset the states when rendering a new question
   useEffect(() => {
@@ -66,12 +73,16 @@ const Question = () => {
   }, [params.questionID]);
 
   //Show the index of the current question
-  useEffect(() => {
-    let currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
 
-    //Add 1 because arrays are zero based
+  useEffect(() => {
+    if (moduleData === undefined || moduleData.length === 0) return;
+
+    //Find the index of the question by filtering the module context
+    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+
+    //Add 1 because arrays are zero based and update the state
     setCurrentQuestionPage(currentIndex + 1);
-  }, [params.questionID, questionData]);
+  }, [params.questionID, moduleData]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -111,7 +122,7 @@ const Question = () => {
   //Navigation
   //Go to first question in module
   const toFirstQuestion = () => {
-    const firstIDInQuestionArray = questionData[0].questionID;
+    const firstIDInQuestionArray = moduleData.questions[0].id;
 
     //Only push to history if not already at the first question
     //TODO notify the user that the already is at the beginning
@@ -120,26 +131,24 @@ const Question = () => {
         pathname: `/module/${params.moduleName}/${firstIDInQuestionArray}`,
       });
     }
-
     //Resetting the states and current selection is handled by a useEffect
   };
 
   //Go to the previous question
   const toPreviousQuestion = () => {
     //get Current index
-    const currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
+    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
     if (currentIndex - 1 >= 0) {
       history.push({
-        pathname: `/module/${params.moduleName}/${questionData[currentIndex - 1].questionID}`,
+        pathname: `/module/${params.moduleName}/${moduleData.questions[currentIndex - 1].id}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleName}/${questionData[questionData.length - 1].questionID}`,
+        pathname: `/module/${params.moduleName}/${moduleData.questions[moduleData.questions.length - 1].id}`,
       });
     }
-
     //Resetting the states and current selection is handled by a useEffect
   };
 
@@ -148,25 +157,25 @@ const Question = () => {
   //Go to the next question
   const nextQuestion = () => {
     //get Current index
-    const currentIndex = questionData.findIndex((questionItem) => questionItem.questionID === params.questionID);
+    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
-    if (currentIndex + 1 < questionData.length) {
+
+    if (currentIndex + 1 < moduleData.questions.length) {
       history.push({
-        pathname: `/module/${params.moduleName}/${questionData[currentIndex + 1].questionID}`,
+        pathname: `/module/${params.moduleName}/${moduleData.questions[currentIndex + 1].id}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleName}/${questionData[0].questionID}`,
+        pathname: `/module/${params.moduleName}/${moduleData.questions[0].id}`,
       });
     }
-
     //Resetting the states and current selection is handled by a useEffect
   };
 
   //Go to last question
   const toLastQuestion = () => {
-    const lastIDInQuestionArray = questionData[questionData.length - 1].questionID;
+    const lastIDInQuestionArray = moduleData.questions[moduleData.questions.length - 1].id;
 
     //Only push to history if not already at the last point
     //TODO notify the user that the end was reached
@@ -175,7 +184,6 @@ const Question = () => {
         pathname: `/module/${params.moduleName}/${lastIDInQuestionArray}`,
       });
     }
-
     //Resetting the states and current selection is handled by a useEffect
   };
 
@@ -210,6 +218,13 @@ const Question = () => {
     }
   };
 
+  const moduleLength = useCallback(() => {
+    if (moduleData === undefined || moduleData.length === 0) {
+      return;
+    }
+    return moduleData.questions.length;
+  }, [moduleData]);
+
   //JSX
   return (
     <form className='question-form' onSubmit={preventDef}>
@@ -221,18 +236,18 @@ const Question = () => {
         </div>
         <div className='question-id-progress-wrapper'>
           <p className='question-id' data-testid='question-id'>
-            ID: {question.questionID}
+            ID: {question.id}
           </p>
           <p className='question-progress'>
-            {currentQuestionPage}/{questionData.length} Questions
+            {currentQuestionPage}/{moduleLength()} Questions
           </p>
         </div>
         {/* <button>
           <MdBookmark />
         </button> */}
-        <h2 className='question-title'>{question.questionTitle}</h2>
+        <h2 className='question-title'>{question.title}</h2>
         <p className='question-points'>
-          {question.questionPoints} {question.questionPoints >= 2 ? "Points" : "Point"}
+          {question.points} {question.points >= 2 ? "Points" : "Point"}
         </p>
         <p className='question-type-help'>{question.questionTypeHelp}</p>
         {/* Question */}

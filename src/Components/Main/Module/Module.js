@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Link } from "react-router-dom";
+import { ModuleContext } from "../../../Context/ModuleContext.js";
 import "./Module.css";
 
 //Icons
@@ -17,11 +18,27 @@ import { AiOutlineEdit } from "react-icons/ai";
 const Module = ({ match }) => {
   //useState
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  const [module, setModule] = useState();
+
+  //context
+  const { moduleData, setContextModuleID } = useContext(ModuleContext);
 
   //events
   const practiceClick = () => {
     setShowPracticeOptions(true);
   };
+
+  /* USEEFFECTS */
+  //Update the module state by using the data from the context
+  useEffect(() => {
+    if (moduleData.length === 0) return;
+    setModule(moduleData);
+  }, [moduleData]);
+
+  //Tell the context to update with the new module (id is in the url)
+  useEffect(() => {
+    setContextModuleID(match.params.moduleID);
+  }, [match.params.moduleID, setContextModuleID]);
 
   const hidePracticeOptions = useCallback(
     (e) => {
@@ -44,7 +61,6 @@ const Module = ({ match }) => {
     [showPracticeOptions]
   );
 
-  //useEffects
   useEffect(() => {
     window.addEventListener("mousedown", hidePracticeOptions, false);
     window.addEventListener("keydown", hidePracticeOptions);
@@ -55,11 +71,16 @@ const Module = ({ match }) => {
     };
   }, [showPracticeOptions, hidePracticeOptions]);
 
+  //Prevent the rendering when there is no module set (to prevent hopping ui)
+  if (!module) {
+    return <></>;
+  }
+
   //JSX
   return (
     <>
       <div className='module-heading-wrapper'>
-        <h1 className='module-heading'>{match.params.moduleName}</h1>
+        <h1 className='module-heading'>{module.name}</h1>
         <div className='heading-underline'></div>
       </div>
       {/* <h3 className='module-description'>{description}</h3> */}
@@ -73,7 +94,7 @@ const Module = ({ match }) => {
           </button>
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
-              <Link to={`/module/${match.params.moduleName}/qID-1`} className='practice-chronological'>
+              <Link to={`/module/${match.params.moduleID}/qID-1`} className='practice-chronological'>
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
               </Link>

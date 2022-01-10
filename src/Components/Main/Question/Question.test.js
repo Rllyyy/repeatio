@@ -1,48 +1,53 @@
 import { screen, render, fireEvent, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import Question from "./Question.js";
-import { QuestionContext } from "../../../Context/QuestionContext";
+import { ModuleContext } from "../../../Context/ModuleContext";
 import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
 //Test Data
-const data = [
-  {
-    modulename: "ABC12",
-    questionID: "qID-1",
-    questionTitle:
-      "What is often too long for one line so has to wrap to the next line, but not enough on large monitors so one has to add useless information to a placeholder question?",
-    questionPoints: 5,
-    type: "multiple-response",
-    questionTypeHelp: "Choose the correct answer(s).",
-    answerOptions: [
-      { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
-      { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
-      {
-        id: "option-3",
-        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
-        isCorrect: false,
-      },
-    ],
-  },
-  {
-    modulename: "ABC12",
-    questionID: "qID-2",
-    questionTitle: "This is the second Question",
-    questionPoints: 5,
-    type: "multiple-response",
-    questionTypeHelp: "Choose the correct answer(s).",
-    answerOptions: [
-      { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
-      { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
-      {
-        id: "option-3",
-        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
-        isCorrect: false,
-      },
-    ],
-  },
-];
+const data = {
+  id: "Test-1",
+  name: "TestModule",
+  createdAt: "some UTC time",
+  description: "Some description",
+  questions: [
+    {
+      id: "qID-1",
+      title: "This is a question fot the test suite",
+      points: 5,
+      type: "multiple-choice",
+      questionTypeHelp: "Choose the correct answer(s) please.",
+      answerOptions: [
+        { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+        { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+        {
+          id: "option-3",
+          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+          isCorrect: false,
+        },
+      ],
+    },
+    {
+      id: "qID-2",
+      title: "This is the second question for the test suite",
+      points: 5,
+      type: "multiple-response",
+      questionTypeHelp: "Choose the correct answer(s).",
+      answerOptions: [
+        { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+        { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+        {
+          id: "option-3",
+          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+          isCorrect: false,
+        },
+      ],
+    },
+  ],
+};
+
+const mockSetContextModuleID = jest.fn();
 
 /* Mocks */
 //Mock the question component with router to allow switching pages and the provider
@@ -50,11 +55,23 @@ const MockQuestionWithRouter = ({ id }) => {
   return (
     <MemoryRouter initialEntries={[`/module/test/${id}`]}>
       <Switch>
-        <QuestionContext.Provider value={data}>
+        <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
           <Route exact path='/module/:moduleName/:questionID' component={Question} />
-        </QuestionContext.Provider>
+        </ModuleContext.Provider>
       </Switch>
     </MemoryRouter>
+  );
+};
+
+const MockQuestionWithRouterAndHistory = ({ history }) => {
+  return (
+    <Router history={history}>
+      <Switch>
+        <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
+          <Route exact path='/module/:moduleName/:questionID' component={Question} />
+        </ModuleContext.Provider>
+      </Switch>
+    </Router>
   );
 };
 
@@ -89,7 +106,7 @@ describe("<Question />", () => {
     expect(questionPointsElement).toBeInTheDocument();
 
     //Expect questionTypeHelp (requires phrase from mock question)
-    const questionTypeHelpElement = screen.getByText("Choose the correct answer(s).");
+    const questionTypeHelpElement = screen.getByText("Choose the correct answer(s) please.");
     expect(questionTypeHelpElement).toBeInTheDocument();
   });
 
@@ -175,7 +192,7 @@ describe("<Question />", () => {
 
   //Expect the retry button to work and interact with the form afterwards
   it("should reset the form when clicking the retry button", () => {
-    render(<MockQuestionWithRouter id='qID-1' />);
+    render(<MockQuestionWithRouter id='qID-2' />);
 
     const checkButtonElement = screen.getByTestId("question-check");
     user.click(checkButtonElement);
@@ -190,6 +207,7 @@ describe("<Question />", () => {
     //Checked that the form can be interacted with
     const correctElement = screen.getByText("Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.");
     expect(correctElement).toHaveClass("label-enabled");
+
     user.click(correctElement);
 
     //Get all checkbox elements and check if they are checked
@@ -310,16 +328,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push("/module/title/qID-1");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
+    render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //click the check button twice
     const buttonElement = screen.getByTestId("question-check");
@@ -336,16 +345,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push("/module/title/qID-2");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
+    render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //click the previous check button twice
     const buttonElement = screen.getByTestId("previous-question-button");
@@ -361,16 +361,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push("/module/title/qID-1");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
+    render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //click the previous question button
     const buttonElement = screen.getByTestId("previous-question-button");
@@ -385,16 +376,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push("/module/title/qID-2");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
+    render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //Click the to first Question Button
     const toFirstQuestionButton = screen.getByTestId("first-question-button");
@@ -409,16 +391,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push("/module/title/qID-1");
-
-    render(
-      <Router history={history}>
-        <Switch>
-          <QuestionContext.Provider value={data}>
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionContext.Provider>
-        </Switch>
-      </Router>
-    );
+    render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //Click the to last Question Button
     const toLastQuestionButton = screen.getByTestId("last-question-button");

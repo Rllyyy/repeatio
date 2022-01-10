@@ -18,7 +18,7 @@ import Module from "./Components/Main/Module/Module.js";
 import Question from "./Components/Main/Question/Question";
 
 //Context
-import { QuestionProvider } from "./Context/QuestionContext.js";
+import { ModuleProvider } from "./Context/ModuleContext.js";
 
 //Import functions
 import ScrollToTop from "./functions/ScrollToTop";
@@ -39,10 +39,10 @@ ReactDOM.render(
           <Route exact path='/thanks' component={Thanks} />
           <Route exact path='/news' component={News} />
           <Route exact path='/settings' component={Settings} />
-          <QuestionProvider>
-            <Route exact path='/module/:moduleName' component={Module} />
-            <Route exact path='/module/:moduleName/:questionID' component={Question} />
-          </QuestionProvider>
+          <ModuleProvider>
+            <Route exact path='/module/:moduleID' component={Module} />
+            <Route exact path='/module/:moduleID/:questionID' component={Question} />
+          </ModuleProvider>
         </Switch>
       </main>
     </HashRouter>

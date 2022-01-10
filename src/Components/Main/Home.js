@@ -1,33 +1,38 @@
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import isElectron from "is-electron";
+import path from "path";
 import "./Home.css";
+
+//Icons
 import { BsPencil, BsPlusCircle } from "react-icons/bs";
 import { AiOutlinePushpin } from "react-icons/ai";
 import { FaArrowRight } from "react-icons/fa";
 
-const data = [
-  {
-    title: "Title",
-    description: "This is the description of a cart that is longer than one line",
-    questionsTotal: 9,
-  },
-  {
-    title: "Title that is too long for one line",
-    description: "This is the description of a cart that is longer than one line",
-    questionsTotal: 150,
-  },
-  {
-    title: "Title 2",
-    description: "This is the description of a cart that is longer than one line",
-    questionsTotal: 9,
-  },
-  {
-    title: "Title that is too long for one line 2",
-    description: "This is the description of a cart that is longer than one line",
-    questionsTotal: 9,
-  },
-];
+const Home = () => {
+  const [modules, setModules] = useState([]);
 
-function Home() {
+  //Fetch data for all modules by reading all repeatio files in documents folder / locale storage (in browser)
+  useEffect(() => {
+    if (isElectron()) {
+      // Send a message to the main process
+      window.api.request("toMain", ["getModules"]);
+
+      // Called when message received from main process
+      window.api.response("fromMain", (data) => {
+        setModules(data);
+      });
+    } else {
+      fetch(path.join(__dirname, "data.json"), { mode: "no-cors" })
+        .then((res) => res.json())
+        .then((jsonResponse) => setModules(jsonResponse));
+    }
+
+    return () => {
+      setModules([]);
+    };
+  }, []);
+
   return (
     <>
       <div className='main-heading-wrapper'>
@@ -35,20 +40,21 @@ function Home() {
         <div className='heading-underline'></div>
       </div>
       <div className='grid-cards'>
-        {data.map((item) => {
-          const { title, description, questionsTotal } = item;
+        {modules.map((module) => {
+          const { id, name, description } = module;
           return (
-            <div className='card' key={title}>
+            <div className='card' key={id}>
               <div className='card-info'>
                 <div className='title-description-wrapper'>
-                  <h3 className='card-title'>{title}</h3>
+                  <h3 className='card-title'>{name}</h3>
                   <p className='card-description'>{description}</p>
                 </div>
-                <p className='card-total-questions'>Fragen: {questionsTotal}</p>
+                {/* <p className='card-total-questions'>Fragen: {questionsTotal}</p> */}
               </div>
               <div className='card-buttons'>
                 {/* //!URL might not work with special characters (äöß/*....)*/}
-                <Link to={`/module/${title.split(" ").join("-").toLowerCase()}`} className='card-link'>
+                {/* <Link to={`/module/${id.split(" ").join("-").toLowerCase()}`} className='card-link'> */}
+                <Link to={`/module/${id}`} className='card-link'>
                   <FaArrowRight className='buttons-arrow' />
                 </Link>
                 <BsPencil className='buttons-edit' />
@@ -64,6 +70,6 @@ function Home() {
       </div>
     </>
   );
-}
+};
 
 export default Home;
