@@ -1,7 +1,5 @@
 import { screen, render, cleanup } from "@testing-library/react";
-import React from "react";
 import MultipleResponse from "./MultipleResponse.js";
-
 import user from "@testing-library/user-event";
 
 //Mocks

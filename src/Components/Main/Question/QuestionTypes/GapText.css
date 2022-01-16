@@ -1,0 +1,76 @@
+.question-gap-text{
+  font-size: 1rem;
+  line-height: 2rem; 
+}
+
+.question-gap-text input{
+  font-size: 1rem;
+  padding: 4px 5px;
+  margin: 0 1px;
+  outline: none;
+  border: none;
+  box-shadow: 0 0 0 1.8px lightgrey;
+  border-radius: 2px;
+  display: inline;
+  width: 180px;
+}
+
+.question-gap-text .input-enabled:focus, .question-gap-text .input-enabled:active{
+  box-shadow: 0 0 0 1.8px var(--custom-prime-color);
+}
+
+.input-disabled{
+  cursor: not-allowed;
+}
+
+.input-disabled:focus, .input-disabled:active{ 
+  box-shadow: 0 0 0 1.8px lightgrey;
+}
+
+/* CSS for the correction box displayed in the question component */
+.correction-gap-text{
+  font-size: 1rem;
+  line-height: 2rem;
+}
+
+.correction-gap-text input{
+  color: black;
+  font-size: 1rem;
+  padding: 4px 5px;
+  outline: none;
+  border: none;
+
+  border-radius: 2px;
+  display: inline;
+}
+
+.answer-correct .correction-gap-text input{
+  box-shadow: 0 0 0 1.8px rgb(134, 167, 149);
+}
+
+.answer-false .correction-gap-text input{ 
+  box-shadow: 0 0 0 1.8px rgb(194, 149, 144);
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) { 
+  .question-gap-text{
+    font-size: 1.15rem;
+    line-height: 2.2rem; 
+  }
+
+  .question-gap-text input{
+    padding: 3px 5px;
+    font-size: 1.15rem;
+  }
+
+  .correction-gap-text{
+    font-size: 1.15rem;
+    line-height: 2.1rem;
+  }
+
+  .correction-gap-text input{
+    font-size: 1.15rem;
+    padding: 2px 5px;
+  }
+}

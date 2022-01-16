@@ -5,8 +5,9 @@ import { useSize } from "../../../hooks/useSize";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Import Question Types
-import MultipleResponse from "./QuestionTypes/MultipleResponse";
-import MultipleChoice from "./QuestionTypes/MultipleChoice";
+import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
+import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
+import GapText from "./QuestionTypes/GapText.js";
 
 //Import css
 import "./Question.css";
@@ -112,6 +113,8 @@ const Question = () => {
           return <MultipleResponse options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
         case "multiple-choice":
           return <MultipleChoice options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
+        case "gap-text":
+          return <GapText options={options} ref={checkRef} setAnswerCorrect={setAnswerCorrect} setShowAnswer={setShowAnswer} formDisabled={formDisabled} />;
         default:
           throw new Error("No matching question Type");
       }

@@ -401,6 +401,8 @@ describe("<Question />", () => {
   });
 
   //Expect Navigation (input)
+  //Expect Reset to work for gap text (Integration)
+  //Expect correction value to show up when question type is gap text (Integration)
 
   //Unit test in multiple choice that only one is checked / multiple Choice if clicking on one resets it
   //Expect reveal button to work

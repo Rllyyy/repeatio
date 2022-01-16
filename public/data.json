@@ -7,7 +7,7 @@
   [
     {
       "id": "qID-1",
-      "title": "This is a question provided by the documents folder",
+      "title": "This is a question provided by the public folder",
       "points": 5,
       "type": "multiple-choice",
       "questionTypeHelp": "Choose the correct answer.",
@@ -24,7 +24,7 @@
     },
     {
       "id": "qID-2",
-      "title": "This is a question provided by the documents folder",
+      "title": "This is a question provided by the public folder",
       "points": 5,
       "type": "multiple-response",
       "questionTypeHelp": "Choose the correct answer(s) please.",
@@ -38,6 +38,16 @@
           "isCorrect": false
         }
       ]
-    }
+    }, {
+      "id": "qID-3",
+      "title": "This is a question provided by the public folder",
+      "points": 5,
+      "type": "gap-text",
+      "questionTypeHelp": "Fill in the blanks.",
+      "answerOptions":
+        { "text": "[] two three. One [] three. One two [].", 
+          "correctGapValues" : ["One", "two", "three"] 
+        }
+    } 
   ]
 }]
