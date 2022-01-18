@@ -31,6 +31,7 @@
 .correction-gap-text{
   font-size: 1rem;
   line-height: 2rem;
+  width: 100%;
 }
 
 .correction-gap-text input{
@@ -41,7 +42,8 @@
   border: none;
 
   border-radius: 2px;
-  display: inline;
+  max-width: 95%;
+  box-sizing: content-box;
 }
 
 .answer-correct .correction-gap-text input{

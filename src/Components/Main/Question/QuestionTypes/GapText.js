@@ -66,7 +66,14 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
       //TODO Strip the input values of any whitespace
 
       //Only trim at beginning and end
-      const answeredCorrect = options.correctGapValues.every((value, index) => inputValues[index] === value);
+      //const answeredCorrect = options.correctGapValues.every((value, index) => inputValues[index] === value);
+
+      //Check if every
+      const answeredCorrect = options.correctGapValues.every((gapArray, index) =>
+        gapArray.includes(inputValues[index])
+      );
+
+      //const answeredCorrect = options.correctGapValues.every((array, index) => array[index].includes(inputValues[index]));
 
       /*const test = options.correctGapValues.forEach((value, index) =>
         console.log(`${inputValues[index]} === ${value} ==> ${inputValues[index] === value ? "equal" : "not eqaul"}`)
@@ -86,17 +93,29 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     returnAnswer() {
       const splitArray = options.text.split("[]");
 
+      const concatValues = (values) => {
+        return values.join("; ");
+      };
+
       //Map over the split array and place a input element between them.
       //But don't do it at the end if there is no such split element.
       //This is kinda ugly but the other option would be to set a dangerouslySetInnerHTML.
       const mappedArray = splitArray.map((line, index) => {
         if (index < splitArray.length - 1) {
+          const concatenatedValues = concatValues(options.correctGapValues[index]);
           return (
             <span key={`line-width-input-${index}`}>
               <span key={`line-${index}`} className='line'>
                 {line}
               </span>
-              <input disabled key={`input-${index}`} type='text' autoCapitalize='off' onChange={(e) => updateInput(e, index)} value={options.correctGapValues[index] || ""} />
+              <input
+                disabled
+                key={`input-${index}`}
+                type='text'
+                autoCapitalize='off'
+                value={concatenatedValues || ""}
+                style={{ width: `${concatenatedValues.length}ch` }}
+              />
             </span>
           );
         } else {
@@ -122,6 +141,7 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     },
   }));
 
+  //JSX
   return <div className='question-gap-text'>{textWithBlanks()}</div>;
 });
 

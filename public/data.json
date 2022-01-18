@@ -45,9 +45,15 @@
       "type": "gap-text",
       "questionTypeHelp": "Fill in the blanks.",
       "answerOptions":
-        { "text": "[] two three. One [] three. One two [].", 
-          "correctGapValues" : ["One", "two", "three"] 
-        }
+      { 
+        "text": "[] two three. One [] three. One two [].", 
+        "correctGapValues" : 
+        [
+          ["One", "one"], 
+          ["two"], 
+          ["three"] 
+        ]
+      }
     } 
   ]
 }]

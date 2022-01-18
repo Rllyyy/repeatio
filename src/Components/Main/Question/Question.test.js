@@ -19,7 +19,11 @@ const data = {
       type: "multiple-choice",
       questionTypeHelp: "Choose the correct answer(s) please.",
       answerOptions: [
-        { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+        {
+          id: "option-1",
+          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+          isCorrect: true,
+        },
         { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
         {
           id: "option-3",
@@ -35,7 +39,11 @@ const data = {
       type: "multiple-response",
       questionTypeHelp: "Choose the correct answer(s).",
       answerOptions: [
-        { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+        {
+          id: "option-1",
+          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+          isCorrect: true,
+        },
         { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
         {
           id: "option-3",
@@ -43,6 +51,17 @@ const data = {
           isCorrect: false,
         },
       ],
+    },
+    {
+      id: "qID-3",
+      title: "This is a question provided by the public folder",
+      points: 5,
+      type: "gap-text",
+      questionTypeHelp: "Fill in the blanks.",
+      answerOptions: {
+        text: "[] two three. One [] three. One two [].",
+        correctGapValues: [["One", "one"], ["two"], ["three"]],
+      },
     },
   ],
 };
@@ -177,7 +196,9 @@ describe("<Question />", () => {
   it("should show the question correction as correct (green)", () => {
     render(<MockQuestionWithRouter id='qID-1' />);
 
-    const correctElement = screen.getByText("Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.");
+    const correctElement = screen.getByText(
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
+    );
     user.click(correctElement);
 
     const checkButtonElement = screen.getByTestId("question-check");
@@ -205,7 +226,9 @@ describe("<Question />", () => {
     expect(questionCorrectionElement).not.toBeInTheDocument();
 
     //Checked that the form can be interacted with
-    const correctElement = screen.getByText("Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.");
+    const correctElement = screen.getByText(
+      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
+    );
     expect(correctElement).toHaveClass("label-enabled");
 
     user.click(correctElement);
@@ -234,24 +257,36 @@ describe("<Question />", () => {
 
   //Expect the first element of the data array to render after last element is reached
   it("should render the first question after clicking next on the last question (go to first position of array)", () => {
-    render(<MockQuestionWithRouter id='qID-1' />);
+    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
+    render(<MockQuestionWithRouter id={idOfLastElementInTestArray} />);
 
-    let idElement = screen.getByText("ID: qID-1");
+    let idElement = screen.getByText(`ID: ${idOfLastElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
 
-    //Click the button 4 times to restart array (start at qID-1 --> qID-2 --> qID1)
+    //Click the button 2 times to restart array
     const buttonElement = screen.getByTestId("question-check");
     user.click(buttonElement);
     user.click(buttonElement);
 
-    idElement = screen.getByText("ID: qID-2");
+    //check if the first question with the id of qID-1 has rendered
+    const idOfFirstElementInTestArray = data.questions[0].id;
+    idElement = screen.getByText(`ID: ${idOfFirstElementInTestArray}`);
+    expect(idElement).toBeInTheDocument();
+  });
+
+  //Expect the last element of the data array to render after previous button is clicked on first element
+  it("should render the last question after clicking previous on the first question (go to last position in array)", () => {
+    const idOfFirstElementInTestArray = data.questions[0].id;
+    render(<MockQuestionWithRouter id={idOfFirstElementInTestArray} />);
+
+    let idElement = screen.getByText(`ID: ${idOfFirstElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
 
-    user.click(buttonElement);
-    user.click(buttonElement);
+    const prevButton = screen.getByTestId("previous-question-button");
+    user.click(prevButton);
 
-    //check if the first question with the id of qID-1 has rendered
-    idElement = screen.getByText("ID: qID-1");
+    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
+    idElement = screen.getByText(`ID: ${idOfLastElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
   });
 
@@ -319,6 +354,84 @@ describe("<Question />", () => {
     expect(allUnchecked).toBeTruthy();
   });
 
+  //Expect to render gap text question
+  it("should render gap text question", () => {
+    render(<MockQuestionWithRouter id='qID-3' />);
+
+    expect(screen.getByTestId("question-id")).toHaveTextContent("ID: qID-3");
+    expect(screen.getByText("Fill in the blanks.")).toBeInTheDocument();
+    expect(screen.getAllByRole("textbox").length).toBeGreaterThan(0);
+  });
+
+  //Expect the gap inputs to clear when clicking the reset button (before form submit)
+  it("should reset the inputs in gap text to empty when clicking the reset button", () => {
+    render(<MockQuestionWithRouter id='qID-3' />);
+
+    //Type into the input elements
+    let inputElements = screen.getAllByRole("textbox");
+    user.type(inputElements[0], "One"); //"One" and "one" could both be correct
+    user.type(inputElements[1], "two");
+    user.type(inputElements[2], "three");
+
+    //Click reset button
+    user.click(screen.getByTestId("question-retry"));
+
+    expect(inputElements.every((input) => input.value === "")).toBeTruthy();
+  });
+
+  //Expect the gap inputs to clear when clicking the reset button (after form submit)
+  it("should reset the inputs in gap text to empty when clicking the reset button after form submit", () => {
+    render(<MockQuestionWithRouter id='qID-3' />);
+
+    //Type into the input elements
+    let inputElements = screen.getAllByRole("textbox");
+    user.type(inputElements[0], "One"); //"One" and "one" could both be correct
+    user.type(inputElements[1], "two");
+    user.type(inputElements[2], "three");
+
+    //Click check button
+    user.click(screen.getByTestId("question-check"));
+
+    //Click reset button
+    user.click(screen.getByTestId("question-retry"));
+
+    expect(inputElements.every((input) => input.value === "")).toBeTruthy();
+  });
+
+  //Expect gap text to accept different correct values
+  it("should render question correct when providing two different values to gap text which both could be correct", () => {
+    render(<MockQuestionWithRouter id='qID-3' />);
+
+    //Type into the input elements (Don't want to setup a data-testid, so we grap the element by the index)
+    let inputElements = screen.getAllByRole("textbox");
+    user.type(inputElements[0], "One"); //"One" and "one" could both be correct
+    user.type(inputElements[1], "two");
+    user.type(inputElements[2], "three");
+
+    //Click button to see if inputs are correct
+    user.click(screen.getByTestId("question-check"));
+
+    //Expect to render isCorrect
+    let questionCorrectionElement = screen.getByTestId("question-correction");
+    expect(questionCorrectionElement).toBeInTheDocument();
+
+    //Reset form
+    user.click(screen.getByTestId("question-retry"));
+
+    //Provide values again but this time with "one" instead of "One"
+    inputElements = screen.getAllByRole("textbox");
+    user.type(inputElements[0], "one"); //"One" and "one" could both be correct
+    user.type(inputElements[1], "two");
+    user.type(inputElements[2], "three");
+
+    //Click button to see if inputs are correct
+    user.click(screen.getByTestId("question-check"));
+
+    //Expect to render isCorrect
+    questionCorrectionElement = screen.getByTestId("question-correction");
+    expect(questionCorrectionElement).toBeInTheDocument();
+  });
+
   //Expect the url to change to new params when checking a question
   //This test only check if the url updates
   //The UI doesn't actually update because the params don't change
@@ -367,7 +480,8 @@ describe("<Question />", () => {
     const buttonElement = screen.getByTestId("previous-question-button");
     user.click(buttonElement);
 
-    expect(history.location.pathname).toBe("/module/title/qID-2");
+    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
+    expect(history.location.pathname).toBe(`/module/title/${idOfLastElementInTestArray}`);
   });
 
   //Expect the url to change to first element in array when clicking the to first Question Button
@@ -382,7 +496,8 @@ describe("<Question />", () => {
     const toFirstQuestionButton = screen.getByTestId("first-question-button");
     user.click(toFirstQuestionButton);
 
-    expect(history.location.pathname).toBe("/module/title/qID-1");
+    const idOfFirstElementInTestArray = data.questions[0].id;
+    expect(history.location.pathname).toBe(`/module/title/${idOfFirstElementInTestArray}`);
   });
 
   //Expect the url to change to the last element in array when clicking the to last Question Button
@@ -397,12 +512,11 @@ describe("<Question />", () => {
     const toLastQuestionButton = screen.getByTestId("last-question-button");
     user.click(toLastQuestionButton);
 
-    expect(history.location.pathname).toBe("/module/title/qID-2");
+    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
+    expect(history.location.pathname).toBe(`/module/title/${idOfLastElementInTestArray}`);
   });
 
   //Expect Navigation (input)
-  //Expect Reset to work for gap text (Integration)
-  //Expect correction value to show up when question type is gap text (Integration)
 
   //Unit test in multiple choice that only one is checked / multiple Choice if clicking on one resets it
   //Expect reveal button to work
