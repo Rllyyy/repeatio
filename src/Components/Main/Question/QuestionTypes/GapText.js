@@ -44,8 +44,10 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
               type='text'
               className={`${formDisabled ? "input-disabled" : "input-enabled"}`}
               key={`input-${index}`}
-              autoCapitalize='off'
               disabled={formDisabled}
+              autoCapitalize='off'
+              autoComplete='off'
+              spellCheck='false'
               onChange={(e) => updateInput(e, index)}
               value={inputValues[index] || ""}
             />
@@ -62,23 +64,15 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct.
     checkAnswer() {
-      //TODO What if multiple are correct
-      //TODO Strip the input values of any whitespace
+      //Strip the input values of any whitespace at the beginning or end and update the state
+      const trimmedInputValues = inputValues.map((value) => value.trim());
+      setInputValues(trimmedInputValues);
 
-      //Only trim at beginning and end
-      //const answeredCorrect = options.correctGapValues.every((value, index) => inputValues[index] === value);
-
-      //Check if every
+      //Check if every gap correlates with the correct value from the gap array
+      //And trim the input (because the state isn't used yet)
       const answeredCorrect = options.correctGapValues.every((gapArray, index) =>
-        gapArray.includes(inputValues[index])
+        gapArray.includes(trimmedInputValues[index])
       );
-
-      //const answeredCorrect = options.correctGapValues.every((array, index) => array[index].includes(inputValues[index]));
-
-      /*const test = options.correctGapValues.forEach((value, index) =>
-        console.log(`${inputValues[index]} === ${value} ==> ${inputValues[index] === value ? "equal" : "not eqaul"}`)
-      );
-      */
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -113,6 +107,8 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
                 key={`input-${index}`}
                 type='text'
                 autoCapitalize='off'
+                autoComplete='off'
+                spellCheck='false'
                 value={concatenatedValues || ""}
                 style={{ width: `${concatenatedValues.length}ch` }}
               />
