@@ -1,0 +1,108 @@
+.extended-match-grid{
+  position: relative;
+  display: grid;
+  /* grid-template-columns: 42% 16% 42%; */
+  /* grid-template-columns: 42% 16% 42%; */
+  grid-template-columns: 42% 42%;
+  grid-gap: 16%;
+  
+
+  width: 100%;
+  max-width: 1400px;
+  /* background-color: yellow; */
+  /* height: fit-content; */
+}
+
+.ext-match-left-side{
+  width: 100%;
+}
+
+.ext-match-right-side{
+  width: 100%;
+  justify-self: end;
+}
+
+.question-extended-match canvas{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 16%;
+  margin-left: auto; 
+  margin-right: auto; 
+  height: 100%;
+}
+
+.question-extended-match .ext-match-element{
+  position: relative;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  min-height: 50px;
+  width: 100%;
+
+  padding: 10px 15px;
+  margin-bottom: 20px;
+
+  background-color: white;
+  border: 2px solid rgb(201, 206, 209);
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.question-extended-match .ext-match-element-circle{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  
+  background-color: white;
+  border: 3px solid rgb(150, 150, 150);
+  border-radius: 50%;
+}
+
+/* TODO Do this with transform origin?? */
+.ext-match-left-side .ext-match-element-circle{
+  right: -10px;
+}
+
+.ext-match-right-side .ext-match-element-circle{
+  left: -10px;
+}
+
+.question-extended-match .circle-enabled:hover{
+  cursor: pointer;
+  border-color: var(--custom-prime-color);
+}
+
+.question-extended-match .circle-enabled:active{ 
+  border-color: var(--custom-prime-color);
+}
+
+.question-extended-match .circle-disabled:hover{
+  cursor: not-allowed;
+ }
+
+
+.remove-lines-btn{
+  background: transparent;
+  border: none;
+  appearance: none;
+  font-size: 18px;
+  margin-top: 10px;
+  text-decoration: underline;
+}
+
+.question-extended-match .remove-lines-btn:hover{ 
+  color: var(--custom-prime-color);
+}
+
+
+
+
+
+
+
+

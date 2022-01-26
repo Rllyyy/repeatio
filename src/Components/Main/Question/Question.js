@@ -8,6 +8,7 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText.js";
+import ExtendedMatch from "./QuestionTypes/ExtendedMatch.js";
 
 //Import css
 import "./Question.css";
@@ -132,6 +133,16 @@ const Question = () => {
         case "gap-text":
           return (
             <GapText
+              options={options}
+              ref={checkRef}
+              setAnswerCorrect={setAnswerCorrect}
+              setShowAnswer={setShowAnswer}
+              formDisabled={formDisabled}
+            />
+          );
+        case "extended-match":
+          return (
+            <ExtendedMatch
               options={options}
               ref={checkRef}
               setAnswerCorrect={setAnswerCorrect}
