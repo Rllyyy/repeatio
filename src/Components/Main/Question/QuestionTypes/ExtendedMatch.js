@@ -1,26 +1,56 @@
 import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle } from "react";
+
+//Import css
+import "./ExtendedMatch.css";
+
+//Import functionss
 import { isEqual } from "lodash";
 import { useSize } from "../../../../hooks/useSize.js";
-import "./ExtendedMatch.css";
+import shuffleArray from "../../../../functions/shuffleArray.js";
 
 const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [lines, setLines] = useState([]);
+  const [shuffledLeftOptions, setShuffledLeftOptions] = useState([]);
+  const [shuffledRightOptions, setShuffledRightOptions] = useState([]);
+  const [triggerShuffle, setTriggerShuffle] = useState(0);
 
   //Refs
   const canvasRef = useRef();
-  const left = useRef(options.leftSide.map(() => createRef()));
-  const right = useRef(options.rightSide.map(() => createRef()));
+  const left = useRef();
+  const right = useRef();
 
   //Custom Hooks
   const canvasSize = useSize(canvasRef);
 
   //Reset the ref options changes
   useEffect(() => {
+    //Remove all lines
     setLines([]);
-    left.current = options.leftSide.map(() => createRef());
-    right.current = options.rightSide.map(() => createRef());
-  }, [options]);
+
+    //Randomize the values.
+    //Other question types (multiple-response /-choice) check if the new shuffled array is equal to the old one
+    //and get a new one until they aren't but I personally think this is not worth the performance
+    const leftShuffle = shuffleArray(options.leftSide);
+    const rightShuffle = shuffleArray(options.rightSide);
+
+    //Set current refs
+    left.current = leftShuffle.map(() => createRef());
+    right.current = rightShuffle.map(() => createRef());
+
+    //Update the state
+    setShuffledLeftOptions(leftShuffle);
+    setShuffledRightOptions(rightShuffle);
+
+    //Reset states when component unmounts
+    return () => {
+      setLines([]);
+      setShuffledLeftOptions([]);
+      setShuffledRightOptions([]);
+      left.current = null;
+      right.current = null;
+    };
+  }, [options, triggerShuffle]);
 
   //Draw a new line in the canvas
   useEffect(() => {
@@ -74,11 +104,11 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
 
     if (arr.length === 0) {
       //If length is zero there is no need for checking
-      console.log("1");
+      //console.log("1");
       arr.push({ left: left.current[index].current });
     } //Case if the left property is not set but the right property is
     else if (arr[arr.length - 1].left === undefined && arr[arr.length - 1].right !== undefined) {
-      console.log("2");
+      //console.log("2");
       let obj = arr[arr.length - 1];
       obj = { ...obj, left: left.current[index].current };
       arr = arr.map((element, index) => {
@@ -90,10 +120,10 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       });
     } //Case if the right property isn't set
     else if (arr[arr.length - 1].right !== undefined) {
-      console.log("3");
+      //console.log("3");
       arr.push({ left: left.current[index].current });
     } else if (arr[arr.length - 1].right === undefined && arr[arr.length - 1].left !== undefined) {
-      console.log("4");
+      //console.log("4");
       let obj = { left: left.current[index].current };
       arr = arr.map((element, index) => {
         if (index === arr.length - 1) {
@@ -193,8 +223,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
 
     //Trigger a useEffect (rerender) by increasing a state value
     resetAndShuffleOptions() {
-      //TODO shuffle
-      removeAllLines();
+      setTriggerShuffle((prev) => prev + 1);
     },
   }));
 
@@ -203,7 +232,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
     <div className='question-extended-match'>
       <div className='extended-match-grid'>
         <div className='ext-match-left-side'>
-          {options.leftSide.map((item, index) => {
+          {shuffledLeftOptions.map((item, index) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
@@ -220,7 +249,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
         </div>
         <canvas ref={canvasRef}></canvas>
         <div className='ext-match-right-side'>
-          {options.rightSide.map((item, index) => {
+          {shuffledRightOptions.map((item, index) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
