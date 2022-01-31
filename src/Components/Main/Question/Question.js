@@ -8,7 +8,7 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText.js";
-import ExtendedMatch from "./QuestionTypes/ExtendedMatch.js";
+import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
 
 //Import css
 import "./Question.css";
