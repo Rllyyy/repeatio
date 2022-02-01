@@ -4,6 +4,8 @@
   "description": "Repeatio is a program for practicing and memorizing tasks",
   "author": "Niklas Fischer",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
   "dependencies": {
     "@electron/remote": "^1.2.1",
     "@emotion/react": "^11.5.0",
@@ -15,8 +17,8 @@
     "@testing-library/user-event": "^12.8.3",
     "concurrently": "^6.2.1",
     "cross-env": "^7.0.3",
-    "electron": "^14.0.0",
     "electron-devtools-installer": "^3.2.0",
+    "electron-is-dev": "^2.0.0",
     "is-electron": "^2.2.1",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
@@ -27,14 +29,48 @@
     "wait-on": "^6.0.0",
     "web-vitals": "^1.1.2"
   },
-  "main": "public/app.js",
-  "homepage": "./",
+  "build": {
+    "appId": "repeatio",
+    "productName": "repeatio",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": "false",
+      "uninstallDisplayName": "repeatio-uninstaller",
+      "license": "LICENSE",
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": "tar.gz"
+    },
+    "linux": {
+      "category": "Utils",
+      "packageCategory": "utils",
+      "maintainer": "Niklas Fischer",
+      "asar": true,
+      "target": [
+        "deb",
+        "tar.xz"
+      ],
+      "synopsis": "Basically same as description but shorter"
+    }
+  },
   "scripts": {
     "start-react": "react-scripts start",
     "build-react": "react-scripts build",
     "test-react": "react-scripts test --env=jsdom",
     "eject-react": "react-scripts eject",
-    "build": "yarn build-react && electron-builder -c.extraMetadata.app=build-react/app.js",
+    "build": "yarn build-react && electron-builder",
     "start": "concurrently -k \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
     "test": "yarn test-react"
   },
@@ -55,5 +91,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^17.0.0",
+    "electron-builder": "^22.14.5"
   }
 }

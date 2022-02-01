@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, ipcMain } = require("electron");
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require("electron-devtools-installer");
 const path = require("path");
 const fs = require("fs");
+const isDev = require("electron-is-dev");
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -33,16 +34,13 @@ function createWindow() {
     }
   });
 
-  win.loadURL("http://localhost:3000"); //TODO remove this (see below)
+  //Start on localhost if using development else run build folder
+  win.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
+
   win.maximize();
   win.show();
 
-  //TODO Only run on port 3000 when in development
-  //https://github.com/willjw3/react-electron/blob/master/public/electron.js
-  //https://www.youtube.com/watch?v=Cdu2O6o2DCg
-  /*yard add electron-is-dev
-  mainWindow.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
-  */
+  win.on("closed", () => (win = null));
 }
 
 //Hide the menu bar
