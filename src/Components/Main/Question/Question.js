@@ -1,6 +1,6 @@
 //Import
 import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { useSize } from "../../../hooks/useSize";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
@@ -38,6 +38,9 @@ const Question = () => {
   //History
   let history = useHistory();
 
+  //Location (Search url=?...)
+  const { search } = useLocation();
+
   //Context
   const { moduleData, setContextModuleID } = useContext(ModuleContext);
 
@@ -45,37 +48,44 @@ const Question = () => {
   const questionBottomRef = useRef(null);
   const checkRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
+  const practiceMode = useRef(new URLSearchParams(search).get("mode") || "chronological"); //Fallback to chronological if urlSearchParams is undefined
 
   //Custom Hooks
   const size = useSize(questionBottomRef);
 
-  /* USEEFFECTS */
+  /* UseEffects */
   //Set the question state by finding the correct question with the url parameters
   useEffect(() => {
+    if (params.questionID === undefined) {
+      return;
+    }
     //Guard to refetch context (could for example happen on F5)
     if (moduleData.length === 0 || moduleData === undefined) {
       setContextModuleID(params.moduleID);
       return;
     }
+
     //Find the correct question in the moduleData context
     const returnQuestion = moduleData.questions.find((questionItem) => questionItem.id === params.questionID);
 
     //Set the locale storage
     setQuestion(returnQuestion);
+
+    //set a variable so it can be used when component unmounts
+    const questionAnswerRef = checkRef.current;
+
+    return () => {
+      setFormDisabled(false);
+      setShowAnswer(false);
+      setAnswerCorrect();
+      if (questionAnswerRef !== undefined && questionAnswerRef !== null) {
+        questionAnswerRef.resetSelection();
+      }
+    };
   }, [moduleData, params.questionID, params.moduleID, setContextModuleID]);
 
-  //Reset the states when rendering a new question
-  useEffect(() => {
-    setFormDisabled(false);
-    setShowAnswer(false);
-    setAnswerCorrect();
-    if (checkRef.current !== undefined) {
-      checkRef.current.resetSelection();
-    }
-  }, [params.questionID]);
-
   //Show the index of the current question
-
+  //TODO use memo this
   useEffect(() => {
     if (moduleData === undefined || moduleData.length === 0) return;
 
@@ -167,6 +177,7 @@ const Question = () => {
     if (params.questionID !== firstIDInQuestionArray) {
       history.push({
         pathname: `/module/${params.moduleID}/${firstIDInQuestionArray}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -181,10 +192,12 @@ const Question = () => {
     if (currentIndex - 1 >= 0) {
       history.push({
         pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex - 1].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     } else {
       history.push({
         pathname: `/module/${params.moduleID}/${moduleData.questions[moduleData.questions.length - 1].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -193,21 +206,48 @@ const Question = () => {
   //TODO: Go to provided input
 
   //Go to the next question
-  const nextQuestion = () => {
-    //get Current index
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+  const handleNextQuestion = () => {
+    if (practiceMode.current === "chronological") {
+      //get Current index
+      const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
-    //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
+      //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
+      if (currentIndex + 1 < moduleData.questions.length) {
+        history.push({
+          pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex + 1].id}`,
+          search: `?mode=${practiceMode.current}`,
+        });
+      } else {
+        history.push({
+          pathname: `/module/${params.moduleID}/${moduleData.questions[0].id}`,
+          search: `?mode=${practiceMode.current}`,
+        });
+      }
+    } else if (practiceMode.current === "random") {
+      //Check if moduleData.length is greater than one to prevent infinite loop
+      if (moduleData.questions.length <= 1) {
+        return;
+      }
 
-    if (currentIndex + 1 < moduleData.questions.length) {
+      const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+      let equal = true;
+      let newRandomIndex;
+
+      //Make sure the new question is actually new and not the old one
+      while (equal) {
+        newRandomIndex = Math.round(Math.random() * (moduleData.questions.length - 1));
+
+        if (newRandomIndex !== currentIndex) {
+          equal = false;
+        }
+      }
+
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex + 1].id}`,
-      });
-    } else {
-      history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[0].id}`,
+        pathname: `/module/${params.moduleID}/${moduleData.questions[newRandomIndex].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
+
     //Resetting the states and current selection is handled by a useEffect
   };
 
@@ -220,6 +260,7 @@ const Question = () => {
     if (params.questionID !== lastIDInQuestionArray) {
       history.push({
         pathname: `/module/${params.moduleID}/${lastIDInQuestionArray}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -235,7 +276,7 @@ const Question = () => {
   const questionCheckButtonOnClick = () => {
     //If the show answer box is show the svg of the button will change to an arrow and a click will go to the next question
     if (showAnswer) {
-      nextQuestion();
+      handleNextQuestion();
     } else {
       checkRef.current.checkAnswer();
       setFormDisabled(true);
@@ -267,11 +308,6 @@ const Question = () => {
   return (
     <form className='question-form' onSubmit={preventDef}>
       <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}}>
-        {/* <p>Module: {question.modulename}</p> */}
-        <div className='question-heading-wrapper'>
-          {/* <h2 className='question-module-heading'>{question.modulename} | Practice</h2>
-          <div className='heading-underline'></div> */}
-        </div>
         <div className='question-id-progress-wrapper'>
           <p className='question-id' data-testid='question-id'>
             ID: {question.id}
@@ -372,7 +408,7 @@ const Question = () => {
               </svg>
             </button>
             <input type='number' placeholder={currentQuestionPage} min='1' />
-            <button data-testid='next-question-button' onClick={() => nextQuestion()}>
+            <button data-testid='next-question-button' onClick={() => handleNextQuestion()}>
               {/* <BsTriangleFill className='navigation-skip' /> */}
               <svg
                 xmlns='http://www.w3.org/2000/svg'

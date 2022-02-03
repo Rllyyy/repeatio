@@ -45,7 +45,6 @@ a{
 .module-cards > button:hover{
   background-color: rgb(79, 82, 100);
   background-color: var(--custom-prime-color);
-
 }
 
 .module-cards > button > svg, .practice-icon-name > svg{

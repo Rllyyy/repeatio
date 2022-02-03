@@ -18,15 +18,11 @@ import { AiOutlineEdit } from "react-icons/ai";
 const Module = ({ match }) => {
   //useState
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
+  const [randomIndex, setRandomIndex] = useState();
   const [module, setModule] = useState();
 
   //context
   const { moduleData, setContextModuleID } = useContext(ModuleContext);
-
-  //events
-  const practiceClick = () => {
-    setShowPracticeOptions(true);
-  };
 
   /* USEEFFECTS */
   //Update the module state by using the data from the context
@@ -61,6 +57,7 @@ const Module = ({ match }) => {
     [showPracticeOptions]
   );
 
+  //Add/remove event listener to hide the practice options
   useEffect(() => {
     window.addEventListener("mousedown", hidePracticeOptions, false);
     window.addEventListener("keydown", hidePracticeOptions);
@@ -70,6 +67,17 @@ const Module = ({ match }) => {
       window.removeEventListener("keydown", hidePracticeOptions);
     };
   }, [showPracticeOptions, hidePracticeOptions]);
+
+  /*Events  */
+  //
+  const handlePracticeClick = () => {
+    //Show the practice options
+    setShowPracticeOptions(true);
+
+    //Create a random number for a random index
+    const newRandomIndex = Math.round(Math.random() * (module.questions.length - 1));
+    setRandomIndex(newRandomIndex);
+  };
 
   //Prevent the rendering when there is no module set (to prevent hopping ui)
   if (!module) {
@@ -88,23 +96,26 @@ const Module = ({ match }) => {
       <div className='module-cards'>
         {/* practice */}
         <div className='card-practice' tabIndex='0'>
-          <button className='practice-icon-name' onClick={() => practiceClick()}>
+          <button className='practice-icon-name' onClick={() => handlePracticeClick()}>
             <AiOutlineBook />
             <h3>Practice</h3>
           </button>
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
               <Link
-                to={`/module/${match.params.moduleID}/${module.questions[0].id}`}
+                to={`/module/${match.params.moduleID}/${module.questions[0].id}?mode=chronological`}
                 className='practice-chronological'
               >
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
               </Link>
-              <button className='practice-random'>
+              <Link
+                to={`/module/${match.params.moduleID}/${module.questions[randomIndex].id}?mode=random`}
+                className='practice-random'
+              >
                 <GiPerspectiveDiceSixFacesRandom />
                 <h3>Random</h3>
-              </button>
+              </Link>
             </div>
           )}
         </div>
