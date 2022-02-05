@@ -1,9 +1,17 @@
+//Imports
+//React
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+
+//Material UI
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 //Import css
 import "./MultipleChoice.css";
@@ -69,7 +77,9 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
     //Check if the answer is correct. Called by the parent form (check button) in a ref
     checkAnswer() {
       //every value should be the same (true/false) in the properties isChecked and isCorrect
-      const answeredCorrect = shuffledOptions.every((option, index) => option.isChecked === shuffledOptions[index].isCorrect);
+      const answeredCorrect = shuffledOptions.every(
+        (option, index) => option.isChecked === shuffledOptions[index].isCorrect
+      );
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -137,7 +147,14 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                     }}
                   />
                 }
-                label={<Typography className={`formControlLabel-label ${formDisabled && "label-disabled"}`}>{option.text}</Typography>}
+                label={
+                  <Typography
+                    component={"span"}
+                    className={`formControlLabel-label ${formDisabled && "label-disabled"}`}
+                  >
+                    <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw]} />
+                  </Typography>
+                }
               />
             );
           })}

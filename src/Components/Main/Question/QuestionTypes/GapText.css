@@ -6,13 +6,50 @@
 .question-gap-text input{
   font-size: 1rem;
   padding: 4px 5px;
-  margin: 0 1px;
+  margin: 0 5px;
   outline: none;
   border: none;
   box-shadow: 0 0 0 1.8px lightgrey;
   border-radius: 2px;
   display: inline;
   width: 180px;
+}
+
+/* Markdown specific */
+.question-gap-text{
+  display: inline;
+}
+
+.question-gap-text p{ 
+  display: inline;
+}
+
+.question-gap-text div{
+  display: inline;
+}
+
+.question-gap-text input{ 
+  display: inline;
+  
+}
+
+.question-gap-text table{
+  margin: 5px 0;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.question-gap-text table, .question-gap-text th, .question-gap-text td{
+  border: 1px solid black;
+}
+
+.question-gap-text table input{
+  width: 100%;
+  margin: 10px 0;
+}
+
+.question-gap-text th, td{ 
+  padding: 0px 5px;
 }
 
 .question-gap-text .input-enabled:focus, .question-gap-text .input-enabled:active{

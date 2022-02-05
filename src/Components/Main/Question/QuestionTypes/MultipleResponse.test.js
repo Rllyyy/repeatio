@@ -4,7 +4,11 @@ import user from "@testing-library/user-event";
 
 //Mocks
 const options = [
-  { id: "option-1", text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.", isCorrect: true },
+  {
+    id: "option-1",
+    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+    isCorrect: true,
+  },
   { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
   {
     id: "option-3",
@@ -17,13 +21,33 @@ const mockSetAnswerCorrect = jest.fn();
 const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn(); //Might not be allowed for a ref but for now the ref isn't being tested
 
+//React-markdown and rehype-raw use ES6 but jest uses ES5
+//There are more options but this is the easiest one
+//https://github.com/remarkjs/react-markdown/issues/635#issuecomment-956158474
+jest.mock("react-markdown", () => (props) => {
+  //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
+  return <p>{props.children}</p>;
+});
+
+jest.mock("rehype-raw", () => (props) => {
+  return <p>{props.children}</p>;
+});
+
 //Tests
 describe("<MultipleResponse />", () => {
   afterAll(cleanup);
 
   //UNIT TESTING
   it("should change checkbox to checked and back to unchecked if checkbox gets clicked", () => {
-    render(<MultipleResponse options={options} setAnswerCorrect={mockSetAnswerCorrect} setShowAnswer={mockSetShowAnswer} formDisabled={false} ref={mockUseRef} />);
+    render(
+      <MultipleResponse
+        options={options}
+        setAnswerCorrect={mockSetAnswerCorrect}
+        setShowAnswer={mockSetShowAnswer}
+        formDisabled={false}
+        ref={mockUseRef}
+      />
+    );
 
     const checkBoxElement = screen.getByTestId("formControlLabel-checkbox-0");
     user.click(checkBoxElement);
@@ -35,7 +59,15 @@ describe("<MultipleResponse />", () => {
   });
 
   it("should change checkbox to checked and back to unchecked if label (p tag) gets clicked", () => {
-    render(<MultipleResponse options={options} setAnswerCorrect={mockSetAnswerCorrect} setShowAnswer={mockSetShowAnswer} formDisabled={false} ref={mockUseRef} />);
+    render(
+      <MultipleResponse
+        options={options}
+        setAnswerCorrect={mockSetAnswerCorrect}
+        setShowAnswer={mockSetShowAnswer}
+        formDisabled={false}
+        ref={mockUseRef}
+      />
+    );
 
     //get the checkbox
     const checkBoxElement = screen.getByTestId("formControlLabel-checkbox-0");

@@ -40,6 +40,18 @@
   font-size: 14px;
 }
 
+/* Style the image that can be set with MarkDown */
+.question-multiple-response .formControlLabel p img{
+  display: block;
+  font-size: 1rem;
+  margin: 2px 0;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 550px;
+  max-height: 300px;
+}
+
 /* Media Query for phones */
 @media only screen and (max-width: 650px) { 
   .question-multiple-response .formControlLabel{ 

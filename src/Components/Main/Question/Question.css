@@ -51,20 +51,50 @@
   font-size: 1.1rem;
 }
 
-.question-title{
+/* Targets the markdown (styling) in the title */
+.question-title p{
+  line-height: 1.2;
+  font-size: 1.42rem;
   font-weight: 450;
 }
 
+/* Targets the markdown (image) in the title */
+.question-form .question-title img{
+  display: block;
+  font-size: 1rem;
+  margin: 2px 0;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 900px;
+  max-height: 600px;
+}
+
+/* Style the question points */
 .question-points{
+  font-size: 1.1rem;
   margin-top: 2px;
 }
 
+/* Style the question type help */
 .question-type-help{
   margin: 2px 0 5px 0;
   font-style: italic;
   color: var(--custom-secondary-color);
 }
 
+/* Targets the markdown (image) in the question type help */
+.question-type-help img{ 
+  margin: 2px 0 20px 0;
+  display: block;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 900px;
+  max-height: 600px;
+}
+
+/* Targets the question-correction section*/
 .question-correction{
   margin: 15px 0 5px 0;
   padding: 10px;

@@ -14,7 +14,7 @@ const data = {
   questions: [
     {
       id: "qID-1",
-      title: "This is a question fot the test suite",
+      title: "This is a question for the test suite",
       points: 5,
       type: "multiple-choice",
       questionTypeHelp: "Choose the correct answer(s) please.",
@@ -94,6 +94,22 @@ const MockQuestionWithRouterAndHistory = ({ history }) => {
   );
 };
 
+//React-markdown uses ES6 but jest uses ES5
+//There are more options but this is the easiest one
+//https://github.com/remarkjs/react-markdown/issues/635#issuecomment-956158474
+jest.mock("react-markdown", () => (props) => {
+  //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
+  return <p>{props.children}</p>;
+});
+
+jest.mock("rehype-raw", () => (props) => {
+  return <p>{props.children}</p>;
+});
+
+jest.mock("remark-gfm", () => (props) => {
+  return <p>{props.children}</p>;
+});
+
 //Override the default useSize hook
 jest.mock("../../../hooks/useSize.js", () => ({
   useSize: () => ({ x: 10, y: 15, width: 917, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),
@@ -117,8 +133,8 @@ describe("<Question />", () => {
     expect(questionIDElement).toHaveTextContent(/ID: /i);
 
     //Expect questionTitle
-    const questionTitleElement = screen.getByRole("heading", { class: "question-title" });
-    expect(questionTitleElement.textContent.length).toBeGreaterThan(0);
+    const questionTitleElement = screen.getByText("This is a question for the test suite");
+    expect(questionTitleElement).toBeInTheDocument();
 
     //Expect questionPoints (requires exact Points from mock question)
     const questionPointsElement = screen.getByText(/5 Points/i);
@@ -143,22 +159,25 @@ describe("<Question />", () => {
 
     window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
 
-    const checkButtonElement = screen.getByTestId("question-check");
-    user.click(checkButtonElement);
+    let checkOptionElement = screen.getByTestId("question-check");
+    user.click(checkOptionElement);
 
     //Just check if one checkbox is disabled. There is no need to write test for all elements as the disabled prop is handled by the formControl not the element (but react.screen can't grab the formControl, which internally passes the prop as classnames to some children)
-    const checkBoxElement = screen.getByText(
+    const checkOptionElementMarkdown = screen.getByText(
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem."
     );
 
-    //Check if the p is disabled
-    expect(checkBoxElement).toHaveClass("label-disabled");
+    //because markdown creates a new child, we look for the parent
+    checkOptionElement = checkOptionElementMarkdown.parentElement;
 
-    //Check if the parent (the label in the dom)
-    expect(checkBoxElement.parentElement).toHaveClass("Mui-disabled");
+    //Check if the span is disabled
+    expect(checkOptionElement).toHaveClass("label-disabled");
+
+    //Check if the parent (the label in the dom) and the option (the cirlce)
+    expect(checkOptionElement.parentElement).toHaveClass("Mui-disabled");
 
     //Check if the checkbox
-    expect(checkBoxElement.parentElement.firstChild).toHaveAttribute("aria-disabled");
+    expect(checkOptionElement.parentElement.firstChild).toHaveAttribute("aria-disabled");
   });
 
   //Expect the correction box (red or green) to show up after question submit
@@ -230,9 +249,13 @@ describe("<Question />", () => {
     expect(questionCorrectionElement).not.toBeInTheDocument();
 
     //Checked that the form can be interacted with
-    const correctElement = screen.getByText(
+    const correctElementMarkdown = screen.getByText(
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
     );
+
+    //Because Markdown creates a p where all html elements are stored, we need to call the parentElement
+    const correctElement = correctElementMarkdown.parentElement;
+
     expect(correctElement).toHaveClass("label-enabled");
 
     user.click(correctElement);

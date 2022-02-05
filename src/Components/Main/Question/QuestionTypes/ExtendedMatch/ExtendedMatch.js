@@ -1,4 +1,5 @@
 import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
 
 //Import Components
 import Canvas from "./Components/Canvas.js";
@@ -244,7 +245,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <p className='ext-match-element-text'>{text}</p>
+                <ReactMarkdown className='ext-match-element-text' children={text} />
                 <div
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
@@ -263,7 +264,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <p className='ext-match-element-text'>{text}</p>
+                <ReactMarkdown className='ext-match-element-text' children={text} />
                 <div
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"

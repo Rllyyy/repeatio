@@ -1,8 +1,15 @@
 //Import
+//React stuff
 import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import { useSize } from "../../../hooks/useSize";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
+
+//Custom Hooks
+import { useSize } from "../../../hooks/useSize";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
@@ -10,10 +17,10 @@ import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
 
-//Import css
+//Import CSS
 import "./Question.css";
 
-//Import SCG
+//Import SVG
 import { AiFillEye } from "react-icons/ai";
 import { BiCheck, BiReset } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
@@ -319,11 +326,15 @@ const Question = () => {
         {/* <button>
           <MdBookmark />
         </button> */}
-        <h2 className='question-title'>{question.title}</h2>
+        <ReactMarkdown className='question-title' children={question.title} />
         <p className='question-points'>
           {question.points} {question.points >= 2 ? "Points" : "Point"}
         </p>
-        <p className='question-type-help'>{question.questionTypeHelp}</p>
+        <ReactMarkdown
+          className='question-type-help'
+          rehypePlugins={[rehypeRaw]}
+          children={question.questionTypeHelp}
+        />
         {/* Question */}
         <section className='question-user-response'>
           {questionType(question.type, question.answerOptions, formDisabled)}

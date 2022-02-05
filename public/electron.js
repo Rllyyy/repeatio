@@ -16,6 +16,10 @@ function createWindow() {
       contextIsolation: true, // protect against prototype pollution
       enableRemoteModule: false, // turn off remote
       preload: path.join(__dirname, "preload.js"),
+      webSecurity: false, //!So markdown can load locale images
+      //!Change to this in the future https://stackoverflow.com/a/60251400/14602331
+      //https://www.electronjs.org/docs/latest/api/protocol
+      //https://stackoverflow.com/questions/8499633/how-to-display-base64-images-in-html
     },
   });
 

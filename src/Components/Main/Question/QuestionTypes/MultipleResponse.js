@@ -1,4 +1,12 @@
+//Imports
+//React
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+
+//Material UI
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
@@ -68,7 +76,9 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     //Check if the answer is correct.
     checkAnswer() {
       //every value should be the same (true/false) in the properties isChecked and isCorrect
-      const answeredCorrect = shuffledOptions.every((option, index) => option.isChecked === shuffledOptions[index].isCorrect);
+      const answeredCorrect = shuffledOptions.every(
+        (option, index) => option.isChecked === shuffledOptions[index].isCorrect
+      );
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -113,6 +123,10 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     },
   }));
 
+  //let path = "";
+
+  const markDownImageTest = ``;
+
   //JSX
   return (
     <div className='question-multiple-response'>
@@ -138,7 +152,14 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                     }}
                   />
                 }
-                label={<Typography className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}>{option.text}</Typography>}
+                label={
+                  <Typography
+                    component={"span"}
+                    className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
+                  >
+                    <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw]} />
+                  </Typography>
+                }
               />
             );
           })}
