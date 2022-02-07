@@ -44,7 +44,6 @@
 .question-multiple-response .formControlLabel p img{
   display: block;
   font-size: 1rem;
-  margin: 2px 0;
   object-fit: contain;
   object-position: left center;
   width: 100%;

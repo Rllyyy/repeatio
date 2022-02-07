@@ -32,7 +32,7 @@
 }
 
 .question-id-progress-wrapper{
-  margin-bottom: 5px; 
+  margin-bottom: 2px; 
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -66,8 +66,8 @@
   object-fit: contain;
   object-position: left center;
   width: 100%;
-  max-width: 900px;
-  max-height: 600px;
+  max-width: 700px;
+  max-height: 500px;
 }
 
 /* Style the question points */
@@ -90,8 +90,8 @@
   object-fit: contain;
   object-position: left center;
   width: 100%;
-  max-width: 900px;
-  max-height: 600px;
+  max-width: 700px;
+  max-height: 500px;
 }
 
 /* Targets the question-correction section*/

@@ -123,10 +123,6 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     },
   }));
 
-  //let path = "";
-
-  const markDownImageTest = ``;
-
   //JSX
   return (
     <div className='question-multiple-response'>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle, useRef, createRef } from "react";
+import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
 
@@ -26,9 +26,6 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
   //States
   const [inputValues, setInputValues] = useState([]);
 
-  //Refs
-  const inputWrapperRef = useRef(options.correctGapValues.map(() => createRef()));
-
   /* Functions */
   //Update the input where the input index is equal to the inputValues index
   const updateInput = useCallback(
@@ -47,9 +44,6 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
 
   //Set the dangerouslySetInnerHTML for question-gap-text div element
   const textWithBlanks = useCallback(() => {
-    /* let tableTest =
-      "Sample table:\n\n| One | Two | Three |\n|-----|-----|-------|\n| []   | b   | []     | \n\n Hello this is a [] string\n\n <table><tr><th>Company</th><th>Country</th></tr><tr>    <td>Alfreds Futterkiste</td><td>Germany</td></tr><tr><td>Centro comercial Moctezuma</td>    <td>Mexico</td></tr>/table>"; */
-
     //Render the json string in markdown and return html nodes
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
@@ -67,7 +61,7 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
           <>
             <>{line}</>
             {/* ReactDOMServer.renderToString ignores event handlers so this is a marker for where to insert the input at the useEffect */}
-            <div id={`input-wrapper-${index}`} ref={inputWrapperRef.current[index]}></div>
+            <div className={"input-wrapper"} id={`input-wrapper-${index}`}></div>
           </>
         );
       } else {
@@ -96,16 +90,25 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
       return "";
     });
     setInputValues(emptyValues);
+
+    return () => {
+      setInputValues();
+    };
   }, [options.correctGapValues]);
 
-  //Inset the input elements at the corresponding input wrapper index
+  //Inset the input elements at the corresponding input wrapper index,
+  //because ReactDOMServer.renderToString ignores onChange handlers
   useEffect(() => {
-    //Guard
-    if (inputValues === undefined) {
+    //Guards
+    //Has to be selected with query because ReactDOMServer.renderToString ignores refs
+    const inputWrapperLength = document.querySelectorAll(".question-gap-text .input-wrapper").length;
+
+    if (inputValues === undefined || inputWrapperLength === 0) {
       return;
     }
-    //Append a child x amount of times
-    for (let index = 0; index < inputWrapperRef.current.length; index++) {
+
+    //Append a child to the wrapper x amount of times
+    for (let index = 0; index < inputWrapperLength; index++) {
       render(
         <input
           type='text'
@@ -121,7 +124,7 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
         document.getElementById(`input-wrapper-${index}`)
       );
     }
-  }, [inputValues, formDisabled, updateInput]);
+  }, [inputValues, formDisabled, updateInput, options]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(ref, () => ({
