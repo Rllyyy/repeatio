@@ -1,8 +1,4 @@
 /* Remove underline from react-router-dom links */
-a{
-  text-decoration: none;
-}
-
 .module-description{
   margin-top: 5px;
   text-align: center;
@@ -13,6 +9,23 @@ a{
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 12px;
   margin: 15px 0 30px 0;
+}
+
+.module-cards a{
+    text-decoration: none;
+}
+
+/* Applies to all but practice */
+.module-cards > button > a{
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: inherit;
 }
 
 .module-cards > button{
@@ -47,16 +60,18 @@ a{
   background-color: var(--custom-prime-color);
 }
 
-.module-cards > button > svg, .practice-icon-name > svg{
+.module-cards > button svg, .practice-icon-name svg{
   height: 42px;
   width: 42px;
   margin-bottom: 8px;
   color: white;
 }
 
-.module-cards > button > h3{
+.module-cards > button h3{
   font-size: 20px;
 }
+
+
 
 /* The following css is just for the first card aka practice */
 .card-practice{

@@ -67,7 +67,7 @@ const Question = () => {
       return;
     }
     //Guard to refetch context (could for example happen on F5)
-    if (moduleData.length === 0 || moduleData === undefined) {
+    if (moduleData === undefined || moduleData.questions === undefined) {
       setContextModuleID(params.moduleID);
       return;
     }
@@ -183,7 +183,7 @@ const Question = () => {
     //TODO notify the user that the already is at the beginning
     if (params.questionID !== firstIDInQuestionArray) {
       history.push({
-        pathname: `/module/${params.moduleID}/${firstIDInQuestionArray}`,
+        pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
         search: `?mode=${practiceMode.current}`,
       });
     }
@@ -198,12 +198,12 @@ const Question = () => {
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
     if (currentIndex - 1 >= 0) {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${moduleData.questions[currentIndex - 1].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[moduleData.questions.length - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${moduleData.questions[moduleData.questions.length - 1].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     }
@@ -221,12 +221,12 @@ const Question = () => {
       //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
       if (currentIndex + 1 < moduleData.questions.length) {
         history.push({
-          pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex + 1].id}`,
+          pathname: `/module/${params.moduleID}/question/${moduleData.questions[currentIndex + 1].id}`,
           search: `?mode=${practiceMode.current}`,
         });
       } else {
         history.push({
-          pathname: `/module/${params.moduleID}/${moduleData.questions[0].id}`,
+          pathname: `/module/${params.moduleID}/question/${moduleData.questions[0].id}`,
           search: `?mode=${practiceMode.current}`,
         });
       }
@@ -250,7 +250,7 @@ const Question = () => {
       }
 
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[newRandomIndex].id}`,
+        pathname: `/module/${params.moduleID}/question/${moduleData.questions[newRandomIndex].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     }
@@ -266,7 +266,7 @@ const Question = () => {
     //TODO notify the user that the end was reached
     if (params.questionID !== lastIDInQuestionArray) {
       history.push({
-        pathname: `/module/${params.moduleID}/${lastIDInQuestionArray}`,
+        pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
         search: `?mode=${practiceMode.current}`,
       });
     }

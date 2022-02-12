@@ -72,10 +72,10 @@ const mockSetContextModuleID = jest.fn();
 //Mock the question component with router to allow switching pages and the provider
 const MockQuestionWithRouter = ({ qID, practiceMode }) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${data.id}/${qID}?mode=${practiceMode}`]}>
+    <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${practiceMode}`]}>
       <Switch>
         <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
-          <Route exact path='/module/:moduleID/:questionID' component={Question} />
+          <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
       </Switch>
     </MemoryRouter>
@@ -87,7 +87,7 @@ const MockQuestionWithRouterAndHistory = ({ history }) => {
     <Router history={history}>
       <Switch>
         <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
-          <Route exact path='/module/:moduleID/:questionID' component={Question} />
+          <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
       </Switch>
     </Router>
@@ -497,7 +497,7 @@ describe("<Question />", () => {
     //Create history
     const history = createMemoryHistory();
     history.push({
-      pathname: `/module/${data.id}/${data.questions[0].id}`,
+      pathname: `/module/${data.id}/question/${data.questions[0].id}`,
       search: "?mode=chronological",
     });
 
@@ -509,7 +509,7 @@ describe("<Question />", () => {
     user.click(buttonElement);
     user.click(buttonElement);
 
-    expect(history.location.pathname).toBe(`/module/${data.id}/${data.questions[1].id}`);
+    expect(history.location.pathname).toBe(`/module/${data.id}/question/${data.questions[1].id}`);
 
     //Expect the ui to update to new qiD
     const questionIDText = screen.getByTestId("question-id").textContent;
@@ -523,7 +523,7 @@ describe("<Question />", () => {
 
     const history = createMemoryHistory();
     history.push({
-      pathname: `/module/${data.id}/${data.questions[1].id}`,
+      pathname: `/module/${data.id}/question/${data.questions[1].id}`,
       search: "?mode=chronological",
     });
     render(<MockQuestionWithRouterAndHistory history={history} />);
@@ -532,7 +532,7 @@ describe("<Question />", () => {
     const buttonElement = screen.getByTestId("previous-question-button");
     user.click(buttonElement);
 
-    expect(history.location.pathname).toBe(`/module/${data.id}/${data.questions[0].id}`);
+    expect(history.location.pathname).toBe(`/module/${data.id}/question/${data.questions[0].id}`);
   });
 
   //Expect the array to restart at the last element when clicking the previous question button when on the first element on the array (only test the url not UI)
@@ -543,7 +543,7 @@ describe("<Question />", () => {
     //Create history prop (data.questions[0].id === "qID-1")
     const history = createMemoryHistory();
     history.push({
-      pathname: `/module/${data.id}/${data.questions[0].id}`,
+      pathname: `/module/${data.id}/question/${data.questions[0].id}`,
       search: "?mode=chronological",
     });
     render(<MockQuestionWithRouterAndHistory history={history} />);
@@ -553,7 +553,7 @@ describe("<Question />", () => {
     user.click(buttonElement);
 
     const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/${idOfLastElementInTestArray}`);
+    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfLastElementInTestArray}`);
   });
 
   //Expect the url to change to first element in array when clicking the to first Question Button
@@ -561,7 +561,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
     const history = createMemoryHistory();
-    history.push(`/module/${data.id}/${data.questions[1].id}`); //data.questions[1].id === "qID-2"
+    history.push(`/module/${data.id}/question/${data.questions[1].id}`); //data.questions[1].id === "qID-2"
 
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
@@ -570,7 +570,7 @@ describe("<Question />", () => {
     user.click(toFirstQuestionButton);
 
     const idOfFirstElementInTestArray = data.questions[0].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/${idOfFirstElementInTestArray}`);
+    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfFirstElementInTestArray}`);
   });
 
   //Expect the url to change to the last element in array when clicking the to last Question Button
@@ -578,7 +578,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
     const history = createMemoryHistory();
-    history.push(`/module/${data.id}/${data.questions[0].id}`);
+    history.push(`/module/${data.id}/question/${data.questions[0].id}`);
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //Click the to last Question Button
@@ -586,7 +586,7 @@ describe("<Question />", () => {
     user.click(toLastQuestionButton);
 
     const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/${idOfLastElementInTestArray}`);
+    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfLastElementInTestArray}`);
   });
 
   //Expect to next question to be not the same url as current one

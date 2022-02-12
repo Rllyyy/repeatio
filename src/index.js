@@ -16,6 +16,7 @@ import Thanks from "./Components/Main/Thanks";
 import News from "./Components/Main/News";
 import Module from "./Components/Main/Module/Module.js";
 import Question from "./Components/Main/Question/Question";
+import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions";
 
 //Context
 import { ModuleProvider } from "./Context/ModuleContext.js";
@@ -41,7 +42,8 @@ ReactDOM.render(
           <Route exact path='/settings' component={Settings} />
           <ModuleProvider>
             <Route exact path='/module/:moduleID' component={Module} />
-            <Route exact path='/module/:moduleID/:questionID' component={Question} />
+            <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
+            <Route exact path='/module/:moduleID/all-questions' component={AllQuestions} />
           </ModuleProvider>
         </Switch>
       </main>

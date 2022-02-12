@@ -103,14 +103,14 @@ const Module = ({ match }) => {
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
               <Link
-                to={`/module/${match.params.moduleID}/${module.questions[0].id}?mode=chronological`}
+                to={`/module/${match.params.moduleID}/question/${module.questions[0].id}?mode=chronological`}
                 className='practice-chronological'
               >
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
               </Link>
               <Link
-                to={`/module/${match.params.moduleID}/${module.questions[randomIndex].id}?mode=random`}
+                to={`/module/${match.params.moduleID}/question/${module.questions[randomIndex].id}?mode=random`}
                 className='practice-random'
               >
                 <GiPerspectiveDiceSixFacesRandom />
@@ -126,8 +126,10 @@ const Module = ({ match }) => {
         </button>
         {/* View all Questions*/}
         <button className='card-all-questions'>
-          <BsListOl />
-          <h3>All Questions</h3>
+          <Link to={`/module/${match.params.moduleID}/all-questions`}>
+            <BsListOl />
+            <h3>All Questions</h3>
+          </Link>
         </button>
         {/* Add Question */}
         <button className='card-add-question'>
