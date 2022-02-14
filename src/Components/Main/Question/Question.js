@@ -194,9 +194,6 @@ const Question = () => {
 
   //Go to the previous question
   const toPreviousQuestion = () => {
-    //Reset ref
-    questionAnswerRef.current.resetSelection();
-
     //get Current index
     const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
@@ -335,7 +332,7 @@ const Question = () => {
         </button> */}
         <ReactMarkdown className='question-title' children={question.title} />
         <p className='question-points'>
-          {question.points} {question.points >= 2 ? "Points" : "Point"}
+          {question.points} {question.points === 1 ? "Point" : "Points"}
         </p>
         <ReactMarkdown
           className='question-type-help'
