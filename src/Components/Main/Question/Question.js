@@ -28,6 +28,7 @@ import { FaArrowRight } from "react-icons/fa";
 
 //Navigation svg from https://tablericons.com
 
+//Component
 const Question = () => {
   /* HOOKS */
   //States
@@ -53,7 +54,7 @@ const Question = () => {
 
   //Refs
   const questionBottomRef = useRef(null);
-  const checkRef = useRef(); //Checking if an answer is correct id done in the child component
+  const questionAnswerRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
   const practiceMode = useRef(new URLSearchParams(search).get("mode") || "chronological"); //Fallback to chronological if urlSearchParams is undefined
 
@@ -75,18 +76,19 @@ const Question = () => {
     //Find the correct question in the moduleData context
     const returnQuestion = moduleData.questions.find((questionItem) => questionItem.id === params.questionID);
 
-    //Set the locale storage
+    //Set the question state
     setQuestion(returnQuestion);
 
     //set a variable so it can be used when component unmounts
-    const questionAnswerRef = checkRef.current;
+    const questionAnswerResetRef = questionAnswerRef.current;
 
     return () => {
       setFormDisabled(false);
       setShowAnswer(false);
       setAnswerCorrect();
-      if (questionAnswerRef !== undefined && questionAnswerRef !== null) {
-        questionAnswerRef.resetSelection();
+      setQuestion({});
+      if (questionAnswerResetRef !== undefined && questionAnswerResetRef !== null) {
+        questionAnswerResetRef.resetSelection();
       }
     };
   }, [moduleData, params.questionID, params.moduleID, setContextModuleID]);
@@ -131,7 +133,7 @@ const Question = () => {
           return (
             <MultipleResponse
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -141,7 +143,7 @@ const Question = () => {
           return (
             <MultipleChoice
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -151,7 +153,7 @@ const Question = () => {
           return (
             <GapText
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -161,7 +163,7 @@ const Question = () => {
           return (
             <ExtendedMatch
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -192,6 +194,9 @@ const Question = () => {
 
   //Go to the previous question
   const toPreviousQuestion = () => {
+    //Reset ref
+    questionAnswerRef.current.resetSelection();
+
     //get Current index
     const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
@@ -214,6 +219,8 @@ const Question = () => {
 
   //Go to the next question
   const handleNextQuestion = () => {
+    //Next question is dependent if the current practice mode (from the url) is chronological or random
+    questionAnswerRef.current.resetSelection();
     if (practiceMode.current === "chronological") {
       //get Current index
       const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
@@ -285,7 +292,7 @@ const Question = () => {
     if (showAnswer) {
       handleNextQuestion();
     } else {
-      checkRef.current.checkAnswer();
+      questionAnswerRef.current.checkAnswer();
       setFormDisabled(true);
     }
   };
@@ -298,9 +305,9 @@ const Question = () => {
 
     //Deselect answer
     if (showAnswer) {
-      checkRef.current.resetAndShuffleOptions();
+      questionAnswerRef.current.resetAndShuffleOptions();
     } else {
-      checkRef.current.resetSelection();
+      questionAnswerRef.current.resetSelection();
     }
   };
 
@@ -349,7 +356,7 @@ const Question = () => {
             <p className='question-correction-title'>
               {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
             </p>
-            <>{checkRef.current.returnAnswer()}</>
+            <>{questionAnswerRef.current.returnAnswer()}</>
           </section>
         )}
       </div>

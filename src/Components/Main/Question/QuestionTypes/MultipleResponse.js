@@ -54,6 +54,12 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
     //Update the state with the new shuffled array
     setShuffledOptions(shuffleArrayChecked);
+
+    //Cleanup the states
+    return () => {
+      setShuffledOptions([]);
+      setShuffleCounter(0);
+    };
   }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
