@@ -1,4 +1,5 @@
-.question-gap-text{
+.question-gap-text,
+.correction-gap-text{
   font-size: 18px;
   line-height: 2.25rem; 
 }
@@ -16,38 +17,46 @@
 }
 
 /* Markdown specific */
-.question-gap-text{
+.question-gap-text,
+.correction-gap-text{
   display: inline;
 }
 
-.question-gap-text p{ 
+.question-gap-text p,
+.correction-gap-text p{ 
   display: inline;
 }
 
-.question-gap-text div{
+.question-gap-text div,
+.correction-gap-text div{
   display: inline;
 }
 
-.question-gap-text input{ 
+.question-gap-text input,
+.correction-gap-text input{ 
   display: inline;
 }
 
-.question-gap-text table{
+.question-gap-text table,
+.correction-gap-text table{
   margin: 5px 0;
   border: 1px solid black;
   border-collapse: collapse;
 }
 
-.question-gap-text table, .question-gap-text th, .question-gap-text td{
+.question-gap-text table, .question-gap-text th, .question-gap-text td,
+.correction-gap-text table, .correction-gap-text th, .correction-gap-text td{
   border: 1px solid black;
 }
 
-.question-gap-text table input{
+.question-gap-text table input,
+.correction-gap-text table input{
   width: 100%;
   margin: 10px 0;
 }
 
-.question-gap-text th, .question-gap-text td{ 
+.question-gap-text th, .question-gap-text td,
+.correction-gap-text th, .correction-gap-text td{ 
   padding: 0px 10px;
 }
 
@@ -64,15 +73,9 @@
 }
 
 /* CSS for the correction box displayed in the question component */
-.correction-gap-text{
-  font-size: 1rem;
-  line-height: 2rem;
-  width: 100%;
-}
-
 .correction-gap-text input{
   color: black;
-  font-size: 1rem;
+  font-size: 18px;
   margin: 0 1px;
   padding: 4px 5px;
   outline: none;

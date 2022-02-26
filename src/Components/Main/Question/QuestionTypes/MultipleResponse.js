@@ -103,7 +103,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleResponse-list-item' key={item.id}>
-                  {item.text}
+                  <ReactMarkdown children={item.text} rehypePlugins={[rehypeRaw]} />
                 </li>
               );
             } else {

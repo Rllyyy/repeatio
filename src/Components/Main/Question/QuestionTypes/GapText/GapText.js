@@ -10,6 +10,9 @@ import remarkGfm from "remark-gfm";
 //css
 import "./GapText.css";
 
+//Components
+import AnswerCorrection from "./Components/AnswerCorrection";
+
 //HELP
 //The code in this Component may seem a bit odd.
 //The reason for this weirdness is that it mixes JSON, MarkDown, HTML and JSX so it can use Markdown for syntax like tables, strong, ...
@@ -151,41 +154,7 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
 
     //Return the correct answer in JSX so it can be displayed in the parent component
     returnAnswer() {
-      const splitArray = options.text.split("[]");
-
-      const concatValues = (values) => {
-        return values.join("; ");
-      };
-
-      //Map over the split array and place a input element between them.
-      //But don't do it at the end if there is no such split element.
-      //This is kinda ugly but the other option would be to set a dangerouslySetInnerHTML.
-      const mappedArray = splitArray.map((line, index) => {
-        if (index < splitArray.length - 1) {
-          const concatenatedValues = concatValues(options.correctGapValues[index]);
-          return (
-            <span key={`line-width-input-${index}`}>
-              <span key={`line-${index}`} className='line'>
-                {line}
-              </span>
-              <input
-                disabled
-                key={`input-${index}`}
-                type='text'
-                autoCapitalize='off'
-                autoComplete='off'
-                spellCheck='false'
-                value={concatenatedValues || ""}
-                style={{ width: `${concatenatedValues.length}ch` }}
-              />
-            </span>
-          );
-        } else {
-          return <span key={`line-${index}`}>{line}</span>;
-        }
-      });
-
-      return <div className='correction-gap-text'>{mappedArray}</div>;
+      return <AnswerCorrection text={options.text} correctGapValues={options.correctGapValues} />;
     },
 
     //Reset User selection

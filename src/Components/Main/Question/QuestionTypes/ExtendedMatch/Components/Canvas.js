@@ -10,7 +10,7 @@ const Canvas = ({ lines }) => {
 
   //Redraw the whole canvas
   useEffect(() => {
-    if (canvasSize === undefined || lines.length <= 0) {
+    if (canvasSize === undefined || lines.length <= 0 || canvasSize.width === undefined) {
       const ctx = canvasRef.current.getContext("2d");
       ctx.clearRect(0, 0, ctx.width, ctx.height);
       return;

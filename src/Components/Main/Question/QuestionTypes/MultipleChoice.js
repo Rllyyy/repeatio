@@ -104,7 +104,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleChoice-list-item' key={item.id}>
-                  {item.text}
+                  <ReactMarkdown children={item.text} rehypePlugins={[rehypeRaw]} />
                 </li>
               );
             } else {

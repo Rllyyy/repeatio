@@ -14,7 +14,7 @@ import rehypeRaw from "rehype-raw";
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
-import GapText from "./QuestionTypes/GapText.js";
+import GapText from "./QuestionTypes/GapText/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
 
 //Import CSS
@@ -353,7 +353,7 @@ const Question = () => {
             <p className='question-correction-title'>
               {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
             </p>
-            <>{questionAnswerRef.current.returnAnswer()}</>
+            <div id='question-correction'>{questionAnswerRef.current.returnAnswer()}</div>
           </section>
         )}
       </div>
