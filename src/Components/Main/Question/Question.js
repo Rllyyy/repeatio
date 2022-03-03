@@ -16,6 +16,7 @@ import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
+import GapTextDropdown from "./QuestionTypes/GapTextDropdown/GapTextDropdown.js";
 
 //Import CSS
 import "./Question.css";
@@ -162,6 +163,16 @@ const Question = () => {
         case "extended-match":
           return (
             <ExtendedMatch
+              options={options}
+              ref={questionAnswerRef}
+              setAnswerCorrect={setAnswerCorrect}
+              setShowAnswer={setShowAnswer}
+              formDisabled={formDisabled}
+            />
+          );
+        case "gap-text-dropdown":
+          return (
+            <GapTextDropdown
               options={options}
               ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}

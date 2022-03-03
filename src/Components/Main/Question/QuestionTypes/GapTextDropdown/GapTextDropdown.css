@@ -1,0 +1,51 @@
+.question-gap-text-with-dropdown p,
+.question-gap-text-with-dropdown span{
+  font-size: 18px;
+  display: inline;
+  line-height: 2rem;
+}
+
+.question-gap-text-with-dropdown .select-wrapper{
+  display: inline;
+  margin: 0 2px;
+}
+
+.question-gap-text-with-dropdown select{
+  display: inline;
+  font-size: 18px;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+
+.question-gap-text-with-dropdown select:focus{
+  outline: none;
+}
+
+.question-gap-text-with-dropdown .select-disabled{
+  cursor: not-allowed; 
+}
+
+/* Table related */
+.question-gap-text-with-dropdown table,
+.correction-gap-text table{
+  margin: 5px 0;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.question-gap-text-with-dropdown table, 
+.question-gap-text-with-dropdown th, 
+.question-gap-text-with-dropdown td{
+  border: 1px solid black;
+}
+
+.question-gap-text-with-dropdown table select{
+  width: 100%;
+  margin: 5px 0;
+}
+
+.question-gap-text-with-dropdown th, .question-gap-text-with-dropdown td{ 
+  padding: 0px 10px;
+}
+
+

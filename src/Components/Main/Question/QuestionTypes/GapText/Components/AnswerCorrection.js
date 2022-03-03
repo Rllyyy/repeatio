@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOMServer from "react-dom/server";
 
 //React Markdown
