@@ -1,8 +1,10 @@
 .question-gap-text-with-dropdown p,
-.question-gap-text-with-dropdown span{
+.question-gap-text-with-dropdown span,
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown span{
   font-size: 18px;
   display: inline;
-  line-height: 2rem;
+  line-height: 1.8rem;
 }
 
 .question-gap-text-with-dropdown .select-wrapper{
@@ -15,6 +17,10 @@
   font-size: 18px;
   padding: 2px 5px;
   cursor: pointer;
+  border-radius: 3px;
+  background-color: transparent;
+  border-width: 1.8px;
+  border-color: rgb(169, 172, 173);
 }
 
 .question-gap-text-with-dropdown select:focus{
@@ -27,7 +33,7 @@
 
 /* Table related */
 .question-gap-text-with-dropdown table,
-.correction-gap-text table{
+.correction-gap-text-with-dropdown table{
   margin: 5px 0;
   border: 1px solid black;
   border-collapse: collapse;
@@ -35,7 +41,10 @@
 
 .question-gap-text-with-dropdown table, 
 .question-gap-text-with-dropdown th, 
-.question-gap-text-with-dropdown td{
+.question-gap-text-with-dropdown td,
+.correction-gap-text-with-dropdown table,
+.correction-gap-text-with-dropdown th,
+.correction-gap-text-with-dropdown td{
   border: 1px solid black;
 }
 
@@ -44,8 +53,45 @@
   margin: 5px 0;
 }
 
-.question-gap-text-with-dropdown th, .question-gap-text-with-dropdown td{ 
+.question-gap-text-with-dropdown th, 
+.question-gap-text-with-dropdown td,
+.correction-gap-text-with-dropdown th,
+.correction-gap-text-with-dropdown td{ 
+  height: 30px; /* Tables grow when this value is to short. Think like min-height */
   padding: 0px 10px;
+}
+
+/* Correction related */
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown span{
+  line-height: 1.4rem;
+}
+
+.correction-gap-text-with-dropdown .correct-dropdown-value{
+  margin: 0 2px;
+  font-weight: 600;
+}
+
+/* Media Query for Desktop */
+@media (pointer: fine) {
+  .question-gap-text-with-dropdown select:hover{ 
+    border-color: var(--custom-prime-color);
+  }
+
+  .question-gap-text-with-dropdown select:active{
+    border-color: var(--custom-prime-color);
+  }
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .question-gap-text-with-dropdown{
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .question-gap-text-with-dropdown select{
+    border-width: 1px;
+  }
 }
 
 

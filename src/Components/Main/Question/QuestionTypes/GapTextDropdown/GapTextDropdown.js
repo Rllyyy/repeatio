@@ -10,6 +10,10 @@ import remarkGfm from "remark-gfm";
 //css
 import "./GapTextDropdown.css";
 
+//Components
+import AnswerCorrection from "./Components/AnswerCorrection";
+
+//Component
 const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [selectedValues, setSelectedValues] = useState([]);
@@ -158,7 +162,7 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
 
     //Return the correct answer as jsx
     returnAnswer() {
-      //TODO return answer as jsx
+      return <AnswerCorrection text={options.text} dropdowns={options.dropdowns} />;
     },
 
     //Reset the users selection

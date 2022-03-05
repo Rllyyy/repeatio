@@ -112,7 +112,9 @@
 }
 
 .question-correction-title{
-  font-weight: 550;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 2px;
 }
 
 .question-scrollToBottom-button{

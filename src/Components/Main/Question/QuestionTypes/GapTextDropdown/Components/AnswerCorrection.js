@@ -6,13 +6,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 
-const concatValues = (values) => {
-  return values.join("; ");
-};
-
-//Component
-const AnswerCorrection = ({ text, correctGapValues }) => {
-  const textWithBlanks = () => {
+const AnswerCorrection = ({ text, dropdowns }) => {
+  const markdownText = () => {
     //Render the json string in markdown and return html nodes
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
@@ -25,25 +20,15 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
 
     //Insert the input marker between the array elements but not at the end
     const mappedArray = htmlStringSplit.map((line, index) => {
-      if (index < htmlStringSplit.length - 1) {
-        const concatenatedValues = concatValues(correctGapValues[index]);
+      if (index < htmlStringSplit.length - 1 && index !== undefined) {
         return ReactDOMServer.renderToString(
-          <>
-            <>{line}</>
-            <input
-              disabled
-              key={`input-${index}`}
-              type='text'
-              autoCapitalize='off'
-              autoComplete='off'
-              spellCheck='false'
-              value={concatenatedValues || ""}
-              style={{ width: `${concatenatedValues.length}ch` }}
-            />
-          </>
+          <span>
+            <span>{line}</span>
+            <span className='correct-dropdown-value'>{dropdowns[index].correct}</span>
+          </span>
         );
       } else {
-        return ReactDOMServer.renderToString(<>{line}</>);
+        return ReactDOMServer.renderToString(<span>{line}</span>);
       }
     });
     //Combine the array to one string again
@@ -59,8 +44,7 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
     //TODO: Sanitize the html with https://github.com/cure53/DOMPurify
     return exportHTMl;
   };
-  //JSX
-  return <div className='correction-gap-text' dangerouslySetInnerHTML={{ __html: textWithBlanks() }} />;
+  return <div className='correction-gap-text-with-dropdown' dangerouslySetInnerHTML={{ __html: markdownText() }} />;
 };
 
 export default AnswerCorrection;
