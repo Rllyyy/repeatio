@@ -98,7 +98,7 @@
 }
 
 /* Media Query for devices that can hover (desktop, not phones) */
-@media (hover: hover) {
+@media (pointer: fine) {
   .all-questions-table .button-to-question:hover svg{
     color: var(--custom-prime-color);
   }
@@ -139,5 +139,4 @@
   .all-questions-table .button-to-question{
     width: 40px;
   }
-
 }

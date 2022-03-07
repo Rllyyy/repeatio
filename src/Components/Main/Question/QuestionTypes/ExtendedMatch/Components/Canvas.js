@@ -40,7 +40,7 @@ const Canvas = ({ lines }) => {
       ctx.lineTo(canvasSize.width, rightOffSetTop);
       ctx.lineCap = "round";
       ctx.strokeStyle = "rgb(150, 150, 150)";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2;
       ctx.stroke();
     });
 
@@ -77,7 +77,7 @@ const Canvas = ({ lines }) => {
     ctx.lineTo(canvasSize.width, rightOffSetTop);
     ctx.lineCap = "round";
     ctx.strokeStyle = "rgb(150, 150, 150)";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2;
     ctx.stroke();
   }, [lines]); // eslint-disable-line react-hooks/exhaustive-deps
 
