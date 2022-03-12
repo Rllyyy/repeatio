@@ -61,6 +61,14 @@
   padding: 0px 10px;
 }
 
+/* List related */
+.question-gap-text-with-dropdown ol li,
+.question-gap-text-with-dropdown ul li,
+.correction-gap-text-with-dropdown ol li,
+.correction-gap-text-with-dropdown ul li{
+    list-style-position: inside;
+}
+
 /* Correction related */
 .correction-gap-text-with-dropdown p,
 .correction-gap-text-with-dropdown span{
@@ -74,11 +82,11 @@
 
 /* Media Query for Desktop */
 @media (pointer: fine) {
-  .question-gap-text-with-dropdown select:hover{ 
+  .question-gap-text-with-dropdown .select-enabled:hover{ 
     border-color: var(--custom-prime-color);
   }
 
-  .question-gap-text-with-dropdown select:active{
+  .question-gap-text-with-dropdown .select-enabled:active{
     border-color: var(--custom-prime-color);
   }
 }

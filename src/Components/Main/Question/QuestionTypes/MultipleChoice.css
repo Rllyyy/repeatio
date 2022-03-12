@@ -59,6 +59,14 @@
   max-height: 300px;
 }
 
+/* Style list set with Markdowns html */
+.question-multiple-choice ul li,
+.question-multiple-choice ol li,
+.correction-multipleChoice-list ul li,
+.correction-multipleChoice-list ol li{
+  list-style-position: inside;
+}
+
 /* Media Query for phones */
 @media only screen and (max-width: 650px) { 
   .question-multiple-choice .formControlLabel{ 

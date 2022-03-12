@@ -94,6 +94,12 @@
   max-height: 500px;
 }
 
+/* Targets the markdown list in the question type help */
+.question-type-help ul li,
+.question-type-help ol li{
+  list-style-position: inside;
+}
+
 /* Targets the question-correction section*/
 .question-correction{
   margin: 15px 0 5px 0;
