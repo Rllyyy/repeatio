@@ -92,12 +92,12 @@
 
 .answer-false .extended-match-grid-solution .ext-match-element-circle{
   background-color: rgb(241, 177, 170);
-  border-color: rgb(170, 120, 114);
+  border: 2px solid rgb(170, 120, 114);
 }
 
 .answer-correct .extended-match-grid-solution .ext-match-element-circle{
   background-color: rgb(145, 202, 172);
-  border-color: rgba(21, 104, 60, 0.85);
+  border: 2px solid rgba(21, 104, 60, 0.85);
 }
 
 .extended-match-grid .highlight-single-circle{

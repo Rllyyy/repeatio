@@ -341,7 +341,7 @@ const Question = () => {
         {/* <button>
           <MdBookmark />
         </button> */}
-        <ReactMarkdown className='question-title' children={question.title} />
+        <ReactMarkdown className='question-title' rehypePlugins={[rehypeRaw]} children={question.title} />
         <p className='question-points'>
           {question.points} {question.points === 1 ? "Point" : "Points"}
         </p>

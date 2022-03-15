@@ -12,11 +12,13 @@ import "./GapTextDropdown.css";
 
 //Components
 import AnswerCorrection from "./Components/AnswerCorrection";
+import ReturnOptions from "./Components/ReturnOptions";
 
 //Component
 const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [selectedValues, setSelectedValues] = useState([]);
+  const [shuffleTrigger, setShuffleTrigger] = useState(0);
 
   //Update the selected input
   const handleChange = useCallback(
@@ -73,25 +75,6 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
     return exportHTMl;
   }, [options.text]);
 
-  //Return the options for the corresponding select
-  const ReturnOptions = ({ index }) => {
-    //find right array
-    const dropdownOptions = options.dropdowns.find((item) => item.id === `select-${index}`);
-    //Return options plus empty option on top
-    return (
-      <React.Fragment key={`select-${index}`}>
-        <option value=''></option>
-        {dropdownOptions.options.map((optionText, index) => {
-          return (
-            <option key={index} value={optionText}>
-              {optionText}
-            </option>
-          );
-        })}
-      </React.Fragment>
-    );
-  };
-
   //Inset the select elements at the corresponding select wrapper index,
   //because ReactDOMServer.renderToString ignores onChange handlers
   useEffect(() => {
@@ -114,12 +97,12 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
           onChange={(e) => handleChange(e, index)}
           value={selectedValues[index].value || ""}
         >
-          <ReturnOptions index={index} />
+          <ReturnOptions selectIndex={index} options={options} shuffleTrigger={shuffleTrigger} />
         </select>,
         document.getElementById(`select-wrapper-${index}`)
       );
     }
-  }, [selectedValues, formDisabled, handleChange, options]);
+  }, [selectedValues, formDisabled, handleChange, options, shuffleTrigger]);
 
   //Setup selected empty values
   useEffect(() => {
@@ -178,7 +161,8 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
     //Triggered when the user clicks question-retry button after form submit
     resetAndShuffleOptions() {
       this.resetSelection();
-      //TODO add shuffle to select options
+      //Trigger a rerender for the dropdown options and therefor randomize them
+      setShuffleTrigger((prev) => prev + 1);
     },
   }));
 

@@ -54,7 +54,7 @@
 /* Targets the markdown (styling) in the title */
 .question-title p{
   line-height: 1.2;
-  font-size: 1.42rem;
+  font-size: 1.35rem;
   font-weight: 450;
 }
 
@@ -73,7 +73,8 @@
 /* Style the question points */
 .question-points{
   font-size: 1.1rem;
-  margin-top: 2px;
+  color: var(--custom-secondary-color);
+  margin-top: 1px;
 }
 
 /* Style the question type help */

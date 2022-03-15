@@ -61,7 +61,7 @@
 }
 
 .question-gap-text ul li,
-.question-gap-text li li{
+.question-gap-text ol li{
   list-style-position: inside;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .correction-gap-text ul li,
-.correction-gap-text li li{
+.correction-gap-text ol li{
   list-style-position: inside;
 }
 
