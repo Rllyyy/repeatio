@@ -82,7 +82,12 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
     //Has to be selected with query because ReactDOMServer.renderToString ignores refs
     const selectWrapperLength = document.querySelectorAll(".question-gap-text-with-dropdown .select-wrapper").length;
 
-    if (selectedValues === undefined || selectWrapperLength === 0 || selectedValues.length <= 0) {
+    if (
+      selectedValues === undefined ||
+      selectWrapperLength === 0 ||
+      selectedValues.length <= 0 ||
+      selectWrapperLength !== selectedValues.length
+    ) {
       return;
     }
 
@@ -97,12 +102,12 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
           onChange={(e) => handleChange(e, index)}
           value={selectedValues[index].value || ""}
         >
-          <ReturnOptions selectIndex={index} options={options} shuffleTrigger={shuffleTrigger} />
+          <ReturnOptions selectIndex={index} dropdowns={options.dropdowns} shuffleTrigger={shuffleTrigger} />
         </select>,
         document.getElementById(`select-wrapper-${index}`)
       );
     }
-  }, [selectedValues, formDisabled, handleChange, options, shuffleTrigger]);
+  }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffleTrigger]);
 
   //Setup selected empty values
   useEffect(() => {

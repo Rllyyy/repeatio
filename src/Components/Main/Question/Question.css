@@ -44,15 +44,26 @@
 }
 
 .question-id-progress-wrapper > .question-id{
-  font-size: 0.9rem; 
+  font-size: 0.9rem;
+  font-weight: 450;
+  line-height: 1;
+  color: var(--custom-secondary-color);
+  padding: 6px;
+  background-color: rgba(90, 90, 245, 0.3);
+  border: 2px solid var(--custom-prime-color);
+  border-radius: 5px;
 }
 
 .question-id-progress-wrapper > .question-progress{
-  font-size: 1.1rem;
+  margin-left: 10px;
+  text-align: right;
+  font-size: 1.2rem;
+  line-height: 1.2;
 }
 
 /* Targets the markdown (styling) in the title */
 .question-title p{
+  margin-top: 7px;
   line-height: 1.2;
   font-size: 1.35rem;
   font-weight: 450;
@@ -352,6 +363,14 @@
 
   .question-data{
     padding: 10px 7px 80px 12px;
+  }
+
+  .question-id-progress-wrapper > .question-progress{
+    font-size: 1.1rem;
+  }
+
+  .question-title p{
+    margin-top: 5px;
   }
 
   .question-correction{

@@ -6,9 +6,9 @@ import shuffleArray from "../../../../../../functions/shuffleArray.js";
 //Component
 //Return the options for the corresponding select
 //The component rerenders if one of the props change (shuffleTrigger), otherwise it doesn't
-const ReturnOptions = ({ selectIndex, options, shuffleTrigger }) => {
+const ReturnOptions = ({ selectIndex, dropdowns, shuffleTrigger }) => {
   //Find the correct dropdown
-  const dropdownOptions = options.dropdowns.find((item) => item.id === `select-${selectIndex}`);
+  const dropdownOptions = dropdowns.find((item) => item.id === `select-${selectIndex}`);
 
   //randomize dropdown list
   const shuffledDropdownOptions = shuffleArray(dropdownOptions.options);
