@@ -28,24 +28,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
   //Run shuffle function on first render of component or when the user clicks the retry button
   //Also add isChecked state (to false which means unchecked)
   useEffect(() => {
-    let shuffledArray = shuffleArray(options);
-
-    //Check if the previous shuffled array is equal to the current shuffled one but not on the first render
-    if (shuffledOptions.length !== 0) {
-      //check if the old (shuffledOptions) and new (shuffledArray) array are equal
-      let equal = shuffledArray.every((value, index) => value.id === shuffledOptions[index].id);
-
-      //loop until the old and new array aren't equal anymore
-      while (equal) {
-        shuffledArray = shuffleArray(options);
-
-        if (shuffledArray.every((value, index) => value.id === shuffledOptions[index].id)) {
-          equal = true;
-        } else {
-          equal = false;
-        }
-      }
-    }
+    const shuffledArray = shuffleArray(options);
 
     //Add is checked to each object in array
     let shuffleArrayChecked = shuffledArray.map((item) => {
