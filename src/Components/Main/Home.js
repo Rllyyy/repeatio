@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import isElectron from "is-electron";
 import path from "path";
@@ -12,6 +12,37 @@ import { FaArrowRight } from "react-icons/fa";
 const Home = () => {
   const [modules, setModules] = useState([]);
 
+  //Get the modules from the localStorage and set the module state
+  //Updates every time localeStorage changes
+  const modulesFromBrowserStorage = useCallback(async () => {
+    //The question types folder from the public folder needs to be combined
+    //with every module from the locale storage
+    try {
+      //Get the data from the public folder
+      const publicFolder = await fetch(path.join(__dirname, "data.json"), { mode: "no-cors" });
+      const resJSON = await publicFolder.json();
+
+      //Get modules from the localStorage
+      let storageModules = [];
+      Object.entries(localStorage).forEach((key) => {
+        if (key[0].startsWith("repeatio")) {
+          const module = localStorage.getItem(key[0]);
+          storageModules.push(JSON.parse(module));
+        }
+      });
+
+      //Update the state
+      setModules([...storageModules, resJSON]);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, []);
+
+  //Refetch the modules if the localeStorage changes
+  const onStorageChange = useCallback(() => {
+    modulesFromBrowserStorage();
+  }, [modulesFromBrowserStorage]);
+
   //Fetch data for all modules by reading all repeatio files in documents folder / locale storage (in browser)
   useEffect(() => {
     if (isElectron()) {
@@ -23,15 +54,31 @@ const Home = () => {
         setModules(data);
       });
     } else {
-      fetch(path.join(__dirname, "data.json"), { mode: "no-cors" })
-        .then((res) => res.json())
-        .then((jsonResponse) => setModules(jsonResponse));
+      //Get modules from localStorage and add storage onChange handler
+      modulesFromBrowserStorage();
+      window.addEventListener("storage", onStorageChange);
     }
 
+    //Reset the modules and remove the handler when the component unmounts
     return () => {
       setModules([]);
+      if (!isElectron()) window.removeEventListener("storage", onStorageChange);
     };
-  }, []);
+  }, [modulesFromBrowserStorage, onStorageChange]);
+
+  const inputOnChange = async (e) => {
+    try {
+      const [file] = e.target.files;
+      if (!file) return;
+      const data = await file.text();
+
+      //Update localeStorage and tell the window that a new storage event occurred
+      localStorage.setItem(`repeatio-${JSON.parse(data).id}`, data, { sameSite: "strict", secure: true });
+      window.dispatchEvent(new Event("storage"));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -63,9 +110,18 @@ const Home = () => {
             </div>
           );
         })}
-        <div className='card-empty'>
-          <BsPlusCircle className='card-empty-circle' />
-          <h3>Add Module</h3>
+        <div className='card-add'>
+          <label htmlFor='file-upload' className='custom-file-upload'>
+            <BsPlusCircle className='card-add-circle' />
+            <h3>Add Module</h3>
+          </label>
+          <input
+            className='file-input'
+            id='file-upload'
+            type='file'
+            accept='.json'
+            onChange={(e) => inputOnChange(e)}
+          />
         </div>
       </div>
     </>

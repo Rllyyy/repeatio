@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState, useEffect } from "react";
+import { createContext, useMemo, useState, useEffect, useCallback } from "react";
 import isElectron from "is-electron";
 import path from "path";
 
@@ -15,6 +15,35 @@ export const ModuleProvider = (props) => {
   //Change every time module name changes
   const providerValue = useMemo(() => ({ initialData, setInitialData }), [initialData, setInitialData]);
 
+  const getDataFromBrowser = useCallback(async () => {
+    //Fetch data from public folder
+    let dataFromPublic;
+    try {
+      const data = await fetch(path.join(__dirname, "data.json"), { mode: "no-cors" });
+      dataFromPublic = await data.json();
+    } catch (error) {
+      console.log(error);
+    }
+
+    //Fetch data from the locale Storage
+    let storageModules = [];
+    Object.entries(localStorage).forEach((key) => {
+      if (key[0].startsWith("repeatio")) {
+        const test = localStorage.getItem(key[0]);
+        storageModules.push(JSON.parse(test));
+      }
+    });
+
+    //Combine the data from the public folder and the locale storage
+    const modules = [...storageModules, dataFromPublic];
+
+    //Find the correct module with the contextID
+    const correctModule = modules.find((module) => module.id === moduleContextID);
+
+    //Set the data
+    setInitialData(correctModule);
+  }, [moduleContextID]);
+
   //Get all Questions from the file system / locale storage and provide them
   useEffect(() => {
     if (moduleContextID === "") return;
@@ -29,19 +58,19 @@ export const ModuleProvider = (props) => {
         setInitialData(data);
       });
     } else {
-      //Fetch data from public folder
-      //TODO read from localeStorage and switch to async/await
-      fetch(path.join(__dirname, "data.json"), { mode: "no-cors" })
-        .then((res) => res.json())
-        .then((resJSON) => resJSON.find((module) => module.id === moduleContextID))
-        .then((resFiltered) => setInitialData(resFiltered));
+      //Not using electron
+      getDataFromBrowser();
     }
 
     //Cleanup
     return () => {
       setInitialData([]);
     };
-  }, [moduleContextID]);
+  }, [moduleContextID, getDataFromBrowser]);
 
-  return <ModuleContext.Provider value={{ moduleData: providerValue.initialData, setContextModuleID: setContextModuleID }}>{props.children}</ModuleContext.Provider>;
+  return (
+    <ModuleContext.Provider value={{ moduleData: providerValue.initialData, setContextModuleID: setContextModuleID }}>
+      {props.children}
+    </ModuleContext.Provider>
+  );
 };
