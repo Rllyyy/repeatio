@@ -16,7 +16,12 @@ import { RiSettings4Fill } from "react-icons/ri";
 const navbarCategories = [
   { className: "home", linkTo: "", icon: <FaHome className='category-icon' />, text: "Home" },
   { className: "tutorials", linkTo: "tutorials", icon: <BsCameraVideo className='category-icon' />, text: "Tutorials" },
-  { className: "support", linkTo: "support", icon: <AiOutlineHeart className='category-icon' />, text: "Support this Project" },
+  {
+    className: "support",
+    linkTo: "support",
+    icon: <AiOutlineHeart className='category-icon' />,
+    text: "Support this Project",
+  },
   { className: "thanks", linkTo: "thanks", icon: <FaHandshake className='category-icon' />, text: "Special Thanks" },
   { className: "news", linkTo: "news", icon: <BiNews className='category-icon' />, text: "News" },
   { className: "settings", linkTo: "settings", icon: <RiSettings4Fill className='category-icon' />, text: "Settings" },
@@ -101,7 +106,12 @@ const Sidebar = () => {
         //destructure category
         const { className, linkTo, icon, text } = category;
         return (
-          <Link to={`/${linkTo}`} key={className} onClick={() => closeMenuOnMobileClick()} className={`${className}${isCurrentCategoryView(linkTo) ? " currentView" : ""}`}>
+          <Link
+            to={`/${linkTo}`}
+            key={className}
+            onClick={() => closeMenuOnMobileClick()}
+            className={`${className}${isCurrentCategoryView(linkTo) ? " currentView" : ""}`}
+          >
             {icon}
             <h2 className={`category-title ${expandSidebar && "sidebar-button-expanded"}`}>{text}</h2>
           </Link>

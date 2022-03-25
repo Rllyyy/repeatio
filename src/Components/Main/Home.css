@@ -121,7 +121,7 @@
   width: 35px;
   margin-bottom: 10px;
 }
-.card-add:hover{
+.card-add:active{
   background-color: rgb(61, 64, 82);
   color: white;
 }

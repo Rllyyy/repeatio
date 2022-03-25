@@ -172,6 +172,17 @@ label, input{
   font-size: 18px;
 }
 
+/* Remove chrome default touch color */
+div,
+input,
+label,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;

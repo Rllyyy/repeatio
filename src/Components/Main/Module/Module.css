@@ -34,7 +34,6 @@
   align-items: center;
   justify-content: center;
   
-  padding: 15px;
   min-height: 190px;
   overflow: hidden;
   user-select: none;
@@ -55,11 +54,6 @@
   outline-offset: 5px;
 }
 
-.module-cards > button:hover{
-  background-color: rgb(79, 82, 100);
-  background-color: var(--custom-prime-color);
-}
-
 .module-cards > button svg, .practice-icon-name svg{
   height: 42px;
   width: 42px;
@@ -71,7 +65,9 @@
   font-size: 20px;
 }
 
-
+.module-cards > button:active{
+  background-color: rgb(61, 64, 82);
+}
 
 /* The following css is just for the first card aka practice */
 .card-practice{
@@ -111,8 +107,8 @@
   width: 100%;
 }
 
-.practice-icon-name:hover{
-  background-color: var(--custom-prime-color);
+.practice-icon-name:active{
+  background-color: rgb(61, 64, 82);
 }
 
 .practice-chronological-random-wrapper{
@@ -147,8 +143,8 @@
   animation: practice-random-slide-in .2s ease-in-out 0s 1;
 }
 
-.practice-random:hover, .practice-chronological:hover{
- background-color: var(--custom-prime-color);
+.practice-random:active, .practice-chronological:active{
+    background-color: rgb(61, 64, 82);
 }
 
 .practice-random > svg, .practice-chronological > svg{
@@ -174,5 +170,20 @@
   100%{
   transform: translateY(0%);
     
+  }
+}
+
+/* CSS for Desktop */
+@media only screen and (pointer: fine) {
+  .practice-icon-name:hover{
+    background-color: var(--custom-prime-color);
+  }
+
+  .practice-random:hover, .practice-chronological:hover{
+    background-color: var(--custom-prime-color);
+  }
+
+  .module-cards > button:hover{
+    background-color: var(--custom-prime-color);
   }
 }

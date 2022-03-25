@@ -227,19 +227,10 @@
   stroke-width: 0.6;
   color: var(--custom-prime-color);
   fill: var(--custom-prime-color);
-  transition: fill .2s ease-in-out, color .2 ease-in-out;
 }
 
-.question-reveal:hover, .question-reveal:active, .question-retry:hover, .question-retry:active{
-  background-color: var(--custom-prime-color);
-}
-
-.question-reveal:hover > .reveal-icon, 
-.question-reveal:active > .reveal-icon, 
-.question-retry:hover > .retry-icon, 
-.question-retry:active > .retry-icon{
-  color: rgb(235, 235, 235);
-  fill: rgb(235, 235, 235);
+.question-reveal:active, .question-retry:active{
+  background-color:rgb(117, 117, 247);
 }
 
 .question-check-reveal-wrapper > .question-check-next > .check-icon{
@@ -247,7 +238,7 @@
   stroke-width: 1;
 }
 
-.question-check-next:hover, .question-check-next:active{
+.question-check-next:active{
   background-color:rgb(117, 117, 247);
   border: 2px solid rgb(117, 117, 247);
 }
@@ -334,9 +325,7 @@
   border: 1.5px solid var(--custom-secondary-color);
 }
 
-.question-navigation > input:active, 
-.question-navigation > input:hover
-{
+.question-navigation > input:active{
   border-color: var(--custom-prime-color);
   outline: var(--custom-prime-color);     
   outline-width: thin;
@@ -346,14 +335,30 @@
   fill: var(--custom-secondary-color);
 }
 
-.question-navigation > button:hover svg, .question-navigation > button:active svg{
-  color: var(--custom-prime-color);
-  stroke: var(--custom-prime-color);
-  fill: var(--custom-prime-color);
+.question-navigation > button:active svg{
+    color: var(--custom-prime-color);
+    stroke: var(--custom-prime-color);
+    fill: var(--custom-prime-color);
+}
+
+/* Media for devices with mouse input */
+@media only screen and (pointer: fine){
+  .question-navigation > input:hover
+  {
+    border-color: var(--custom-prime-color);
+    outline: var(--custom-prime-color);     
+    outline-width: thin;
+  }
+
+  .question-navigation > button:hover svg{
+    color: var(--custom-prime-color);
+    stroke: var(--custom-prime-color);
+    fill: var(--custom-prime-color);
+  }
 }
 
 /* Media query for phones */
-@media only screen and (max-width: 650px) {
+@media only screen and (pointer: coarse) {
   .question-form{
     height: calc(100vh - 130px); /*The viewport of mobile devices includes the address bar. Because why not. */
     padding-right: 4px;

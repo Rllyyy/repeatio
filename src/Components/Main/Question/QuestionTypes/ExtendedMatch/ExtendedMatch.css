@@ -149,9 +149,8 @@
   }
 }
 
-
 /* Media Query for phones */
-@media only screen and (max-width: 650px) { 
+@media only screen and (pointer: coarse) { 
   .extended-match-grid{
     grid-template-columns: 43% 43%;
     grid-gap: 14%;
@@ -168,10 +167,6 @@
   .extended-match-grid .ext-match-element{
     padding: 8px 12px;
     margin-bottom: 15px;
-  }
-
-  .extended-match-grid button{
-    -webkit-tap-highlight-color: transparent;
   }
 }
 
