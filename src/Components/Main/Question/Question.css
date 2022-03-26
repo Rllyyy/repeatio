@@ -21,6 +21,7 @@
   height: 100%;
   padding: 20px 15px 80px 20px; /*Cancel out the navigation at the bottom */
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .question-module-heading{

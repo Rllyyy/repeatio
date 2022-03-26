@@ -54,6 +54,7 @@ const Question = () => {
   const { moduleData, setContextModuleID } = useContext(ModuleContext);
 
   //Refs
+  const questionDataRef = useRef(null);
   const questionBottomRef = useRef(null);
   const questionAnswerRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
@@ -79,6 +80,9 @@ const Question = () => {
 
     //Set the question state
     setQuestion(returnQuestion);
+
+    //Scroll to top
+    questionDataRef.current.scrollTo(0, 0);
 
     //set a variable so it can be used when component unmounts
     const questionAnswerResetRef = questionAnswerRef.current;
@@ -311,9 +315,9 @@ const Question = () => {
     setShowAnswer(false);
     setAnswerCorrect();
 
-    //Deselect answer
     if (showAnswer) {
       questionAnswerRef.current.resetAndShuffleOptions();
+      questionDataRef.current.scrollTo(0, 0);
     } else {
       questionAnswerRef.current.resetSelection();
     }
@@ -329,7 +333,7 @@ const Question = () => {
   //JSX
   return (
     <form className='question-form' onSubmit={preventDef}>
-      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}}>
+      <div className='question-data' ref={questionDataRef} style={showNav ? { paddingBottom: "120px" } : {}}>
         <div className='question-id-progress-wrapper'>
           <p className='question-id' data-testid='question-id'>
             ID: {question.id}

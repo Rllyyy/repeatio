@@ -30,23 +30,24 @@ import reportWebVitals from "./reportWebVitals";
 ReactDOM.render(
   <React.StrictMode>
     <HashRouter>
-      <ScrollToTop />
       <Sidebar />
-      <main>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/tutorials' component={Tutorials} />
-          <Route exact path='/support' component={Support} />
-          <Route exact path='/thanks' component={Thanks} />
-          <Route exact path='/news' component={News} />
-          <Route exact path='/settings' component={Settings} />
-          <ModuleProvider>
-            <Route exact path='/module/:moduleID' component={Module} />
-            <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-            <Route exact path='/module/:moduleID/all-questions' component={AllQuestions} />
-          </ModuleProvider>
-        </Switch>
-      </main>
+      <ScrollToTop>
+        <main>
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/tutorials' component={Tutorials} />
+            <Route exact path='/support' component={Support} />
+            <Route exact path='/thanks' component={Thanks} />
+            <Route exact path='/news' component={News} />
+            <Route exact path='/settings' component={Settings} />
+            <ModuleProvider>
+              <Route exact path='/module/:moduleID' component={Module} />
+              <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
+              <Route exact path='/module/:moduleID/all-questions' component={AllQuestions} />
+            </ModuleProvider>
+          </Switch>
+        </main>
+      </ScrollToTop>
     </HashRouter>
   </React.StrictMode>,
   document.getElementById("root")
