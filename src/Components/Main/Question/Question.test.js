@@ -1,4 +1,4 @@
-import { screen, render, fireEvent, cleanup } from "@testing-library/react";
+import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import Question from "./Question.js";
 import { ModuleContext } from "../../../Context/ModuleContext";
@@ -125,6 +125,11 @@ describe("<Question />", () => {
 
   /* UNIT TESTING */
   it("should render form with questionID, questionTitle, questionPoints and questionTypeHelp", () => {
+    //mock scroll functions
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
     //Expect questionID
@@ -155,9 +160,12 @@ describe("<Question />", () => {
   /* INTEGRATION TESTING */
   //Expect submit button to  and lock answers
   it("should disable form after submit", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    //mock scroll functions
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
-    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
+    //render element
+    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
     let checkOptionElement = screen.getByTestId("question-check");
     user.click(checkOptionElement);
@@ -182,8 +190,12 @@ describe("<Question />", () => {
 
   //Expect the correction box (red or green) to show up after question submit
   it("should show question correction after submit", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
+    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
     const questionCorrectionElement = screen.queryByTestId("question-correction");
 
@@ -200,8 +212,12 @@ describe("<Question />", () => {
 
   //Expect the question correction to be red
   it("should show question correction as false (red)", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
+    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
     const checkButtonElement = screen.getByTestId("question-check");
     user.click(checkButtonElement);
@@ -215,8 +231,12 @@ describe("<Question />", () => {
 
   //Expect the question correction to be green
   it("should show the question correction as correct (green)", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
+    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
     const correctElement = screen.getByText(
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
@@ -235,8 +255,12 @@ describe("<Question />", () => {
 
   //Expect the retry button to work and interact with the form afterwards
   it("should reset the form when clicking the retry button", () => {
-    render(<MockQuestionWithRouter qID='qID-2' practiceMode='chronological' />);
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
+    render(<MockQuestionWithRouter qID='qID-2' practiceMode='chronological' />);
 
     const checkButtonElement = screen.getByTestId("question-check");
     user.click(checkButtonElement);
@@ -270,8 +294,12 @@ describe("<Question />", () => {
 
   //Expect the next question to render if the first answer is answered and next button is clicked
   it("should go to the next question when clicking the next button and practice mode is chronological", () => {
+    //mock scroll functions
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
-    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
 
     const buttonElement = screen.getByTestId("question-check");
     user.click(buttonElement);
@@ -282,8 +310,12 @@ describe("<Question />", () => {
   });
 
   it("should go to a new random question when clicking the next button and practice mode is random", () => {
+    //mock scroll functions
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
+
+    //render element
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='random' />);
-    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
 
     const buttonElement = screen.getByTestId("question-check");
     user.click(buttonElement);
@@ -357,7 +389,7 @@ describe("<Question />", () => {
     user.click(selectedElement);
 
     //click next question arrow in the navigation
-    const nextQuestionButton = screen.getByTestId("next-question-button");
+    const nextQuestionButton = screen.getByTestId("nav-next-question-button");
     user.click(nextQuestionButton);
 
     //Get all elements with the regex match
@@ -491,8 +523,9 @@ describe("<Question />", () => {
   //Test the history hook Expect the url to change to new params when checking a question
   //Expect the history hook and ui to update on next button click
   it("should update the url (useHistory hook) when clicking the next button and update the ui", () => {
-    //mocks
-    window.HTMLElement.prototype.scrollIntoView = jest.fn(); //to make scroll into view work
+    //mock scroll functions
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //Create history
     const history = createMemoryHistory();
@@ -518,8 +551,9 @@ describe("<Question />", () => {
 
   //Expect the url to change to previous element in array
   it("should go to previous url when clicking the previous question button", () => {
-    //to make scroll into view work
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
     const history = createMemoryHistory();
     history.push({
@@ -537,8 +571,9 @@ describe("<Question />", () => {
 
   //Expect the array to restart at the last element when clicking the previous question button when on the first element on the array (only test the url not UI)
   it("should restart the array when clicking previous question on the first element in the array", () => {
-    //to make scroll into view work
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //Create history prop (data.questions[0].id === "qID-1")
     const history = createMemoryHistory();
@@ -558,7 +593,9 @@ describe("<Question />", () => {
 
   //Expect the url to change to first element in array when clicking the to first Question Button
   it("should go to the first url in array when clicking the to first Question Button", () => {
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
     const history = createMemoryHistory();
     history.push(`/module/${data.id}/question/${data.questions[1].id}`); //data.questions[1].id === "qID-2"
@@ -575,7 +612,9 @@ describe("<Question />", () => {
 
   //Expect the url to change to the last element in array when clicking the to last Question Button
   it("should go to the last url in array when clicking the to last Question Button", () => {
+    //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollTo = jest.fn();
 
     const history = createMemoryHistory();
     history.push(`/module/${data.id}/question/${data.questions[0].id}`);

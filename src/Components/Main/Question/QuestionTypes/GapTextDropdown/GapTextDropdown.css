@@ -1,18 +1,18 @@
 .question-gap-text-with-dropdown p,
 .question-gap-text-with-dropdown span,
 .correction-gap-text-with-dropdown p,
-.correction-gap-text-with-dropdown span{
+.correction-gap-text-with-dropdown span {
   font-size: 18px;
   display: inline;
   line-height: 2.2rem;
 }
 
-.question-gap-text-with-dropdown .select-wrapper{
+.question-gap-text-with-dropdown .select-wrapper {
   display: inline;
   margin: 0 2px;
 }
 
-.question-gap-text-with-dropdown select{
+.question-gap-text-with-dropdown select {
   display: inline;
   font-size: 18px;
   padding: 2px 5px;
@@ -20,44 +20,44 @@
   border-radius: 3px;
   background-color: transparent;
   border-width: 1.8px;
-  border-color: rgb(169, 172, 173);
+  border-color: var(--custom-border-color-light);
 }
 
-.question-gap-text-with-dropdown select:focus{
+.question-gap-text-with-dropdown select:focus {
   outline: none;
 }
 
-.question-gap-text-with-dropdown .select-disabled{
-  cursor: not-allowed; 
+.question-gap-text-with-dropdown .select-disabled {
+  cursor: not-allowed;
 }
 
 /* Table related */
 .question-gap-text-with-dropdown table,
-.correction-gap-text-with-dropdown table{
+.correction-gap-text-with-dropdown table {
   margin: 5px 0;
-  border: 1px solid black;
   border-collapse: collapse;
 }
 
-.question-gap-text-with-dropdown table, 
-.question-gap-text-with-dropdown th, 
+.question-gap-text-with-dropdown table,
+.question-gap-text-with-dropdown th,
 .question-gap-text-with-dropdown td,
 .correction-gap-text-with-dropdown table,
 .correction-gap-text-with-dropdown th,
-.correction-gap-text-with-dropdown td{
-  border: 1px solid black;
+.correction-gap-text-with-dropdown td {
+  border: 1px solid var(--custom-secondary-color);
 }
 
-.question-gap-text-with-dropdown table select{
+.question-gap-text-with-dropdown table select {
   width: 100%;
   margin: 5px 0;
 }
 
-.question-gap-text-with-dropdown th, 
+.question-gap-text-with-dropdown th,
 .question-gap-text-with-dropdown td,
 .correction-gap-text-with-dropdown th,
-.correction-gap-text-with-dropdown td{ 
-  height: 30px; /* Tables grow when this value is to short. Think like min-height */
+.correction-gap-text-with-dropdown td {
+  height: 30px;
+  /* Tables grow when this value is to short. Think like min-height */
   padding: 0px 10px;
 }
 
@@ -65,41 +65,39 @@
 .question-gap-text-with-dropdown ol li,
 .question-gap-text-with-dropdown ul li,
 .correction-gap-text-with-dropdown ol li,
-.correction-gap-text-with-dropdown ul li{
-    list-style-position: inside;
+.correction-gap-text-with-dropdown ul li {
+  list-style-position: inside;
 }
 
 /* Correction related */
 .correction-gap-text-with-dropdown p,
-.correction-gap-text-with-dropdown span{
+.correction-gap-text-with-dropdown span {
   line-height: 1.4rem;
 }
 
-.correction-gap-text-with-dropdown .correct-dropdown-value{
+.correction-gap-text-with-dropdown .correct-dropdown-value {
   margin: 0 2px;
   font-weight: 600;
 }
 
 /* Media Query for Desktop */
 @media (pointer: fine) {
-  .question-gap-text-with-dropdown .select-enabled:hover{ 
+  .question-gap-text-with-dropdown .select-enabled:hover {
     border-color: var(--custom-prime-color);
   }
 
-  .question-gap-text-with-dropdown .select-enabled:active{
+  .question-gap-text-with-dropdown .select-enabled:active {
     border-color: var(--custom-prime-color);
   }
 }
 
 /* Media Query for phones */
 @media only screen and (pointer: coarse) {
-  .question-gap-text-with-dropdown{
+  .question-gap-text-with-dropdown {
     -webkit-tap-highlight-color: transparent;
   }
 
-  .question-gap-text-with-dropdown select{
+  .question-gap-text-with-dropdown select {
     border-width: 1px;
   }
 }
-
-

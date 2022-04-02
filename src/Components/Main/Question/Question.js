@@ -22,10 +22,13 @@ import GapTextDropdown from "./QuestionTypes/GapTextDropdown/GapTextDropdown.js"
 import "./Question.css";
 
 //Import SVG
-import { AiFillEye } from "react-icons/ai";
-import { BiCheck, BiReset } from "react-icons/bi";
+import { BiCheck } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
-import { FaArrowRight } from "react-icons/fa";
+import { CgUndo } from "react-icons/cg";
+import { MdNavigateNext } from "react-icons/md";
+
+//Import Components
+import Bookmark from "./Components/Bookmark.js";
 
 //Navigation svg from https://tablericons.com
 
@@ -342,9 +345,6 @@ const Question = () => {
             {currentQuestionPage}/{moduleLength()} Questions
           </p>
         </div>
-        {/* <button>
-          <MdBookmark />
-        </button> */}
         <ReactMarkdown className='question-title' rehypePlugins={[rehypeRaw]} children={question.title} />
         <p className='question-points'>
           {question.points} {question.points === 1 ? "Point" : "Points"}
@@ -372,16 +372,13 @@ const Question = () => {
           </section>
         )}
       </div>
-      {/* <button className='question-scrollToBottom-button'>
-        <BsChevronBarDown />
-      </button> */}
       <div
         className={`question-bottom ${
           collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"
         }`}
         ref={questionBottomRef}
       >
-        <div className='question-check-reveal-wrapper'>
+        <div className='question-check-retry-wrapper'>
           {/* Check */}
           <button
             className='question-check-next'
@@ -389,15 +386,11 @@ const Question = () => {
             onClick={() => questionCheckButtonOnClick()}
           >
             {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
-            {showAnswer ? <FaArrowRight className='buttons-arrow' /> : <BiCheck className='check-icon' />}
-          </button>
-          {/* Reveal */}
-          <button className='question-reveal'>
-            <AiFillEye className='reveal-icon' />
+            {showAnswer ? <MdNavigateNext className='next-question-icon' /> : <BiCheck className='check-icon' />}
           </button>
           {/* Retry */}
           <button className='question-retry' data-testid='question-retry' onClick={() => onQuestionRetryClick()}>
-            <BiReset className='retry-icon' />
+            <CgUndo className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}
           {collapsedNav && (
@@ -408,6 +401,7 @@ const Question = () => {
         </div>
         {(showNav || !collapsedNav) && (
           <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
+            <Bookmark questionID={question.id} />
             <button data-testid='first-question-button' onClick={() => toFirstQuestion()}>
               {/* <BsSkipStartFill className='navigation-start' /> */}
               <svg
@@ -438,7 +432,7 @@ const Question = () => {
               </svg>
             </button>
             <input type='number' placeholder={currentQuestionPage} min='1' />
-            <button data-testid='next-question-button' onClick={() => handleNextQuestion()}>
+            <button data-testid='nav-next-question-button' onClick={() => handleNextQuestion()}>
               {/* <BsTriangleFill className='navigation-skip' /> */}
               <svg
                 xmlns='http://www.w3.org/2000/svg'

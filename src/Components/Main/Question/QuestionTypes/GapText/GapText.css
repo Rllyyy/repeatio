@@ -1,16 +1,16 @@
 .question-gap-text,
-.correction-gap-text{
+.correction-gap-text {
   font-size: 18px;
   line-height: 2.2rem;
 }
 
-.question-gap-text input{
+.question-gap-text input {
   font-size: 18px;
   padding: 4px 5px;
   margin: 0 2px;
   outline: none;
   border: none;
-  box-shadow: 0 0 0 1px rgb(204, 204, 204);
+  box-shadow: 0 0 0 1px var(--custom-border-color-light);
   border-radius: 2px;
   display: inline;
   width: 180px;
@@ -18,67 +18,75 @@
 
 /* Markdown specific */
 .question-gap-text,
-.correction-gap-text{
+.correction-gap-text {
   display: inline;
 }
 
 .question-gap-text p,
-.correction-gap-text p{ 
+.correction-gap-text p {
   display: inline;
 }
 
 .question-gap-text div,
-.correction-gap-text div{
+.correction-gap-text div {
   display: inline;
 }
 
 .question-gap-text input,
-.correction-gap-text input{ 
+.correction-gap-text input {
   display: inline;
 }
 
 .question-gap-text table,
-.correction-gap-text table{
+.correction-gap-text table {
   margin: 5px 0;
   border: 1px solid black;
   border-collapse: collapse;
 }
 
-.question-gap-text table, .question-gap-text th, .question-gap-text td,
-.correction-gap-text table, .correction-gap-text th, .correction-gap-text td{
+.question-gap-text table,
+.question-gap-text th,
+.question-gap-text td,
+.correction-gap-text table,
+.correction-gap-text th,
+.correction-gap-text td {
   border: 1px solid black;
 }
 
 .question-gap-text table input,
-.correction-gap-text table input{
+.correction-gap-text table input {
   width: 100%;
   margin: 10px 0;
 }
 
-.question-gap-text th, .question-gap-text td,
-.correction-gap-text th, .correction-gap-text td{ 
+.question-gap-text th,
+.question-gap-text td,
+.correction-gap-text th,
+.correction-gap-text td {
   padding: 0px 10px;
 }
 
 .question-gap-text ul li,
-.question-gap-text ol li{
+.question-gap-text ol li {
   list-style-position: inside;
 }
 
-.question-gap-text .input-enabled:focus, .question-gap-text .input-enabled:active{
+.question-gap-text .input-enabled:focus,
+.question-gap-text .input-enabled:active {
   box-shadow: 0 0 0 1px var(--custom-prime-color);
 }
 
-.input-disabled{
+.input-disabled {
   cursor: not-allowed;
 }
 
-.input-disabled:focus, .input-disabled:active{ 
+.input-disabled:focus,
+.input-disabled:active {
   box-shadow: 0 0 0 1px lightgrey;
 }
 
 /* CSS for the correction box displayed in the question component */
-.correction-gap-text input{
+.correction-gap-text input {
   color: black;
   font-size: 18px;
   margin: 0 1px;
@@ -91,37 +99,37 @@
   box-sizing: content-box;
 }
 
-.answer-correct .correction-gap-text input{
+.answer-correct .correction-gap-text input {
   box-shadow: 0 0 0 1px rgb(134, 167, 149);
 }
 
-.answer-false .correction-gap-text input{ 
+.answer-false .correction-gap-text input {
   box-shadow: 0 0 0 1px rgb(194, 149, 144);
 }
 
 .correction-gap-text ul li,
-.correction-gap-text ol li{
+.correction-gap-text ol li {
   list-style-position: inside;
 }
 
 /* Media Query for phones */
-@media only screen and (max-width: 650px) { 
-  .question-gap-text{
-    font-size: 1.15rem;
-    line-height: 2.1rem; 
-  }
-
-  .question-gap-text input{
-    padding: 3px 5px;
-    font-size: 1.15rem;
-  }
-
-  .correction-gap-text{
+@media only screen and (max-width: 650px) {
+  .question-gap-text {
     font-size: 1.15rem;
     line-height: 2.1rem;
   }
 
-  .correction-gap-text input{
+  .question-gap-text input {
+    padding: 3px 5px;
+    font-size: 1.15rem;
+  }
+
+  .correction-gap-text {
+    font-size: 1.15rem;
+    line-height: 2.1rem;
+  }
+
+  .correction-gap-text input {
     font-size: 1.15rem;
     padding: 2px 5px;
   }

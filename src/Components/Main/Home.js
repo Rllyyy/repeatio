@@ -25,7 +25,7 @@ const Home = () => {
       //Get modules from the localStorage
       let storageModules = [];
       Object.entries(localStorage).forEach((key) => {
-        if (key[0].startsWith("repeatio")) {
+        if (key[0].startsWith("repeatio-module")) {
           const module = localStorage.getItem(key[0]);
           storageModules.push(JSON.parse(module));
         }
@@ -73,7 +73,7 @@ const Home = () => {
       const data = await file.text();
 
       //Update localeStorage and tell the window that a new storage event occurred
-      localStorage.setItem(`repeatio-${JSON.parse(data).id}`, data, { sameSite: "strict", secure: true });
+      localStorage.setItem(`repeatio-module-${JSON.parse(data).id}`, data, { sameSite: "strict", secure: true });
       window.dispatchEvent(new Event("storage"));
     } catch (error) {
       console.error(error);
