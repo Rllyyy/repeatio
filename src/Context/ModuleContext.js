@@ -8,13 +8,18 @@ export const ModuleContext = createContext([]);
 //Provide the data to all children
 export const ModuleProvider = (props) => {
   const [initialData, setInitialData] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [moduleContextID, setContextModuleID] = useState("");
 
   //provide a state a pass it when it changes, rerender the context
 
   //Change every time module name changes
-  const providerValue = useMemo(() => ({ initialData, setInitialData }), [initialData, setInitialData]);
+  const providerValue = useMemo(
+    () => ({ initialData, setInitialData, filteredQuestions, setFilteredQuestions }),
+    [initialData, setInitialData, filteredQuestions]
+  );
 
+  //All questions
   const getDataFromBrowser = useCallback(async () => {
     //Fetch data from public folder
     let dataFromPublic;
@@ -28,9 +33,9 @@ export const ModuleProvider = (props) => {
     //Fetch data from the locale Storage
     let storageModules = [];
     Object.entries(localStorage).forEach((key) => {
-      if (key[0].startsWith("repeatio")) {
-        const test = localStorage.getItem(key[0]);
-        storageModules.push(JSON.parse(test));
+      if (key[0].startsWith("repeatio-module")) {
+        const repeatioModule = localStorage.getItem(key[0]);
+        storageModules.push(JSON.parse(repeatioModule));
       }
     });
 
@@ -42,6 +47,7 @@ export const ModuleProvider = (props) => {
 
     //Set the data
     setInitialData(correctModule);
+    setFilteredQuestions(correctModule.questions);
   }, [moduleContextID]);
 
   //Get all Questions from the file system / locale storage and provide them
@@ -56,6 +62,7 @@ export const ModuleProvider = (props) => {
       // Called when message received from main process
       window.api.response("fromMain", (data) => {
         setInitialData(data);
+        setFilteredQuestions(data.questions);
       });
     } else {
       //Not using electron
@@ -65,11 +72,19 @@ export const ModuleProvider = (props) => {
     //Cleanup
     return () => {
       setInitialData([]);
+      setFilteredQuestions([]);
     };
   }, [moduleContextID, getDataFromBrowser]);
 
   return (
-    <ModuleContext.Provider value={{ moduleData: providerValue.initialData, setContextModuleID: setContextModuleID }}>
+    <ModuleContext.Provider
+      value={{
+        moduleData: providerValue.initialData,
+        setContextModuleID: setContextModuleID,
+        filteredQuestions: providerValue.filteredQuestions,
+        setFilteredQuestions: providerValue.setFilteredQuestions,
+      }}
+    >
       {props.children}
     </ModuleContext.Provider>
   );

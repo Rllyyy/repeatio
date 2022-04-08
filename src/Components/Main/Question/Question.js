@@ -54,7 +54,7 @@ const Question = () => {
   const { search } = useLocation();
 
   //Context
-  const { moduleData, setContextModuleID } = useContext(ModuleContext);
+  const { filteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
 
   //Refs
   const questionDataRef = useRef(null);
@@ -73,13 +73,16 @@ const Question = () => {
       return;
     }
     //Guard to refetch context (could for example happen on F5)
-    if (moduleData === undefined || moduleData.questions === undefined) {
+    if (moduleData === undefined || filteredQuestions.length <= 0) {
       setContextModuleID(params.moduleID);
       return;
     }
 
     //Find the correct question in the moduleData context
-    const returnQuestion = moduleData.questions.find((questionItem) => questionItem.id === params.questionID);
+    const returnQuestion = filteredQuestions.find((questionItem) => questionItem.id === params.questionID);
+
+    //If it not in this context
+    //!Implement
 
     //Set the question state
     setQuestion(returnQuestion);
@@ -99,19 +102,19 @@ const Question = () => {
         questionAnswerResetRef.resetSelection();
       }
     };
-  }, [moduleData, params.questionID, params.moduleID, setContextModuleID]);
+  }, [moduleData, params.questionID, params.moduleID, setContextModuleID, filteredQuestions]);
 
   //Show the index of the current question
   //TODO use memo this
   useEffect(() => {
-    if (moduleData === undefined || moduleData.length === 0) return;
+    if (filteredQuestions === undefined || filteredQuestions.length === 0) return;
 
     //Find the index of the question by filtering the module context
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Add 1 because arrays are zero based and update the state
     setCurrentQuestionPage(currentIndex + 1);
-  }, [params.questionID, moduleData]);
+  }, [params.questionID, filteredQuestions]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -197,7 +200,7 @@ const Question = () => {
   //Navigation
   //Go to first question in module
   const toFirstQuestion = () => {
-    const firstIDInQuestionArray = moduleData.questions[0].id;
+    const firstIDInQuestionArray = filteredQuestions[0].id;
 
     //Only push to history if not already at the first question
     //TODO notify the user that the already is at the beginning
@@ -213,17 +216,17 @@ const Question = () => {
   //Go to the previous question
   const toPreviousQuestion = () => {
     //get Current index
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
     if (currentIndex - 1 >= 0) {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${moduleData.questions[currentIndex - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex - 1].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${moduleData.questions[moduleData.questions.length - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[filteredQuestions.length - 1].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     }
@@ -234,55 +237,30 @@ const Question = () => {
 
   //Go to the next question
   const handleNextQuestion = () => {
-    //Next question is dependent if the current practice mode (from the url) is chronological or random
     questionAnswerRef.current.resetSelection();
-    if (practiceMode.current === "chronological") {
-      //get Current index
-      const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
 
-      //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
-      if (currentIndex + 1 < moduleData.questions.length) {
-        history.push({
-          pathname: `/module/${params.moduleID}/question/${moduleData.questions[currentIndex + 1].id}`,
-          search: `?mode=${practiceMode.current}`,
-        });
-      } else {
-        history.push({
-          pathname: `/module/${params.moduleID}/question/${moduleData.questions[0].id}`,
-          search: `?mode=${practiceMode.current}`,
-        });
-      }
-    } else if (practiceMode.current === "random") {
-      //Check if moduleData.length is greater than one to prevent infinite loop
-      if (moduleData.questions.length <= 1) {
-        return;
-      }
+    //get Current index
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
-      const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
-      let equal = true;
-      let newRandomIndex;
-
-      //Make sure the new question is actually new and not the old one
-      while (equal) {
-        newRandomIndex = Math.round(Math.random() * (moduleData.questions.length - 1));
-
-        if (newRandomIndex !== currentIndex) {
-          equal = false;
-        }
-      }
-
+    //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
+    if (currentIndex + 1 < filteredQuestions.length) {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${moduleData.questions[newRandomIndex].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex + 1].id}`,
+        search: `?mode=${practiceMode.current}`,
+      });
+    } else {
+      history.push({
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[0].id}`,
         search: `?mode=${practiceMode.current}`,
       });
     }
 
-    //Resetting the states and current selection is handled by a useEffect
+    //Resetting the states is handled by a useEffect
   };
 
   //Go to last question
   const toLastQuestion = () => {
-    const lastIDInQuestionArray = moduleData.questions[moduleData.questions.length - 1].id;
+    const lastIDInQuestionArray = filteredQuestions[filteredQuestions.length - 1].id;
 
     //Only push to history if not already at the last point
     //TODO notify the user that the end was reached
@@ -326,12 +304,13 @@ const Question = () => {
     }
   };
 
+  //TODO switch to useMemo
   const moduleLength = useCallback(() => {
-    if (moduleData === undefined || moduleData.length === 0) {
+    if (filteredQuestions === undefined || filteredQuestions.length === 0) {
       return;
     }
-    return moduleData.questions.length;
-  }, [moduleData]);
+    return filteredQuestions.length;
+  }, [filteredQuestions]);
 
   //JSX
   return (

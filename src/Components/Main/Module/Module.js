@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
+
+//css
 import "./Module.css";
 
 //Icons
@@ -15,14 +17,23 @@ import { MdBookmark } from "react-icons/md";
 import { BiStats } from "react-icons/bi";
 import { AiOutlineEdit } from "react-icons/ai";
 
+//functions
+import shuffleArray from "../../../functions/shuffleArray.js";
+
+//Component
 const Module = ({ match }) => {
   //useState
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
-  const [randomIndex, setRandomIndex] = useState();
   const [module, setModule] = useState();
 
   //context
-  const { moduleData, setContextModuleID } = useContext(ModuleContext);
+  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
+
+  //History
+  let history = useHistory();
+
+  //Params
+  const { moduleID } = useParams();
 
   /* USEEFFECTS */
   //Update the module state by using the data from the context
@@ -68,15 +79,46 @@ const Module = ({ match }) => {
     };
   }, [showPracticeOptions, hidePracticeOptions]);
 
-  /*Events  */
-  //
+  /*EVENTS*/
+  //Show the practice options
   const handlePracticeClick = () => {
-    //Show the practice options
     setShowPracticeOptions(true);
+  };
 
-    //Create a random number for a random index
-    const newRandomIndex = Math.round(Math.random() * (module.questions.length - 1));
-    setRandomIndex(newRandomIndex);
+  //Train with all questions in chronological order
+  const onChronologicalClick = () => {
+    setFilteredQuestions(moduleData.questions);
+    history.push({
+      pathname: `/module/${match.params.moduleID}/question/${module.questions[0].id}`,
+      search: "?mode=chronological",
+    });
+  };
+
+  //Train with all questions in random order
+  const onRandomClick = () => {
+    const shuffledQuestions = shuffleArray(moduleData.questions);
+    setFilteredQuestions(shuffledQuestions);
+    history.push({
+      pathname: `/module/${match.params.moduleID}/question/${shuffledQuestions[0].id}`,
+      search: "?mode=random",
+    });
+  };
+
+  //Train with only the saved Questions
+  const onSavedQuestionsClick = () => {
+    const savedQuestionsID = JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`));
+
+    if (savedQuestionsID === null) {
+      return;
+    }
+
+    const savedQuestions = moduleData.questions.filter((question) => savedQuestionsID.includes(question.id));
+
+    setFilteredQuestions(savedQuestions);
+    history.push({
+      pathname: `/module/${match.params.moduleID}/question/${savedQuestions[0].id}`,
+      search: "?mode=chronological",
+    });
   };
 
   //Prevent the rendering when there is no module set (to prevent hopping ui)
@@ -91,31 +133,27 @@ const Module = ({ match }) => {
         <h1 className='module-heading'>{module.name}</h1>
         <div className='heading-underline'></div>
       </div>
-      {/* <h3 className='module-description'>{description}</h3> */}
-      {/* //TODO Add Bookmark */}
       <div className='module-cards'>
         {/* practice */}
         <div className='card-practice' tabIndex='0'>
-          <button className='practice-icon-name' onClick={() => handlePracticeClick()}>
+          <button className='practice-icon-name' onClick={handlePracticeClick}>
             <AiOutlineBook />
             <h3>Practice</h3>
           </button>
           {showPracticeOptions && (
             <div className='practice-chronological-random-wrapper'>
-              <Link
-                to={`/module/${match.params.moduleID}/question/${module.questions[0].id}?mode=chronological`}
-                className='practice-chronological'
-              >
+              <button className='practice-chronological' onClick={onChronologicalClick}>
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
-              </Link>
-              <Link
-                to={`/module/${match.params.moduleID}/question/${module.questions[randomIndex].id}?mode=random`}
+              </button>
+              <button
+                /* to={`/module/${match.params.moduleID}/question/${module.questions[randomIndex].id}?mode=random`} */
+                onClick={onRandomClick}
                 className='practice-random'
               >
                 <GiPerspectiveDiceSixFacesRandom />
                 <h3>Random</h3>
-              </Link>
+              </button>
             </div>
           )}
         </div>
@@ -142,7 +180,7 @@ const Module = ({ match }) => {
           <h3>Last 30 Mistakes</h3>
         </button>
         {/* View saved Questions*/}
-        <button className='card-saved-questions'>
+        <button className='card-saved-questions' onClick={onSavedQuestionsClick}>
           <MdBookmark />
           <h3>Saved Questions</h3>
         </button>

@@ -42,6 +42,7 @@ const AllQuestions = () => {
   /* Event Handlers */
   //Go to question url when user clicks arrow button
   const handleToQuestionClick = (id) => {
+    //TODO set filteredQuestions with checkboxes
     history.push({
       pathname: `/module/${params.moduleID}/question/${id}`,
       search: `?mode=chronological`,

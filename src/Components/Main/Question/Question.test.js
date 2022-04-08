@@ -5,65 +5,68 @@ import { ModuleContext } from "../../../Context/ModuleContext";
 import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
-//Test Data
+//Question test data
+const mockFilteredQuestions = [
+  {
+    id: "qID-1",
+    title: "This is a question for the test suite",
+    points: 5,
+    type: "multiple-choice",
+    questionTypeHelp: "Choose the correct answer(s) please.",
+    answerOptions: [
+      {
+        id: "option-1",
+        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+        isCorrect: true,
+      },
+      { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+      {
+        id: "option-3",
+        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+        isCorrect: false,
+      },
+    ],
+  },
+  {
+    id: "qID-2",
+    title: "This is the second question for the test suite",
+    points: 5,
+    type: "multiple-response",
+    questionTypeHelp: "Choose the correct answer(s).",
+    answerOptions: [
+      {
+        id: "option-1",
+        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+        isCorrect: true,
+      },
+      { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+      {
+        id: "option-3",
+        text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+        isCorrect: false,
+      },
+    ],
+  },
+  {
+    id: "qID-3",
+    title: "This is a question provided by the public folder",
+    points: 5,
+    type: "gap-text",
+    questionTypeHelp: "Fill in the blanks.",
+    answerOptions: {
+      text: "[] two three. One [] three. One two [].",
+      correctGapValues: [["One", "one"], ["two"], ["three"]],
+    },
+  },
+];
+
+//Module test data
 const data = {
   id: "Test-1",
   name: "TestModule",
   createdAt: "some UTC time",
   description: "Some description",
-  questions: [
-    {
-      id: "qID-1",
-      title: "This is a question for the test suite",
-      points: 5,
-      type: "multiple-choice",
-      questionTypeHelp: "Choose the correct answer(s) please.",
-      answerOptions: [
-        {
-          id: "option-1",
-          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
-          isCorrect: true,
-        },
-        { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
-        {
-          id: "option-3",
-          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
-          isCorrect: false,
-        },
-      ],
-    },
-    {
-      id: "qID-2",
-      title: "This is the second question for the test suite",
-      points: 5,
-      type: "multiple-response",
-      questionTypeHelp: "Choose the correct answer(s).",
-      answerOptions: [
-        {
-          id: "option-1",
-          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
-          isCorrect: true,
-        },
-        { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
-        {
-          id: "option-3",
-          text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
-          isCorrect: false,
-        },
-      ],
-    },
-    {
-      id: "qID-3",
-      title: "This is a question provided by the public folder",
-      points: 5,
-      type: "gap-text",
-      questionTypeHelp: "Fill in the blanks.",
-      answerOptions: {
-        text: "[] two three. One [] three. One two [].",
-        correctGapValues: [["One", "one"], ["two"], ["three"]],
-      },
-    },
-  ],
+  questions: mockFilteredQuestions,
 };
 
 const mockSetContextModuleID = jest.fn();
@@ -74,7 +77,13 @@ const MockQuestionWithRouter = ({ qID, practiceMode }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${practiceMode}`]}>
       <Switch>
-        <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
+        <ModuleContext.Provider
+          value={{
+            filteredQuestions: mockFilteredQuestions,
+            moduleData: data,
+            setContextModuleID: mockSetContextModuleID,
+          }}
+        >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
       </Switch>
@@ -86,7 +95,13 @@ const MockQuestionWithRouterAndHistory = ({ history }) => {
   return (
     <Router history={history}>
       <Switch>
-        <ModuleContext.Provider value={{ moduleData: data, setContextModuleID: mockSetContextModuleID }}>
+        <ModuleContext.Provider
+          value={{
+            filteredQuestions: mockFilteredQuestions,
+            moduleData: data,
+            setContextModuleID: mockSetContextModuleID,
+          }}
+        >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
       </Switch>
