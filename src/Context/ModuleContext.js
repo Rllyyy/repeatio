@@ -1,6 +1,5 @@
 import { createContext, useMemo, useState, useEffect, useCallback } from "react";
 import isElectron from "is-electron";
-import path from "path";
 
 //Create Question Context
 export const ModuleContext = createContext([]);
@@ -24,7 +23,7 @@ export const ModuleProvider = (props) => {
     //Fetch data from public folder
     let dataFromPublic;
     try {
-      const data = await fetch(path.join(__dirname, "data.json"), { mode: "no-cors" });
+      const data = await fetch("data.json", { mode: "no-cors" });
       dataFromPublic = await data.json();
     } catch (error) {
       console.log(error);

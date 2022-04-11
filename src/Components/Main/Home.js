@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import isElectron from "is-electron";
-import path from "path";
 import "./Home.css";
 
 //Icons
@@ -19,7 +18,7 @@ const Home = () => {
     //with every module from the locale storage
     try {
       //Get the data from the public folder
-      const publicFolder = await fetch(path.join(__dirname, "data.json"), { mode: "no-cors" });
+      const publicFolder = await fetch("data.json", { mode: "no-cors" });
       const resJSON = await publicFolder.json();
 
       //Get modules from the localStorage
