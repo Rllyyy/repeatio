@@ -7,7 +7,7 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import "./index.css";
 
 //Import Components
-import Home from "./Components/Main/Home.js";
+import Home from "./Components/Main/Home/Home.js";
 import Sidebar from "./Components/Sidebar/Sidebar.js";
 import Settings from "./Components/Main/Settings.js";
 import Tutorials from "./Components/Main/Tutorials";

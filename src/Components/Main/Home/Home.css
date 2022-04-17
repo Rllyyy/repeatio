@@ -1,0 +1,145 @@
+.grid-cards {
+  margin: 15px 0px 100px 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+  grid-gap: 12px;
+}
+
+.grid-cards .card {
+  display: grid;
+  grid-template-columns: calc(100% - 120px) 120px;
+  row-gap: 15px;
+
+  padding: 15px 18px 10px 15px;
+  min-height: 190px;
+  background-color: white;
+  color: var(--custom-secondary-color);
+
+  border-radius: 8px;
+  box-shadow: rgb(100 116 139 / 8%) 0px 1px 1px,
+    rgb(100 116 139 / 12%) 0px 1px 2px;
+
+  user-select: none;
+  overflow: hidden;
+}
+
+.grid-cards .card p {
+  padding-top: .4rem;
+  line-height: 1.2;
+}
+
+.grid-cards .card-title {
+  font-size: 1.3rem;
+  line-height: 1.1;
+}
+
+.grid-cards .card .progress {
+  width: 120px;
+  height: 120px;
+  place-self: start;
+  padding: 2px 0 0 5px;
+}
+
+.grid-cards .card .card-bottom {
+  grid-column: 1 / span 2;
+
+  width: 100%;
+  height: auto;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  border-top: 1px solid var(--custom-border-color-lighter);
+}
+
+.card svg text {
+  font-size: 1.15rem !important;
+}
+
+.grid-cards .card .view-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 5px;
+  padding: 10px 20px;
+
+  color: var(--custom-prime-color);
+  line-height: 1;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.grid-cards .card .view-button:visited {
+  text-decoration: none;
+}
+
+.grid-cards .card .view-button span {
+  font-size: 1.1rem;
+  letter-spacing: 0.03rem;
+}
+
+.grid-cards .card .view-svg {
+  margin-left: 5px;
+  transform: scale(1.3);
+  stroke-width: 30px;
+}
+
+.grid-cards .card-add {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--custom-secondary-color);
+  color: whitesmoke;
+
+  min-height: 180px;
+  user-select: none;
+  border-radius: 8px;
+}
+
+.grid-cards .file-input {
+  display: none;
+}
+
+.grid-cards .custom-file-upload {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  cursor: pointer;
+}
+
+.grid-cards .card-add-circle {
+  height: 35px;
+  width: 35px;
+  margin-bottom: 10px;
+}
+
+.grid-cards .card-add:active {
+  background-color: rgb(61, 64, 82);
+  color: white;
+}
+
+/* Media Query for devices that can hover */
+@media only screen and (pointer: fine) {
+  .grid-cards .view-button:hover {
+    background-color: var(--custom-tertiary-color);
+  }
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .grid-cards {
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}

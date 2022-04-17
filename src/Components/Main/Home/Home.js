@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import isElectron from "is-electron";
 import "./Home.css";
 
+//Components
+import ProgressPie from "./Components/ProgressPie";
+
 //Icons
-import { BsPencil, BsPlusCircle } from "react-icons/bs";
-import { AiOutlinePushpin } from "react-icons/ai";
-import { FaArrowRight } from "react-icons/fa";
+import { BsPlusCircle } from "react-icons/bs";
+import { IoIosArrowForward } from "react-icons/io";
 
 const Home = () => {
   const [modules, setModules] = useState([]);
@@ -87,26 +89,25 @@ const Home = () => {
       </div>
       <div className='grid-cards'>
         {modules.map((module) => {
-          const { id, name, description } = module;
+          const { id, name, questions } = module;
           return (
-            <div className='card' key={id}>
-              <div className='card-info'>
-                <div className='title-description-wrapper'>
-                  <h3 className='card-title'>{name}</h3>
-                  <p className='card-description'>{description}</p>
-                </div>
-                {/* <p className='card-total-questions'>Fragen: {questionsTotal}</p> */}
+            <article className='card' key={id}>
+              <div className='title-info'>
+                <h2 className='card-title'>
+                  {name} ({id})
+                </h2>
+                {/* <p className='card-description'>{description}</p> */}
+                <p className='card-total-questions'>{questions.length} Questions</p>
               </div>
-              <div className='card-buttons'>
+              <ProgressPie progress={55} />
+              <div className='card-bottom'>
                 {/* //!URL might not work with special characters (äöß/*....)*/}
-                {/* <Link to={`/module/${id.split(" ").join("-").toLowerCase()}`} className='card-link'> */}
-                <Link to={`/module/${id}`} className='card-link'>
-                  <FaArrowRight className='buttons-arrow' />
+                <Link to={`/module/${id}`} className='view-button'>
+                  <span>VIEW</span>
+                  <IoIosArrowForward className='view-svg' />
                 </Link>
-                <BsPencil className='buttons-edit' />
-                <AiOutlinePushpin className='buttons-pin' />
               </div>
-            </div>
+            </article>
           );
         })}
         <div className='card-add'>
