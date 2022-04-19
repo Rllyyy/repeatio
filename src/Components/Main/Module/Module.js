@@ -112,9 +112,16 @@ const Module = ({ match }) => {
       return;
     }
 
-    const savedQuestions = moduleData.questions.filter((question) => savedQuestionsID.includes(question.id));
+    //For each element in the array return the question object
+    //kinda expensive calculation (array in array) :/
+    const savedQuestions = savedQuestionsID.map((questionID) => {
+      return moduleData.questions.find((question) => question.id === questionID);
+    });
 
+    //Update the context
     setFilteredQuestions(savedQuestions);
+
+    //Navigate to question component
     history.push({
       pathname: `/module/${match.params.moduleID}/question/${savedQuestions[0].id}`,
       search: "?mode=chronological",

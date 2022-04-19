@@ -1,54 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Animate } from "react-move";
 
-//https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
-class AnimatedProgressProvider extends React.Component {
-  interval = undefined;
+//Animate the progress bar
+//Pre 16.8 react code can be found here: https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
+const AnimatedProgressProvider = ({ valueStart, valueEnd, duration, easingFunction, children }) => {
+  const [isAnimated, setIsAnimated] = useState(false);
 
-  state = {
-    isAnimated: false,
-  };
+  //Trigger animation on mount
+  useEffect(() => {
+    setIsAnimated(true);
+    return () => {
+      setIsAnimated(false);
+    };
+  }, []);
 
-  static defaultProps = {
-    valueStart: 0,
-  };
-
-  componentDidMount() {
-    if (this.props.repeat) {
-      this.interval = window.setInterval(() => {
-        this.setState({
-          isAnimated: !this.state.isAnimated,
-        });
-      }, this.props.duration * 1000);
-    } else {
-      this.setState({
-        isAnimated: !this.state.isAnimated,
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    window.clearInterval(this.interval);
-  }
-
-  render() {
-    return (
-      <Animate
-        start={() => ({
-          value: this.props.valueStart,
-        })}
-        update={() => ({
-          value: [this.state.isAnimated ? this.props.valueEnd : this.props.valueStart],
-          timing: {
-            duration: this.props.duration * 1000,
-            ease: this.props.easingFunction,
-          },
-        })}
-      >
-        {({ value }) => this.props.children(value)}
-      </Animate>
-    );
-  }
-}
+  //JSX
+  return (
+    <Animate
+      start={() => ({
+        value: valueStart,
+      })}
+      update={() => ({
+        value: [isAnimated ? valueEnd : valueStart],
+        timing: {
+          duration: duration * 1000,
+          ease: easingFunction,
+        },
+      })}
+    >
+      {({ value }) => children(value)}
+    </Animate>
+  );
+};
 
 export default AnimatedProgressProvider;

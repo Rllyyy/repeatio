@@ -4,7 +4,7 @@ import isElectron from "is-electron";
 import "./Home.css";
 
 //Components
-import ProgressPie from "./Components/ProgressPie";
+import ProgressPie from "./Components/ProgressPie.js";
 
 //Icons
 import { BsPlusCircle } from "react-icons/bs";
