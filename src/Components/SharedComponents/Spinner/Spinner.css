@@ -1,0 +1,23 @@
+.spinner-wrapper {
+  position: relative;
+  height: 65px;
+  width: 65px;
+  margin: 50px auto;
+}
+
+.spinner:before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  border-top: 2px solid var(--custom-prime-color);
+  border-right: 2px solid transparent;
+  animation: spinner .7s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

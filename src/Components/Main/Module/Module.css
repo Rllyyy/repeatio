@@ -1,22 +1,26 @@
+.module-spinner {
+  margin-top: 80px;
+}
+
 /* Remove underline from react-router-dom links */
-.module-description{
+.module-description {
   margin-top: 5px;
   text-align: center;
 }
 
-.module-cards{
+.module-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 12px;
   margin: 15px 0 30px 0;
 }
 
-.module-cards a{
-    text-decoration: none;
+.module-cards a {
+  text-decoration: none;
 }
 
 /* Applies to all but practice */
-.module-cards > button > a{
+.module-cards>button>a {
   width: 100%;
   height: 100%;
 
@@ -28,12 +32,12 @@
   color: inherit;
 }
 
-.module-cards > button{
+.module-cards>button {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   min-height: 190px;
   overflow: hidden;
   user-select: none;
@@ -49,34 +53,35 @@
   color: white;
 }
 
-.module-cards > button:focus-visible{
+.module-cards>button:focus-visible {
   outline: 5px solid var(--custom-prime-color);
   outline-offset: 5px;
 }
 
-.module-cards > button svg, .practice-icon-name svg{
+.module-cards>button svg,
+.practice-icon-name svg {
   height: 42px;
   width: 42px;
   margin-bottom: 8px;
   color: white;
 }
 
-.module-cards > button h3{
+.module-cards>button h3 {
   font-size: 20px;
 }
 
-.module-cards > button:active{
+.module-cards>button:active {
   background-color: rgb(61, 64, 82);
 }
 
 /* The following css is just for the first card aka practice */
-.card-practice{
+.card-practice {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   min-height: 190px;
   height: 100%;
 
@@ -88,7 +93,7 @@
   cursor: pointer;
 }
 
-.practice-icon-name{
+.practice-icon-name {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -107,17 +112,19 @@
   width: 100%;
 }
 
-.practice-icon-name:active{
+.practice-icon-name:active {
   background-color: rgb(61, 64, 82);
 }
 
-.practice-chronological-random-wrapper{
+.practice-chronological-random-wrapper {
   position: absolute;
-  inset: 0 0 0 0; /* shorthand for bottom, top, left, right: 0 */
+  inset: 0 0 0 0;
+  /* shorthand for bottom, top, left, right: 0 */
   height: 100%;
 }
 
-.practice-random, .practice-chronological{
+.practice-random,
+.practice-chronological {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -125,65 +132,70 @@
   cursor: pointer;
   width: 100%;
   height: 50%;
-    
+
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  
+
   color: white;
   background-color: var(--custom-secondary-color);
   border: none;
 }
 
-.practice-chronological{
+.practice-chronological {
   animation: practice-chronological-slide-in .2s ease-in-out 0s 1;
 }
 
-.practice-random{
+.practice-random {
   animation: practice-random-slide-in .2s ease-in-out 0s 1;
 }
 
-.practice-random:active, .practice-chronological:active{
-    background-color: rgb(61, 64, 82);
+.practice-random:active,
+.practice-chronological:active {
+  background-color: rgb(61, 64, 82);
 }
 
-.practice-random > svg, .practice-chronological > svg{
+.practice-random>svg,
+.practice-chronological>svg {
   color: white;
   margin-right: 8px;
   height: 30px;
   width: 30px;
 }
 
-@keyframes practice-chronological-slide-in{
-  0%{
-  transform: translateY(-100%);
+@keyframes practice-chronological-slide-in {
+  0% {
+    transform: translateY(-100%);
   }
-  100%{
-  transform: translateY(0%);
+
+  100% {
+    transform: translateY(0%);
   }
 }
 
-@keyframes practice-random-slide-in{
-  0%{
-  transform: translateY(100%);
+@keyframes practice-random-slide-in {
+  0% {
+    transform: translateY(100%);
   }
-  100%{
-  transform: translateY(0%);
-    
+
+  100% {
+    transform: translateY(0%);
+
   }
 }
 
 /* CSS for Desktop */
 @media only screen and (pointer: fine) {
-  .practice-icon-name:hover{
+  .practice-icon-name:hover {
     background-color: var(--custom-prime-color);
   }
 
-  .practice-random:hover, .practice-chronological:hover{
+  .practice-random:hover,
+  .practice-chronological:hover {
     background-color: var(--custom-prime-color);
   }
 
-  .module-cards > button:hover{
+  .module-cards>button:hover {
     background-color: var(--custom-prime-color);
   }
 }

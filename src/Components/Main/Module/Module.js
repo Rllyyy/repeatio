@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
+//Components
+import Spinner from "../../SharedComponents/Spinner/Spinner.js";
+
 //css
 import "./Module.css";
 
@@ -81,7 +84,7 @@ const Module = ({ match }) => {
 
   /*EVENTS*/
   //Show the practice options
-  const handlePracticeClick = () => {
+  const onPracticeClick = () => {
     setShowPracticeOptions(true);
   };
 
@@ -96,7 +99,8 @@ const Module = ({ match }) => {
 
   //Train with all questions in random order
   const onRandomClick = () => {
-    const shuffledQuestions = shuffleArray(moduleData.questions);
+    //If the array isn't spread, it modifies the order of the original data
+    const shuffledQuestions = shuffleArray([...moduleData.questions]);
     setFilteredQuestions(shuffledQuestions);
     history.push({
       pathname: `/module/${match.params.moduleID}/question/${shuffledQuestions[0].id}`,
@@ -128,9 +132,13 @@ const Module = ({ match }) => {
     });
   };
 
-  //Prevent the rendering when there is no module set (to prevent hopping ui)
+  //Show loading while module isn't set
   if (!module) {
-    return <></>;
+    return (
+      <div className='module-spinner'>
+        <Spinner />
+      </div>
+    );
   }
 
   //JSX
@@ -143,7 +151,7 @@ const Module = ({ match }) => {
       <div className='module-cards'>
         {/* practice */}
         <div className='card-practice' tabIndex='0'>
-          <button className='practice-icon-name' onClick={handlePracticeClick}>
+          <button className='practice-icon-name' onClick={onPracticeClick}>
             <AiOutlineBook />
             <h3>Practice</h3>
           </button>

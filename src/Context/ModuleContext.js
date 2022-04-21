@@ -10,12 +10,12 @@ export const ModuleProvider = (props) => {
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [moduleContextID, setContextModuleID] = useState("");
 
-  //provide a state a pass it when it changes, rerender the context
-
   //Change every time module name changes
-  const providerValue = useMemo(
-    () => ({ initialData, setInitialData, filteredQuestions, setFilteredQuestions }),
-    [initialData, setInitialData, filteredQuestions]
+  const initialDataProvider = useMemo(() => ({ initialData, setInitialData }), [initialData, setInitialData]);
+
+  const filterProvider = useMemo(
+    () => ({ filteredQuestions, setFilteredQuestions }),
+    [filteredQuestions, setFilteredQuestions]
   );
 
   //All questions
@@ -78,10 +78,10 @@ export const ModuleProvider = (props) => {
   return (
     <ModuleContext.Provider
       value={{
-        moduleData: providerValue.initialData,
+        moduleData: initialDataProvider.initialData,
         setContextModuleID: setContextModuleID,
-        filteredQuestions: providerValue.filteredQuestions,
-        setFilteredQuestions: providerValue.setFilteredQuestions,
+        filteredQuestions: filterProvider.filteredQuestions,
+        setFilteredQuestions: filterProvider.setFilteredQuestions,
       }}
     >
       {props.children}
