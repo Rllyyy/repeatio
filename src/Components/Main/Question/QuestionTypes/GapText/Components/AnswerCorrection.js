@@ -29,21 +29,12 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
         const concatenatedValues = concatValues(correctGapValues[index]);
         return ReactDOMServer.renderToString(
           <>
-            <>{line}</>
-            <input
-              disabled
-              key={`input-${index}`}
-              type='text'
-              autoCapitalize='off'
-              autoComplete='off'
-              spellCheck='false'
-              value={concatenatedValues || ""}
-              style={{ width: `${concatenatedValues.length}ch` }}
-            />
+            <span>{line}</span>
+            <span className='correct-gap-value'>{concatenatedValues}</span>
           </>
         );
       } else {
-        return ReactDOMServer.renderToString(<>{line}</>);
+        return ReactDOMServer.renderToString(<span>{line}</span>);
       }
     });
     //Combine the array to one string again

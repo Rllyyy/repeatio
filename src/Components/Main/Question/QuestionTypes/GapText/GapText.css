@@ -1,5 +1,4 @@
-.question-gap-text,
-.correction-gap-text {
+.question-gap-text {
   font-size: 18px;
   line-height: 2.2rem;
 }
@@ -11,7 +10,7 @@
   outline: none;
   border: none;
   box-shadow: 0 0 0 1px var(--custom-border-color-light);
-  border-radius: 2px;
+  border-radius: 3px;
   display: inline;
   width: 180px;
 }
@@ -54,9 +53,9 @@
 }
 
 .question-gap-text table input,
-.correction-gap-text table input {
+.correction-gap-text table span {
   width: 100%;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .question-gap-text th,
@@ -86,25 +85,36 @@
 }
 
 /* CSS for the correction box displayed in the question component */
-.correction-gap-text input {
+.correction-gap-text {
+  font-size: 18px;
+  line-height: 2rem;
+}
+
+.correction-gap-text .correct-gap-value {
+  display: inline-block;
+
   color: black;
   font-size: 18px;
-  margin: 0 1px;
-  padding: 4px 5px;
+  line-height: 1.4rem;
+  font-weight: 500;
+
+  padding: 3px 7px;
+  margin-left: 2px;
+  margin-right: 2px;
+
   outline: none;
   border: none;
-
-  border-radius: 2px;
-  max-width: 95%;
-  box-sizing: content-box;
+  border-radius: 3px;
 }
 
-.answer-correct .correction-gap-text input {
-  box-shadow: 0 0 0 1px rgb(134, 167, 149);
+.answer-correct .correction-gap-text .correct-gap-value {
+  background-color: rgb(160, 217, 187);
+  box-shadow: 0 0 0 1px rgb(100, 149, 120);
 }
 
-.answer-false .correction-gap-text input {
-  box-shadow: 0 0 0 1px rgb(194, 149, 144);
+.answer-false .correction-gap-text .correct-gap-value {
+  background-color: rgb(250, 190, 190);
+  box-shadow: 0 0 0 1px rgb(180, 131, 126);
 }
 
 .correction-gap-text ul li,
@@ -129,7 +139,7 @@
     line-height: 2.1rem;
   }
 
-  .correction-gap-text input {
+  .correction-gap-text span {
     font-size: 1.15rem;
     padding: 2px 5px;
   }

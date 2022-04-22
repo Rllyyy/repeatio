@@ -1,6 +1,7 @@
 .question-gap-text-with-dropdown p,
 .question-gap-text-with-dropdown span,
 .correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown,
 .correction-gap-text-with-dropdown span {
   font-size: 18px;
   display: inline;
@@ -47,7 +48,8 @@
   border: 1px solid var(--custom-secondary-color);
 }
 
-.question-gap-text-with-dropdown table select {
+.question-gap-text-with-dropdown table select,
+.correction-gap-text-with-dropdown table span {
   width: 100%;
   margin: 5px 0;
 }
@@ -76,8 +78,31 @@
 }
 
 .correction-gap-text-with-dropdown .correct-dropdown-value {
-  margin: 0 2px;
-  font-weight: 600;
+  display: inline-block;
+
+  color: black;
+  font-size: 18px;
+  line-height: 1.4rem;
+  font-weight: 500;
+
+  padding: 3px 7px;
+
+  margin-left: 2px;
+  margin-right: 2px;
+
+  outline: none;
+  border: none;
+  border-radius: 3px;
+}
+
+.answer-correct .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(160, 217, 187);
+  box-shadow: 0 0 0 1px rgb(100, 149, 120);
+}
+
+.answer-false .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(250, 190, 190);
+  box-shadow: 0 0 0 1px rgb(180, 131, 126);
 }
 
 /* Media Query for Desktop */

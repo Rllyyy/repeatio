@@ -16,8 +16,9 @@
   color: var(--custom-secondary-color);
 
   border-radius: 8px;
-  box-shadow: rgb(100 116 139 / 8%) 0px 1px 1px,
-    rgb(100 116 139 / 12%) 0px 1px 2px;
+  /* old shadow, maybe for later  box-shadow: rgb(100 116 139 / 8%) 0px 1px 1px,
+    rgb(100 116 139 / 12%) 0px 1px 2px; */
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 1px 3px;
 
   user-select: none;
   overflow: hidden;
