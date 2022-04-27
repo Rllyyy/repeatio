@@ -110,16 +110,25 @@ const Module = ({ match }) => {
 
   //Train with only the saved Questions
   const onSavedQuestionsClick = () => {
+    //Get the data from the localStorage
+    //TODO for electron get from filesystem
     const savedQuestionsID = JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`));
 
+    //Return if no such element can be found
+    //TODO give user response that no saved questions are defined (maybe with toast)
     if (savedQuestionsID === null) {
       return;
     }
 
     //For each element in the array return the question object
     //kinda expensive calculation (array in array) :/
-    const savedQuestions = savedQuestionsID.map((questionID) => {
-      return moduleData.questions.find((question) => question.id === questionID);
+    let savedQuestions = [];
+    savedQuestionsID.forEach((questionID) => {
+      const question = moduleData.questions.find((question) => question.id === questionID);
+      //push question object to array if question is found
+      if (question !== undefined) {
+        savedQuestions.push(question);
+      }
     });
 
     //Update the context
@@ -161,11 +170,7 @@ const Module = ({ match }) => {
                 <RiArrowLeftRightLine />
                 <h3>Chronological</h3>
               </button>
-              <button
-                /* to={`/module/${match.params.moduleID}/question/${module.questions[randomIndex].id}?mode=random`} */
-                onClick={onRandomClick}
-                className='practice-random'
-              >
+              <button onClick={onRandomClick} className='practice-random'>
                 <GiPerspectiveDiceSixFacesRandom />
                 <h3>Random</h3>
               </button>

@@ -10,18 +10,18 @@
 
 .question-gap-text-with-dropdown .select-wrapper {
   display: inline;
-  margin: 0 2px;
+  margin: 0 3px;
 }
 
 .question-gap-text-with-dropdown select {
   display: inline;
   font-size: 18px;
-  padding: 2px 5px;
+  padding: 3px 5px;
   cursor: pointer;
   border-radius: 3px;
   background-color: transparent;
-  border-width: 1.8px;
-  border-color: var(--custom-border-color-light);
+  box-shadow: 0 0 0 1px var(--custom-border-color-light);
+  border: none;
 }
 
 .question-gap-text-with-dropdown select:focus {
@@ -80,15 +80,13 @@
 .correction-gap-text-with-dropdown .correct-dropdown-value {
   display: inline-block;
 
-  color: black;
   font-size: 18px;
   line-height: 1.4rem;
-  font-weight: 500;
 
-  padding: 3px 7px;
+  padding: 2px 5px;
 
-  margin-left: 2px;
-  margin-right: 2px;
+  margin-left: 3px;
+  margin-right: 3px;
 
   outline: none;
   border: none;
@@ -108,21 +106,10 @@
 /* Media Query for Desktop */
 @media (pointer: fine) {
   .question-gap-text-with-dropdown .select-enabled:hover {
-    border-color: var(--custom-prime-color);
+    box-shadow: 0 0 0 1px var(--custom-prime-color);
   }
 
   .question-gap-text-with-dropdown .select-enabled:active {
-    border-color: var(--custom-prime-color);
-  }
-}
-
-/* Media Query for phones */
-@media only screen and (pointer: coarse) {
-  .question-gap-text-with-dropdown {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .question-gap-text-with-dropdown select {
-    border-width: 1px;
+    box-shadow: 0 0 0 1px var(--custom-prime-color);
   }
 }

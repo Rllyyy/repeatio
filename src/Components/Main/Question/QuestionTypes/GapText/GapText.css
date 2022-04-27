@@ -93,12 +93,10 @@
 .correction-gap-text .correct-gap-value {
   display: inline-block;
 
-  color: black;
   font-size: 18px;
   line-height: 1.4rem;
-  font-weight: 500;
 
-  padding: 3px 7px;
+  padding: 2px 5px;
   margin-left: 2px;
   margin-right: 2px;
 
