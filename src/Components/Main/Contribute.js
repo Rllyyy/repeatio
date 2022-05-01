@@ -1,15 +1,15 @@
 import React from "react";
-import "./Support.css";
+import "./Contribute.css";
 
-const Support = () => {
+const Contribute = () => {
   return (
     <>
       <div className='main-heading-wrapper'>
-        <h1>Support</h1>
+        <h1>Contribute</h1>
         <div className='heading-underline'></div>
       </div>
     </>
   );
 };
 
-export default Support;
+export default Contribute;

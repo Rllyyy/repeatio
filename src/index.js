@@ -8,15 +8,15 @@ import "./index.css";
 
 //Import Components
 import Home from "./Components/Main/Home/Home.js";
-import Sidebar from "./Components/Sidebar/Sidebar.js";
+import Sidebar from "./Components/SharedComponents/Sidebar/Sidebar";
 import Settings from "./Components/Main/Settings.js";
-import Tutorials from "./Components/Main/Tutorials";
-import Support from "./Components/Main/Support";
-import Thanks from "./Components/Main/Thanks";
-import News from "./Components/Main/News";
+import Tutorials from "./Components/Main/Tutorials.js";
+import Contribute from "./Components/Main/Contribute.js";
+import Thanks from "./Components/Main/Thanks.js";
+import News from "./Components/Main/News.js";
 import Module from "./Components/Main/Module/Module.js";
-import Question from "./Components/Main/Question/Question";
-import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions";
+import Question from "./Components/Main/Question/Question.js";
+import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions.js";
 
 //Context
 import { ModuleProvider } from "./Context/ModuleContext.js";
@@ -36,7 +36,7 @@ ReactDOM.render(
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/tutorials' component={Tutorials} />
-            <Route exact path='/support' component={Support} />
+            <Route exact path='/contribute' component={Contribute} />
             <Route exact path='/thanks' component={Thanks} />
             <Route exact path='/news' component={News} />
             <Route exact path='/settings' component={Settings} />
