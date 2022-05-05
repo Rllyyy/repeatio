@@ -361,6 +361,7 @@ const Question = () => {
           {/* Check */}
           <button
             className='question-check-next'
+            aria-label={showAnswer ? "Next Question" : "Check Question"}
             data-testid='question-check'
             onClick={() => questionCheckButtonOnClick()}
           >
@@ -368,21 +369,33 @@ const Question = () => {
             {showAnswer ? <MdNavigateNext className='next-question-icon' /> : <BiCheck className='check-icon' />}
           </button>
           {/* Retry */}
-          <button className='question-retry' data-testid='question-retry' onClick={() => onQuestionRetryClick()}>
+          <button
+            className='question-retry'
+            aria-label={showAnswer ? "Retry Question" : "Reset Question"}
+            data-testid='question-retry'
+            onClick={() => onQuestionRetryClick()}
+          >
             <CgUndo className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}
           {collapsedNav && (
-            <button className='show-question-nav' onClick={() => setShowNav(!showNav)}>
-              <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} />
+            <button
+              className='show-question-nav'
+              aria-label={showNav ? "Hide Navigation" : "Show Navigation"}
+              onClick={() => setShowNav(!showNav)}
+            >
+              <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} aria-hidden='true' />
             </button>
           )}
         </div>
         {(showNav || !collapsedNav) && (
           <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
             <Bookmark questionID={question.id} />
-            <button data-testid='first-question-button' onClick={() => toFirstQuestion()}>
-              {/* <BsSkipStartFill className='navigation-start' /> */}
+            <button
+              data-testid='first-question-button'
+              aria-label='Navigate to first Question'
+              onClick={() => toFirstQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-start'
@@ -390,14 +403,18 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M20 5v14l-12 -7z' />
                 <line x1='5' y1='5' x2='5' y2='19' />
               </svg>
             </button>
-            <button data-testid='previous-question-button' onClick={() => toPreviousQuestion()}>
-              {/* <BsTriangleFill className='navigation-before' /> */}
+            <button
+              data-testid='previous-question-button'
+              aria-label='Navigate to previous Question'
+              onClick={() => toPreviousQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-before'
@@ -405,14 +422,18 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='true'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
             <input type='number' placeholder={currentQuestionPage} min='1' />
-            <button data-testid='nav-next-question-button' onClick={() => handleNextQuestion()}>
-              {/* <BsTriangleFill className='navigation-skip' /> */}
+            <button
+              data-testid='nav-next-question-button'
+              aria-label='Navigate to next Question'
+              onClick={() => handleNextQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-skip'
@@ -420,13 +441,17 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <button data-testid='last-question-button' onClick={() => toLastQuestion()}>
-              {/* <BsSkipEndFill /> */}
+            <button
+              data-testid='last-question-button'
+              aria-label='Navigate to last Question'
+              onClick={() => toLastQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='icon icon-tabler icon-tabler-player-skip-forward'
@@ -434,6 +459,7 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M4 5v14l12 -7z' />

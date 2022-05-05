@@ -109,7 +109,7 @@ const GridCards = () => {
             <ProgressPie progress={55} />
             <div className='card-bottom'>
               {/* //!URL might not work with special characters (äöß/#....) */}
-              <Link to={`/module/${id}`} className='view-button'>
+              <Link to={`/module/${id}`} role='button' aria-label='View Module' className='view-button'>
                 <span>VIEW</span>
                 <IoIosArrowForward className='view-svg' />
               </Link>

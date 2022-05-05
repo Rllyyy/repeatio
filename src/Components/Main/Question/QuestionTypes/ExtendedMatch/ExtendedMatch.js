@@ -1,5 +1,6 @@
 import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 //Import Components
 import Canvas from "./Components/Canvas.js";
@@ -257,7 +258,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <ReactMarkdown className='ext-match-element-text' children={text} />
+                <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
                 <div
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
@@ -276,7 +277,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <ReactMarkdown className='ext-match-element-text' children={text} />
+                <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
                 <div
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"

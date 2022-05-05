@@ -74,7 +74,11 @@ const Bookmark = ({ questionID }) => {
 
   //JSX
   return (
-    <button onClick={() => onBookmarkClick(questionID)} className='bookmark-question-button'>
+    <button
+      className='bookmark-question-button'
+      aria-label={saved ? "Unsave Question" : "Save Question"}
+      onClick={() => onBookmarkClick(questionID)}
+    >
       {/* Decide which button to display */}
       {saved ? (
         <MdBookmarkRemove className='bookmark-remove' data-testid='bookmark-remove' />
