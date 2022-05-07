@@ -47,7 +47,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
   }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
-  const updateIsChecked = (optionID) => {
+  const handleRadioClick = (optionID) => {
     let updatedShuffleOptions = shuffledOptions.map((item) => {
       //Set the state of the state to true where the ids are equal else change it to false (because only one option can be checked at the time => multiple Choice)
       if (item.id === optionID) {
@@ -59,6 +59,14 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
 
     // Update the state
     setShuffledOptions(updatedShuffleOptions);
+  };
+
+  //Prevent Form submit on enter and update state
+  const handleRadioEnter = (e, optionID) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleRadioClick(optionID);
+    }
   };
 
   //Functions that are called by parent
@@ -124,7 +132,8 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                 key={option.id}
                 className='formControlLabel'
                 checked={option.isChecked}
-                onChange={() => updateIsChecked(option.id)}
+                onClick={() => handleRadioClick(option.id)}
+                onKeyDown={(e) => handleRadioEnter(e, option.id)}
                 control={
                   <Radio
                     className='formControlLabel-radio'
@@ -139,6 +148,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                 label={
                   <Typography
                     component={"span"}
+                    onClick={(e) => e.stopPropagation()}
                     className={`formControlLabel-label ${formDisabled && "label-disabled"}`}
                   >
                     <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw]} />

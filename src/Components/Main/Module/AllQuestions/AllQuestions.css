@@ -27,7 +27,7 @@
   border: 1px solid var(--custom-border-color-lighter);
 }
 
-.custom-checkbox-root .MuiSvgIcon-root {
+.question-table .custom-checkbox-root .MuiSvgIcon-root {
   height: 1.6rem;
   width: 1.6rem;
 }
@@ -88,7 +88,17 @@
   appearance: none;
   outline: none;
   background-color: transparent;
+
+  border-radius: 5px;
+
 }
+
+.question-table .button-to-question:focus-visible {
+  /* outline: 2px solid var(--custom-prime-color); */
+  /* outline-offset: -10px; */
+  box-shadow: inset 0px 0px 0px 3px var(--custom-prime-color);
+}
+
 
 .question-table .button-to-question svg {
   height: 35px;

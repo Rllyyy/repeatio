@@ -259,7 +259,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
-                <div
+                <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
                   }`}
@@ -278,7 +278,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
-                <div
+                <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"
                   }`}

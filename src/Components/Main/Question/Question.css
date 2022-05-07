@@ -249,6 +249,7 @@
   flex-shrink: 0;
 
   color: var(--custom-secondary-color);
+  border-radius: 6px;
 
   /* remove default 3d button effect */
   outline: none;
@@ -295,6 +296,7 @@
   appearance: none;
   outline: none;
   background-color: transparent;
+  border-radius: 6px;
 
   width: 34px;
 }
@@ -333,6 +335,12 @@
   color: var(--custom-prime-color);
   stroke: var(--custom-prime-color);
   fill: var(--custom-prime-color);
+}
+
+/* Apply focus style just when tabbing */
+.question-bottom button:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 2px;
 }
 
 /* Media for devices with mouse input */

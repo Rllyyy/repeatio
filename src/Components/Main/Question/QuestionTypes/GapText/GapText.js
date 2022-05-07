@@ -45,6 +45,12 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     [inputValues]
   );
 
+  const onKeyDownPreventSubmit = useCallback((e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  }, []);
+
   //Set the dangerouslySetInnerHTML for question-gap-text div element
   const textWithBlanks = useCallback(() => {
     //Render the json string in markdown and return html nodes
@@ -121,13 +127,14 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
           autoCapitalize='off'
           autoComplete='off'
           spellCheck='false'
+          onKeyDown={onKeyDownPreventSubmit}
           onChange={(e) => updateInput(e, index)}
           value={inputValues[index] || ""}
         />,
         document.getElementById(`input-wrapper-${index}`)
       );
     }
-  }, [inputValues, formDisabled, updateInput, options]);
+  }, [inputValues, formDisabled, updateInput, options, onKeyDownPreventSubmit]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(ref, () => ({

@@ -46,7 +46,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
   }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
-  const updateIsChecked = (optionID) => {
+  const handleCheckBoxClick = (optionID) => {
     let updatedShuffleOptions = shuffledOptions.map((item) => {
       //Set the isChecked state of the answer option to the opposite of the current value (true/false) where the ids are equal else just return the object as it is
       if (item.id === optionID) {
@@ -58,6 +58,13 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
     // Update the state
     setShuffledOptions(updatedShuffleOptions);
+  };
+
+  const handleCheckBoxKeyPress = (e, optionID) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleCheckBoxClick(optionID);
+    }
   };
 
   //Method so the parent can interact with this component
@@ -124,7 +131,8 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                 className='formControlLabel'
                 data-testid={`formControlLabel-${index}`}
                 checked={option.isChecked || false} //fallback (so it's a controlled input)
-                onChange={() => updateIsChecked(option.id)}
+                onClick={() => handleCheckBoxClick(option.id)}
+                onKeyDown={(e) => handleCheckBoxKeyPress(e, option.id)}
                 control={
                   <Checkbox
                     className='formControlLabel-checkbox'
@@ -140,6 +148,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                 label={
                   <Typography
                     component={"span"}
+                    onClick={(e) => e.stopPropagation()}
                     className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
                   >
                     <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw]} />

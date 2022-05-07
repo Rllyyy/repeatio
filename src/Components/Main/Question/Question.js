@@ -304,6 +304,12 @@ const Question = () => {
     }
   };
 
+  const onInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   //TODO switch to useMemo
   const moduleLength = useCallback(() => {
     if (filteredQuestions === undefined || filteredQuestions.length === 0) {
@@ -428,7 +434,7 @@ const Question = () => {
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <input type='number' placeholder={currentQuestionPage} min='1' />
+            <input type='number' placeholder={currentQuestionPage} min='1' onKeyDown={onInputKeyDown} />
             <button
               data-testid='nav-next-question-button'
               aria-label='Navigate to next Question'
