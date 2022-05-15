@@ -139,8 +139,7 @@ body {
   /* background-color: rgb(128, 127, 134);  */
   /*possible darkmode background-color: rgb(25, 27, 37);  */
   background-color: whitesmoke;
-  color: black;
-
+  color: var(--custom-secondary-color);
 }
 
 code {
@@ -166,12 +165,10 @@ main {
 }
 
 h1 {
-  line-height: 1;
-  text-transform: capitalize;
-  font-weight: 300;
-  font-size: 36px;
-  display: inline;
-  text-align: center;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -1.5px;
 }
 
 h2 {
@@ -232,39 +229,12 @@ a {
   scrollbar-color: rgb(194, 194, 194) rgba(2, 34, 46, 0);
 }
 
-/* Heading with underline */
-.main-heading-wrapper,
-.module-heading-wrapper,
-.question-heading-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: fit-content;
-  margin: 0 auto;
+/* Site headings */
+.site-heading {
+  margin-top: 10px;
 }
 
-.heading-underline {
-  margin-top: 5px;
-  height: 3px;
-  border-radius: 100vh;
-  width: 80%;
-  background-color: var(--custom-prime-color);
-  animation: underline-in .3s ease-in-out 0s 1;
-}
-
-/* Animation */
-@keyframes underline-in {
-  0% {
-    width: 0%;
-  }
-
-  100% {
-    width: 80%;
-  }
-
-}
-
-/* 
+/*
 ===============
 Mobile CSS
 =============== 
@@ -304,6 +274,10 @@ Mobile CSS
     background-clip: padding-box;
     border-radius: 9999px;
     margin-bottom: 500px;
+  }
+
+  .site-heading {
+    text-align: center;
   }
 }
 

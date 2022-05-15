@@ -22,7 +22,8 @@ const ProgressPie = ({ progress }) => {
             styles={buildStyles({
               pathColor: "var(--custom-prime-color)",
               trailColor: "rgb(230, 230, 230)",
-              textColor: "var(--custom-secondary-color)",
+              textSize: "1.2rem",
+              textColor: "rgb(75, 75, 75)",
               pathTransition: "none",
             })}
           />

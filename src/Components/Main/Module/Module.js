@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Components
+import Card from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
 
 //css
@@ -10,8 +11,6 @@ import "./Module.css";
 
 //Icons
 import { AiOutlineBook } from "react-icons/ai";
-import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
-import { RiArrowLeftRightLine } from "react-icons/ri";
 import { FaGraduationCap } from "react-icons/fa";
 import { BsListOl } from "react-icons/bs";
 import { BsPlusCircle } from "react-icons/bs";
@@ -24,9 +23,8 @@ import { AiOutlineEdit } from "react-icons/ai";
 import shuffleArray from "../../../functions/shuffleArray.js";
 
 //Component
-const Module = ({ match }) => {
+const Module = () => {
   //useState
-  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [module, setModule] = useState();
 
   //context
@@ -47,52 +45,15 @@ const Module = ({ match }) => {
 
   //Tell the context to update with the new module (id is in the url)
   useEffect(() => {
-    setContextModuleID(match.params.moduleID);
-  }, [match.params.moduleID, setContextModuleID]);
-
-  const hidePracticeOptions = useCallback(
-    (e) => {
-      if (!showPracticeOptions) return;
-
-      //Check if the event is mousedown (click away) or escape key
-      if (
-        e.type === "mousedown" &&
-        e.target.className !== "practice-chronological" &&
-        e.target.parentNode.className !== "practice-chronological" &&
-        e.target.className !== "practice-random" &&
-        e.target.parentNode.className !== "practice-random"
-      ) {
-        setShowPracticeOptions(false);
-        //keyCode 27 = escape key
-      } else if (e.keyCode === 27) {
-        setShowPracticeOptions(false);
-      }
-    },
-    [showPracticeOptions]
-  );
-
-  //Add/remove event listener to hide the practice options
-  useEffect(() => {
-    window.addEventListener("mousedown", hidePracticeOptions, false);
-    window.addEventListener("keydown", hidePracticeOptions);
-
-    return () => {
-      window.removeEventListener("mousedown", hidePracticeOptions, false);
-      window.removeEventListener("keydown", hidePracticeOptions);
-    };
-  }, [showPracticeOptions, hidePracticeOptions]);
+    setContextModuleID(moduleID);
+  }, [moduleID, setContextModuleID]);
 
   /*EVENTS*/
-  //Show the practice options
-  const onPracticeClick = () => {
-    setShowPracticeOptions(true);
-  };
-
   //Train with all questions in chronological order
   const onChronologicalClick = () => {
     setFilteredQuestions(moduleData.questions);
     history.push({
-      pathname: `/module/${match.params.moduleID}/question/${module.questions[0].id}`,
+      pathname: `/module/${moduleID}/question/${module.questions[0].id}`,
       search: "?mode=chronological",
     });
   };
@@ -103,7 +64,7 @@ const Module = ({ match }) => {
     const shuffledQuestions = shuffleArray([...moduleData.questions]);
     setFilteredQuestions(shuffledQuestions);
     history.push({
-      pathname: `/module/${match.params.moduleID}/question/${shuffledQuestions[0].id}`,
+      pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
       search: "?mode=random",
     });
   };
@@ -136,10 +97,95 @@ const Module = ({ match }) => {
 
     //Navigate to question component
     history.push({
-      pathname: `/module/${match.params.moduleID}/question/${savedQuestions[0].id}`,
+      pathname: `/module/${moduleID}/question/${savedQuestions[0].id}`,
       search: "?mode=chronological",
     });
   };
+
+  //All cards
+  const moduleCards = [
+    {
+      title: "Practice",
+      description: "Practice all questions in chronological or random order",
+      icon: <AiOutlineBook />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Chronological",
+        function: onChronologicalClick,
+      },
+      rightBottom: {
+        type: "button",
+        buttonText: "Random",
+        function: onRandomClick,
+      },
+    },
+    {
+      title: "Exam",
+      description: "Simulate an exam",
+      icon: <FaGraduationCap />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+      },
+    },
+    {
+      title: "Questions",
+      description: "View, filter and sort all questions",
+      icon: <BsListOl />,
+      leftBottom: {
+        type: "link",
+        linkTo: `/module/${moduleID}/all-questions`,
+        linkAriaLabel: "View all Questions",
+        linkText: "View",
+      },
+    },
+    {
+      title: "Add Question",
+      description: "Add a missing question",
+      icon: <BsPlusCircle />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Add",
+      },
+    },
+    {
+      title: "Last 30 Mistakes",
+      description: "Train the last 30 mistakes",
+      icon: <BsExclamationTriangle />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+      },
+    },
+    {
+      title: "Saved Questions",
+      description: "Train with your saved questions",
+      icon: <MdBookmark />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+        function: onSavedQuestionsClick,
+      },
+    },
+    {
+      title: "Statistics",
+      description: "",
+      icon: <BiStats />,
+      leftBottom: {
+        type: "button",
+        buttonText: "View",
+      },
+    },
+    {
+      title: "Module Info",
+      description: "",
+      icon: <AiOutlineEdit />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Edit",
+      },
+    },
+  ];
 
   //Show loading while module isn't set
   if (!module) {
@@ -153,67 +199,24 @@ const Module = ({ match }) => {
   //JSX
   return (
     <>
-      <div className='module-heading-wrapper'>
-        <h1 className='module-heading'>{module.name}</h1>
-        <div className='heading-underline'></div>
-      </div>
+      <h1 className='site-heading'>
+        {module.name} ({module.id})
+      </h1>
       <div className='module-cards'>
-        {/* practice */}
-        <div className='card-practice' tabIndex='0'>
-          <button className='practice-icon-name' onClick={onPracticeClick}>
-            <AiOutlineBook />
-            <h3>Practice</h3>
-          </button>
-          {showPracticeOptions && (
-            <div className='practice-chronological-random-wrapper'>
-              <button className='practice-chronological' onClick={onChronologicalClick}>
-                <RiArrowLeftRightLine />
-                <h3>Chronological</h3>
-              </button>
-              <button onClick={onRandomClick} className='practice-random'>
-                <GiPerspectiveDiceSixFacesRandom />
-                <h3>Random</h3>
-              </button>
-            </div>
-          )}
-        </div>
-        {/* Exam simulation. Time and total points have to be defined for this to work*/}
-        <button className='card-exam'>
-          <FaGraduationCap />
-          <h3>Exam</h3>
-        </button>
-        {/* View all Questions*/}
-        <button className='card-all-questions'>
-          <Link to={`/module/${match.params.moduleID}/all-questions`}>
-            <BsListOl />
-            <h3>All Questions</h3>
-          </Link>
-        </button>
-        {/* Add Question */}
-        <button className='card-add-question'>
-          <BsPlusCircle />
-          <h3>Add Question</h3>
-        </button>
-        {/* View last mistakes */}
-        <button className='card-last-mistakes'>
-          <BsExclamationTriangle />
-          <h3>Last 30 Mistakes</h3>
-        </button>
-        {/* View saved Questions*/}
-        <button className='card-saved-questions' onClick={onSavedQuestionsClick}>
-          <MdBookmark />
-          <h3>Saved Questions</h3>
-        </button>
-        {/* Statistics */}
-        <button className='card-statistics'>
-          <BiStats />
-          <h3>Statistics</h3>
-        </button>
-        {/* Edit Module */}
-        <button className='card-edit'>
-          <AiOutlineEdit />
-          <h3>Edit Module</h3>
-        </button>
+        {moduleCards.map((card) => {
+          return (
+            <Card
+              key={card.title}
+              type='module-card'
+              id={card.title}
+              title={card.title}
+              description={card.description}
+              icon={card.icon}
+              leftBottom={card.leftBottom}
+              rightBottom={card.rightBottom}
+            />
+          );
+        })}
       </div>
     </>
   );

@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
 import isElectron from "is-electron";
-//import "../Home.css";
 
+//Components
+import Card from "../../../SharedComponents/Card/Card.js";
 import Spinner from "../../../SharedComponents/Spinner/Spinner.js";
 import ProgressPie from "./ProgressPie.js";
 
 //Icons
 import { BsPlusCircle } from "react-icons/bs";
-import { IoIosArrowForward } from "react-icons/io";
 
 const GridCards = () => {
   const [modules, setModules] = useState([]);
@@ -88,6 +87,7 @@ const GridCards = () => {
   };
 
   //Display loading spinner while component loads
+  //TODO switch to suspense maybe (react 18)
   if (loading) {
     return <Spinner />;
   }
@@ -98,23 +98,20 @@ const GridCards = () => {
       {modules.map((module) => {
         const { id, name, questions } = module;
         return (
-          <article className='card' key={id}>
-            <div className='title-info'>
-              <h2 className='card-title'>
-                {name} ({id})
-              </h2>
-              {/* <p className='card-description'>{description}</p> */}
-              <p className='card-total-questions'>{questions.length} Questions</p>
-            </div>
-            <ProgressPie progress={55} />
-            <div className='card-bottom'>
-              {/* //!URL might not work with special characters (äöß/#....) */}
-              <Link to={`/module/${id}`} role='button' aria-label='View Module' className='view-button'>
-                <span>VIEW</span>
-                <IoIosArrowForward className='view-svg' />
-              </Link>
-            </div>
-          </article>
+          <Card
+            key={id}
+            type='module'
+            id={id}
+            title={`${name} (${id})`}
+            description={`${questions.length} Questions`}
+            icon={<ProgressPie progress={55} />}
+            leftBottom={{
+              type: "link",
+              linkTo: `/module/${id}`,
+              linkAriaLabel: `View ${name}`,
+              linkText: "View",
+            }}
+          />
         );
       })}
       <div className='card-add'>

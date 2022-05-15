@@ -12,7 +12,7 @@ const AllQuestions = () => {
   //JSX
   return (
     <div className='all-questions'>
-      <h1>All Questions</h1>
+      <h1 className='site-heading'>All Questions</h1>
       <QuestionTable />
     </div>
   );
