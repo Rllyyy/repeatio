@@ -1,13 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { easeQuadInOut } from "d3-ease";
 
-//Css
+//CSS
 import "react-circular-progressbar/dist/styles.css";
 
-//Component
-import AnimatedProgressProvider from "./AnimatedProgressProvider.js";
+//Components
+import AnimatedProgressProvider from "./AnimatedProgressProvider.jsx";
 
+//Component
 const ProgressPie = ({ progress }) => {
   //https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
   return (
@@ -31,6 +33,10 @@ const ProgressPie = ({ progress }) => {
       }}
     </AnimatedProgressProvider>
   );
+};
+
+ProgressPie.propTypes = {
+  progress: PropTypes.number.isRequired,
 };
 
 export default ProgressPie;

@@ -4,7 +4,7 @@ import isElectron from "is-electron";
 //Components
 import Card from "../../../SharedComponents/Card/Card.js";
 import Spinner from "../../../SharedComponents/Spinner/Spinner.js";
-import ProgressPie from "./ProgressPie.js";
+import ProgressPie from "../../../SharedComponents/Card/Components/ProgressPie.jsx";
 
 //Icons
 import { BsPlusCircle } from "react-icons/bs";
@@ -96,12 +96,12 @@ const GridCards = () => {
   return (
     <div className='grid-cards'>
       {modules.map((module) => {
-        const { id, name, questions } = module;
+        const { id, name, questions, disabled } = module;
         return (
           <Card
             key={id}
+            disabled={disabled}
             type='module'
-            id={id}
             title={`${name} (${id})`}
             description={`${questions.length} Questions`}
             icon={<ProgressPie progress={55} />}

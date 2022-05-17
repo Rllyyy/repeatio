@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 //Icons
 import { IoIosArrowForward } from "react-icons/io";
@@ -11,6 +12,12 @@ const ButtonElement = ({ handleClick, buttonText }) => {
       <IoIosArrowForward className='card-button-svg' />
     </button>
   );
+};
+
+//Prop Types
+ButtonElement.propTypes = {
+  handleClick: PropTypes.func,
+  buttonText: PropTypes.string.isRequired,
 };
 
 export default ButtonElement;

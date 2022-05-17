@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 //Icons
 import { IoIosArrowForward } from "react-icons/io";
@@ -13,6 +14,13 @@ const LinkElement = ({ linkTo, linkAriaLabel, linkText }) => {
       <IoIosArrowForward className='card-link-svg' />
     </Link>
   );
+};
+
+//Prop Types
+LinkElement.propTypes = {
+  linkTo: PropTypes.string.isRequired,
+  linkAriaLabel: PropTypes.string.isRequired,
+  linkText: PropTypes.string.isRequired,
 };
 
 export default LinkElement;

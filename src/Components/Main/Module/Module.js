@@ -121,6 +121,7 @@ const Module = () => {
     },
     {
       title: "Exam",
+      disabled: true,
       description: "Simulate an exam",
       icon: <FaGraduationCap />,
       leftBottom: {
@@ -129,7 +130,7 @@ const Module = () => {
       },
     },
     {
-      title: "Questions",
+      title: "Question Overview",
       description: "View, filter and sort all questions",
       icon: <BsListOl />,
       leftBottom: {
@@ -141,6 +142,7 @@ const Module = () => {
     },
     {
       title: "Add Question",
+      disabled: true,
       description: "Add a missing question",
       icon: <BsPlusCircle />,
       leftBottom: {
@@ -150,6 +152,7 @@ const Module = () => {
     },
     {
       title: "Last 30 Mistakes",
+      disabled: true,
       description: "Train the last 30 mistakes",
       icon: <BsExclamationTriangle />,
       leftBottom: {
@@ -169,6 +172,7 @@ const Module = () => {
     },
     {
       title: "Statistics",
+      disabled: true,
       description: "",
       icon: <BiStats />,
       leftBottom: {
@@ -177,7 +181,8 @@ const Module = () => {
       },
     },
     {
-      title: "Module Info",
+      title: "Info",
+      disabled: true,
       description: "",
       icon: <AiOutlineEdit />,
       leftBottom: {
@@ -204,16 +209,17 @@ const Module = () => {
       </h1>
       <div className='module-cards'>
         {moduleCards.map((card) => {
+          const { title, disabled, description, icon, leftBottom, rightBottom } = card;
           return (
             <Card
-              key={card.title}
+              key={title}
+              disabled={disabled}
               type='module-card'
-              id={card.title}
-              title={card.title}
-              description={card.description}
-              icon={card.icon}
-              leftBottom={card.leftBottom}
-              rightBottom={card.rightBottom}
+              title={title}
+              description={description}
+              icon={icon}
+              leftBottom={leftBottom}
+              rightBottom={rightBottom}
             />
           );
         })}

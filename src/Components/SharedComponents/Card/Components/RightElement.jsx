@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 //Components
 import LinkElement from "./LinkElement.jsx";
@@ -25,6 +26,11 @@ const RightElement = ({ rightBottom }) => {
       )}
     </>
   );
+};
+
+//Prop Types
+RightElement.propTypes = {
+  rightBottom: PropTypes.object,
 };
 
 export default RightElement;

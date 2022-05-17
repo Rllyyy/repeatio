@@ -7,9 +7,9 @@ import RightElement from "./Components/RightElement.jsx";
 import LeftElement from "./Components/LeftElement.jsx";
 
 //Component
-const Card = ({ id, type, title, description, icon, leftBottom, rightBottom }) => {
+const Card = ({ type, disabled, title, description, icon, leftBottom, rightBottom }) => {
   return (
-    <article className='card' key={id}>
+    <article className={`card ${disabled ? "card-disabled " : "card-active"}`}>
       <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
         <h2 className='card-title'>{title}</h2>
         <p className='card-description'>{description}</p>
@@ -25,15 +25,15 @@ const Card = ({ id, type, title, description, icon, leftBottom, rightBottom }) =
   );
 };
 
-export default Card;
-
-//Prop checking
+//Prop Types
 Card.propTypes = {
-  id: PropTypes.string.isRequired,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   icon: PropTypes.object.isRequired,
   leftBottom: PropTypes.object,
   rightBottom: PropTypes.object,
 };
+
+export default Card;

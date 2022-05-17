@@ -1,8 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 
+//Components
 import LinkElement from "./LinkElement.jsx";
 import ButtonElement from "./ButtonElement.jsx";
 
+//Component
 const LeftElement = ({ leftBottom }) => {
   //Return nothing if right element is not defined
   if (leftBottom === undefined) {
@@ -23,6 +26,11 @@ const LeftElement = ({ leftBottom }) => {
       )}
     </>
   );
+};
+
+//Prop Types
+LeftElement.propTypes = {
+  leftBottom: PropTypes.object,
 };
 
 export default LeftElement;

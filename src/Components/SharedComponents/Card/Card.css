@@ -18,6 +18,11 @@
   overflow: hidden;
 }
 
+.card-disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
 .card-title {
   font-size: 1.32rem;
   line-height: 1.1;
@@ -76,8 +81,20 @@
 
   border: none;
   border-radius: 6px;
+}
 
+.card-active .card-bottom .card-link,
+.card-active .card-bottom .card-button {
   cursor: pointer;
+}
+
+.card-disabled .card-bottom .card-button {
+  pointer-events: none;
+}
+
+.card-disabled .card-bottom .card-link,
+.card-disabled .card-bottom .card-button {
+  color: lightgrey;
 }
 
 .card .card-bottom .card-link span,
@@ -101,8 +118,8 @@
 /* Media Query for devices that can hover */
 @media only screen and (pointer: fine) {
 
-  .card .card-bottom .card-link:hover,
-  .card .card-bottom .card-button:hover {
+  .card-active .card-bottom .card-link:hover,
+  .card-active .card-bottom .card-button:hover {
     background-color: var(--custom-tertiary-color);
   }
 }
