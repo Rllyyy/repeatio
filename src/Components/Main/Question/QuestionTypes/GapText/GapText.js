@@ -6,6 +6,9 @@ import ReactDOMServer from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //css
 import "./GapText.css";
@@ -57,7 +60,11 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
     const htmlString = ReactDOMServer.renderToString(
-      <ReactMarkdown children={options.text} rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} />
+      <ReactMarkdown
+        children={options.text}
+        rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+        remarkPlugins={[remarkGfm]}
+      />
     );
 
     //Split the html notes where the input should be inserted

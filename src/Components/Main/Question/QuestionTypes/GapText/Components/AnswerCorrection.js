@@ -5,6 +5,9 @@ import ReactDOMServer from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 const concatValues = (values) => {
   return values.join("; ");
@@ -17,7 +20,7 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
     const htmlString = ReactDOMServer.renderToString(
-      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} />
+      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} remarkPlugins={[remarkGfm]} />
     );
 
     //Split the html notes where the input should be inserted

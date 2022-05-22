@@ -5,6 +5,9 @@ import React, { useEffect, useState, forwardRef, useImperativeHandle } from "rea
 //Markdown related
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //Material UI
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -93,7 +96,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleResponse-list-item' key={item.id}>
-                  <ReactMarkdown children={item.text} rehypePlugins={[rehypeRaw]} />
+                  <ReactMarkdown children={item.text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} />
                 </li>
               );
             } else {
@@ -151,7 +154,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                     onClick={(e) => e.stopPropagation()}
                     className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
                   >
-                    <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw]} />
+                    <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} />
                   </Typography>
                 }
               />

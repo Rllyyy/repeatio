@@ -10,6 +10,9 @@ import { useSize } from "../../../hooks/useSize";
 //Markdown related
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
@@ -330,13 +333,17 @@ const Question = () => {
             {currentQuestionPage}/{moduleLength()} Questions
           </p>
         </div>
-        <ReactMarkdown className='question-title' rehypePlugins={[rehypeRaw]} children={question.title} />
+        <ReactMarkdown
+          className='question-title'
+          rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+          children={question.title}
+        />
         <p className='question-points'>
           {question.points} {question.points === 1 ? "Point" : "Points"}
         </p>
         <ReactMarkdown
           className='question-type-help'
-          rehypePlugins={[rehypeRaw]}
+          rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
           children={question.questionTypeHelp}
         />
         {/* Question */}

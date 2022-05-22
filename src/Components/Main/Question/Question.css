@@ -111,6 +111,7 @@
   margin: 15px 0 5px 0;
   padding: 10px;
   border-radius: 5px;
+  scroll-margin-top: 10px;
 }
 
 .question-form .answer-correct {

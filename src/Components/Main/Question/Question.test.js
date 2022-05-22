@@ -112,17 +112,25 @@ const MockQuestionWithRouterAndHistory = ({ history }) => {
 //React-markdown uses ES6 but jest uses ES5
 //There are more options but this is the easiest one
 //https://github.com/remarkjs/react-markdown/issues/635#issuecomment-956158474
+//Returning the elements in a paragraph isn't actually that bad because react-markdown does the same
 jest.mock("react-markdown", () => (props) => {
-  //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
-  return <p>{props.children}</p>;
+  return <p className='react-markdown-mock'>{props.children}</p>;
 });
 
 jest.mock("rehype-raw", () => (props) => {
-  return <p>{props.children}</p>;
+  return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
 jest.mock("remark-gfm", () => (props) => {
-  return <p>{props.children}</p>;
+  return <p className='remark-gfm-mock'>{props.children}</p>;
+});
+
+jest.mock("remark-math", () => (props) => {
+  return <p className='remark-math-mock'>{props.children}</p>;
+});
+
+jest.mock("rehype-katex", () => (props) => {
+  return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
 //Override the default useSize hook

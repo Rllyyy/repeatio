@@ -5,6 +5,9 @@ import ReactDOMServer from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 const AnswerCorrection = ({ text, dropdowns }) => {
   const markdownText = () => {
@@ -12,7 +15,7 @@ const AnswerCorrection = ({ text, dropdowns }) => {
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
     const htmlString = ReactDOMServer.renderToString(
-      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]} />
+      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
     );
 
     //Split the html notes where the input should be inserted

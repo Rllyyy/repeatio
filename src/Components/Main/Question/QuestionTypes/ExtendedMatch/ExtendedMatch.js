@@ -1,6 +1,11 @@
 import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
+
+//Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //Import Components
 import Canvas from "./Components/Canvas.js";
@@ -258,7 +263,11 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
+                <ReactMarkdown
+                  className='ext-match-element-text'
+                  rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+                  children={text}
+                />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
@@ -277,7 +286,11 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <ReactMarkdown className='ext-match-element-text' rehypePlugins={[rehypeRaw]} children={text} />
+                <ReactMarkdown
+                  className='ext-match-element-text'
+                  rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+                  children={text}
+                />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"
