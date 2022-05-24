@@ -96,6 +96,38 @@
       },
       {
         "id": "qID-4",
+        "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
+        "points": 5,
+        "type": "gap-text-dropdown",
+        "questionTypeHelp": "Fill in the blanks with the **correct** Values!",
+        "answerOptions": {
+          "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
+          "dropdowns": [
+            {
+              "id": "select-0",
+              "options": [
+                "Dropdown",
+                "Pickup",
+                "empty"
+              ],
+              "correct": "Dropdown"
+            },
+            {
+              "id": "select-1",
+              "options": [
+                "0%",
+                "25%",
+                "50%",
+                "75%",
+                "100%"
+              ],
+              "correct": "50%"
+            }
+          ]
+        }
+      },
+      {
+        "id": "qID-5",
         "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
         "points": 5,
         "type": "extended-match",
@@ -138,40 +170,8 @@
         }
       },
       {
-        "id": "qID-5",
-        "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
-        "points": 5,
-        "type": "gap-text-dropdown",
-        "questionTypeHelp": "Fill in the blanks with the **correct** Values!",
-        "answerOptions": {
-          "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
-          "dropdowns": [
-            {
-              "id": "select-0",
-              "options": [
-                "Dropdown",
-                "Pickup",
-                "empty"
-              ],
-              "correct": "Dropdown"
-            },
-            {
-              "id": "select-1",
-              "options": [
-                "0%",
-                "25%",
-                "50%",
-                "75%",
-                "100%"
-              ],
-              "correct": "50%"
-            }
-          ]
-        }
-      },
-      {
         "id": "qID-6",
-        "title": "Gap texts with and without preselected values can be combinded with html tables to achieve this question.",
+        "title": "Gap texts with and without preselected values can be combined with html tables to achieve this question.",
         "points": 5,
         "type": "gap-text-dropdown",
         "questionTypeHelp": "Fill in the blanks by choosing the correct answer from the dropdown list!",

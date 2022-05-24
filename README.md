@@ -1,70 +1,279 @@
-# Getting Started with Create React App
+# repeatio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+_Learn, repeat, memorize tasks with repeatio._
 
-## Available Scripts
+## Adding an existing Module
 
-In the project directory, you can run:
+1. Click on ```Add Module``` in the overview
+2. Select the file ```data.json```
 
-### `npm start`
+## Creating a new Module
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+It is generally advised to use a code editor like VS Code or Atom to create or edit module files as one wrong value breaks the whole application.
+These programs provide feedback for potential problems.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Module file structure
 
-### `npm test`
+```json
+{
+  "id": "MOD01",
+  "name": "Module Name",
+  "questions": [
+    {
+      "id": "MOD01-1",
+      ...
+    }
+  ]
+}
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**_[View Example](/public/data.json)_**
 
-### `npm run build`
+### Question Types
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Create new question (object) inside the "questions" array.
+JSON key-value pairs can not be empty, so for optional fields use empty string "".
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**_Fields:_**
+| Field                   |                   Description                          | value type   |  required?   |
+|------------------------ |:------------------------------------------------------:|:------------:| ------------:|
+| ```id```                |  The id of the questions (has to be unique)            | string       |      yes     |
+| ```title```             |  The title of the question                             | string       |      no      |
+| ```points```            |  Max point value of a question                         | number / "?" |      no      |
+| ```type```              |  The type of the question                              | string       |      yes     |
+| ```questionTypeHelp```  |  Explain what the user needs to do                     | string       |      no      |
+| ```answerOptions```     |  The part of the question that the user interacts with | array/object |      no      |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**_Types:_**
 
-### `npm run eject`
+<details>
+  <summary><b>Multiple-Choice</b></summary>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  <p>Multiple-Choice questions have <b>exactly one</b> correct answer and are characterized by a circle in front of each option.<p>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  <i><b>.json:</b></i>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  ```json
+  {
+    "id": "MOD01-1",
+    "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
+    "points": 5,
+    "type": "multiple-choice",
+    "questionTypeHelp": "Please choose the correct answer.",
+    "answerOptions": [
+      {
+        "id": "option-0",
+        "text": "All options can be correct",
+        "isCorrect": false
+      },
+      {
+        "id": "option-1",
+        "text": "One or more options can be correct",
+        "isCorrect": false
+      },
+      {
+        "id": "option-2",
+        "text": "No option can be correct",
+        "isCorrect": false
+      },
+      {
+        "id": "option-3",
+        "text": "Exactly one option can be correct",
+        "isCorrect": true
+      }
+    ]
+  }
+  ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+</details>
 
-## Learn More
+<details>
+  <summary><b>Multiple-Response</b></summary>
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  <p>Multiple-Response questions can have <b>multiple</b> correct answers and are characterized by a square in front of each option.<p>
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  <b><i>.json:</i></b>
 
-### Code Splitting
+  ```json
+  {
+    "id": "MOD01-2",
+    "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
+    "points": 5,
+    "type": "multiple-response",
+    "questionTypeHelp": "Please choose the correct answer(s).",
+    "answerOptions": [
+      {
+        "id": "option-0",
+        "text": "All options can be correct",
+        "isCorrect": true
+      },
+      {
+        "id": "option-1",
+        "text": "One or more options can be correct",
+        "isCorrect": true
+      },
+      {
+        "id": "option-2",
+        "text": "No option can be correct",
+        "isCorrect": false
+      },
+      {
+        "id": "option-3",
+        "text": "One option can be correct",
+        "isCorrect": true
+      },
+      {
+        "id": "option-4",
+        "text": "This question type is identical with Multiple-Choice questions",
+        "isCorrect": false
+      },
+      {
+        "id": "option-5",
+        "text": "Half points can be awarded if 50% of the options are correct",
+        "isCorrect": false
+      }
+    ]
+  }
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+</details>
 
-### Analyzing the Bundle Size
+<details>
+  <summary><b>Gap Text</b></summary>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  <p>Gap Text questions require the user to fill in the missing words. A gap is created by a square bracket.<p>
 
-### Making a Progressive Web App
+  <b><i>.json:</i></b>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+  ```json
+  {
+    "id": "MOD-3",
+    "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
+    "points": 5,
+    "type": "gap-text",
+    "questionTypeHelp": "Fill in the blanks.",
+    "answerOptions": {
+      "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
+      "correctGapValues": [
+        [
+          "gaps"
+        ],
+        [
+          "semicolon",
+          ";"
+        ],
+        [
+          "not"
+        ]
+      ]
+    }
+  }
+  ```
 
-### Advanced Configuration
+</details>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+<details>
+  <summary><b>Gap Text Dropdown</b></summary>
 
-### Deployment
+  <p>The question type Gap Text Dropdown requires the user to select the correct answer for a gap from a dropdown list. A gap is created by a square bracket.<p>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  <b><i>.json:</i></b>
 
-### `npm run build` fails to minify
+  ```json
+  {
+    "id": "MOD01-4",
+    "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
+    "points": 5,
+    "type": "gap-text-dropdown",
+    "questionTypeHelp": "Fill in the blanks with the **correct** Values!",
+    "answerOptions": {
+      "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
+      "dropdowns": [
+        {
+          "id": "select-0",
+          "options": [
+            "Dropdown",
+            "Pickup",
+            "empty"
+          ],
+          "correct": "Dropdown"
+        },
+        {
+          "id": "select-1",
+          "options": [
+            "0%",
+            "25%",
+            "50%",
+            "75%",
+            "100%"
+          ],
+          "correct": "50%"
+        }
+      ]
+    }
+  }
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+</details>
+
+<details>
+  <summary><b>Extended-Match</b></summary>
+
+  <p>Connect the dots with the extended-match question type.<p>
+
+  <b><i>.json:</i></b>
+
+  ```json
+  {
+    "id": "MOD01-5",
+    "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
+    "points": 5,
+    "type": "extended-match",
+    "questionTypeHelp": "Connect the dots.",
+    "answerOptions": {
+      "leftSide": [
+        {
+          "id": "left-0",
+          "text": "Hello"
+        },
+        {
+          "id": "left-1",
+          "text": "7+4"
+        }
+      ],
+      "rightSide": [
+        {
+          "id": "right-0",
+          "text": "World"
+        },
+        {
+          "id": "right-1",
+          "text": "20"
+        },
+        {
+          "id": "right-2",
+          "text": "11"
+        }
+      ],
+      "correctMatches": [
+        {
+          "left": "left-0",
+          "right": "right-0"
+        },
+        {
+          "left": "left-1",
+          "right": "right-2"
+        }
+      ]
+    }
+  }
+  ```
+
+</details>
+
+## General .json
+
+- Fields can not be empty (provide an empty string instead)
+- Normal quotes don't work (```"text"```) use unicode U+201E/U+201C instead (```„text“```) or escape the string like this ```\"text\"```
+- .json key-value properties have to be separated by a comma from the next one
+- The .json key value (left side of a property) has to be a string
