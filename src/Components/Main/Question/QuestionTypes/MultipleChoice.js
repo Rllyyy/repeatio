@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 //Markdown related
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
@@ -98,7 +99,11 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleChoice-list-item' key={item.id}>
-                  <ReactMarkdown children={item.text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} />
+                  <ReactMarkdown
+                    children={item.text}
+                    rehypePlugins={[rehypeRaw, rehypeKatex]}
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                  />
                 </li>
               );
             } else {
@@ -154,7 +159,11 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                     onClick={(e) => e.stopPropagation()}
                     className={`formControlLabel-label ${formDisabled && "label-disabled"}`}
                   >
-                    <ReactMarkdown children={option.text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} />
+                    <ReactMarkdown
+                      children={option.text}
+                      rehypePlugins={[rehypeRaw, rehypeKatex]}
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                    />
                   </Typography>
                 }
               />

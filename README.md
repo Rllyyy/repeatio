@@ -21,7 +21,7 @@ These programs provide feedback for potential problems.
   "questions": [
     {
       "id": "MOD01-1",
-      ...
+      "...": "..."
     }
   ]
 }
@@ -32,7 +32,7 @@ These programs provide feedback for potential problems.
 ### Question Types
 
 Create new question (object) inside the "questions" array.
-JSON key-value pairs can not be empty, so for optional fields use empty string "".
+JSON key-value pairs can not be empty, so for optional fields use an empty string `""`.
 
 **_Fields:_**
 | Field                   |                   Description                          | value type   |  required?   |
@@ -271,9 +271,227 @@ JSON key-value pairs can not be empty, so for optional fields use empty string "
 
 </details>
 
+## Styling
+
+Repeatio supports styling with `Markdown` and `HTML` for the following elements: **title**, **questionTypeHelp** and **answerOptions**.
+
+<details>
+  <summary><b>Line Breaks</b></summary>
+  
+  <p>Line breaks are significantly easier to use in html.</p>
+
+  <table>
+    <tr>
+      <th>Type</th>
+      <th>Markdown</th>
+      <th>HTML</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>Single line break</td>
+      <td>Top Text <code>\n\n</code> New line</td>
+      <td>Top Text <code>&lt;br /&gt;</code> New line</td>
+      <td>Top Text <br />New line</td>
+    </tr>
+    <tr>
+      <td>Multiple line break</td>
+      <td>This text is broken into <code>\n\n &ampnbsp;&ampnbsp; \n\n</code> multiple lines </td>
+      <td>This text is broken into <code>&lt;br /&gt;</code><code>&lt;br /&gt;</code>multiple lines</td>
+      <td>This text is broken into <br /> <br /> multiple lines</td>
+    </tr>
+  </table>
+</details>
+
+<details>
+  <summary><b>Emphasis (strong, italic, strikethrough, code, underline)</b></summary>
+
+  <table>
+    <tr>
+      <th>Type</th>
+      <th>Markdown</th>
+      <th>HTML</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>strong</td>
+      <td><code>**text**</code></td>
+      <td><code>&lt;b&gt;text&lt;/b&gt;</code></td>
+      <td><b>text</b></td>
+    </tr>
+    <tr>
+      <td>italic</td>
+      <td><code>*text*</code> or <code>_text_</code></td>
+      <td><code>&lt;i&gt;text&lt;/i&gt;</code></td>
+      <td><i>text</i></td>
+    </tr>
+    <tr>
+      <td>strong and italic</td>
+      <td><code>**_text_**</code></td>
+      <td><code>&lt;b&gt;&lt;i&gt;text&lt;/i&gt;&lt;/b&gt;</code></td>
+      <td><b><i>text</i></b></td>
+    </tr>
+    <tr>
+      <td>strikethrough</td>
+      <td><code>~~text~~</code></td>
+      <td><code>&lt;s&gt;text&lt;/s&gt;</code></td>
+      <td><s>text</s></td>
+    </tr>
+    <tr>
+      <td>code</td>
+      <td><code>`text`</code></td>
+      <td><code>&lt;code&gt;text&lt;/code&gt;</code></td>
+      <td><code>text</code></td>
+    </tr>
+    <tr>
+      <td>underline</td>
+      <td></td>
+      <td><code>&lt;u&gt;text&lt;/u&gt;</code></td>
+      <td><u>text</u></td>
+    </tr>
+  </table>
+</details>
+
+<details>
+  <summary><b>Lists</b></summary>
+
+  <p>For a better readability the html lists in this example use line breaks. Remember that json doesn't allow line breaks, so everything needs to be in one line.</p>
+
+  <table>
+    <tr>
+      <th>Type</th>
+      <th>Markdown</th>
+      <th>HTML</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>Unordered List</td>
+      <td><code>some text...\n - First unordered item\n - Another item\n - Last item\n\n</code><sup><a href="#footnote-html-1">[1]</a></sup></td>
+      <td>
+
+```html
+some text...
+<ul>
+  <li>First unordered item</li>
+  <li>Another item</li>
+  <li>Last item</li>
+</ul>
+```
+
+  </td>
+      <td>
+        <p>some text...</p>
+        <ul>
+          <li>First unordered list item</li>
+          <li>Another item</li>
+          <li>Last item</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>Ordered List</td>
+      <td><code>some text...\n 1. First ordered item\n 2. Another item\n 3. Last item\n\n</code><sup><a href="#footnote-html-2">[2]</a></sup></td>
+      <td>
+
+```html
+some text...
+<ol>
+  <li>First ordered list item</li>
+  <li>Another item</li>
+  <li>Last item</li>
+</ol>
+```
+
+  </td>
+      <td>
+        <p>some text...</p>
+        <ol>
+          <li>First ordered list item</li>
+          <li>Another item</li>
+          <li>Last item</li>
+        </ol>
+      </td>  
+    </tr>
+  </table>
+  <p id="footnote-html-1">[1]: Unordered list can use asterisks (<code>*</code>), minuses (<code>-</code>) or pluses (<code>+</code>). Don't forget the <code>\n</code> after each list item (+before the list) and <code>/n/n</code> to exit the list if there is any content after it!</p>
+  <p id="footnote-html-2">[2]: Actual numbers don't matter, just that it's a number. Don't forget the <code>\n</code> after each list item (+before the list) and <code>/n/n</code> to exit the list if there is any content after it!</p>
+
+</details>
+
+<details>
+  <summary><b>Tables</b></summary>
+
+  <p>For a better readability the html table in this example use line breaks. Remember that json doesn't allow line breaks, so everything needs to be in one line.</p>
+
+  <table>
+    <tr>
+      <th>Type</th>
+      <th>Markdown</th>
+      <th>HTML</th>
+      <th>Result</th>
+    </tr>
+    <tr>
+      <td>Table</td>
+      <td><pre>some text...\n
+| Heading 1 | Heading 2 |\n
+| --------- | ----------- |\n
+| Item 1    | Item 2 |\n
+| Item 3    | Item 4 |\n\n </pre>
+      <sup>
+        <a href="#footnote-html-3">[3]</a>
+        </sup>
+      </td>
+      <td>
+
+```html
+some text...
+<table>
+  <tr>
+    <th>Heading 1</th>
+    <th>Heading 2</th>
+  </tr>
+  <tr>
+    <td>Item 1</td>
+    <td>Item 2</td>
+  </tr>
+  <tr>
+    <td>Item 3</td>
+    <td>Item 4</td>
+  </tr>
+</table>
+```
+
+</td>
+      <!-- Result -->
+      <td>
+        <p>some text...</p>
+        <table>
+          <tr>
+            <th>Heading 1</th>
+            <th>Heading 2</th>
+          </tr>
+          <tr>
+            <td>Item 1</td>
+            <td>Item 2</td>
+          </tr>
+          <tr>
+            <td>Item 3</td>
+            <td>Item 4</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <span id="footnote-html-3">[3]: Use the following syntax to align items in a markdown table (below the heading):
+  <ul>
+  <li><i>left</i> (<code>| :------- |</code>) is optional as it is identical to <code>| ------- |</code> </li><li><i>center</i> (<code>| :-------: |</code>)</li><li><i>right</i> (<code>| -------: |</code>)</li>
+  </ul>
+  </span>
+
+</details>
+
 ## General .json
 
 - Fields can not be empty (provide an empty string instead)
-- Normal quotes don't work (```"text"```) use unicode U+201E/U+201C instead (```„text“```) or escape the string like this ```\"text\"```
+- Normal quotes don't work (`"text"`) use unicode U+201E/U+201C instead (`„text“`) or escape the string like this `\"text\"`
 - .json key-value properties have to be separated by a comma from the next one
 - The .json key value (left side of a property) has to be a string

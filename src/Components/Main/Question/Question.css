@@ -56,7 +56,8 @@
 }
 
 /* Targets the markdown (styling) in the title */
-.question-title p {
+.question-title p,
+.question-title li {
   margin-top: 7px;
   line-height: 1.2;
   font-size: 1.35rem;
@@ -73,6 +74,37 @@
   width: 100%;
   max-width: 700px;
   max-height: 500px;
+}
+
+/* Target lists in the title of the question */
+.question-title ul li,
+.question-title ol li {
+  font-weight: inherit;
+  list-style-position: inside;
+}
+
+/* Target lists in the title of the question */
+.question-title ul li,
+.question-title ol li {
+  font-weight: inherit;
+  list-style-position: inside;
+}
+
+/* Target table element in the title of the question */
+.question-title table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-title table,
+.question-title th,
+.question-title td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-title th,
+.question-title td {
+  padding: 5px 10px;
 }
 
 /* Style the question points */
@@ -104,6 +136,23 @@
 .question-type-help ul li,
 .question-type-help ol li {
   list-style-position: inside;
+}
+
+/* Target table element in the title of the question */
+.question-type-help table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-type-help table,
+.question-type-help th,
+.question-type-help td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-type-help th,
+.question-type-help td {
+  padding: 5px 10px;
 }
 
 /* Targets the question-correction section*/

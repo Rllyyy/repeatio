@@ -32,6 +32,10 @@ jest.mock("rehype-raw", () => (props) => {
   return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
+jest.mock("remark-gfm", () => (props) => {
+  return <p className='remark-gfm-mock'>{props.children}</p>;
+});
+
 jest.mock("remark-math", () => (props) => {
   return <p className='remark-math-mock'>{props.children}</p>;
 });

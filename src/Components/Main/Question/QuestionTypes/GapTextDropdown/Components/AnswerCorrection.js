@@ -41,6 +41,7 @@ const AnswerCorrection = ({ text, dropdowns }) => {
     const exportHTMl = joinedElements
       .replaceAll("&lt;", "<")
       .replaceAll("&gt;", ">")
+      .replaceAll("&quot;", '"')
       .replaceAll('data-reactroot=""', "");
 
     //Export to dangerouslySetInnerHTML

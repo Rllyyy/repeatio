@@ -3,8 +3,9 @@ import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativ
 //Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 
 //Import Components
@@ -265,7 +266,8 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
-                  rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+                  rehypePlugins={[rehypeRaw, rehypeKatex]}
+                  remarkPlugins={[remarkGfm, remarkMath]}
                   children={text}
                 />
                 <button
@@ -288,7 +290,8 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
-                  rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+                  rehypePlugins={[rehypeRaw, rehypeKatex]}
+                  remarkPlugins={[remarkGfm, remarkMath]}
                   children={text}
                 />
                 <button

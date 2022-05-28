@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, createRef } from "react";
+
+//Markdown
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
+import "katex/dist/katex.min.css";
 
 //Components
 import Canvas from "./Canvas";
@@ -37,7 +44,12 @@ const AnswerReturn = ({ correctMatches, shuffledLeftOptions, shuffledRightOption
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
-              <ReactMarkdown className='ext-match-element-text' children={text} />
+              <ReactMarkdown
+                className='ext-match-element-text'
+                children={text}
+                rehypePlugins={[rehypeRaw, rehypeKatex]}
+                remarkPlugins={[remarkGfm, remarkMath]}
+              />
               <div
                 className='ext-match-element-circle circle-disabled'
                 ref={leftCorrection.current[index]}
@@ -53,7 +65,12 @@ const AnswerReturn = ({ correctMatches, shuffledLeftOptions, shuffledRightOption
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
-              <ReactMarkdown className='ext-match-element-text' children={text} />
+              <ReactMarkdown
+                className='ext-match-element-text'
+                children={text}
+                rehypePlugins={[rehypeRaw, rehypeKatex]}
+                remarkPlugins={[remarkMath]}
+              />
               <div
                 className='ext-match-element-circle circle-disabled'
                 ref={rightCorrection.current[index]}

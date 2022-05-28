@@ -11,6 +11,7 @@ import { useSize } from "../../../hooks/useSize";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
@@ -335,7 +336,8 @@ const Question = () => {
         </div>
         <ReactMarkdown
           className='question-title'
-          rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+          rehypePlugins={[rehypeRaw, rehypeKatex]}
+          remarkPlugins={[remarkMath, remarkGfm]}
           children={question.title}
         />
         <p className='question-points'>
@@ -343,7 +345,8 @@ const Question = () => {
         </p>
         <ReactMarkdown
           className='question-type-help'
-          rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
+          rehypePlugins={[rehypeRaw, rehypeKatex]}
+          remarkPlugins={[remarkMath, remarkGfm]}
           children={question.questionTypeHelp}
         />
         {/* Question */}

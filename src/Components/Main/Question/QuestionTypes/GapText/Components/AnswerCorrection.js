@@ -20,7 +20,7 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
     const htmlString = ReactDOMServer.renderToString(
-      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]} remarkPlugins={[remarkGfm]} />
+      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
     );
 
     //Split the html notes where the input should be inserted
@@ -47,6 +47,7 @@ const AnswerCorrection = ({ text, correctGapValues }) => {
     const exportHTMl = joinedElements
       .replaceAll("&lt;", "<")
       .replaceAll("&gt;", ">")
+      .replaceAll("&quot;", '"')
       .replaceAll('data-reactroot=""', "");
 
     //Export to dangerouslySetInnerHTML

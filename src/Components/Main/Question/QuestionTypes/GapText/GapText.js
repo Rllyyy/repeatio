@@ -62,8 +62,8 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     const htmlString = ReactDOMServer.renderToString(
       <ReactMarkdown
         children={options.text}
-        rehypePlugins={[rehypeRaw, remarkMath, rehypeKatex]}
-        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
+        remarkPlugins={[remarkGfm, remarkMath]}
       />
     );
 
@@ -92,6 +92,7 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
     const exportHTMl = joinedElements
       .replaceAll("&lt;", "<")
       .replaceAll("&gt;", ">")
+      .replaceAll("&quot;", '"')
       .replaceAll('data-reactroot=""', "");
 
     //Export to dangerouslySetInnerHTML
