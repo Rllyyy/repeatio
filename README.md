@@ -489,6 +489,16 @@ some text...
 
 </details>
 
+<details>
+  <summary><b>Math (LaTeX/KaTeX)</b></summary>
+
+Repeatio uses KaTeX/LaTeX to render mathematical functions.
+**[Here](/.github/Docs/KaTeX.md)** is a detailed guide.
+
+Generally replace every single slash `\` with `\\` and use line breaks to separate the function (`\n\n` or `<br />`).
+
+</details>
+
 ## General .json
 
 - Fields can not be empty (provide an empty string instead)
