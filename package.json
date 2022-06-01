@@ -1,7 +1,7 @@
 {
   "name": "repeatio",
   "version": "0.2.0",
-  "description": "Repeatio is a program for practicing and memorizing tasks",
+  "description": "Learn, repeat and memorize tasks with repeatio.",
   "author": "Niklas Fischer",
   "private": true,
   "main": "public/electron.js",
