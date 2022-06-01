@@ -1,4 +1,4 @@
-# KaTeX
+# LaTeX
 
 Repeatio uses KaTeX/LaTeX to render mathematical functions.
 
@@ -10,6 +10,7 @@ Repeatio uses KaTeX/LaTeX to render mathematical functions.
   </tr>
    <tr>
     <td>
+      <b>
       <span>1. <a href="#1-general">General</a></span> </br >
       <span>1.1 <a href="#11-inline-functions">Inline Functions</a></span> </br >
       <span>1.2 <a href="#12-multiline-functions">Multiline Functions</a></span> </br >
@@ -17,15 +18,15 @@ Repeatio uses KaTeX/LaTeX to render mathematical functions.
       <span>3. <a href="#3-power-and-indices">Power and Indices</a></span> </br >
       <span>4. <a href="#4-roots">Roots</a></span> </br >
       <span>5. <a href="#5-operators">Operators</a></span> </br >
-      <span>6. <a href="#6-symbols">Symbols</a></span> </br >
-      <span>7. <a href="#7-sums-and-integrals">Sums and Integrals</a></span> </br >
-      <span>8. <a href="#8-brackets">Brackets</a></span> </br >
-      <span>9. <a href="#9-accents">Accents</a></span> </br >
-      <span>10. <a href="#10-arrows">Arrows</a></span> </br >
-      <span>11. <a href="#11-greek-letters">Greek letters</a></span> </br >
-      <span>12. <a href="#12-environments">Environments</a></span> </br >
-      <span>13. <a href="#13-misc">Misc</a></span> </br >
-      <span>14. <a href="#14-sources-and-more-types">Sources and more Types</a></span> </br >
+      <span>6. <a href="#6-sums-and-integrals">Sums and Integrals</a></span> </br >
+      <span>7. <a href="#7-brackets">Brackets</a></span> </br >
+      <span>8. <a href="#8-accents">Accents</a></span> </br >
+      <span>9. <a href="#9-arrows">Arrows</a></span> </br >
+      <span>10. <a href="#10-greek-letters">Greek letters</a></span> </br >
+      <span>11. <a href="#11-environments">Environments</a></span> </br >
+      <span>12. <a href="#12-misc">Misc</a></span> </br >
+      <span>13. <a href="#13-sources-and-more-types">Sources and more Types</a></span> </br >
+      </b>
     </td>
    </tr>
 </table>
@@ -33,15 +34,18 @@ Repeatio uses KaTeX/LaTeX to render mathematical functions.
 ## 1. General
 
 Replace the normal LaTeX syntax for slashes `\` with `\\`.
+
 If the function should be alone in a line use line breaks (`\n\n` or `<br />`) before and after the function.
 
 ### 1.1 Inline Functions
 
 LaTeX inline functions are written between single dollar signs `$...$`.
 
-**_Example_**
+**_Example_**  
 Calculate $x$:
+
 $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
+
 Round to 2 decimal places.
 
 <details>
@@ -57,14 +61,15 @@ Round to 2 decimal places.
 
 ### 1.2 Multiline Functions
 
-LaTeX multiline functions are written between double dollar signs `$$\n...\n$$`.
-For a new line in the function use `\\\\`.
-The **line breaks are required**. Without them the formula will break!
-Multiline functions will center themselves automatically.
-Align the function to the equal sign with `&=`.
+LaTeX multiline functions are written between double dollar signs `$$\n...\n$$`.  
+For a new line in the function use `\\\\`.  
+The **line breaks are required**. Without them the formula will break!  
+Multiline functions will center themselves automatically. Aligning equations with `&=`.
 
-**_Example_**
-Calculate $x^2+3x+2 = 0$
+**_Example_**  
+Calculate
+$x^2+3x+2 = 0$
+
 $$
 \begin{align}
 x_{1,2} &= -\left(\frac{3}{2}\right) \pm \sqrt{ \left(\frac{3}{2}\right)^{2}-2} \\
@@ -106,13 +111,12 @@ $$
 ## 3. Power and Indices
 
 | Type                      | Input                        | Result                 |
-| :------------------------ | :--------------------------- |:-----------------------|
+| :------------------------ | :--------------------------- |:----------------------- |
 | Superscript               | ```$n^2$```                  |     $n^2$              |
 | Superscript (advanced)    | ```$n^{2+k}$```              |     $n^{2+k}$          |
 | Subscript                 | ```$k_n$```                  |     $k_n$              |
 | Subscript (advanced)      | ```$k_{n+1}$```              |     $k_{n+1}$          |
 | Sup-/Subscript            | ```$k_n^2$```                |     $k_n^2$            |
-| Sup-/Subscript (advanced) | ```$k_{n+1}^{2+1}$```        |     $k_{n+1}^{2+1}$    |
 
 ## 4. Roots
 
@@ -152,22 +156,12 @@ $$
 | Greater or equal than | ```$\\geq$```                |     $\geq$                 |
 | Not                   | ```$\\neg$```                |     $\neg$                 |
 
-## 6. Symbols
-
-| Type       | Input                        | Result                     |
-|:---------- | :--------------------------- |:---------------------------|
-| And        | ```$\\&$```                  |     $\&$                   |
-| Dollar     | ```$\n$\n$```                |     $\$$                   |
-| Percentage | ```$\\%$```                  |     $\%$                   |
-| Underscore | ```$\\_$```                  |     $\_$                   |
-| Hashtag    | ```$\\#$```                  |     $\#$                   |
-
-## 7. Sums and Integrals
+## 6. Sums and Integrals
 
 | Type                 | Text                                                  | Result                                         |
 | :------------------- | :---------------------------------------------------- |:-----------------------------------------------|
 | Summation            | ```$\\sum$```                                         |    $\sum$                                      |
-| Summation (advanced) | ```$\\sum_{i=1}^{10} t_i$```                          |    $\sum_{i=1}^{10} t_i$                       |
+| Summation (advanced) | ```$\\sum\\limits_{i=0}^n f(x)$```                    |    $\sum\limits_{i=0}^n f(x)$                  |
 | Integral             | ```$\int$```                                          |    $\int$                                      |
 | Integral (advanced)  | ```$\\int_0^\\infty \\mathrm{e}^{-x},\\mathrm{d}x$``` |    $\int_0^\infty \mathrm{e}^{-x},\mathrm{d}x$ |
 | Integral (limit)     | ```$\\int\\limits_a^b$```                             |    $\int\limits_a^b$                           |
@@ -180,19 +174,19 @@ $$
 | Bigodot              | ```$\\bigodot$```                                     |    $\bigodot$                                  |
 | Plus-Minus           | ```$\\pm$```                                          |    $\pm$                                       |
 
-## 8. Brackets
+## 7. Brackets
 
-| Type | Input                              | Result                       |
-| :---- | :--------------------------------- |:-----------------------------|
-| Parenthesis | ```$(a)$```                        |  $(a)$                       |
-| parenthesis (bigger) | ```$\\left(\\frac{a}{2}\\right)``` |  $\left(\frac{a}{2}\right)$  |
-| Bracket | ```$[a]$```                        |  $[a]$                       |
-| Brace | ```$\\{{a}\\}$```                  |  $\{{a}\}$                   |
-| Angle bracket | ```$\\langle f \\rangle$```        |  $\langle f \rangle$         |
-| Floor | ```$\\lfloor f \\rfloor$```        |  $\lfloor f \rfloor$         |
-| Ceiling | ```$\\lceil f \\rceil$```          |  $\lceil f \rceil$           |
+| Type                 | Input                                | Result                        |
+| :------------------- | :----------------------------------- | :---------------------------- |
+| Parenthesis          | ```$(a)$```                          |  $(a)$                        |
+| parenthesis (bigger) | ```$\\left(\\frac{a^2}{2}\\right)``` |  $\left(\frac{a^2}{2}\right)$ |
+| Bracket              | ```$[a]$```                          |  $[a]$                        |
+| Brace                | ```$\\{a\\}$```                      |  {a}                          |
+| Angle bracket        | ```$\\langle f \\rangle$```          |  $\langle f \rangle$          |
+| Floor                | ```$\\lfloor f \\rfloor$```          |  $\lfloor f \rfloor$          |
+| Ceiling              | ```$\\lceil f \\rceil$```            |  $\lceil f \rceil$            |
 
-## 9. Accents
+## 8. Accents
 
 | Input                        | Result                     |
 | :--------------------------- |:---------------------------|
@@ -216,7 +210,7 @@ $$
 | ```$\\overline{aaa}$```      |    $\overline{aaa}$        |
 | ```$\\underline{a}$```       |    $\underline{a}$         |
 
-## 10. Arrows
+## 9. Arrows
 
 | Input                        | Result                     |
 | :--------------------------- |:---------------------------|
@@ -227,7 +221,7 @@ $$
 | ```$\\Uparrow$```            |     $\Uparrow$             |
 | ```$\\Downarrow$```          |     $\Downarrow$           |
 
-## 11. Greek letters
+## 10. Greek letters
 
 | Text                         | Result                     |
 | :--------------------------- |:---------------------------|
@@ -240,42 +234,42 @@ $$
 | ```$\\delta$```              |     $\delta$               |
 | ```$\\Delta$```              |     $\Delta$               |
 | ```$\\epsilon$```            |     $\epsilon$             |
-| ```$\\Epsilon$```            |     $\Epsilon$             |
+| ```$\\Epsilon$```            |     $E$                    |
 | ```$\\zeta$```               |     $\zeta$                |
-| ```$\\Zeta$```               |     $\Zeta$                |
+| ```$\\Zeta$```               |     $Z$                    |
 | ```$\\eta$```                |     $\eta$                 |
-| ```$\\Eta$```                |     $\Eta$                 |
+| ```$\\Eta$```                |     $H$                    |
 | ```$\\theta$```              |     $\theta$               |
 | ```$\\Theta$```              |     $\Theta$               |
 | ```$\\kappa$```              |     $\kappa$               |
-| ```$\\Kappa$```              |     $\Kappa$               |
+| ```$\\Kappa$```              |     $K$                    |
 | ```$\\lambda$```             |     $\lambda$              |
 | ```$\\Lambda$```             |     $\Lambda$              |
 | ```$\\mu$```                 |     $\mu$                  |
-| ```$\\Mu$```                 |     $\Mu$                  |
+| ```$\\Mu$```                 |     $M$                    |
 | ```$\\nu$```                 |     $\nu$                  |
-| ```$\\Nu$```                 |     $\Nu$                  |
+| ```$\\Nu$```                 |     $N$                    |
 | ```$\\xi$```                 |     $\xi$                  |
 | ```$\\Xi$```                 |     $\Xi$                  |
 | ```$\\pi$```                 |     $\pi$                  |
 | ```$\\Pi$```                 |     $\Pi$                  |
 | ```$\\rho$```                |     $\rho$                 |
-| ```$\\Rho$```                |     $\Rho$                 |
+| ```$\\Rho$```                |     $P$                    |
 | ```$\\sigma$```              |     $\sigma$               |
 | ```$\\Sigma$```              |     $\Sigma$               |
 | ```$\\tau$```                |     $\tau$                 |
-| ```$\\au$```                 |     $\Tau$                 |
+| ```$\\au$```                 |     $T$                    |
 | ```$\\phi$```                |     $\phi$                 |
 | ```$\\Phi$```                |     $\Phi$                 |
 | ```$\\chi$```                |     $\chi$                 |
-| ```$\\Chi$```                |     $\Chi$                 |
+| ```$\\Chi$```                |     $X$                    |
 | ```$\\psi$```                |     $\psi$                 |
 | ```$\\Psi$```                |     $\Psi$                 |
 | ```$\\omega$```              |     $\omega$               |
 | ```$\\Omega$```              |     $\Omega$               |
 | ```$\\varphi$```             |    $\varphi$               |
 
-## 12. Environments
+## 11. Environments
 
 <table>
   <tr>
@@ -442,7 +436,7 @@ $$
 
 **[More Matrix Examples](<https://www.math-linux.com/latex-26/faq/latex-faq/article/how-to-write-matrices-in-latex-matrix-pmatrix-bmatrix-vmatrix-vmatrix>)**
 
-## 13. Misc
+## 12. Misc
 
 | Input                        | Result                     |
 | :--------------------------- |:---------------------------|
@@ -450,7 +444,7 @@ $$
 | ```$\\nonumber$```           |     $\nonumber$            |
 | ```$\\color{grey}x$```       |     $\color{grey}x$        |
 
-## 14. Sources and more Types
+## 13. Sources and more Types
 
 - <https://oeis.org/wiki/List_of_LaTeX_mathematical_symbols>
 - <https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/>
