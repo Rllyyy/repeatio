@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
+
+//Components
+import Card from "../../SharedComponents/Card/Card.js";
+import Spinner from "../../SharedComponents/Spinner/Spinner.js";
+
+//css
 import "./Module.css";
 
 //Icons
 import { AiOutlineBook } from "react-icons/ai";
-import { GiPerspectiveDiceSixFacesRandom } from "react-icons/gi";
-import { RiArrowLeftRightLine } from "react-icons/ri";
 import { FaGraduationCap } from "react-icons/fa";
 import { BsListOl } from "react-icons/bs";
 import { BsPlusCircle } from "react-icons/bs";
@@ -15,18 +19,22 @@ import { MdBookmark } from "react-icons/md";
 import { BiStats } from "react-icons/bi";
 import { AiOutlineEdit } from "react-icons/ai";
 
-const Module = ({ match }) => {
+//functions
+import shuffleArray from "../../../functions/shuffleArray.js";
+
+//Component
+const Module = () => {
   //useState
-  const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [module, setModule] = useState();
 
   //context
-  const { moduleData, setContextModuleID } = useContext(ModuleContext);
+  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
 
-  //events
-  const practiceClick = () => {
-    setShowPracticeOptions(true);
-  };
+  //History
+  let history = useHistory();
+
+  //Params
+  const { moduleID } = useParams();
 
   /* USEEFFECTS */
   //Update the module state by using the data from the context
@@ -37,112 +45,184 @@ const Module = ({ match }) => {
 
   //Tell the context to update with the new module (id is in the url)
   useEffect(() => {
-    setContextModuleID(match.params.moduleID);
-  }, [match.params.moduleID, setContextModuleID]);
+    setContextModuleID(moduleID);
+  }, [moduleID, setContextModuleID]);
 
-  const hidePracticeOptions = useCallback(
-    (e) => {
-      if (!showPracticeOptions) return;
+  /*EVENTS*/
+  //Train with all questions in chronological order
+  const onChronologicalClick = () => {
+    setFilteredQuestions(moduleData.questions);
+    history.push({
+      pathname: `/module/${moduleID}/question/${module.questions[0].id}`,
+      search: "?mode=chronological",
+    });
+  };
 
-      //Check if the event is mousedown (click away) or escape key
-      if (
-        e.type === "mousedown" &&
-        e.target.className !== "practice-chronological" &&
-        e.target.parentNode.className !== "practice-chronological" &&
-        e.target.className !== "practice-random" &&
-        e.target.parentNode.className !== "practice-random"
-      ) {
-        setShowPracticeOptions(false);
-        //keyCode 27 = escape key
-      } else if (e.keyCode === 27) {
-        setShowPracticeOptions(false);
+  //Train with all questions in random order
+  const onRandomClick = () => {
+    //If the array isn't spread, it modifies the order of the original data
+    const shuffledQuestions = shuffleArray([...moduleData.questions]);
+    setFilteredQuestions(shuffledQuestions);
+    history.push({
+      pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
+      search: "?mode=random",
+    });
+  };
+
+  //Train with only the saved Questions
+  const onSavedQuestionsClick = () => {
+    //Get the data from the localStorage
+    //TODO for electron get from filesystem
+    const savedQuestionsID = JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`));
+
+    //Return if no such element can be found
+    //TODO give user response that no saved questions are defined (maybe with toast)
+    if (savedQuestionsID === null) {
+      return;
+    }
+
+    //For each element in the array return the question object
+    //kinda expensive calculation (array in array) :/
+    let savedQuestions = [];
+    savedQuestionsID.forEach((questionID) => {
+      const question = moduleData.questions.find((question) => question.id === questionID);
+      //push question object to array if question is found
+      if (question !== undefined) {
+        savedQuestions.push(question);
       }
+    });
+
+    //Update the context
+    setFilteredQuestions(savedQuestions);
+
+    //Navigate to question component
+    history.push({
+      pathname: `/module/${moduleID}/question/${savedQuestions[0].id}`,
+      search: "?mode=chronological",
+    });
+  };
+
+  //All cards
+  const moduleCards = [
+    {
+      title: "Practice",
+      description: "Practice all questions in chronological or random order",
+      icon: <AiOutlineBook />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Chronological",
+        function: onChronologicalClick,
+      },
+      rightBottom: {
+        type: "button",
+        buttonText: "Random",
+        function: onRandomClick,
+      },
     },
-    [showPracticeOptions]
-  );
+    {
+      title: "Exam",
+      disabled: true,
+      description: "Simulate an exam",
+      icon: <FaGraduationCap />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+      },
+    },
+    {
+      title: "Question Overview",
+      description: "View, filter and sort all questions",
+      icon: <BsListOl />,
+      leftBottom: {
+        type: "link",
+        linkTo: `/module/${moduleID}/all-questions`,
+        linkAriaLabel: "View all Questions",
+        linkText: "View",
+      },
+    },
+    {
+      title: "Add Question",
+      disabled: true,
+      description: "Add a missing question",
+      icon: <BsPlusCircle />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Add",
+      },
+    },
+    {
+      title: "Last 30 Mistakes",
+      disabled: true,
+      description: "Train the last 30 mistakes",
+      icon: <BsExclamationTriangle />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+      },
+    },
+    {
+      title: "Saved Questions",
+      description: "Train with your saved questions",
+      icon: <MdBookmark />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Start",
+        function: onSavedQuestionsClick,
+      },
+    },
+    {
+      title: "Statistics",
+      disabled: true,
+      description: "",
+      icon: <BiStats />,
+      leftBottom: {
+        type: "button",
+        buttonText: "View",
+      },
+    },
+    {
+      title: "Info",
+      disabled: true,
+      description: "",
+      icon: <AiOutlineEdit />,
+      leftBottom: {
+        type: "button",
+        buttonText: "Edit",
+      },
+    },
+  ];
 
-  useEffect(() => {
-    window.addEventListener("mousedown", hidePracticeOptions, false);
-    window.addEventListener("keydown", hidePracticeOptions);
-
-    return () => {
-      window.removeEventListener("mousedown", hidePracticeOptions, false);
-      window.removeEventListener("keydown", hidePracticeOptions);
-    };
-  }, [showPracticeOptions, hidePracticeOptions]);
-
-  //Prevent the rendering when there is no module set (to prevent hopping ui)
+  //Show loading while module isn't set
   if (!module) {
-    return <></>;
+    return (
+      <div className='module-spinner'>
+        <Spinner />
+      </div>
+    );
   }
 
   //JSX
   return (
     <>
-      <div className='module-heading-wrapper'>
-        <h1 className='module-heading'>{module.name}</h1>
-        <div className='heading-underline'></div>
-      </div>
-      {/* <h3 className='module-description'>{description}</h3> */}
-      {/* //TODO Add Bookmark */}
+      <h1 className='site-heading'>
+        {module.name} ({module.id})
+      </h1>
       <div className='module-cards'>
-        {/* practice */}
-        <div className='card-practice' tabIndex='0'>
-          <button className='practice-icon-name' onClick={() => practiceClick()}>
-            <AiOutlineBook />
-            <h3>Practice</h3>
-          </button>
-          {showPracticeOptions && (
-            <div className='practice-chronological-random-wrapper'>
-              <Link
-                to={`/module/${match.params.moduleID}/${module.questions[0].id}`}
-                className='practice-chronological'
-              >
-                <RiArrowLeftRightLine />
-                <h3>Chronological</h3>
-              </Link>
-              <button className='practice-random'>
-                <GiPerspectiveDiceSixFacesRandom />
-                <h3>Random</h3>
-              </button>
-            </div>
-          )}
-        </div>
-        {/* Exam simulation. Time and total points have to be defined for this to work*/}
-        <button className='card-exam'>
-          <FaGraduationCap />
-          <h3>Exam</h3>
-        </button>
-        {/* View all Questions*/}
-        <button className='card-all-questions'>
-          <BsListOl />
-          <h3>All Questions</h3>
-        </button>
-        {/* Add Question */}
-        <button className='card-add-question'>
-          <BsPlusCircle />
-          <h3>Add Question</h3>
-        </button>
-        {/* View last mistakes */}
-        <button className='card-last-mistakes'>
-          <BsExclamationTriangle />
-          <h3>Last 30 Mistakes</h3>
-        </button>
-        {/* View saved Questions*/}
-        <button className='card-saved-questions'>
-          <MdBookmark />
-          <h3>Saved Questions</h3>
-        </button>
-        {/* Statistics */}
-        <button className='card-statistics'>
-          <BiStats />
-          <h3>Statistics</h3>
-        </button>
-        {/* Edit Module */}
-        <button className='card-edit'>
-          <AiOutlineEdit />
-          <h3>Edit Module</h3>
-        </button>
+        {moduleCards.map((card) => {
+          const { title, disabled, description, icon, leftBottom, rightBottom } = card;
+          return (
+            <Card
+              key={title}
+              disabled={disabled}
+              type='module-card'
+              title={title}
+              description={description}
+              icon={icon}
+              leftBottom={leftBottom}
+              rightBottom={rightBottom}
+            />
+          );
+        })}
       </div>
     </>
   );

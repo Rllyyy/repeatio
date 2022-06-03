@@ -1,26 +1,42 @@
 //Import
+//React stuff
 import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { useSize } from "../../../hooks/useSize";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
+
+//Custom Hooks
+import { useSize } from "../../../hooks/useSize";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
-import GapText from "./QuestionTypes/GapText.js";
+import GapText from "./QuestionTypes/GapText/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
+import GapTextDropdown from "./QuestionTypes/GapTextDropdown/GapTextDropdown.js";
 
-//Import css
+//Import CSS
 import "./Question.css";
 
-//Import SCG
-import { AiFillEye } from "react-icons/ai";
-import { BiCheck, BiReset } from "react-icons/bi";
+//Import SVG
+import { BiCheck } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
-import { FaArrowRight } from "react-icons/fa";
+import { CgUndo } from "react-icons/cg";
+import { MdNavigateNext } from "react-icons/md";
+
+//Import Components
+import Bookmark from "./Components/Bookmark.js";
 
 //Navigation svg from https://tablericons.com
 
+//Component
 const Question = () => {
   /* HOOKS */
   //States
@@ -38,53 +54,71 @@ const Question = () => {
   //History
   let history = useHistory();
 
+  //Location (Search url=?...)
+  const { search } = useLocation();
+
   //Context
-  const { moduleData, setContextModuleID } = useContext(ModuleContext);
+  const { filteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
 
   //Refs
+  const questionDataRef = useRef(null);
   const questionBottomRef = useRef(null);
-  const checkRef = useRef(); //Checking if an answer is correct id done in the child component
+  const questionAnswerRef = useRef(); //Checking if an answer is correct id done in the child component
   const questionCorrectionRef = useRef();
+  const practiceMode = useRef(new URLSearchParams(search).get("mode") || "chronological"); //Fallback to chronological if urlSearchParams is undefined
 
   //Custom Hooks
   const size = useSize(questionBottomRef);
 
-  /* USEEFFECTS */
+  /* UseEffects */
   //Set the question state by finding the correct question with the url parameters
   useEffect(() => {
+    if (params.questionID === undefined) {
+      return;
+    }
     //Guard to refetch context (could for example happen on F5)
-    if (moduleData.length === 0 || moduleData === undefined) {
+    if (moduleData === undefined || filteredQuestions.length <= 0) {
       setContextModuleID(params.moduleID);
       return;
     }
+
     //Find the correct question in the moduleData context
-    const returnQuestion = moduleData.questions.find((questionItem) => questionItem.id === params.questionID);
+    const returnQuestion = filteredQuestions.find((questionItem) => questionItem.id === params.questionID);
 
-    //Set the locale storage
+    //If it not in this context
+    //!Implement
+
+    //Set the question state
     setQuestion(returnQuestion);
-  }, [moduleData, params.questionID, params.moduleID, setContextModuleID]);
 
-  //Reset the states when rendering a new question
-  useEffect(() => {
-    setFormDisabled(false);
-    setShowAnswer(false);
-    setAnswerCorrect();
-    if (checkRef.current !== undefined) {
-      checkRef.current.resetSelection();
-    }
-  }, [params.questionID]);
+    //Scroll to top
+    questionDataRef.current.scrollTo(0, 0);
+
+    //set a variable so it can be used when component unmounts
+    const questionAnswerResetRef = questionAnswerRef.current;
+
+    return () => {
+      setFormDisabled(false);
+      setShowAnswer(false);
+      setAnswerCorrect();
+      setQuestion({});
+      if (questionAnswerResetRef !== undefined && questionAnswerResetRef !== null) {
+        questionAnswerResetRef.resetSelection();
+      }
+    };
+  }, [moduleData, params.questionID, params.moduleID, setContextModuleID, filteredQuestions]);
 
   //Show the index of the current question
-
+  //TODO use memo this
   useEffect(() => {
-    if (moduleData === undefined || moduleData.length === 0) return;
+    if (filteredQuestions === undefined || filteredQuestions.length === 0) return;
 
     //Find the index of the question by filtering the module context
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Add 1 because arrays are zero based and update the state
     setCurrentQuestionPage(currentIndex + 1);
-  }, [params.questionID, moduleData]);
+  }, [params.questionID, filteredQuestions]);
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useEffect(() => {
@@ -114,7 +148,7 @@ const Question = () => {
           return (
             <MultipleResponse
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -124,7 +158,7 @@ const Question = () => {
           return (
             <MultipleChoice
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -134,7 +168,7 @@ const Question = () => {
           return (
             <GapText
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -144,7 +178,17 @@ const Question = () => {
           return (
             <ExtendedMatch
               options={options}
-              ref={checkRef}
+              ref={questionAnswerRef}
+              setAnswerCorrect={setAnswerCorrect}
+              setShowAnswer={setShowAnswer}
+              formDisabled={formDisabled}
+            />
+          );
+        case "gap-text-dropdown":
+          return (
+            <GapTextDropdown
+              options={options}
+              ref={questionAnswerRef}
               setAnswerCorrect={setAnswerCorrect}
               setShowAnswer={setShowAnswer}
               formDisabled={formDisabled}
@@ -160,13 +204,14 @@ const Question = () => {
   //Navigation
   //Go to first question in module
   const toFirstQuestion = () => {
-    const firstIDInQuestionArray = moduleData.questions[0].id;
+    const firstIDInQuestionArray = filteredQuestions[0].id;
 
     //Only push to history if not already at the first question
     //TODO notify the user that the already is at the beginning
     if (params.questionID !== firstIDInQuestionArray) {
       history.push({
-        pathname: `/module/${params.moduleID}/${firstIDInQuestionArray}`,
+        pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -175,16 +220,18 @@ const Question = () => {
   //Go to the previous question
   const toPreviousQuestion = () => {
     //get Current index
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
     if (currentIndex - 1 >= 0) {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex - 1].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[moduleData.questions.length - 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[filteredQuestions.length - 1].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -193,33 +240,38 @@ const Question = () => {
   //TODO: Go to provided input
 
   //Go to the next question
-  const nextQuestion = () => {
+  const handleNextQuestion = () => {
+    questionAnswerRef.current.resetSelection();
+
     //get Current index
-    const currentIndex = moduleData.questions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
-
-    if (currentIndex + 1 < moduleData.questions.length) {
+    if (currentIndex + 1 < filteredQuestions.length) {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[currentIndex + 1].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex + 1].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/${moduleData.questions[0].id}`,
+        pathname: `/module/${params.moduleID}/question/${filteredQuestions[0].id}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
-    //Resetting the states and current selection is handled by a useEffect
+
+    //Resetting the states is handled by a useEffect
   };
 
   //Go to last question
   const toLastQuestion = () => {
-    const lastIDInQuestionArray = moduleData.questions[moduleData.questions.length - 1].id;
+    const lastIDInQuestionArray = filteredQuestions[filteredQuestions.length - 1].id;
 
     //Only push to history if not already at the last point
     //TODO notify the user that the end was reached
     if (params.questionID !== lastIDInQuestionArray) {
       history.push({
-        pathname: `/module/${params.moduleID}/${lastIDInQuestionArray}`,
+        pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
+        search: `?mode=${practiceMode.current}`,
       });
     }
     //Resetting the states and current selection is handled by a useEffect
@@ -235,9 +287,9 @@ const Question = () => {
   const questionCheckButtonOnClick = () => {
     //If the show answer box is show the svg of the button will change to an arrow and a click will go to the next question
     if (showAnswer) {
-      nextQuestion();
+      handleNextQuestion();
     } else {
-      checkRef.current.checkAnswer();
+      questionAnswerRef.current.checkAnswer();
       setFormDisabled(true);
     }
   };
@@ -248,30 +300,32 @@ const Question = () => {
     setShowAnswer(false);
     setAnswerCorrect();
 
-    //Deselect answer
     if (showAnswer) {
-      checkRef.current.resetAndShuffleOptions();
+      questionAnswerRef.current.resetAndShuffleOptions();
+      questionDataRef.current.scrollTo(0, 0);
     } else {
-      checkRef.current.resetSelection();
+      questionAnswerRef.current.resetSelection();
     }
   };
 
+  const onInputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  //TODO switch to useMemo
   const moduleLength = useCallback(() => {
-    if (moduleData === undefined || moduleData.length === 0) {
+    if (filteredQuestions === undefined || filteredQuestions.length === 0) {
       return;
     }
-    return moduleData.questions.length;
-  }, [moduleData]);
+    return filteredQuestions.length;
+  }, [filteredQuestions]);
 
   //JSX
   return (
     <form className='question-form' onSubmit={preventDef}>
-      <div className={`question-data`} style={showNav ? { paddingBottom: "120px" } : {}}>
-        {/* <p>Module: {question.modulename}</p> */}
-        <div className='question-heading-wrapper'>
-          {/* <h2 className='question-module-heading'>{question.modulename} | Practice</h2>
-          <div className='heading-underline'></div> */}
-        </div>
+      <div className='question-data' ref={questionDataRef} style={showNav ? { paddingBottom: "120px" } : {}}>
         <div className='question-id-progress-wrapper'>
           <p className='question-id' data-testid='question-id'>
             ID: {question.id}
@@ -280,14 +334,21 @@ const Question = () => {
             {currentQuestionPage}/{moduleLength()} Questions
           </p>
         </div>
-        {/* <button>
-          <MdBookmark />
-        </button> */}
-        <h2 className='question-title'>{question.title}</h2>
+        <ReactMarkdown
+          className='question-title'
+          rehypePlugins={[rehypeRaw, rehypeKatex]}
+          remarkPlugins={[remarkMath, remarkGfm]}
+          children={question.title}
+        />
         <p className='question-points'>
-          {question.points} {question.points >= 2 ? "Points" : "Point"}
+          {question.points} {question.points === 1 ? "Point" : "Points"}
         </p>
-        <p className='question-type-help'>{question.questionTypeHelp}</p>
+        <ReactMarkdown
+          className='question-type-help'
+          rehypePlugins={[rehypeRaw, rehypeKatex]}
+          remarkPlugins={[remarkMath, remarkGfm]}
+          children={question.questionTypeHelp}
+        />
         {/* Question */}
         <section className='question-user-response'>
           {questionType(question.type, question.answerOptions, formDisabled)}
@@ -302,48 +363,55 @@ const Question = () => {
             <p className='question-correction-title'>
               {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
             </p>
-            <>{checkRef.current.returnAnswer()}</>
+            <div id='question-correction'>{questionAnswerRef.current.returnAnswer()}</div>
           </section>
         )}
       </div>
-      {/* <button className='question-scrollToBottom-button'>
-        <BsChevronBarDown />
-      </button> */}
       <div
         className={`question-bottom ${
           collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"
         }`}
         ref={questionBottomRef}
       >
-        <div className='question-check-reveal-wrapper'>
+        <div className='question-check-retry-wrapper'>
           {/* Check */}
           <button
             className='question-check-next'
+            aria-label={showAnswer ? "Next Question" : "Check Question"}
             data-testid='question-check'
             onClick={() => questionCheckButtonOnClick()}
           >
             {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
-            {showAnswer ? <FaArrowRight className='buttons-arrow' /> : <BiCheck className='check-icon' />}
-          </button>
-          {/* Reveal */}
-          <button className='question-reveal'>
-            <AiFillEye className='reveal-icon' />
+            {showAnswer ? <MdNavigateNext className='next-question-icon' /> : <BiCheck className='check-icon' />}
           </button>
           {/* Retry */}
-          <button className='question-retry' data-testid='question-retry' onClick={() => onQuestionRetryClick()}>
-            <BiReset className='retry-icon' />
+          <button
+            className='question-retry'
+            aria-label={showAnswer ? "Retry Question" : "Reset Question"}
+            data-testid='question-retry'
+            onClick={() => onQuestionRetryClick()}
+          >
+            <CgUndo className='retry-icon' />
           </button>
           {/* Button that appears at a width of 800px to show the navigation */}
           {collapsedNav && (
-            <button className='show-question-nav' onClick={() => setShowNav(!showNav)}>
-              <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} />
+            <button
+              className='show-question-nav'
+              aria-label={showNav ? "Hide Navigation" : "Show Navigation"}
+              onClick={() => setShowNav(!showNav)}
+            >
+              <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} aria-hidden='true' />
             </button>
           )}
         </div>
         {(showNav || !collapsedNav) && (
           <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
-            <button data-testid='first-question-button' onClick={() => toFirstQuestion()}>
-              {/* <BsSkipStartFill className='navigation-start' /> */}
+            <Bookmark questionID={question.id} />
+            <button
+              data-testid='first-question-button'
+              aria-label='Navigate to first Question'
+              onClick={() => toFirstQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-start'
@@ -351,14 +419,18 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M20 5v14l-12 -7z' />
                 <line x1='5' y1='5' x2='5' y2='19' />
               </svg>
             </button>
-            <button data-testid='previous-question-button' onClick={() => toPreviousQuestion()}>
-              {/* <BsTriangleFill className='navigation-before' /> */}
+            <button
+              data-testid='previous-question-button'
+              aria-label='Navigate to previous Question'
+              onClick={() => toPreviousQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-before'
@@ -366,14 +438,18 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='true'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <input type='number' placeholder={currentQuestionPage} min='1' />
-            <button data-testid='next-question-button' onClick={() => nextQuestion()}>
-              {/* <BsTriangleFill className='navigation-skip' /> */}
+            <input type='number' placeholder={currentQuestionPage} min='1' onKeyDown={onInputKeyDown} />
+            <button
+              data-testid='nav-next-question-button'
+              aria-label='Navigate to next Question'
+              onClick={() => handleNextQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='navigation-skip'
@@ -381,13 +457,17 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M7 4v16l13 -8z' />
               </svg>
             </button>
-            <button data-testid='last-question-button' onClick={() => toLastQuestion()}>
-              {/* <BsSkipEndFill /> */}
+            <button
+              data-testid='last-question-button'
+              aria-label='Navigate to last Question'
+              onClick={() => toLastQuestion()}
+            >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 className='icon icon-tabler icon-tabler-player-skip-forward'
@@ -395,6 +475,7 @@ const Question = () => {
                 height='48'
                 viewBox='0 0 24 24'
                 fill='none'
+                aria-hidden='true'
               >
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path d='M4 5v14l12 -7z' />

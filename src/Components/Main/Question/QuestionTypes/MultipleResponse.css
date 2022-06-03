@@ -26,6 +26,24 @@
   color: grey;
 }
 
+/* Style lists set with react markdown */
+.question-multiple-response ul li,
+.question-multiple-response ol li{
+  list-style-position: inside;
+}
+
+/* Style the image that can be set with MarkDown */
+.question-multiple-response .formControlLabel p img{
+  display: block;
+  font-size: 1rem;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 550px;
+  max-height: 300px;
+}
+
+/* For the correction */
 .correction-multipleResponse-list-item {
   list-style: none;
   position: relative;
@@ -38,6 +56,11 @@
   left: 0px;
   top: 0px;
   font-size: 14px;
+}
+
+.correction-multipleResponse-list-item  ul li,
+.correction-multipleResponse-list-item  ol li{
+  list-style-position: inside;
 }
 
 /* Media Query for phones */

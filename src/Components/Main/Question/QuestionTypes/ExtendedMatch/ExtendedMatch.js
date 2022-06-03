@@ -1,15 +1,25 @@
 import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
 
+//Import ReactMarkdown
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
+import "katex/dist/katex.min.css";
+
 //Import Components
 import Canvas from "./Components/Canvas.js";
+import AnswerCorrection from "./Components/AnswerCorrection.js";
 
 //Import css
 import "./ExtendedMatch.css";
 
-//Import functionss
+//Import functions
 import { isEqual } from "lodash";
 import shuffleArray from "../../../../../functions/shuffleArray.js";
 
+//Component
 const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [lines, setLines] = useState([]);
@@ -62,7 +72,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       if (formDisabled) return;
 
       //Variables
-      let updatedLines = lines;
+      let updatedLines = [...lines];
       const lastLineElement = lines[lines.length - 1];
 
       //Update the lines state depending on the user action
@@ -120,7 +130,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       if (formDisabled) return;
 
       //Variables
-      let updatedLines = lines;
+      let updatedLines = [...lines];
       const lastLineElement = lines[lines.length - 1];
 
       //Update the lines state depending on the user action
@@ -219,9 +229,19 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       setShowAnswer(true);
     },
 
-    //Return the correct answer in JSX so it can be displayed in the parent component
+    //Return the correct answer as a Component so it can be displayed in the parent component
+    //It needs to run as a component and not jsx like other questions, because first needs to add the refs,
+    //before adding the correct lines
     returnAnswer() {
-      //TODO return answer
+      return (
+        <AnswerCorrection
+          correctMatches={options.correctMatches}
+          shuffledLeftOptions={shuffledLeftOptions}
+          shuffledRightOptions={shuffledRightOptions}
+          left={left}
+          right={right}
+        />
+      );
     },
 
     //Reset User selection
@@ -244,8 +264,13 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <p className='ext-match-element-text'>{text}</p>
-                <div
+                <ReactMarkdown
+                  className='ext-match-element-text'
+                  rehypePlugins={[rehypeRaw, rehypeKatex]}
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  children={text}
+                />
+                <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
                   }`}
@@ -263,8 +288,13 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
-                <p className='ext-match-element-text'>{text}</p>
-                <div
+                <ReactMarkdown
+                  className='ext-match-element-text'
+                  rehypePlugins={[rehypeRaw, rehypeKatex]}
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  children={text}
+                />
+                <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"
                   }`}

@@ -13,18 +13,41 @@ const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn();
 
 const MockGapText = () => {
-  return <GapText options={options} setAnswerCorrect={mockSetAnswerCorrect} setShowAnswer={mockSetShowAnswer} formDisabled={false} ref={mockUseRef} />;
+  return (
+    <GapText
+      options={options}
+      setAnswerCorrect={mockSetAnswerCorrect}
+      setShowAnswer={mockSetShowAnswer}
+      formDisabled={false}
+      ref={mockUseRef}
+    />
+  );
 };
+
+//React-markdown uses ES6 but jest uses ES5
+//returning the elements in a paragraph isn't actually that bad because react-markdown does the same
+jest.mock("react-markdown", () => (props) => {
+  return <p className='react-markdown-mock'>{props.children}</p>;
+});
+
+jest.mock("rehype-raw", () => (props) => {
+  return <p className='rehype-raw-mock'>{props.children}</p>;
+});
+
+jest.mock("remark-gfm", () => (props) => {
+  return <p className='remark-gfm-mock'>{props.children}</p>;
+});
+
+jest.mock("remark-math", () => (props) => {
+  return <p className='remark-math-mock'>{props.children}</p>;
+});
+
+jest.mock("rehype-katex", () => (props) => {
+  return <p className='rehype-katex-mock'>{props.children}</p>;
+});
 
 describe("<GapText />)", () => {
   afterAll(cleanup);
-
-  //Expect elements of the gap text to render
-  it("should render parts of the gap text ", () => {
-    render(<MockGapText />);
-    const textElement = screen.getByText("two three. One");
-    expect(textElement).toBeInTheDocument();
-  });
 
   //Expect 3 inputs
   it("should render 3 inputs", () => {
@@ -52,7 +75,15 @@ describe("<GapText />)", () => {
 
   //Expect all the inputs to be disabled when the form is disabled and change input class to "input-disabled"
   it("should disable the inputs when form is disabled", () => {
-    render(<GapText options={options} setAnswerCorrect={mockSetAnswerCorrect} setShowAnswer={mockSetShowAnswer} formDisabled={true} ref={mockUseRef} />);
+    render(
+      <GapText
+        options={options}
+        setAnswerCorrect={mockSetAnswerCorrect}
+        setShowAnswer={mockSetShowAnswer}
+        formDisabled={true}
+        ref={mockUseRef}
+      />
+    );
 
     const inputElements = screen.getAllByRole("textbox");
 

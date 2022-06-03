@@ -1,101 +1,195 @@
-.question-form{
+.question-form {
   position: relative;
-  height: calc(100vh - 40px); /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
+  /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
+  height: calc(100vh - 40px);
   width: 100%;
-  /* padding-bottom: 40px; */
   background-color: white;
   border-radius: 10px;
   padding-right: 8px;
-  border: 1px solid rgb(221, 219, 219);
+  border: 1px solid var(--custom-border-color-lighter);
   overflow: hidden;
 }
 
-.question-form button{
+.question-form button {
   appearance: none;
   outline: none;
   cursor: pointer;
 }
 
-.question-data{
+.question-data {
   position: relative;
   height: 100%;
-  padding: 20px 15px 80px 20px; /*Cancel out the navigation at the bottom */
+  /*Cancel out the navigation at the bottom */
+  padding: 20px 15px 80px 20px;
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
-.question-module-heading{
-  text-align: center;
-}
-
-.heading-underline{
-  margin-top: 5px;
-}
-
-.question-id-progress-wrapper{
-  margin-bottom: 5px; 
+.question-id-progress-wrapper {
+  margin-bottom: 2px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.question-id-progress-wrapper > p{ 
+.question-id-progress-wrapper>p {
   color: var(--custom-secondary-color);
 }
 
-.question-id-progress-wrapper > .question-id{
-  font-size: 0.9rem; 
+.question-id-progress-wrapper>.question-id {
+  font-size: 0.9rem;
+  font-weight: 450;
+  line-height: 1;
+  color: var(--custom-secondary-color);
+  padding: 6px;
+  background-color: rgba(90, 90, 245, 0.3);
+  border: 2px solid var(--custom-prime-color);
+  border-radius: 5px;
 }
 
-.question-id-progress-wrapper > .question-progress{
-  font-size: 1.1rem;
+.question-id-progress-wrapper>.question-progress {
+  margin-left: 10px;
+  text-align: right;
+  font-size: 1.2rem;
+  line-height: 1.2;
 }
 
-.question-title{
+/* Targets the markdown (styling) in the title */
+.question-title p,
+.question-title li {
+  margin-top: 7px;
+  line-height: 1.2;
+  font-size: 1.35rem;
   font-weight: 450;
 }
 
-.question-points{
-  margin-top: 2px;
+/* Targets the markdown (image) in the title */
+.question-form .question-title img {
+  display: block;
+  font-size: 1rem;
+  margin: 2px 0;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 700px;
+  max-height: 500px;
 }
 
-.question-type-help{
+/* Target lists in the title of the question */
+.question-title ul li,
+.question-title ol li {
+  font-weight: inherit;
+  list-style-position: inside;
+}
+
+/* Target lists in the title of the question */
+.question-title ul li,
+.question-title ol li {
+  font-weight: inherit;
+  list-style-position: inside;
+}
+
+/* Target table element in the title of the question */
+.question-title table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-title table,
+.question-title th,
+.question-title td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-title th,
+.question-title td {
+  padding: 5px 10px;
+}
+
+/* Style the question points */
+.question-points {
+  font-size: 1.1rem;
+  color: var(--custom-secondary-color);
+  margin-top: 1px;
+}
+
+/* Style the question type help */
+.question-type-help {
   margin: 2px 0 5px 0;
   font-style: italic;
   color: var(--custom-secondary-color);
 }
 
-.question-correction{
+/* Targets the markdown (image) in the question type help */
+.question-type-help img {
+  margin: 2px 0 20px 0;
+  display: block;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 700px;
+  max-height: 500px;
+}
+
+/* Targets the markdown list in the question type help */
+.question-type-help ul li,
+.question-type-help ol li {
+  list-style-position: inside;
+}
+
+/* Target table element in the title of the question */
+.question-type-help table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-type-help table,
+.question-type-help th,
+.question-type-help td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-type-help th,
+.question-type-help td {
+  padding: 5px 10px;
+}
+
+/* Targets the question-correction section*/
+.question-correction {
   margin: 15px 0 5px 0;
   padding: 10px;
   border-radius: 5px;
+  scroll-margin-top: 10px;
 }
 
-.question-form .answer-correct{
+.question-form .answer-correct {
   background-color: rgb(145, 202, 172);
   border: 2px solid rgb(21, 104, 60);
 }
 
-.question-form .answer-false{
+.question-form .answer-false {
   background-color: rgb(241, 177, 170);
   border: 2px solid rgb(173, 31, 15);
 }
 
-.question-correction-title{
-  font-weight: 550;
+.question-correction-title {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 2px;
 }
 
-.question-scrollToBottom-button{
+.question-scrollToBottom-button {
   width: 50px;
   height: 50px;
   position: absolute;
   bottom: 80px;
-  left: 0; 
-  right: 0; 
+  left: 0;
+  right: 0;
   margin: 0 auto;
 }
 
-.question-bottom{
+.question-bottom {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -105,245 +199,283 @@
   justify-content: space-between;
 
   z-index: 10;
-  
-  padding: 12px 20px;
-  border-top: 1px solid rgb(221, 219, 219);
+
+  padding: 10px 20px;
+  border-top: 1px solid var(--custom-border-color-lighter);
   background-color: white;
 }
 
-.question-bottom-when-expanded{
+.question-bottom-when-expanded {
   /* When width of form is more than 800px */
-  max-height: 69px; /*Don't know why it's 69 but (rounding error?) but height auto is 69px when show nav is false. 69 doesn't make the ui jump */
   flex-direction: row;
   align-items: flex-end;
 }
 
-.question-bottom-when-collapsed{
 /* When width of form is less than 800px */
+.question-bottom-when-collapsed {
   height: auto;
   max-height: 120px;
-  
+
   flex-direction: column-reverse;
   align-items: center;
 }
 
-.question-check-reveal-wrapper{
+.question-check-retry-wrapper {
   display: flex;
   flex-direction: row;
   width: 100%;
 }
 
-.question-check-reveal-wrapper > .question-check-next,
-.question-check-reveal-wrapper > .question-reveal,
-.question-check-reveal-wrapper > .question-retry
- {
-  height: 44px;
+.question-check-retry-wrapper>.question-check-next,
+.question-check-retry-wrapper>.question-retry {
+  height: 39px;
   width: 100%;
   max-width: 160px;
 
   display: flex;
   justify-content: center;
-  
-  margin-right: 5px;
-  padding: 2px 0;
-  color: white;
-  border: 2px solid var(--custom-prime-color);
-  border-radius: 100vh;
-  background-color: white;
-  transition: background-color .2s ease-in-out,
+
+  border-radius: 6px;
 }
 
-.question-check-reveal-wrapper > button:last-child{
-  margin-right: 0;
-}
-
-.question-check-reveal-wrapper > .question-check-next{
-  flex-shrink: 0;
-  background-color: var(--custom-prime-color);
-  padding: 0;
-  transition: none;
+.question-check-retry-wrapper>.question-check-next {
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.question-check-reveal-wrapper .check-icon, .question-check-reveal-wrapper .reveal-icon, .question-check-reveal-wrapper .retry-icon, .question-check-reveal-wrapper .buttons-arrow{  
-  height: 100%;
-  max-height: 36px;
-  width: 40px;
-}
+  margin-right: 5px;
 
-.question-form .reveal-icon, .question-form .retry-icon{
-  stroke-width: 0.6;
-  color: var(--custom-prime-color);
-  fill: var(--custom-prime-color);
-  transition: fill .2s ease-in-out, color .2 ease-in-out;
-}
-
-.question-reveal:hover, .question-reveal:active, .question-retry:hover, .question-retry:active{
+  color: white;
   background-color: var(--custom-prime-color);
+  border: 1px solid var(--custom-prime-color);
 }
 
-.question-reveal:hover > .reveal-icon, 
-.question-reveal:active > .reveal-icon, 
-.question-retry:hover > .retry-icon, 
-.question-retry:active > .retry-icon{
-  color: rgb(235, 235, 235);
-  fill: rgb(235, 235, 235);
+.question-check-retry-wrapper>.question-retry {
+  border: 1px solid var(--custom-border-color);
+  background-color: transparent;
 }
 
-.question-check-reveal-wrapper > .question-check-next > .check-icon{
-  max-height: 40px;
-  stroke-width: 1;
+.question-check-retry-wrapper .check-icon,
+.question-check-retry-wrapper .retry-icon,
+.question-check-retry-wrapper .next-question-icon {
+  height: 100%;
+  width: 33px;
 }
 
-.question-check-next:hover, .question-check-next:active{
-  background-color:rgb(117, 117, 247);
-  border: 2px solid rgb(117, 117, 247);
+/* Imported svg is to small */
+.question-check-retry-wrapper .check-icon,
+.question-check-retry-wrapper .retry-icon {
+  transform: scale(1.2);
 }
 
-.show-question-nav{
-  display: flex;
-  min-width: 40px;
-  width: 40px;
-  padding: 5px;
+/* Imported svg is to small */
+.question-check-retry-wrapper .next-question-icon {
+  transform: scale(1.4);
+}
+
+.question-check-retry-wrapper .retry-icon {
+  color: var(--custom-secondary-color);
+}
+
+.question-check-retry-wrapper .question-retry:active {
+  background-color: var(--custom-tertiary-color);
+  border-color: var(--custom-border-color-dark);
+}
+
+.question-check-retry-wrapper>.question-check-next>.check-icon {
+  stroke-width: 0.4;
+}
+
+.question-check-retry-wrapper>.question-check-next:active {
+  background-color: rgb(63, 63, 219);
+  border-color: rgb(63, 63, 219);
+}
+
+.show-question-nav {
+  width: 36px;
+  padding: 4px;
   margin-left: auto;
 
+  flex-shrink: 0;
+
   color: var(--custom-secondary-color);
+  border-radius: 6px;
 
   /* remove default 3d button effect */
   outline: none;
   border: none;
   background-color: transparent;
-
-  border-radius: 0px;
 }
 
-.show-question-nav > .show-question-nav-icon{
+.show-question-nav>.show-question-nav-icon {
   width: 100%;
   height: 100%;
-  
-  stroke-width: .5;
+
+  stroke-width: .7;
 
   pointer-events: none;
 }
 
-.show-question-nav > .up{
+.show-question-nav>.up {
   transform: rotate(180deg);
 }
 
-.show-question-nav > .down{
+.show-question-nav>.down {
   transform: rotate(0deg);
 }
 
 /* Navigation */
-.question-navigation{
+.question-navigation {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 100%;
 }
 
-.nav-collapsed{
-  margin-bottom: 10px;
+.nav-collapsed {
+  margin-bottom: 8px;
 }
 
-.question-navigation > *{
+.question-navigation>* {
   height: 100%;
 }
 
-.question-navigation > button{
+.question-navigation>button {
   /* Reset default button values*/
   border: none;
   appearance: none;
   outline: none;
   background-color: transparent;
+  border-radius: 6px;
 
-  width: 40px;
+  width: 34px;
 }
 
-.question-navigation > button > svg{
+.question-navigation>button>svg {
   height: 100%;
   width: 100%;
 
-  stroke-linecap: round;
-  stroke-linejoin: round;
   stroke: var(--custom-secondary-color);
-  stroke-width: 1;
+  color: var(--custom-secondary-color);
 }
 
-.navigation-before{
+.navigation-before {
   fill: var(--custom-secondary-color);
   transform: rotate(180deg);
 }
 
-.question-navigation > input{
-  margin: 0 5px 0 5px;
+.question-navigation>input {
+  margin: 0 5px;
   padding: 5px;
   max-width: 70px;
-  border: 1.5px solid var(--custom-secondary-color);
+  border: 1.5px solid var(--custom-border-color);
+  border-radius: 4px;
+  outline: none;
 }
 
-.question-navigation > input:active, 
-.question-navigation > input:hover
-{
+.question-navigation>input:active {
   border-color: var(--custom-prime-color);
-  outline: var(--custom-prime-color);     
-  outline-width: thin;
 }
 
-.navigation-skip{
+.navigation-skip {
   fill: var(--custom-secondary-color);
 }
 
-.question-navigation > button:hover svg, .question-navigation > button:active svg{
+.question-navigation>button:active svg {
   color: var(--custom-prime-color);
   stroke: var(--custom-prime-color);
   fill: var(--custom-prime-color);
 }
 
-/* Media query for phones */
-@media only screen and (max-width: 650px) {
-  .question-form{
-    height: calc(100vh - 130px); /*The viewport of mobile devices includes the address bar. Because why not. */
-    padding-right: 4px;
-    margin-bottom: 0;
-    -moz-margin-bottom: 50px; /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a black background at the bottom*/
+/* Apply focus style just when tabbing */
+.question-bottom button:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 2px;
+}
+
+/* Media for devices with mouse input */
+@media only screen and (pointer: fine) {
+  .question-navigation>input:hover {
+    border-color: var(--custom-prime-color);
+    outline: var(--custom-prime-color);
+    outline-width: thin;
   }
 
-  .question-data{
+  .question-navigation>button:hover svg {
+    color: var(--custom-prime-color);
+    stroke: var(--custom-prime-color);
+    fill: var(--custom-prime-color);
+  }
+
+  .question-navigation>input:hover {
+    border-color: var(--custom-secondary-color);
+  }
+
+  .question-navigation>input:focus {
+    border-color: var(--custom-prime-color);
+    background-color: var(--custom-tertiary-color);
+  }
+}
+
+/* Media query for phones */
+/* Second query is for development on desktop */
+@media only screen and (pointer: coarse),
+only screen and (pointer: fine) and (max-width: 650px) {
+  .question-form {
+    height: calc(100vh - 130px);
+    /*The viewport of mobile devices includes the address bar. Because why not. */
+    padding-right: 4px;
+    margin-bottom: 0;
+    -moz-margin-bottom: 50px;
+    /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a black background at the bottom*/
+  }
+
+  .question-data {
     padding: 10px 7px 80px 12px;
   }
 
-  .question-correction{
-  margin: 10px 0 5px 0; 
+  .question-id-progress-wrapper>.question-progress {
+    font-size: 1.1rem;
   }
 
-  .question-check-reveal-wrapper > .question-check, 
-  .question-check-reveal-wrapper > .question-reveal, 
-  .question-check-reveal-wrapper > .question-retry {
-    max-width: 140px;
+  .question-title p {
+    margin-top: 5px;
   }
 
-  .question-bottom{
+  .question-correction {
+    margin: 10px 0 5px 0;
+  }
+
+  .question-bottom {
     height: auto;
-    
+
     flex-direction: column-reverse;
     align-items: center;
-    
-    padding: 15px 10px;
+
+    padding: 12px 8px;
   }
 
-  .question-check-reveal-wrapper{
-    justify-content: space-between; 
+  .question-check-retry-wrapper .check-icon,
+  .question-check-retry-wrapper .retry-icon,
+  .question-check-retry-wrapper .buttons-arrow {
+    width: 36px;
+  }
+
+  .question-navigation>button {
+    width: 38px;
+  }
+}
+
+/* For desktop very small */
+@media only screen and (pointer: fine) and (max-width: 650px) {
+  .question-form {
+    height: calc(100vh - 70px);
   }
 }
 
 /* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
 @media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
-  .question-data{
+  .question-data {
     padding: 10px 12px 80px 12px;
   }
 }
-
-

@@ -1,0 +1,143 @@
+.question-gap-text {
+  font-size: 18px;
+  line-height: 2.2rem;
+}
+
+.question-gap-text input {
+  font-size: 18px;
+  padding: 4px 5px;
+  margin: 0 2px;
+  outline: none;
+  border: none;
+  box-shadow: 0 0 0 1px var(--custom-border-color-light);
+  border-radius: 3px;
+  display: inline;
+  width: 180px;
+}
+
+/* Markdown specific */
+.question-gap-text,
+.correction-gap-text {
+  display: inline;
+}
+
+.question-gap-text p,
+.correction-gap-text p {
+  display: inline;
+}
+
+.question-gap-text div,
+.correction-gap-text div {
+  display: inline;
+}
+
+.question-gap-text input,
+.correction-gap-text input {
+  display: inline;
+}
+
+.question-gap-text table,
+.correction-gap-text table {
+  margin: 5px 0;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.question-gap-text table,
+.question-gap-text th,
+.question-gap-text td,
+.correction-gap-text table,
+.correction-gap-text th,
+.correction-gap-text td {
+  border: 1px solid black;
+}
+
+.question-gap-text table input,
+.correction-gap-text table span {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.question-gap-text th,
+.question-gap-text td,
+.correction-gap-text th,
+.correction-gap-text td {
+  padding: 0px 10px;
+}
+
+.question-gap-text ul li,
+.question-gap-text ol li {
+  list-style-position: inside;
+}
+
+.question-gap-text .input-enabled:focus,
+.question-gap-text .input-enabled:active {
+  box-shadow: 0 0 0 1px var(--custom-prime-color);
+}
+
+.input-disabled {
+  cursor: not-allowed;
+}
+
+.input-disabled:focus,
+.input-disabled:active {
+  box-shadow: 0 0 0 1px lightgrey;
+}
+
+/* CSS for the correction box displayed in the question component */
+.correction-gap-text {
+  font-size: 18px;
+  line-height: 2rem;
+}
+
+.correction-gap-text .correct-gap-value {
+  display: inline-block;
+
+  font-size: 18px;
+  line-height: 1.4rem;
+
+  padding: 2px 5px;
+  margin-left: 2px;
+  margin-right: 2px;
+
+  outline: none;
+  border: none;
+  border-radius: 3px;
+}
+
+.answer-correct .correction-gap-text .correct-gap-value {
+  background-color: rgb(160, 217, 187);
+  box-shadow: 0 0 0 1px rgb(100, 149, 120);
+}
+
+.answer-false .correction-gap-text .correct-gap-value {
+  background-color: rgb(250, 190, 190);
+  box-shadow: 0 0 0 1px rgb(180, 131, 126);
+}
+
+.correction-gap-text ul li,
+.correction-gap-text ol li {
+  list-style-position: inside;
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .question-gap-text {
+    font-size: 1.15rem;
+    line-height: 2.1rem;
+  }
+
+  .question-gap-text input {
+    padding: 3px 5px;
+    font-size: 1.15rem;
+  }
+
+  .correction-gap-text {
+    font-size: 1.15rem;
+    line-height: 2.1rem;
+  }
+
+  .correction-gap-text span {
+    font-size: 1.15rem;
+  }
+}

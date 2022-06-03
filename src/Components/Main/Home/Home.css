@@ -1,0 +1,56 @@
+.grid-cards {
+  margin: 15px 0px 100px 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+  grid-gap: 12px;
+}
+
+.grid-cards .card-add {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--custom-secondary-color);
+  color: whitesmoke;
+
+  min-height: 180px;
+  user-select: none;
+  border-radius: 8px;
+}
+
+.grid-cards .file-input {
+  display: none;
+}
+
+.grid-cards .custom-file-upload {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  cursor: pointer;
+}
+
+.grid-cards .card-add-circle {
+  height: 35px;
+  width: 35px;
+  margin-bottom: 10px;
+}
+
+.grid-cards .card-add:active {
+  background-color: rgb(61, 64, 82);
+  color: white;
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .grid-cards {
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}

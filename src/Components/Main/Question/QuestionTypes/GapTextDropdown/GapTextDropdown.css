@@ -1,0 +1,115 @@
+.question-gap-text-with-dropdown p,
+.question-gap-text-with-dropdown span,
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown,
+.correction-gap-text-with-dropdown span {
+  font-size: 18px;
+  display: inline;
+  line-height: 2.2rem;
+}
+
+.question-gap-text-with-dropdown .select-wrapper {
+  display: inline;
+  margin: 0 3px;
+}
+
+.question-gap-text-with-dropdown select {
+  display: inline;
+  font-size: 18px;
+  padding: 3px 5px;
+  cursor: pointer;
+  border-radius: 3px;
+  background-color: transparent;
+  box-shadow: 0 0 0 1px var(--custom-border-color-light);
+  border: none;
+}
+
+.question-gap-text-with-dropdown select:focus {
+  outline: none;
+}
+
+.question-gap-text-with-dropdown .select-disabled {
+  cursor: not-allowed;
+}
+
+/* Table related */
+.question-gap-text-with-dropdown table,
+.correction-gap-text-with-dropdown table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-gap-text-with-dropdown table,
+.question-gap-text-with-dropdown th,
+.question-gap-text-with-dropdown td,
+.correction-gap-text-with-dropdown table,
+.correction-gap-text-with-dropdown th,
+.correction-gap-text-with-dropdown td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-gap-text-with-dropdown table select,
+.correction-gap-text-with-dropdown table span {
+  width: 100%;
+  margin: 5px 0;
+}
+
+.question-gap-text-with-dropdown th,
+.question-gap-text-with-dropdown td,
+.correction-gap-text-with-dropdown th,
+.correction-gap-text-with-dropdown td {
+  height: 30px;
+  /* Tables grow when this value is to short. Think like min-height */
+  padding: 0px 10px;
+}
+
+/* List related */
+.question-gap-text-with-dropdown ol li,
+.question-gap-text-with-dropdown ul li,
+.correction-gap-text-with-dropdown ol li,
+.correction-gap-text-with-dropdown ul li {
+  list-style-position: inside;
+}
+
+/* Correction related */
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown span {
+  line-height: 2.1rem;
+}
+
+.correction-gap-text-with-dropdown .correct-dropdown-value {
+  display: inline-block;
+
+  font-size: 18px;
+  line-height: 1.4rem;
+
+  padding: 2px 5px;
+
+  margin-left: 3px;
+  margin-right: 3px;
+
+  outline: none;
+  border: none;
+  border-radius: 3px;
+}
+
+.answer-correct .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(160, 217, 187);
+  box-shadow: 0 0 0 1px rgb(100, 149, 120);
+}
+
+.answer-false .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(250, 190, 190);
+  box-shadow: 0 0 0 1px rgb(180, 131, 126);
+}
+
+/* Media Query for Desktop */
+@media (pointer: fine) {
+  .question-gap-text-with-dropdown .select-enabled:hover {
+    box-shadow: 0 0 0 1px var(--custom-prime-color);
+  }
+
+  .question-gap-text-with-dropdown select:focus-visible {
+    box-shadow: 0 0 0 1px var(--custom-prime-color);
+  }
+}

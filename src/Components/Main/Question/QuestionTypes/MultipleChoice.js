@@ -1,9 +1,21 @@
+//Imports
+//React
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+
+//Material UI
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 //Import css
 import "./MultipleChoice.css";
@@ -21,24 +33,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
   //Future needs to be depended on question id
   useEffect(() => {
     //Shuffle Array with imported function
-    let shuffledArray = shuffleArray(options);
-
-    //Check if the previous shuffled array is equal to the current shuffled one but not on the first render
-    if (shuffledOptions.length !== 0) {
-      //check if the old (shuffledOptions) and new (shuffledArray) array are equal
-      let equal = shuffledArray.every((value, index) => value.id === shuffledOptions[index].id);
-
-      //loop until the old and new array aren't equal anymore
-      while (equal) {
-        shuffledArray = shuffleArray(options);
-
-        if (shuffledArray.every((value, index) => value.id === shuffledOptions[index].id)) {
-          equal = true;
-        } else {
-          equal = false;
-        }
-      }
-    }
+    const shuffledArray = shuffleArray(options);
 
     //Add is checked to each object in array
     let shuffleArrayChecked = shuffledArray.map((item) => {
@@ -47,10 +42,16 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
 
     //Update the state with the new shuffled array
     setShuffledOptions(shuffleArrayChecked);
+
+    //Cleanup the states
+    return () => {
+      setShuffledOptions([]);
+      setShuffleCounter(0);
+    };
   }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
-  const updateIsChecked = (optionID) => {
+  const handleRadioClick = (optionID) => {
     let updatedShuffleOptions = shuffledOptions.map((item) => {
       //Set the state of the state to true where the ids are equal else change it to false (because only one option can be checked at the time => multiple Choice)
       if (item.id === optionID) {
@@ -64,12 +65,22 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
     setShuffledOptions(updatedShuffleOptions);
   };
 
+  //Prevent Form submit on enter and update state
+  const handleRadioEnter = (e, optionID) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleRadioClick(optionID);
+    }
+  };
+
   //Functions that are called by parent
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct. Called by the parent form (check button) in a ref
     checkAnswer() {
       //every value should be the same (true/false) in the properties isChecked and isCorrect
-      const answeredCorrect = shuffledOptions.every((option, index) => option.isChecked === shuffledOptions[index].isCorrect);
+      const answeredCorrect = shuffledOptions.every(
+        (option, index) => option.isChecked === shuffledOptions[index].isCorrect
+      );
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -88,7 +99,11 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleChoice-list-item' key={item.id}>
-                  {item.text}
+                  <ReactMarkdown
+                    children={item.text}
+                    rehypePlugins={[rehypeRaw, rehypeKatex]}
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                  />
                 </li>
               );
             } else {
@@ -125,7 +140,8 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                 key={option.id}
                 className='formControlLabel'
                 checked={option.isChecked}
-                onChange={() => updateIsChecked(option.id)}
+                onClick={() => handleRadioClick(option.id)}
+                onKeyDown={(e) => handleRadioEnter(e, option.id)}
                 control={
                   <Radio
                     className='formControlLabel-radio'
@@ -137,7 +153,19 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
                     }}
                   />
                 }
-                label={<Typography className={`formControlLabel-label ${formDisabled && "label-disabled"}`}>{option.text}</Typography>}
+                label={
+                  <Typography
+                    component={"span"}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`formControlLabel-label ${formDisabled && "label-disabled"}`}
+                  >
+                    <ReactMarkdown
+                      children={option.text}
+                      rehypePlugins={[rehypeRaw, rehypeKatex]}
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                    />
+                  </Typography>
+                }
               />
             );
           })}

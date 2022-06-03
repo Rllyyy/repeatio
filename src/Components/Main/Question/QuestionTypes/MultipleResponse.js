@@ -1,4 +1,16 @@
+//Imports
+//React
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+
+//Markdown related
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
+
+//Material UI
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
@@ -20,24 +32,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
   //Run shuffle function on first render of component or when the user clicks the retry button
   //Also add isChecked state (to false which means unchecked)
   useEffect(() => {
-    let shuffledArray = shuffleArray(options);
-
-    //Check if the previous shuffled array is equal to the current shuffled one but not on the first render
-    if (shuffledOptions.length !== 0) {
-      //check if the old (shuffledOptions) and new (shuffledArray) array are equal
-      let equal = shuffledArray.every((value, index) => value.id === shuffledOptions[index].id);
-
-      //loop until the old and new array aren't equal anymore
-      while (equal) {
-        shuffledArray = shuffleArray(options);
-
-        if (shuffledArray.every((value, index) => value.id === shuffledOptions[index].id)) {
-          equal = true;
-        } else {
-          equal = false;
-        }
-      }
-    }
+    const shuffledArray = shuffleArray(options);
 
     //Add is checked to each object in array
     let shuffleArrayChecked = shuffledArray.map((item) => {
@@ -46,10 +41,16 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
     //Update the state with the new shuffled array
     setShuffledOptions(shuffleArrayChecked);
+
+    //Cleanup the states
+    return () => {
+      setShuffledOptions([]);
+      setShuffleCounter(0);
+    };
   }, [options, shuffleCounter]);
 
   //Update the isChecked value of shuffledOptions state
-  const updateIsChecked = (optionID) => {
+  const handleCheckBoxClick = (optionID) => {
     let updatedShuffleOptions = shuffledOptions.map((item) => {
       //Set the isChecked state of the answer option to the opposite of the current value (true/false) where the ids are equal else just return the object as it is
       if (item.id === optionID) {
@@ -63,12 +64,21 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     setShuffledOptions(updatedShuffleOptions);
   };
 
+  const handleCheckBoxKeyPress = (e, optionID) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleCheckBoxClick(optionID);
+    }
+  };
+
   //Method so the parent can interact with this component
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct.
     checkAnswer() {
       //every value should be the same (true/false) in the properties isChecked and isCorrect
-      const answeredCorrect = shuffledOptions.every((option, index) => option.isChecked === shuffledOptions[index].isCorrect);
+      const answeredCorrect = shuffledOptions.every(
+        (option, index) => option.isChecked === shuffledOptions[index].isCorrect
+      );
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -87,7 +97,11 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
             if (item.isCorrect) {
               return (
                 <li className='correction-multipleResponse-list-item' key={item.id}>
-                  {item.text}
+                  <ReactMarkdown
+                    children={item.text}
+                    rehypePlugins={[rehypeRaw, rehypeKatex]}
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                  />
                 </li>
               );
             } else {
@@ -125,7 +139,8 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                 className='formControlLabel'
                 data-testid={`formControlLabel-${index}`}
                 checked={option.isChecked || false} //fallback (so it's a controlled input)
-                onChange={() => updateIsChecked(option.id)}
+                onClick={() => handleCheckBoxClick(option.id)}
+                onKeyDown={(e) => handleCheckBoxKeyPress(e, option.id)}
                 control={
                   <Checkbox
                     className='formControlLabel-checkbox'
@@ -138,7 +153,19 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                     }}
                   />
                 }
-                label={<Typography className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}>{option.text}</Typography>}
+                label={
+                  <Typography
+                    component={"span"}
+                    onClick={(e) => e.stopPropagation()}
+                    className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
+                  >
+                    <ReactMarkdown
+                      children={option.text}
+                      rehypePlugins={[rehypeRaw, rehypeKatex]}
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                    />
+                  </Typography>
+                }
               />
             );
           })}
