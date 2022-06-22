@@ -160,8 +160,9 @@ main {
   width: 100%;
   padding: 20px 8px 0 20px;
   min-height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: visible;
+  position: relative;
 }
 
 h1 {
@@ -215,12 +216,23 @@ a {
   width: 12px;
 }
 
+
+
 ::-webkit-scrollbar-thumb {
   background-color: rgb(204, 204, 204);
   border: 4px solid rgba(0, 0, 0, 0);
   background-clip: padding-box;
   border-radius: 9999px;
   margin-bottom: 500px;
+}
+
+.ReactModal__Body--open main::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ReactModal__Body--open main::-webkit-scrollbar-thumb {
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  display: none;
 }
 
 /* Firefox Scrollbar */

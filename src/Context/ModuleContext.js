@@ -18,6 +18,9 @@ export const ModuleProvider = (props) => {
     [filteredQuestions, setFilteredQuestions]
   );
 
+  //TODO move setFilteredQuestions/setInitialData into a calllback
+
+  // Callback
   //All questions
   const getDataFromBrowser = useCallback(async () => {
     //Fetch data from public folder
@@ -75,10 +78,53 @@ export const ModuleProvider = (props) => {
     };
   }, [moduleContextID, getDataFromBrowser]);
 
+  useEffect(() => {
+    if (initialData === undefined || initialData.length < 1) {
+      return;
+    }
+
+    if (isElectron()) {
+      //TODO save to filesystem
+    } else {
+      try {
+        localStorage.setItem(`repeatio-module-${initialData.id}`, JSON.stringify(initialData, null, "\t"), {
+          sameSite: "strict",
+          secure: true,
+        });
+      } catch (error) {
+        console.warn(error.message);
+      }
+    }
+
+    // console.log(JSON.stringify(initialData, null, "\t"));
+
+    // JSON.stringify(outPut, null, "\t");
+
+    /* localStorage.setItem(`repeatio-module-${JSON.parse(initialData).id}`, initialData, {
+      sameSite: "strict",
+      secure: true,
+    }); */
+    //console.log(initialData);
+
+    /* return () => {
+      second
+    } */
+  }, [initialData]);
+
+  //or initialDataProvider.initialData??
+
+  /* 
+  1. On Mount an moduleContextID provide data
+  2. On initialData change, update the context and reset filtered Questions
+  
+  
+  */
+
   return (
     <ModuleContext.Provider
       value={{
         moduleData: initialDataProvider.initialData,
+        setModuleData: initialDataProvider.setInitialData,
         setContextModuleID: setContextModuleID,
         filteredQuestions: filterProvider.filteredQuestions,
         setFilteredQuestions: filterProvider.setFilteredQuestions,

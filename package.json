@@ -1,6 +1,6 @@
 {
   "name": "repeatio",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Learn, repeat and memorize tasks with repeatio.",
   "author": "Niklas Fischer",
   "private": true,
@@ -28,6 +28,7 @@
     "react-dom": "^17.0.2",
     "react-icons": "^4.4.0",
     "react-markdown": "^8.0.3",
+    "react-modal": "^3.15.1",
     "react-move": "^6.5.0",
     "react-router-dom": "^5.3.3",
     "react-scripts": "5.0.1",

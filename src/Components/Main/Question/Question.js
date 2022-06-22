@@ -347,7 +347,7 @@ const Question = () => {
           className='question-type-help'
           rehypePlugins={[rehypeRaw, rehypeKatex]}
           remarkPlugins={[remarkMath, remarkGfm]}
-          children={question.questionTypeHelp}
+          children={question.help}
         />
         {/* Question */}
         <section className='question-user-response'>

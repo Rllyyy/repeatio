@@ -5,6 +5,7 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 //Components
 import Card from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
+import AddQuestionModal from "./AddQuestionModal/AddQuestionModal.js";
 
 //css
 import "./Module.css";
@@ -26,6 +27,7 @@ import shuffleArray from "../../../functions/shuffleArray.js";
 const Module = () => {
   //useState
   const [module, setModule] = useState();
+  const [showModal, setShowModal] = useState(false);
 
   //context
   const { setFilteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
@@ -102,6 +104,14 @@ const Module = () => {
     });
   };
 
+  const handleAddQuestionClick = () => {
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
+
   //All cards
   const moduleCards = [
     {
@@ -142,12 +152,13 @@ const Module = () => {
     },
     {
       title: "Add Question",
-      disabled: true,
+      disabled: false,
       description: "Add a missing question",
       icon: <BsPlusCircle />,
       leftBottom: {
         type: "button",
         buttonText: "Add",
+        function: handleAddQuestionClick,
       },
     },
     {
@@ -203,7 +214,7 @@ const Module = () => {
 
   //JSX
   return (
-    <>
+    <div id={`module-${module.id}`}>
       <h1 className='site-heading'>
         {module.name} ({module.id})
       </h1>
@@ -224,7 +235,8 @@ const Module = () => {
           );
         })}
       </div>
-    </>
+      {showModal && <AddQuestionModal handleModalClose={handleModalClose} />}
+    </div>
   );
 };
 

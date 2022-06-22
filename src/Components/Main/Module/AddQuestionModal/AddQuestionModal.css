@@ -1,0 +1,124 @@
+.add-question-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 20px 25px 20px 25px;
+}
+
+.add-question-form>div:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.add-question-form>div>label {
+  font-size: 18px;
+  font-weight: 500;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.add-question-form>div>input,
+.add-question-form div>select {
+  font-size: 18px;
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+
+  background-color: transparent;
+  outline: none;
+
+  border: 1px solid var(--custom-border-color-lighter);
+  border-radius: 5px;
+}
+
+.add-question-form div>select {
+  cursor: pointer;
+}
+
+.add-question-form>div>input:hover,
+.add-question-form>div>#modal-question-type-select:hover {
+  border-color: var(--custom-border-color-light);
+}
+
+.add-question-form>div>input:focus-visible,
+.add-question-form>div>#modal-question-type-select:focus-visible {
+  border-color: var(--custom-prime-color);
+}
+
+.add-question-form .modal-question-type-select {
+  cursor: pointer;
+}
+
+.add-question-form .modal-question-type-select input {
+  cursor: pointer;
+}
+
+.add-question-form .buttons {
+  /* !Remove bottom later */
+  margin-top: auto;
+}
+
+.add-question-form .buttons button {
+  all: unset;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+
+  line-height: 1;
+  margin-right: 10px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.add-question-form .buttons .add-question {
+  color: var(--custom-tertiary-color);
+  background-color: var(--custom-prime-color);
+}
+
+.add-question-form .buttons .add-question:active {
+  background-color: rgb(63, 63, 219);
+}
+
+.add-question-form .buttons .cancel {
+  /* background-color: var(--custom-tertiary-color); */
+  box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
+}
+
+.add-question-form .buttons .add-question:focus-visible,
+.add-question-form .buttons .cancel:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 5px;
+}
+
+/* Media Query for devices that can hover */
+@media screen and (hover: hover) and (pointer: fine) {
+
+  .add-question-form .buttons .add-question:hover {
+    background-color: rgb(63, 63, 219);
+  }
+
+  .add-question-form .buttons .cancel:hover {
+    background-color: var(--custom-tertiary-color);
+  }
+}
+
+/* Media Query for smaller screens */
+@media only screen and (max-width: 650px) {
+
+  .add-question-form>div>label {
+    font-size: 20px;
+  }
+
+  .add-question-form {
+    padding: 20px;
+
+  }
+
+  .add-question-form .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

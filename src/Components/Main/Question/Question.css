@@ -55,10 +55,14 @@
   line-height: 1.2;
 }
 
+.question-title {
+  margin-top: 0.4rem;
+}
+
 /* Targets the markdown (styling) in the title */
+.question-title,
 .question-title p,
 .question-title li {
-  margin-top: 7px;
   line-height: 1.2;
   font-size: 1.35rem;
   font-weight: 450;

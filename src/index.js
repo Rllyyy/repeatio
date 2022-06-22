@@ -32,7 +32,7 @@ ReactDOM.render(
     <HashRouter>
       <Sidebar />
       <ScrollToTop>
-        <main>
+        <main id='main'>
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/tutorials' component={Tutorials} />
