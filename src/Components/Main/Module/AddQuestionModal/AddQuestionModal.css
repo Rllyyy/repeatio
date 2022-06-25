@@ -69,7 +69,8 @@
   line-height: 1;
   margin-right: 10px;
   text-align: center;
-  min-width: 100px;
+  width: 100%;
+  max-width: 100px;
 }
 
 .add-question-form .buttons .add-question {

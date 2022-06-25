@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Modal from "react-modal/lib/components/Modal";
 
-import { ImCross } from "react-icons/im";
-import { CgClose } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
 
 //CSS
@@ -70,7 +68,6 @@ const CustomModal = ({ handleModalClose, title, children }) => {
       <div className='title-close-wrapper'>
         <h1 className='modal-title'>{title}</h1>
         <button type='button' className='modal-close-btn' onClick={handleModalClose}>
-          {/* <ImCross /> */}
           <IoClose />
         </button>
       </div>

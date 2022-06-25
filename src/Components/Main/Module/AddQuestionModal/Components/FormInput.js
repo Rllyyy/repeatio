@@ -9,7 +9,7 @@ const FormInput = ({ labelText, type, value, handleChange, ...props }) => {
     <div className={`modal-question-${labelText}`}>
       <label htmlFor={`modal-question-${labelText}-input`}>{labelText}</label>
       <input
-        name={labelText}
+        name={labelText.toLowerCase()}
         type={type}
         id={`modal-question-${labelText}-input`}
         value={value || ""}

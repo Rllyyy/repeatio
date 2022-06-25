@@ -12,7 +12,7 @@ const mockFilteredQuestions = [
     title: "This is a question for the test suite",
     points: 5,
     type: "multiple-choice",
-    questionTypeHelp: "Choose the correct answer(s) please.",
+    help: "Choose the correct answer(s) please.",
     answerOptions: [
       {
         id: "option-1",
@@ -32,7 +32,7 @@ const mockFilteredQuestions = [
     title: "This is the second question for the test suite",
     points: 5,
     type: "multiple-response",
-    questionTypeHelp: "Choose the correct answer(s).",
+    help: "Choose the correct answer(s).",
     answerOptions: [
       {
         id: "option-1",
@@ -52,7 +52,7 @@ const mockFilteredQuestions = [
     title: "This is a question provided by the public folder",
     points: 5,
     type: "gap-text",
-    questionTypeHelp: "Fill in the blanks.",
+    help: "Fill in the blanks.",
     answerOptions: {
       text: "[] two three. One [] three. One two [].",
       correctGapValues: [["One", "one"], ["two"], ["three"]],
@@ -493,7 +493,7 @@ describe("<Question />", () => {
   });
 
   //Expect to trim the gap text input to be trimmed
-  it("trim the input values when checking the answer", () => {
+  it("should trim the input values when checking the answer", () => {
     render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
 
     //Type into the input elements

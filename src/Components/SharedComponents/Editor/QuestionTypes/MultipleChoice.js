@@ -46,17 +46,21 @@ const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLas
   const handleKeyDown = (e) => {
     e.stopPropagation();
 
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+
     if (e.key === "Escape") {
       setLastSelected("");
     }
   };
 
   //TODO: https://stackoverflow.com/questions/61564465/how-do-i-create-a-tab-spacing-inside-textarea-reactjs-bootstrap
-  const preventTabFocusLost = (e) => {
+  /* const preventTabFocusLost = (e) => {
     if (e.key === "Tab") {
       e.preventDefault();
     }
-  };
+  }; */
 
   //Find the correct multiple choice id
   //Is used to keep the state of the (grand) parent editor and this in sync
@@ -98,7 +102,6 @@ const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLas
                   spellCheck='false'
                   autoComplete='false'
                   className='editor-label-textarea'
-                  onKeyDown={preventTabFocusLost}
                   onChange={(e) => updateText(e, id)}
                   value={text}
                 />

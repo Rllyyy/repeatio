@@ -17,7 +17,7 @@ import "katex/dist/katex.min.css";
 
 //Import Question Types
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
-import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
+import MultipleChoice from "./QuestionTypes/MultipleChoice/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
 import GapTextDropdown from "./QuestionTypes/GapTextDropdown/GapTextDropdown.js";
