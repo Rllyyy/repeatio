@@ -1,4 +1,3 @@
-import { extendSxProp } from "@mui/system";
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import MultipleChoice from "./MultipleChoice.js";

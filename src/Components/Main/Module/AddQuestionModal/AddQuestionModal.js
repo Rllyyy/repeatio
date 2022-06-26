@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import isElectron from "is-electron";
 
 //Context
 import { ModuleContext } from "../../../../Context/ModuleContext.js";
@@ -72,6 +73,12 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
   //Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (isElectron()) {
+      console.warn("Can't edit question in electron for this time. Use your browser instead!");
+      handleModalClose();
+      return;
+    }
 
     //Prevent adding to types module as it is originally saved in the public folder
     //Adding a question would create a module in the localStorage with the same id.

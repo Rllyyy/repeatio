@@ -18,7 +18,7 @@ export const ModuleProvider = (props) => {
     [filteredQuestions, setFilteredQuestions]
   );
 
-  //TODO move setFilteredQuestions/setInitialData into a calllback
+  //TODO move setFilteredQuestions/setInitialData into a callback
 
   // Callback
   //All questions
@@ -78,14 +78,17 @@ export const ModuleProvider = (props) => {
     };
   }, [moduleContextID, getDataFromBrowser]);
 
+  //Update the localStorage/filesystem if initialData changes
   useEffect(() => {
-    if (initialData === undefined || initialData.length < 1) {
+    //Don't update the storage if the data is undefined or from the public folder (id: types_1)
+    if (initialData === undefined || initialData.length < 1 || initialData.id === "types_1") {
       return;
     }
 
+    //Update filesystem (electron) or localStorage (website)
     if (isElectron()) {
       //TODO save to filesystem
-    } else {
+    } else if (!isElectron()) {
       try {
         localStorage.setItem(`repeatio-module-${initialData.id}`, JSON.stringify(initialData, null, "\t"), {
           sameSite: "strict",
@@ -95,30 +98,7 @@ export const ModuleProvider = (props) => {
         console.warn(error.message);
       }
     }
-
-    // console.log(JSON.stringify(initialData, null, "\t"));
-
-    // JSON.stringify(outPut, null, "\t");
-
-    /* localStorage.setItem(`repeatio-module-${JSON.parse(initialData).id}`, initialData, {
-      sameSite: "strict",
-      secure: true,
-    }); */
-    //console.log(initialData);
-
-    /* return () => {
-      second
-    } */
   }, [initialData]);
-
-  //or initialDataProvider.initialData??
-
-  /* 
-  1. On Mount an moduleContextID provide data
-  2. On initialData change, update the context and reset filtered Questions
-  
-  
-  */
 
   return (
     <ModuleContext.Provider
