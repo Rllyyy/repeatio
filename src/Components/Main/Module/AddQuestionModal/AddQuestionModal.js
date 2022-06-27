@@ -51,7 +51,14 @@ const transformAnswerOptions = (answerOptions) => {
 //TODO in React@v18 use useID hook for label/input elements
 const AddQuestionModal = ({ isOpen, handleModalClose }) => {
   //State
-  const [question, setQuestion] = useState({});
+  const [question, setQuestion] = useState({
+    id: "",
+    title: "",
+    points: undefined,
+    help: "",
+    type: "",
+    answerOptions: undefined,
+  });
 
   //Context
   const { moduleData, setModuleData } = useContext(ModuleContext);
@@ -62,7 +69,7 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
     setQuestion({
       ...question,
       [e.target.name]: e.target.value,
-      ...(e.target.name === "type" ? { answerOptions: null } : null),
+      ...(e.target.name === "type" ? { answerOptions: undefined } : undefined),
     });
   };
 

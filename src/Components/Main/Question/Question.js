@@ -16,7 +16,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
 //Import Question Types
-import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
+import MultipleResponse from "./QuestionTypes/MultipleResponse/MultipleResponse.js";
 import MultipleChoice from "./QuestionTypes/MultipleChoice/MultipleChoice.js";
 import GapText from "./QuestionTypes/GapText/GapText.js";
 import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";

@@ -158,7 +158,7 @@ code {
 
 main {
   width: 100%;
-  padding: 20px 8px 0 20px;
+  padding: 20px 20px 0 20px;
   min-height: 100vh;
   overflow-y: auto;
   overflow-x: visible;
@@ -216,8 +216,6 @@ a {
   width: 12px;
 }
 
-
-
 ::-webkit-scrollbar-thumb {
   background-color: rgb(204, 204, 204);
   border: 4px solid rgba(0, 0, 0, 0);
@@ -272,7 +270,7 @@ Mobile CSS
   main {
     margin-top: 46px;
     margin-bottom: 0;
-    padding: 15px 2px 5px 10px;
+    padding: 15px 10px 5px 10px;
     min-height: auto;
   }
 
@@ -293,17 +291,19 @@ Mobile CSS
   }
 }
 
-/* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
+/* Firefox query*/
 @media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
 
   /* Fix for firefox on android not being able to fully zoom out again */
   /* https://stackoverflow.com/questions/71561637/bug-in-firefox-for-android-small-pages-not-zooming-out-100 */
   /* !Remove later when content can overflow again */
+  /* TODO change to dvh as soon as there is support across browsers */
   #root {
     min-height: 101vh;
     max-height: 101vh;
   }
 
+  /* Firefox mobile has dynamic navbar at bottom.  */
   main {
     padding: 15px 10px 50px 10px;
   }

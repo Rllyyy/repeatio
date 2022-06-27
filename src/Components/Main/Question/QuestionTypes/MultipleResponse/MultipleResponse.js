@@ -1,6 +1,6 @@
 //Imports
 //React
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 
 //Markdown related
 import ReactMarkdown from "react-markdown";
@@ -21,53 +21,38 @@ import FormControl from "@mui/material/FormControl";
 import "./MultipleResponse.css";
 
 //Import functions
-import shuffleArray from "../../../../functions/shuffleArray.js";
+import shuffleArray from "../../../../../functions/shuffleArray.js";
 
 //Component
 const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
   //States
   const [shuffledOptions, setShuffledOptions] = useState([]);
-  const [shuffleCounter, setShuffleCounter] = useState(1);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   //Run shuffle function on first render of component or when the user clicks the retry button
   //Also add isChecked state (to false which means unchecked)
   useEffect(() => {
-    const shuffledArray = shuffleArray(options);
-
-    //Add is checked to each object in array
-    let shuffleArrayChecked = shuffledArray.map((item) => {
-      return { ...item, isChecked: false };
-    });
-
-    //Update the state with the new shuffled array
-    setShuffledOptions(shuffleArrayChecked);
+    setShuffledOptions(shuffleArray(options));
 
     //Cleanup the states
     return () => {
       setShuffledOptions([]);
-      setShuffleCounter(0);
+      setSelectedOptions([]);
     };
-  }, [options, shuffleCounter]);
+  }, [options]);
 
-  //Update the isChecked value of shuffledOptions state
-  const handleCheckBoxClick = (optionID) => {
-    let updatedShuffleOptions = shuffledOptions.map((item) => {
-      //Set the isChecked state of the answer option to the opposite of the current value (true/false) where the ids are equal else just return the object as it is
-      if (item.id === optionID) {
-        return { ...item, isChecked: !item.isChecked };
-      } else {
-        return { ...item };
-      }
-    });
-
-    // Update the state
-    setShuffledOptions(updatedShuffleOptions);
+  const handleChange = (e) => {
+    if (selectedOptions.includes(e.target.value)) {
+      setSelectedOptions(selectedOptions.filter((option) => option !== e.target.value));
+    } else {
+      setSelectedOptions([...selectedOptions, e.target.value]);
+    }
   };
 
-  const handleCheckBoxKeyPress = (e, optionID) => {
+  const handleCheckBoxKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleCheckBoxClick(optionID);
+      handleChange(e);
     }
   };
 
@@ -75,10 +60,15 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct.
     checkAnswer() {
-      //every value should be the same (true/false) in the properties isChecked and isCorrect
-      const answeredCorrect = shuffledOptions.every(
-        (option, index) => option.isChecked === shuffledOptions[index].isCorrect
-      );
+      //every value should be the same (true/false)
+      //TODO check if every value is included in in there and they have the same length
+      const answeredCorrect = shuffledOptions.every((option) => {
+        if (option.isCorrect) {
+          return selectedOptions.includes(option.id);
+        } else {
+          return !selectedOptions.includes(option.id);
+        }
+      });
 
       //Show if the answer is correct in the parent component
       setShowAnswer(true);
@@ -114,16 +104,13 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
     //Reset User selection
     resetSelection() {
-      const unselectedOption = shuffledOptions.map((item) => {
-        return { ...item, isChecked: false };
-      });
-
-      setShuffledOptions(unselectedOption);
+      setSelectedOptions([]);
     },
 
     //Trigger a useEffect (rerender) by increasing a state value
     resetAndShuffleOptions() {
-      setShuffleCounter((prev) => prev + 1);
+      setSelectedOptions([]);
+      setShuffledOptions(shuffleArray(options));
     },
   }));
 
@@ -136,13 +123,14 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
             return (
               <FormControlLabel
                 key={option.id}
+                value={option.id}
                 className='formControlLabel'
                 data-testid={`formControlLabel-${index}`}
-                checked={option.isChecked || false} //fallback (so it's a controlled input)
-                onClick={() => handleCheckBoxClick(option.id)}
                 onKeyDown={(e) => handleCheckBoxKeyPress(e, option.id)}
                 control={
                   <Checkbox
+                    checked={selectedOptions.includes(option.id)}
+                    onChange={handleChange}
                     className='formControlLabel-checkbox'
                     data-testid={`formControlLabel-checkbox-${index}`}
                     sx={{
@@ -156,7 +144,6 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
                 label={
                   <Typography
                     component={"span"}
-                    onClick={(e) => e.stopPropagation()}
                     className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
                   >
                     <ReactMarkdown

@@ -97,4 +97,20 @@ describe("<MultipleResponse />", () => {
     //Expect checkbox not to be checked
     expect(checkBoxElement.firstChild).not.toBeChecked();
   });
+
+  it("should be disabled if form is disabled", () => {
+    render(
+      <MultipleResponse
+        options={options}
+        setAnswerCorrect={mockSetAnswerCorrect}
+        setShowAnswer={mockSetShowAnswer}
+        formDisabled={true}
+        ref={mockUseRef}
+      />
+    );
+
+    const disabledCheckbox = screen.getByTestId("formControlLabel-checkbox-0");
+
+    expect(disabledCheckbox).toHaveAttribute("aria-disabled");
+  });
 });

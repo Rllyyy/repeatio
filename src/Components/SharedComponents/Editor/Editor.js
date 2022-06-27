@@ -6,6 +6,7 @@ import Empty from "./Components/Empty.js";
 
 //Question types
 import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
+import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 
 //CSS
 import "./Editor.css";
@@ -35,6 +36,13 @@ const Editor = ({ questionType, answerValues, handleEditorChange }) => {
   const addElement = () => {
     switch (questionType) {
       case "multiple-choice":
+        if (answerValues?.length >= 1) {
+          handleEditorChange([...answerValues, { id: findUniqueID(), text: "", isCorrect: false }]);
+        } else {
+          handleEditorChange([{ id: `option-0`, text: "", isCorrect: false }]);
+        }
+        break;
+      case "multiple-response":
         if (answerValues?.length >= 1) {
           handleEditorChange([...answerValues, { id: findUniqueID(), text: "", isCorrect: false }]);
         } else {
@@ -85,6 +93,13 @@ const Editor = ({ questionType, answerValues, handleEditorChange }) => {
           <MultipleChoice
             name='multiple-choice'
             answerValues={answerValues}
+            handleEditorChange={handleEditorChange}
+            lastSelected={lastSelected}
+            setLastSelected={setLastSelected}
+          />
+          <MultipleResponse
+            name='multiple-response'
+            options={answerValues}
             handleEditorChange={handleEditorChange}
             lastSelected={lastSelected}
             setLastSelected={setLastSelected}
