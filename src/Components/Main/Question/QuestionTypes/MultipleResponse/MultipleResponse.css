@@ -1,20 +1,29 @@
 /* ! To manipulate material UI components sometimes a !important is required */
 /* ! Some css properties (mui-checkcolor, color) are defined in the react component  */
 
-.question-multiple-response .formControlLabel {
-  width: 100% !important;
+.question-multiple-response .MuiFormControlLabel-root {
+  margin-bottom: 5px;
+  margin-right: 0;
+  margin-left: -6px;
+  width: calc(100% + 6px) !important;
+  border-radius: 3px;
+}
+
+.question-multiple-response .MuiFormControlLabel-root {
+  /* width: 100% !important; */
   display: flex;
   flex-direction: row;
   align-items: flex-start;
 }
 
-.question-multiple-response .formControlLabel>.formControlLabel-label {
+.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-label {
   font-size: 18px;
-  padding-top: 10px;
+  padding-top: 8px;
   padding-left: 2px;
+  padding-right: 5px;
 }
 
-.question-multiple-response .formControlLabel>.formControlLabel-checkbox:hover {
+.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-checkbox:hover {
   background-color: transparent;
 }
 
@@ -34,7 +43,7 @@
 }
 
 /* Style the image that can be set with MarkDown */
-.question-multiple-response .formControlLabel p img {
+.question-multiple-response .MuiFormControlLabel-root p img {
   display: block;
   font-size: 1rem;
   object-fit: contain;
@@ -66,7 +75,7 @@
 
 /* Media Query for phones */
 @media only screen and (max-width: 650px) {
-  .question-multiple-response .formControlLabel {
+  .question-multiple-response .MuiFormControlLabel-root {
     padding: 0px 0 !important;
   }
 
@@ -75,13 +84,13 @@
     font-size: 30px !important;
   }
 
-  .question-multiple-response .formControlLabel>.formControlLabel-label {
+  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-label {
     font-size: 18px;
     padding-top: 10px;
     padding-left: 0;
   }
 
-  .question-multiple-response .formControlLabel>.formControlLabel-checkbox:hover {
+  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-checkbox:hover {
     background-color: transparent;
   }
 
@@ -89,6 +98,5 @@
     left: 0px;
     top: 4px;
     font-size: 10px;
-
   }
 }

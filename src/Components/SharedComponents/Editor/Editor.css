@@ -72,12 +72,8 @@
   width: 100%;
 }
 
-.editor .css-j204z7-MuiFormControlLabel-root {
-  margin: 0;
-}
-
 .editor .MuiFormControlLabel-root {
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
 }
 
 .editor .MuiFormControlLabel-label {

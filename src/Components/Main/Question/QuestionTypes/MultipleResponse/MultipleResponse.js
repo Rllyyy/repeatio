@@ -41,6 +41,7 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     };
   }, [options]);
 
+  //Update the selectedOptions state on change
   const handleChange = (e) => {
     if (selectedOptions.includes(e.target.value)) {
       setSelectedOptions(selectedOptions.filter((option) => option !== e.target.value));
@@ -49,11 +50,31 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
     }
   };
 
+  //Allow the user to use enter to add to the selectedOptions state
   const handleCheckBoxKeyPress = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleChange(e);
     }
+  };
+
+  //Styles on form submit to show what answers are correct
+  const customStyle = (option) => {
+    if (!formDisabled) {
+      return;
+    }
+
+    if (option.isCorrect && selectedOptions.includes(option.id)) {
+      //Selected option is correct
+      return { outline: "1px solid green" };
+    } else if (option.isCorrect && !selectedOptions.includes(option.id)) {
+      //Selected option was not selected but is correct
+      return { outline: "1px solid red" };
+    } else if (!option.isCorrect && selectedOptions.includes(option.id)) {
+      //Option was selected but it is not correct
+      return { outline: "1px solid red" };
+    }
+    //The case that a option is false and the user did not selected it is not tested
   };
 
   //Method so the parent can interact with this component
@@ -123,8 +144,8 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
             return (
               <FormControlLabel
                 key={option.id}
+                style={customStyle(option)}
                 value={option.id}
-                className='formControlLabel'
                 data-testid={`formControlLabel-${index}`}
                 onKeyDown={(e) => handleCheckBoxKeyPress(e, option.id)}
                 control={

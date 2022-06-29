@@ -6,13 +6,13 @@ import user from "@testing-library/user-event";
 const options = [
   {
     id: "option-1",
-    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+    text: "This is the correct option",
     isCorrect: true,
   },
-  { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+  { id: "option-2", text: "This is a false option", isCorrect: false },
   {
     id: "option-3",
-    text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem.",
+    text: "This is another false option",
     isCorrect: false,
   },
 ];
@@ -44,21 +44,25 @@ jest.mock("rehype-katex", () => (props) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
+const MockMultipleResponse = ({ disabled }) => {
+  return (
+    <MultipleResponse
+      options={options}
+      setAnswerCorrect={mockSetAnswerCorrect}
+      setShowAnswer={mockSetShowAnswer}
+      formDisabled={disabled}
+      ref={mockUseRef}
+    />
+  );
+};
+
 //Tests
 describe("<MultipleResponse />", () => {
   afterAll(cleanup);
 
   //UNIT TESTING
   it("should change checkbox to checked and back to unchecked if checkbox gets clicked", () => {
-    render(
-      <MultipleResponse
-        options={options}
-        setAnswerCorrect={mockSetAnswerCorrect}
-        setShowAnswer={mockSetShowAnswer}
-        formDisabled={false}
-        ref={mockUseRef}
-      />
-    );
+    render(<MockMultipleResponse disabled={false} />);
 
     const checkBoxElement = screen.getByTestId("formControlLabel-checkbox-0");
     user.click(checkBoxElement);
@@ -70,15 +74,7 @@ describe("<MultipleResponse />", () => {
   });
 
   it("should change checkbox to checked and back to unchecked if label (p tag) gets clicked", () => {
-    render(
-      <MultipleResponse
-        options={options}
-        setAnswerCorrect={mockSetAnswerCorrect}
-        setShowAnswer={mockSetShowAnswer}
-        formDisabled={false}
-        ref={mockUseRef}
-      />
-    );
+    render(<MockMultipleResponse disabled={false} />);
 
     //get the checkbox
     const checkBoxElement = screen.getByTestId("formControlLabel-checkbox-0");
@@ -96,21 +92,5 @@ describe("<MultipleResponse />", () => {
 
     //Expect checkbox not to be checked
     expect(checkBoxElement.firstChild).not.toBeChecked();
-  });
-
-  it("should be disabled if form is disabled", () => {
-    render(
-      <MultipleResponse
-        options={options}
-        setAnswerCorrect={mockSetAnswerCorrect}
-        setShowAnswer={mockSetShowAnswer}
-        formDisabled={true}
-        ref={mockUseRef}
-      />
-    );
-
-    const disabledCheckbox = screen.getByTestId("formControlLabel-checkbox-0");
-
-    expect(disabledCheckbox).toHaveAttribute("aria-disabled");
   });
 });

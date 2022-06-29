@@ -4,8 +4,7 @@
   height: calc(100vh - 40px);
   width: 100%;
   background-color: white;
-  border-radius: 10px;
-  padding-right: 8px;
+  border-radius: 5px;
   border: 1px solid var(--custom-border-color-lighter);
   overflow: hidden;
 }
@@ -21,7 +20,7 @@
   height: 100%;
   /*Cancel out the navigation at the bottom */
   padding: 20px 15px 80px 20px;
-  overflow-y: scroll;
+  overflow-y: auto;
   scroll-behavior: smooth;
 }
 
@@ -428,7 +427,6 @@ only screen and (pointer: fine) and (max-width: 650px) {
   .question-form {
     height: calc(100vh - 130px);
     /*The viewport of mobile devices includes the address bar. Because why not. */
-    padding-right: 4px;
     margin-bottom: 0;
     -moz-margin-bottom: 50px;
     /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a black background at the bottom*/
