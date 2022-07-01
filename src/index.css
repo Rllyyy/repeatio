@@ -224,6 +224,11 @@ a {
   margin-bottom: 500px;
 }
 
+.ReactModalPortal {
+  z-index: 100 !important;
+
+}
+
 .ReactModal__Body--open main::-webkit-scrollbar-track {
   background-color: rgba(0, 0, 0, 0.5);
 }

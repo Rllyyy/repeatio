@@ -54,7 +54,6 @@
 }
 
 .add-question-form .buttons {
-  /* !Remove bottom later */
   margin-top: auto;
 }
 
@@ -73,12 +72,12 @@
   max-width: 100px;
 }
 
-.add-question-form .buttons .add-question {
+.add-question-form .buttons .update-add-question {
   color: var(--custom-tertiary-color);
   background-color: var(--custom-prime-color);
 }
 
-.add-question-form .buttons .add-question:active {
+.add-question-form .buttons .update-add-question:active {
   background-color: rgb(63, 63, 219);
 }
 
@@ -87,7 +86,7 @@
   box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
 }
 
-.add-question-form .buttons .add-question:focus-visible,
+.add-question-form .buttons .update-add-question:focus-visible,
 .add-question-form .buttons .cancel:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 5px;
@@ -95,8 +94,7 @@
 
 /* Media Query for devices that can hover */
 @media screen and (hover: hover) and (pointer: fine) {
-
-  .add-question-form .buttons .add-question:hover {
+  .add-question-form .buttons .update-add-question:hover {
     background-color: rgb(63, 63, 219);
   }
 
@@ -107,19 +105,21 @@
 
 /* Media Query for smaller screens */
 @media only screen and (max-width: 650px) {
-
   .add-question-form>div>label {
     font-size: 20px;
   }
 
   .add-question-form {
     padding: 20px;
-
   }
 
   .add-question-form .buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  .add-question-form .buttons button {
+    margin: 0;
   }
 }

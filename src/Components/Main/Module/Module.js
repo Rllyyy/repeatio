@@ -5,7 +5,7 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 //Components
 import Card from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
-import AddQuestionModal from "./AddQuestionModal/AddQuestionModal.js";
+import QuestionEditor from "../../SharedComponents/QuestionEditor/QuestionEditor.js";
 
 //css
 import "./Module.css";
@@ -235,7 +235,7 @@ const Module = () => {
           );
         })}
       </div>
-      {showModal && <AddQuestionModal handleModalClose={handleModalClose} />}
+      {showModal && <QuestionEditor handleModalClose={handleModalClose} />}
     </div>
   );
 };

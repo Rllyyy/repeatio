@@ -1,3 +1,7 @@
+.ReactModal__Overlay.ReactModal__Overlay--after-open {
+  z-index: 100;
+}
+
 .ReactModal__Content.ReactModal__Content--after-open {
   padding: 0 !important;
   display: grid;
@@ -6,6 +10,8 @@
   border-radius: 5px !important;
   overflow: none !important;
   border: none !important;
+  z-index: 100 !important;
+
 }
 
 .ReactModal__Content.ReactModal__Content--after-open .title-close-wrapper {

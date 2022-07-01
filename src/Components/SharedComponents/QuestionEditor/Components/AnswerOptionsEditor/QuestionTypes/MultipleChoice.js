@@ -11,7 +11,7 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLastSelected }) => {
   const [radioGroupValue, setRadioGroupValue] = useState("");
 
-  //Update the selected correct value in the AddQuestionModal question state
+  //Update the selected correct value in the QuestionEditor question state
   const handleChange = (e) => {
     const returnVal = answerValues.map((item) => {
       if (item.id === e.target.value) {
@@ -23,7 +23,7 @@ const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLas
     handleEditorChange([...returnVal]);
   };
 
-  //Update text in the AddQuestionModal question state
+  //Update text in the QuestionEditor question state
   const updateText = (e, id) => {
     const returnVal = answerValues.map((item) => {
       if (item.id === id) {

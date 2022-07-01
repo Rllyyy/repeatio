@@ -28,7 +28,7 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
     }
   };
 
-  //Update text of the option in the AddQuestionModal question state
+  //Update text of the option in the QuestionEditor question state
   const updateText = (e, id) => {
     const returnVal = options.map((item) => {
       if (item.id === id) {

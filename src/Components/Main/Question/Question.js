@@ -33,6 +33,7 @@ import { MdNavigateNext } from "react-icons/md";
 
 //Import Components
 import Bookmark from "./Components/Bookmark.js";
+import EditQuestion from "./Components/EditQuestion.js";
 
 //Navigation svg from https://tablericons.com
 
@@ -406,6 +407,7 @@ const Question = () => {
         </div>
         {(showNav || !collapsedNav) && (
           <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
+            <EditQuestion prev={question} />
             <Bookmark questionID={question.id} />
             <button
               data-testid='first-question-button'

@@ -1,16 +1,17 @@
 import { useState, useContext } from "react";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 
 //Context
-import { ModuleContext } from "../../../../Context/ModuleContext.js";
+import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Components
-import CustomModal from "../CustomModal/CustomModal.js";
-import Editor from "../../../SharedComponents/Editor/Editor.js";
+import CustomModal from "../../Main/Module/CustomModal/CustomModal.js";
+import AnswerOptionsEditor from "./Components/AnswerOptionsEditor/AnswerOptionsEditor.js";
 import FormInput from "./Components/FormInput.js";
 
 //CSS
-import "./AddQuestionModal.css";
+import "./QuestionEditor.css";
 
 //Helper functions
 //Transform string points to int or return "?"
@@ -49,16 +50,27 @@ const transformAnswerOptions = (answerOptions) => {
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
-const AddQuestionModal = ({ isOpen, handleModalClose }) => {
+const AddQuestionModal = ({ isOpen, handleModalClose, prevQuestion }) => {
   //State
-  const [question, setQuestion] = useState({
-    id: "",
-    title: "",
-    points: undefined,
-    help: "",
-    type: "",
-    answerOptions: undefined,
-  });
+  const [question, setQuestion] = useState(
+    prevQuestion || {
+      id: "",
+      title: "",
+      points: undefined,
+      help: "",
+      type: "",
+      answerOptions: undefined,
+    }
+  );
+
+  //Params
+  const params = useParams();
+
+  //History
+  let history = useHistory();
+
+  //Location
+  const { search } = useLocation();
 
   //Context
   const { moduleData, setModuleData } = useContext(ModuleContext);
@@ -97,7 +109,7 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
 
     //TODO Tests
     //Check if ID already exists
-    if (moduleData.questions.find((originalQuestion) => originalQuestion.id === question.id)) {
+    if (moduleData.questions.find((originalQuestion) => originalQuestion.id === question.id) && !prevQuestion) {
       //TODO message user
       console.warn("ID already exists");
       return;
@@ -117,16 +129,47 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
       answerOptions: transformAnswerOptions(question.answerOptions),
     };
 
-    //Might need to spread moduleData.questions but seems to work fine
-    moduleData.questions.push(output);
-    setModuleData({ ...moduleData, questions: moduleData.questions });
+    //Adding or updating a question
+    if (!prevQuestion) {
+      //If the user is adding a question (not given prevQuestion), push the new question to the end of the array
+      moduleData.questions.push(output);
+      setModuleData({ ...moduleData, questions: moduleData.questions });
+    } else {
+      //Handle updating a question
+
+      //Try finding the index of the question
+      const index = moduleData.questions.findIndex((question) => question.id === output.id);
+
+      //If the user changes the id (index <= -1), the question gets inserted at that position
+      if (index > -1) {
+        moduleData.questions.splice(index, 1, output);
+        setModuleData({ ...moduleData, questions: moduleData.questions });
+      } else {
+        //Find index of the old id by using params (url)
+        const index = moduleData.questions.findIndex((question) => question.id === params.questionID);
+
+        //Insert and update context
+        moduleData.questions.splice(index, 1, output);
+        setModuleData({ ...moduleData, questions: moduleData.questions });
+
+        //Navigate to new path with new id
+        history.push({
+          pathname: `/module/${params.moduleID}/question/${output.id}`,
+          search: `?mode=${new URLSearchParams(search).get("mode") || "chronological"}`,
+        });
+      }
+    }
 
     handleModalClose();
   };
 
   //JSX
   return (
-    <CustomModal isOpen={isOpen} handleModalClose={handleModalClose} title='Add Question'>
+    <CustomModal
+      isOpen={isOpen}
+      handleModalClose={handleModalClose}
+      title={prevQuestion ? "Edit Question" : "Add Question"}
+    >
       <form className='add-question-form' onSubmit={handleSubmit}>
         {/* ID */}
         <FormInput
@@ -164,7 +207,7 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
         {/* Question*/}
         <div className='modal-question-answer'>
           <label htmlFor='editor'>Answer</label>
-          <Editor
+          <AnswerOptionsEditor
             questionType={question.type}
             answerValues={question.answerOptions}
             handleEditorChange={handleEditorChange}
@@ -172,8 +215,9 @@ const AddQuestionModal = ({ isOpen, handleModalClose }) => {
         </div>
         {/* Buttons */}
         <div className='buttons'>
-          <button type='submit' className='add-question'>
-            Add
+          {/* //TODO rename */}
+          <button type='submit' className='update-add-question'>
+            {prevQuestion ? "Update" : "Add"}
           </button>
           <button type='button' className='cancel' onClick={handleModalClose}>
             Cancel

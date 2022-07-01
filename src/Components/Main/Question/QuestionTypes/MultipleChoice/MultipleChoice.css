@@ -22,7 +22,10 @@
   font-size: 26px;
 }
 
-.question-multiple-choice .css-1hhw7if-MuiSvgIcon-root {
+/* The first value is for development, the second is production. 
+This is the only way if found to have it still animated but disable the out animation */
+.question-multiple-choice .css-1hhw7if-MuiSvgIcon-root,
+.question-multiple-choice .css-1c4tzn {
   /* Overwrite the out animation for the material UI radio button because on site change it doesn't unmount in time */
   -webkit-transition: -webkit-transform 0ms cubic-bezier(0.4, 0, 1, 1) 0ms !important;
   transition: transform 0ms cubic-bezier(0.4, 0, 1, 1) 0ms !important;

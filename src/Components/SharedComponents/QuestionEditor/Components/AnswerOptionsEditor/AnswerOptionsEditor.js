@@ -9,7 +9,7 @@ import MultipleChoice from "./QuestionTypes/MultipleChoice.js";
 import MultipleResponse from "./QuestionTypes/MultipleResponse.js";
 
 //CSS
-import "./Editor.css";
+import "./AnswerOptionsEditor.css";
 
 //Icons
 import { CgExtensionAdd } from "react-icons/cg";
