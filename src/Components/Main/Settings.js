@@ -1,10 +1,10 @@
-import React from "react";
+import SiteHeading from "../SharedComponents/SiteHeading/SiteHeading";
 import "./Settings.css";
 
 const Settings = () => {
   return (
     <>
-      <h1 className='site-heading'>Settings</h1>
+      <SiteHeading title='Settings' />
     </>
   );
 };

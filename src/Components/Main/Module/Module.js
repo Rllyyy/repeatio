@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Components
+import SiteHeading from "../../SharedComponents/SiteHeading/SiteHeading.jsx";
 import Card from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
 import QuestionEditor from "../../SharedComponents/QuestionEditor/QuestionEditor.js";
@@ -41,7 +42,7 @@ const Module = () => {
   /* USEEFFECTS */
   //Update the module state by using the data from the context
   useEffect(() => {
-    if (moduleData.length === 0) return;
+    if (moduleData?.length === 0 || moduleData === undefined) return;
     setModule(moduleData);
   }, [moduleData]);
 
@@ -54,21 +55,32 @@ const Module = () => {
   //Train with all questions in chronological order
   const onChronologicalClick = () => {
     setFilteredQuestions(moduleData.questions);
-    history.push({
-      pathname: `/module/${moduleID}/question/${module.questions[0].id}`,
-      search: "?mode=chronological",
-    });
+
+    if (moduleData.questions !== undefined && moduleData.questions.length >= 1) {
+      history.push({
+        pathname: `/module/${moduleID}/question/${module.questions[0].id}`,
+        search: "?mode=chronological",
+      });
+    } else {
+      console.warn("No questions found!");
+      return;
+    }
   };
 
   //Train with all questions in random order
   const onRandomClick = () => {
     //If the array isn't spread, it modifies the order of the original data
     const shuffledQuestions = shuffleArray([...moduleData.questions]);
-    setFilteredQuestions(shuffledQuestions);
-    history.push({
-      pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
-      search: "?mode=random",
-    });
+    if (shuffledQuestions.length >= 1) {
+      setFilteredQuestions(shuffledQuestions);
+      history.push({
+        pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
+        search: "?mode=random",
+      });
+    } else {
+      console.warn("No questions found!");
+      return;
+    }
   };
 
   //Train with only the saved Questions
@@ -80,6 +92,7 @@ const Module = () => {
     //Return if no such element can be found
     //TODO give user response that no saved questions are defined (maybe with toast)
     if (savedQuestionsID === null) {
+      console.warn("No saved Questions found!");
       return;
     }
 
@@ -108,9 +121,9 @@ const Module = () => {
     setShowModal(true);
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setShowModal(false);
-  };
+  }, []);
 
   //All cards
   const moduleCards = [
@@ -215,9 +228,7 @@ const Module = () => {
   //JSX
   return (
     <div id={`module-${module.id}`}>
-      <h1 className='site-heading'>
-        {module.name} ({module.id})
-      </h1>
+      <SiteHeading title={`${module.name} (${module.id})`} />
       <div className='module-cards'>
         {moduleCards.map((card) => {
           const { title, disabled, description, icon, leftBottom, rightBottom } = card;

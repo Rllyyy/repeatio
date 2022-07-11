@@ -6,12 +6,12 @@
   padding: 0 !important;
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: max-content max-content auto;
+
+  grid-template-rows: auto auto 1fr;
+
   border-radius: 5px !important;
-  overflow: none !important;
   border: none !important;
   z-index: 100 !important;
-
 }
 
 .ReactModal__Content.ReactModal__Content--after-open .title-close-wrapper {
@@ -40,7 +40,7 @@
   max-width: 40px;
 }
 
-.ReactModal__Content.ReactModal__Content--after-open .line {
+.ReactModal__Content.ReactModal__Content--after-open>.line {
   margin-top: 12px;
   width: 100%;
   height: 2px;
@@ -94,7 +94,8 @@
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     width: 90% !important;
-    height: 90% !important;
+    min-height: 40%;
+    max-height: 90% !important;
     max-width: 1400px;
   }
 }

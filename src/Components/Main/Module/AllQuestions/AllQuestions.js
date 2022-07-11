@@ -1,8 +1,6 @@
-//React
-import React from "react";
-
 //Components
-import QuestionTable from "./Components/QuestionTable";
+import SiteHeading from "../../../SharedComponents/SiteHeading/SiteHeading.jsx";
+import QuestionTable from "./Components/QuestionTable.js";
 
 //CSS
 import "./AllQuestions.css";
@@ -12,7 +10,7 @@ const AllQuestions = () => {
   //JSX
   return (
     <div className='all-questions'>
-      <h1 className='site-heading'>All Questions</h1>
+      <SiteHeading title='All Questions' />
       <QuestionTable />
     </div>
   );

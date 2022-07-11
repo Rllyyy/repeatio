@@ -78,7 +78,7 @@
 }
 
 .add-question-form .buttons .update-add-question:active {
-  background-color: rgb(63, 63, 219);
+  background-color: var(--custom-prime-color-dark);
 }
 
 .add-question-form .buttons .cancel {
@@ -95,7 +95,7 @@
 /* Media Query for devices that can hover */
 @media screen and (hover: hover) and (pointer: fine) {
   .add-question-form .buttons .update-add-question:hover {
-    background-color: rgb(63, 63, 219);
+    background-color: var(--custom-prime-color-dark);
   }
 
   .add-question-form .buttons .cancel:hover {

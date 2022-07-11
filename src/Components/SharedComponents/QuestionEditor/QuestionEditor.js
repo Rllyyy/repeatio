@@ -6,7 +6,7 @@ import isElectron from "is-electron";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Components
-import CustomModal from "../../Main/Module/CustomModal/CustomModal.js";
+import CustomModal from "../CustomModal/CustomModal.js";
 import AnswerOptionsEditor from "./Components/AnswerOptionsEditor/AnswerOptionsEditor.js";
 import FormInput from "./Components/FormInput.js";
 
@@ -50,7 +50,7 @@ const transformAnswerOptions = (answerOptions) => {
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
-const AddQuestionModal = ({ isOpen, handleModalClose, prevQuestion }) => {
+const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
   //State
   const [question, setQuestion] = useState(
     prevQuestion || {
@@ -169,6 +169,7 @@ const AddQuestionModal = ({ isOpen, handleModalClose, prevQuestion }) => {
       isOpen={isOpen}
       handleModalClose={handleModalClose}
       title={prevQuestion ? "Edit Question" : "Add Question"}
+      desktopModalHeight='90%'
     >
       <form className='add-question-form' onSubmit={handleSubmit}>
         {/* ID */}
@@ -215,7 +216,6 @@ const AddQuestionModal = ({ isOpen, handleModalClose, prevQuestion }) => {
         </div>
         {/* Buttons */}
         <div className='buttons'>
-          {/* //TODO rename */}
           <button type='submit' className='update-add-question'>
             {prevQuestion ? "Update" : "Add"}
           </button>
@@ -228,4 +228,4 @@ const AddQuestionModal = ({ isOpen, handleModalClose, prevQuestion }) => {
   );
 };
 
-export default AddQuestionModal;
+export default QuestionEditor;

@@ -12,7 +12,7 @@ import "./CustomModal.css";
 //Because of the sidebar, the desktop ui needs to have the modal act as position absolute.
 //To have the modal on desktop always in the center, this component uses marginTop. Kinda weird.
 //The mobile ui uses position fixed.
-const CustomModal = ({ handleModalClose, title, children }) => {
+const CustomModal = ({ handleModalClose, title, desktopModalHeight, children }) => {
   const [mobileLayout, setMobileLayout] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -41,6 +41,7 @@ const CustomModal = ({ handleModalClose, title, children }) => {
   };
 
   useEffect(() => {
+    handleScroll();
     const main = document.getElementById("main");
     main.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -60,7 +61,9 @@ const CustomModal = ({ handleModalClose, title, children }) => {
               overlay: {
                 marginTop: scrollPosition,
               },
-              content: {},
+              content: {
+                height: desktopModalHeight || null,
+              },
             }
           : {}
       }
@@ -81,6 +84,7 @@ const CustomModal = ({ handleModalClose, title, children }) => {
 CustomModal.propTypes = {
   handleModalClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
+  desktopModalHeight: PropTypes.string.isRequired,
 };
 
 export default CustomModal;

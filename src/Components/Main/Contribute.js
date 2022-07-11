@@ -1,10 +1,10 @@
-import React from "react";
+import SiteHeading from "../SharedComponents/SiteHeading/SiteHeading";
 import "./Contribute.css";
 
 const Contribute = () => {
   return (
     <>
-      <h1 className='site-heading'>Contribute</h1>
+      <SiteHeading title='Contribute' />
     </>
   );
 };

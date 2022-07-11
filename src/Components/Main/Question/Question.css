@@ -290,8 +290,8 @@
 }
 
 .question-check-retry-wrapper>.question-check-next:active {
-  background-color: rgb(63, 63, 219);
-  border-color: rgb(63, 63, 219);
+  background-color: var(--custom-prime-color-dark);
+  border-color: var(--custom-prime-color-dark);
 }
 
 .show-question-nav {

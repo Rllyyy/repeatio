@@ -6,15 +6,13 @@ import Card from "../../../SharedComponents/Card/Card.js";
 import Spinner from "../../../SharedComponents/Spinner/Spinner.js";
 import ProgressPie from "../../../SharedComponents/Card/Components/ProgressPie.jsx";
 
-//Icons
-import { BsPlusCircle } from "react-icons/bs";
-
 const GridCards = () => {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
 
   //Get the modules from the localStorage and set the module state
   //Updates every time localeStorage changes
+  //TODO getting the public folder is blocking the function on no internet connection
   const modulesFromBrowserStorage = useCallback(async () => {
     //The question types folder from the public folder needs to be combined
     //with every module from the locale storage
@@ -72,20 +70,6 @@ const GridCards = () => {
     };
   }, [modulesFromBrowserStorage, onStorageChange]);
 
-  const inputOnChange = async (e) => {
-    try {
-      const [file] = e.target.files;
-      if (!file) return;
-      const data = await file.text();
-
-      //Update localeStorage and tell the window that a new storage event occurred
-      localStorage.setItem(`repeatio-module-${JSON.parse(data).id}`, data, { sameSite: "strict", secure: true });
-      window.dispatchEvent(new Event("storage"));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
   if (loading) {
@@ -114,13 +98,6 @@ const GridCards = () => {
           />
         );
       })}
-      <div className='card-add'>
-        <label htmlFor='file-upload' className='custom-file-upload'>
-          <BsPlusCircle className='card-add-circle' />
-          <h3>Add Module</h3>
-        </label>
-        <input className='file-input' id='file-upload' type='file' accept='.json' onChange={(e) => inputOnChange(e)} />
-      </div>
     </div>
   );
 };

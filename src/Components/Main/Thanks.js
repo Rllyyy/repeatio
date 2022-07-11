@@ -1,10 +1,10 @@
-import React from "react";
+import SiteHeading from "../SharedComponents/SiteHeading/SiteHeading";
 import "./Thanks.css";
 
 const Thanks = () => {
   return (
     <>
-      <h1 className='site-heading'>Thanks</h1>
+      <SiteHeading title='Thanks' />
     </>
   );
 };
