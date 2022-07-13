@@ -26,7 +26,7 @@ const CreateModule = ({ handleModalClose }) => {
     //Right now it just replaces the old module in the localStorage with the uploaded one. */
 
     //Update localeStorage and tell the window that a new storage event occurred
-    localStorage.setItem(`repeatio-module-${module.id}`, JSON.stringify(module), {
+    localStorage.setItem(`repeatio-module-${module.id}`, JSON.stringify(module, null, "\t"), {
       sameSite: "strict",
       secure: true,
     });

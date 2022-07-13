@@ -83,7 +83,10 @@ const ImportModule = ({ handleModalClose }) => {
         const data = await file.text();
 
         //Update localeStorage and tell the window that a new storage event occurred
-        localStorage.setItem(`repeatio-module-${JSON.parse(data).id}`, data, { sameSite: "strict", secure: true });
+        localStorage.setItem(`repeatio-module-${JSON.parse(data).id}`, data, {
+          sameSite: "strict",
+          secure: true,
+        });
         window.dispatchEvent(new Event("storage"));
       } catch (error) {
         console.error(error);

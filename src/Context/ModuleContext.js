@@ -1,5 +1,8 @@
 import { createContext, useMemo, useState, useEffect, useCallback } from "react";
+
+//Functions
 import isElectron from "is-electron";
+import fetchModuleFromPublicFolder from "../functions/fetchModuleFromPublicFolder.js";
 
 //Create Question Context
 export const ModuleContext = createContext([]);
@@ -20,36 +23,25 @@ export const ModuleProvider = (props) => {
 
   //TODO move setFilteredQuestions/setInitialData into a callback
 
-  // Callback
-  //All questions
+  //Get the module data from the localStorage of the browser
   const getDataFromBrowser = useCallback(async () => {
-    //Fetch data from public folder
-    let dataFromPublic;
-    try {
-      const data = await fetch("data.json", { mode: "no-cors" });
-      dataFromPublic = await data.json();
-    } catch (error) {
-      console.log(error);
+    let module;
+
+    if (moduleContextID !== "types_1") {
+      //Fetch data from the locale Storage
+      try {
+        module = JSON.parse(localStorage.getItem(`repeatio-module-${moduleContextID}`));
+      } catch (error) {
+        console.warn(error.message);
+      }
+    } else {
+      //Fetch data from public folder
+      module = await fetchModuleFromPublicFolder();
     }
 
-    //Fetch data from the locale Storage
-    let storageModules = [];
-    Object.entries(localStorage).forEach((key) => {
-      if (key[0].startsWith("repeatio-module")) {
-        const repeatioModule = localStorage.getItem(key[0]);
-        storageModules.push(JSON.parse(repeatioModule));
-      }
-    });
-
-    //Combine the data from the public folder and the locale storage
-    const modules = [...storageModules, dataFromPublic];
-
-    //Find the correct module with the contextID
-    const correctModule = modules.find((module) => module.id === moduleContextID);
-
     //Set the data
-    setInitialData(correctModule);
-    setFilteredQuestions(correctModule.questions);
+    setInitialData(module);
+    setFilteredQuestions(module?.questions);
   }, [moduleContextID]);
 
   //Get all Questions from the file system / locale storage and provide them
@@ -81,7 +73,7 @@ export const ModuleProvider = (props) => {
   //Update the localStorage/filesystem if initialData changes
   useEffect(() => {
     //Don't update the storage if the data is undefined or from the public folder (id: types_1)
-    if (initialData === undefined || initialData.length < 1 || initialData.id === "types_1") {
+    if (initialData === undefined || initialData?.length < 1 || initialData?.id === "types_1") {
       return;
     }
 
