@@ -6,7 +6,7 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 import SiteHeading from "../../SharedComponents/SiteHeading/SiteHeading.jsx";
 import Card from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
-import QuestionEditor from "../../SharedComponents/QuestionEditor/QuestionEditor.js";
+import QuestionEditor from "../../SharedComponents/QuestionEditor/QuestionEditor.jsx";
 
 //css
 import "./Module.css";

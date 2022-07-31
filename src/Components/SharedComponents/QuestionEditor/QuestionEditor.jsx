@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 
@@ -50,18 +50,16 @@ const transformAnswerOptions = (answerOptions) => {
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
-const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
+const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
   //State
-  const [question, setQuestion] = useState(
-    prevQuestion || {
-      id: "",
-      title: "",
-      points: undefined,
-      help: "",
-      type: "",
-      answerOptions: undefined,
-    }
-  );
+  const [question, setQuestion] = useState({
+    id: "",
+    title: "",
+    points: undefined,
+    help: "",
+    type: "",
+    answerOptions: undefined,
+  });
 
   //Params
   const params = useParams();
@@ -74,6 +72,20 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
 
   //Context
   const { moduleData, setModuleData } = useContext(ModuleContext);
+
+  //useEffect
+  useEffect(() => {
+    //TODO fetch from storage instead of context
+    const questionFromContext = moduleData.questions.find((question) => question.id === prevQuestionID);
+
+    //!Somehow it keeps the order of the answer options from the question
+    //If this isn't the case anymore when using the storage, pass the question
+    setQuestion({ ...questionFromContext });
+
+    return () => {
+      setQuestion({});
+    };
+  }, [prevQuestionID, moduleData.questions]);
 
   //Change the value of the question object at the target.name
   const handleChange = (e) => {
@@ -92,6 +104,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
   //Handle form submit
   const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (isElectron()) {
       console.warn("Can't edit question in electron for this time. Use your browser instead!");
@@ -109,7 +122,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
 
     //TODO Tests
     //Check if ID already exists
-    if (moduleData.questions.find((originalQuestion) => originalQuestion.id === question.id) && !prevQuestion) {
+    if (moduleData.questions.find((originalQuestion) => originalQuestion.id === question.id) && !prevQuestionID) {
       //TODO message user
       console.warn("ID already exists");
       return;
@@ -130,7 +143,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
     };
 
     //Adding or updating a question
-    if (!prevQuestion) {
+    if (!prevQuestionID) {
       //If the user is adding a question (not given prevQuestion), push the new question to the end of the array
       moduleData.questions.push(output);
       setModuleData({ ...moduleData, questions: moduleData.questions });
@@ -144,9 +157,16 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
       if (index > -1) {
         moduleData.questions.splice(index, 1, output);
         setModuleData({ ...moduleData, questions: moduleData.questions });
+        window.dispatchEvent(new Event("storage"));
       } else {
-        //Find index of the old id by using params (url)
-        const index = moduleData.questions.findIndex((question) => question.id === params.questionID);
+        //Find index of the old id by the provided question id
+        const index = moduleData.questions.findIndex((question) => question.id === prevQuestionID);
+
+        //If question isn't in moduleData don't modify the storage. In Prod this should never be shown!
+        if (index <= -1) {
+          console.warn("Couldn't find questionID!");
+          return;
+        }
 
         //Insert and update context
         moduleData.questions.splice(index, 1, output);
@@ -168,7 +188,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
     <CustomModal
       isOpen={isOpen}
       handleModalClose={handleModalClose}
-      title={prevQuestion ? "Edit Question" : "Add Question"}
+      title={prevQuestionID ? "Edit Question" : "Add Question"}
       desktopModalHeight='90%'
     >
       <form className='add-question-form' onSubmit={handleSubmit}>
@@ -217,7 +237,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestion }) => {
         {/* Buttons */}
         <div className='buttons'>
           <button type='submit' className='update-add-question'>
-            {prevQuestion ? "Update" : "Add"}
+            {prevQuestionID ? "Update" : "Add"}
           </button>
           <button type='button' className='cancel' onClick={handleModalClose}>
             Cancel

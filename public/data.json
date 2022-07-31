@@ -30,6 +30,11 @@
             "id": "option-4",
             "text": "Exactly one option can be correct",
             "isCorrect": true
+          },
+          {
+            "id": "option-5",
+            "text": "",
+            "isCorrect": true
           }
         ]
       },
@@ -172,7 +177,7 @@
       {
         "id": "qID-6",
         "title": "Gap texts with and without preselected values can be combined with html tables to achieve this question.",
-        "points": 5,
+        "points": null,
         "type": "gap-text-dropdown",
         "questionTypeHelp": "Fill in the blanks by choosing the correct answer from the dropdown list!",
         "answerOptions": {

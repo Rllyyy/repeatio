@@ -1,6 +1,6 @@
 import { screen, render } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import Bookmark from "./Bookmark.js";
+import BookmarkQuestion from "./BookmarkQuestion.jsx";
 
 //Mock useParams
 jest.mock("react-router-dom", () => ({
@@ -46,7 +46,7 @@ describe("<Bookmark />", () => {
 
   //* Tests */
   it("should render Component", () => {
-    render(<Bookmark questionID='question-id-1' />);
+    render(<BookmarkQuestion questionID='question-id-1' />);
 
     //Expect the button
     const buttonElement = screen.getByRole("button");
@@ -54,7 +54,7 @@ describe("<Bookmark />", () => {
   });
 
   it("should add questionID to localStorage on click", () => {
-    render(<Bookmark questionID='question-id-1' />);
+    render(<BookmarkQuestion questionID='question-id-1' />);
 
     const buttonElement = screen.getByRole("button");
     user.click(buttonElement);
@@ -66,7 +66,7 @@ describe("<Bookmark />", () => {
   });
 
   it("should remove questionID from localStorage on Click when already in localStorage", () => {
-    render(<Bookmark questionID='question-id-2' />);
+    render(<BookmarkQuestion questionID='question-id-2' />);
 
     const buttonElement = screen.getByRole("button");
     user.click(buttonElement);
@@ -79,7 +79,7 @@ describe("<Bookmark />", () => {
   });
 
   it("should initially render the add svg if the item is not in the localStorage", () => {
-    render(<Bookmark questionID='question-id-1' />);
+    render(<BookmarkQuestion questionID='question-id-1' />);
 
     const bookmarkAddSvg = screen.getByTestId("bookmark-add");
 
@@ -87,7 +87,7 @@ describe("<Bookmark />", () => {
   });
 
   it("should initially render remove svg if the item is already in the localStorage", () => {
-    render(<Bookmark questionID='question-id-2' />);
+    render(<BookmarkQuestion questionID='question-id-2' />);
 
     const bookmarkRemoveSvg = screen.getByTestId("bookmark-remove");
 

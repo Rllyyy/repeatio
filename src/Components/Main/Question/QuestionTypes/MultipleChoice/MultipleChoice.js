@@ -1,6 +1,6 @@
 //Imports
 //React
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useLayoutEffect, useState, forwardRef, useImperativeHandle } from "react";
 
 //Material UI
 import Radio from "@mui/material/Radio";
@@ -24,7 +24,7 @@ import "./MultipleChoice.css";
 import shuffleArray from "../../../../../functions/shuffleArray.js";
 
 /* Component */
-const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {
   //states
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [radioGroupValue, setRadioGroupValue] = useState("");
@@ -42,13 +42,14 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
   };
 
   //Run shuffle function on first render of component
-  useEffect(() => {
+  useLayoutEffect(() => {
     //Update the state with the new shuffled array
     setShuffledOptions(shuffleArray(options));
 
     //Cleanup the states
     return () => {
       setShuffledOptions([]);
+      setRadioGroupValue("");
     };
   }, [options]);
 
@@ -57,15 +58,7 @@ const MultipleChoice = forwardRef(({ options, setAnswerCorrect, setShowAnswer, f
     //Check if the answer is correct. Called by the parent form (check button) in a ref
     checkAnswer() {
       //Check if the value the user selected is correct (isCorrect===true) in the options array
-      const answeredCorrect = options.find((option) => option.id === radioGroupValue)?.isCorrect;
-
-      //Show if the answer is correct in the parent component
-      setShowAnswer(true);
-      if (answeredCorrect) {
-        setAnswerCorrect(true);
-      } else {
-        setAnswerCorrect(false);
-      }
+      return options.find((option) => option.id === radioGroupValue)?.isCorrect;
     },
 
     //Return the correct answer in JSX so it can be displayed in the parent component

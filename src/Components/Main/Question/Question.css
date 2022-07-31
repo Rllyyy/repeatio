@@ -7,9 +7,12 @@
   border-radius: 5px;
   border: 1px solid var(--custom-border-color-lighter);
   overflow: hidden;
+
+  display: grid;
+  grid-template-rows: 1fr min-content;
 }
 
-.question-form button {
+.question-form button:not(:disabled) {
   appearance: none;
   outline: none;
   cursor: pointer;
@@ -18,10 +21,8 @@
 .question-data {
   position: relative;
   height: 100%;
-  /*Cancel out the navigation at the bottom */
-  padding: 20px 15px 80px 20px;
+  padding: 20px 15px 20px 20px;
   overflow-y: auto;
-  scroll-behavior: smooth;
 }
 
 .question-id-progress-wrapper {
@@ -164,6 +165,7 @@
   padding: 10px;
   border-radius: 5px;
   scroll-margin-top: 10px;
+  scroll-margin-bottom: 10px;
 }
 
 .question-form .answer-correct {
@@ -182,22 +184,7 @@
   margin-bottom: 2px;
 }
 
-.question-scrollToBottom-button {
-  width: 50px;
-  height: 50px;
-  position: absolute;
-  bottom: 80px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
-
 .question-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
   display: flex;
   justify-content: space-between;
 
@@ -205,20 +192,16 @@
 
   padding: 10px 20px;
   border-top: 1px solid var(--custom-border-color-lighter);
-  background-color: white;
 }
 
-.question-bottom-when-expanded {
+.question-bottom.expanded {
   /* When width of form is more than 800px */
   flex-direction: row;
   align-items: flex-end;
 }
 
 /* When width of form is less than 800px */
-.question-bottom-when-collapsed {
-  height: auto;
-  max-height: 120px;
-
+.question-bottom.collapsed {
   flex-direction: column-reverse;
   align-items: center;
 }
@@ -227,11 +210,11 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 39px;
 }
 
 .question-check-retry-wrapper>.question-check-next,
 .question-check-retry-wrapper>.question-retry {
-  height: 39px;
   width: 100%;
   max-width: 160px;
 
@@ -253,9 +236,18 @@
   border: 1px solid var(--custom-prime-color);
 }
 
+.question-check-retry-wrapper>.question-check-next:disabled {
+  border-color: var(--custom-border-color-light);
+  background-color: var(--custom-border-color-light);
+}
+
 .question-check-retry-wrapper>.question-retry {
   border: 1px solid var(--custom-border-color);
   background-color: transparent;
+}
+
+.question-check-retry-wrapper>.question-retry:disabled {
+  border-color: var(--custom-border-color-light);
 }
 
 .question-check-retry-wrapper .check-icon,
@@ -280,7 +272,12 @@
   color: var(--custom-secondary-color);
 }
 
-.question-check-retry-wrapper .question-retry:active {
+.question-check-retry-wrapper .question-retry:disabled .retry-icon {
+  color: var(--custom-border-color);
+}
+
+
+.question-check-retry-wrapper .question-retry:active:not(:disabled) {
   background-color: var(--custom-tertiary-color);
   border-color: var(--custom-border-color-dark);
 }
@@ -289,7 +286,7 @@
   stroke-width: 0.4;
 }
 
-.question-check-retry-wrapper>.question-check-next:active {
+.question-check-retry-wrapper>.question-check-next:active:not(:disabled) {
   background-color: var(--custom-prime-color-dark);
   border-color: var(--custom-prime-color-dark);
 }
@@ -327,7 +324,18 @@
   transform: rotate(0deg);
 }
 
-/* Navigation */
+/* Navigation and Actions */
+.question-actions-navigation-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.question-actions-navigation-wrapper.collapsed {
+  margin-bottom: 8px;
+}
+
 .question-navigation {
   display: flex;
   flex-direction: row;
@@ -335,15 +343,11 @@
   height: 100%;
 }
 
-.nav-collapsed {
-  margin-bottom: 8px;
+.question-actions-navigation-wrapper * {
+  line-height: 0;
 }
 
-.question-navigation>* {
-  height: 100%;
-}
-
-.question-navigation>button {
+.question-actions-navigation-wrapper button {
   /* Reset default button values*/
   border: none;
   appearance: none;
@@ -354,13 +358,19 @@
   width: 34px;
 }
 
-.question-navigation>button>svg {
+.question-actions-navigation-wrapper button>svg {
   height: 100%;
   width: 100%;
 
   stroke: var(--custom-secondary-color);
   color: var(--custom-secondary-color);
 }
+
+.question-actions-navigation-wrapper button:disabled>svg {
+  stroke: var(--custom-border-color);
+  color: var(--custom-border-color);
+}
+
 
 .navigation-before {
   fill: var(--custom-secondary-color);
@@ -398,23 +408,23 @@
 
 /* Media for devices with mouse input */
 @media only screen and (pointer: fine) {
-  .question-navigation>input:hover {
+  .question-actions-navigation-wrapper input:hover {
     border-color: var(--custom-prime-color);
     outline: var(--custom-prime-color);
     outline-width: thin;
   }
 
-  .question-navigation>button:hover svg {
+  .question-actions-navigation-wrapper button:hover:not(:disabled) svg {
     color: var(--custom-prime-color);
     stroke: var(--custom-prime-color);
     fill: var(--custom-prime-color);
   }
 
-  .question-navigation>input:hover {
+  .question-actions-navigation-wrapper input:hover {
     border-color: var(--custom-secondary-color);
   }
 
-  .question-navigation>input:focus {
+  .question-actions-navigation-wrapper input:focus {
     border-color: var(--custom-prime-color);
     background-color: var(--custom-tertiary-color);
   }
@@ -433,7 +443,7 @@ only screen and (pointer: fine) and (max-width: 650px) {
   }
 
   .question-data {
-    padding: 10px 7px 80px 12px;
+    padding: 10px 7px 10px 12px;
   }
 
   .question-id-progress-wrapper>.question-progress {
@@ -478,6 +488,6 @@ only screen and (pointer: fine) and (max-width: 650px) {
 /* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
 @media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
   .question-data {
-    padding: 10px 12px 80px 12px;
+    padding: 10px 12px 10px 12px;
   }
 }

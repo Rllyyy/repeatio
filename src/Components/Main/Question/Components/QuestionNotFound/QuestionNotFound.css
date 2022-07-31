@@ -1,0 +1,122 @@
+.question-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.question-not-found h1 {
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.question-not-found .question-mark {
+  margin: 12px;
+  opacity: .15;
+  height: 300px;
+  flex-shrink: 0;
+}
+
+.question-not-found .buttons {
+  margin-top: 10px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  display: flex;
+}
+
+.question-not-found .buttons button {
+  all: unset;
+  cursor: pointer;
+  width: 100%;
+  max-width: 200px;
+  padding: 7px 0px;
+
+  font-size: 18px;
+  line-height: 1.3;
+
+  border: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.question-not-found button:nth-child(2) {
+  margin: 0 10px;
+}
+
+.question-not-found #navigate-to-previous-url-btn {
+  background-color: var(--custom-prime-color);
+  border-color: var(--custom-prime-color);
+  color: white;
+}
+
+.question-not-found #navigate-to-previous-url-btn:active {
+  background-color: var(--custom-prime-color-dark);
+  border-color: var(--custom-prime-color-dark);
+}
+
+.question-not-found #navigate-to-module-home-btn,
+.question-not-found #navigate-to-view-all-questions {
+  border-color: var(--custom-border-color-light);
+}
+
+.question-not-found #navigate-to-module-home-btn:active,
+.question-not-found #navigate-to-view-all-questions:active {
+  background-color: var(--custom-tertiary-color);
+  border-color: var(--custom-border-color);
+}
+
+.question-not-found button:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 3px;
+}
+
+.question-not-found button span {
+  margin: 0 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Media Query for devices with that can hover (desktop) */
+@media screen and (hover: hover) and (pointer: fine) {
+  .question-not-found #navigate-to-previous-url-btn:hover {
+    background-color: var(--custom-prime-color-dark);
+    border-color: var(--custom-prime-color-dark);
+  }
+
+  .question-not-found #navigate-to-module-home-btn:hover,
+  .question-not-found #navigate-to-view-all-questions:hover {
+    background-color: var(--custom-tertiary-color);
+    border-color: var(--custom-border-color);
+  }
+}
+
+/* Media Query for smartphones */
+@media screen and (max-width: 650px) {
+  .question-not-found .question-mark {
+    height: 200px;
+  }
+
+  .question-not-found .buttons {
+    flex-direction: column;
+  }
+
+  .question-not-found button:nth-child(2) {
+    margin: 5px 0;
+  }
+
+  .question-not-found .buttons button {
+    max-width: 300px;
+  }
+}

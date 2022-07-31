@@ -13,6 +13,14 @@
   margin: 0 3px;
 }
 
+/* Fixes jumping ui because input elements get rendered after useLayoutEffect update */
+/* ! Remove this once gap with dropdown doesn't use innerHTML anymore */
+.question-gap-text-with-dropdown .select-wrapper:empty {
+  width: 180px;
+  background-color: transparent;
+  display: inline-block;
+}
+
 .question-gap-text-with-dropdown select {
   display: inline;
   font-size: 18px;

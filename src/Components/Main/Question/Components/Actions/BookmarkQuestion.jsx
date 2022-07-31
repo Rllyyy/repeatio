@@ -4,8 +4,12 @@ import { useParams } from "react-router-dom";
 //Icons
 import { MdBookmarkAdd, MdBookmarkRemove } from "react-icons/md";
 
+// TODO:
+// - This component currently synchronizes if a question is saved by using a state value.
+// --> This could be changed so it rerenders on a storage event
+
 //Component
-const Bookmark = ({ questionID }) => {
+const BookmarkModule = ({ questionID, disabled }) => {
   const [saved, setSaved] = useState();
   const { moduleID } = useParams();
 
@@ -70,14 +74,20 @@ const Bookmark = ({ questionID }) => {
     } else {
       setSaved(false);
     }
+
+    return () => {
+      setSaved();
+    };
   }, [questionID, moduleID]);
 
   //JSX
   return (
     <button
+      type='button'
       className='bookmark-question-button'
       aria-label={saved ? "Unsave Question" : "Save Question"}
       onClick={() => onBookmarkClick(questionID)}
+      disabled={disabled}
     >
       {/* Decide which button to display */}
       {saved ? (
@@ -89,4 +99,4 @@ const Bookmark = ({ questionID }) => {
   );
 };
 
-export default Bookmark;
+export default BookmarkModule;

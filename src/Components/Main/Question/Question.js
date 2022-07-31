@@ -1,11 +1,7 @@
 //Import
 //React stuff
-import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
-import { ModuleContext } from "../../../Context/ModuleContext.js";
-
-//Custom Hooks
-import { useSize } from "../../../hooks/useSize";
+import { useState, useRef, useEffect, useContext, useCallback, memo, useLayoutEffect } from "react";
+import { useParams } from "react-router-dom";
 
 //Markdown related
 import ReactMarkdown from "react-markdown";
@@ -15,480 +11,314 @@ import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-//Import Question Types
-import MultipleResponse from "./QuestionTypes/MultipleResponse/MultipleResponse.js";
-import MultipleChoice from "./QuestionTypes/MultipleChoice/MultipleChoice.js";
-import GapText from "./QuestionTypes/GapText/GapText.js";
-import ExtendedMatch from "./QuestionTypes/ExtendedMatch/ExtendedMatch.js";
-import GapTextDropdown from "./QuestionTypes/GapTextDropdown/GapTextDropdown.js";
-
 //Import CSS
 import "./Question.css";
 
-//Import SVG
+//Import Components
+import QuestionNotFound from "./Components/QuestionNotFound/QuestionNotFound.jsx"; //TODO switch to jsx
+import QuestionUserResponseArea from "./QuestionTypes/QuestionUserResponseArea.jsx";
+import { QuestionNavigation } from "./Components/QuestionNavigation/QuestionNavigation.jsx";
+import DeleteQuestion from "./Components/Actions/DeleteQuestion.jsx";
+import EditQuestion from "./Components/Actions/EditQuestion.jsx";
+import BookmarkQuestion from "./Components/Actions/BookmarkQuestion.jsx";
+
+//Context
+import { ModuleContext } from "../../../Context/ModuleContext.js";
+
+//Hooks
+import useQuestion from "./useQuestion.js";
+import { useQuestionNavigation } from "./Components/QuestionNavigation/QuestionNavigation.jsx";
+import { useSize } from "../../../hooks/useSize";
+
+//SVG
 import { BiCheck } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
 import { CgUndo } from "react-icons/cg";
 import { MdNavigateNext } from "react-icons/md";
 
-//Import Components
-import Bookmark from "./Components/Bookmark.js";
-import EditQuestion from "./Components/EditQuestion.js";
-
-//Navigation svg from https://tablericons.com
-
-//Component
+//Main Question Component
 const Question = () => {
-  /* HOOKS */
   //States
-  const [question, setQuestion] = useState({});
-  const [showNav, setShowNav] = useState(false);
-  const [collapsedNav, setCollapsedNav] = useState();
   const [showAnswer, setShowAnswer] = useState(false);
-  const [answerCorrect, setAnswerCorrect] = useState();
-  const [formDisabled, setFormDisabled] = useState(false);
-  const [currentQuestionPage, setCurrentQuestionPage] = useState();
-
-  //Params
-  const params = useParams();
-
-  //History
-  let history = useHistory();
-
-  //Location (Search url=?...)
-  const { search } = useLocation();
-
-  //Context
-  const { filteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
+  const [answerCorrect, setAnswerCorrect] = useState(false);
 
   //Refs
   const questionDataRef = useRef(null);
-  const questionBottomRef = useRef(null);
-  const questionAnswerRef = useRef(); //Checking if an answer is correct id done in the child component
-  const questionCorrectionRef = useRef();
-  const practiceMode = useRef(new URLSearchParams(search).get("mode") || "chronological"); //Fallback to chronological if urlSearchParams is undefined
+  const questionAnswerRef = useRef(null); //Access child functions (check, return answer, reset)
 
-  //Custom Hooks
-  const size = useSize(questionBottomRef);
+  //Custom hooks
+  const { navigateToNextQuestion } = useQuestionNavigation();
+  const { question, loading } = useQuestion();
 
-  /* UseEffects */
-  //Set the question state by finding the correct question with the url parameters
+  //On question unmount, set show answer to false
+  //TODO would be great if the useQuestionNavigation would handle this :/
   useEffect(() => {
-    if (params.questionID === undefined) {
-      return;
-    }
-    //Guard to refetch context (could for example happen on F5)
-    if (moduleData === undefined || filteredQuestions.length <= 0) {
-      setContextModuleID(params.moduleID);
-      return;
-    }
-
-    //Find the correct question in the moduleData context
-    const returnQuestion = filteredQuestions.find((questionItem) => questionItem.id === params.questionID);
-
-    //If it not in this context
-    //!Implement
-
-    //Set the question state
-    setQuestion(returnQuestion);
-
-    //Scroll to top
-    questionDataRef.current.scrollTo(0, 0);
-
-    //set a variable so it can be used when component unmounts
-    const questionAnswerResetRef = questionAnswerRef.current;
-
     return () => {
-      setFormDisabled(false);
       setShowAnswer(false);
-      setAnswerCorrect();
-      setQuestion({});
-      if (questionAnswerResetRef !== undefined && questionAnswerResetRef !== null) {
-        questionAnswerResetRef.resetSelection();
-      }
     };
-  }, [moduleData, params.questionID, params.moduleID, setContextModuleID, filteredQuestions]);
-
-  //Show the index of the current question
-  //TODO use memo this
-  useEffect(() => {
-    if (filteredQuestions === undefined || filteredQuestions.length === 0) return;
-
-    //Find the index of the question by filtering the module context
-    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
-
-    //Add 1 because arrays are zero based and update the state
-    setCurrentQuestionPage(currentIndex + 1);
-  }, [params.questionID, filteredQuestions]);
-
-  //At 800 px collapse the navbar so the buttons and navigation are stacked
-  useEffect(() => {
-    if (size?.width > 800) {
-      setCollapsedNav(false);
-    } else {
-      setCollapsedNav(true);
-    }
-  }, [size?.width]);
-
-  //Scroll to correction feedback for user after show answer is updated and only
-  useEffect(() => {
-    if (showAnswer) {
-      questionCorrectionRef.current.scrollIntoView();
-    }
-  }, [showAnswer]);
-
-  /* FUNCTIONS */
-  //Decide what Question Type to return
-  const questionType = useCallback(
-    (type, options, formDisabled) => {
-      //Guard: return if initial question object is empty to not throw the default error
-      if (Object.keys(question).length === 0) return;
-      //decide what question type to return
-      switch (type) {
-        case "multiple-response":
-          return (
-            <MultipleResponse
-              options={options}
-              ref={questionAnswerRef}
-              setAnswerCorrect={setAnswerCorrect}
-              setShowAnswer={setShowAnswer}
-              formDisabled={formDisabled}
-            />
-          );
-        case "multiple-choice":
-          return (
-            <MultipleChoice
-              options={options}
-              ref={questionAnswerRef}
-              setAnswerCorrect={setAnswerCorrect}
-              setShowAnswer={setShowAnswer}
-              formDisabled={formDisabled}
-            />
-          );
-        case "gap-text":
-          return (
-            <GapText
-              options={options}
-              ref={questionAnswerRef}
-              setAnswerCorrect={setAnswerCorrect}
-              setShowAnswer={setShowAnswer}
-              formDisabled={formDisabled}
-            />
-          );
-        case "extended-match":
-          return (
-            <ExtendedMatch
-              options={options}
-              ref={questionAnswerRef}
-              setAnswerCorrect={setAnswerCorrect}
-              setShowAnswer={setShowAnswer}
-              formDisabled={formDisabled}
-            />
-          );
-        case "gap-text-dropdown":
-          return (
-            <GapTextDropdown
-              options={options}
-              ref={questionAnswerRef}
-              setAnswerCorrect={setAnswerCorrect}
-              setShowAnswer={setShowAnswer}
-              formDisabled={formDisabled}
-            />
-          );
-        default:
-          throw new Error("No matching question Type");
-      }
-    },
-    [question]
-  );
-
-  //Navigation
-  //Go to first question in module
-  const toFirstQuestion = () => {
-    const firstIDInQuestionArray = filteredQuestions[0].id;
-
-    //Only push to history if not already at the first question
-    //TODO notify the user that the already is at the beginning
-    if (params.questionID !== firstIDInQuestionArray) {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    }
-    //Resetting the states and current selection is handled by a useEffect
-  };
-
-  //Go to the previous question
-  const toPreviousQuestion = () => {
-    //get Current index
-    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
-
-    //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
-    if (currentIndex - 1 >= 0) {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex - 1].id}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    } else {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[filteredQuestions.length - 1].id}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    }
-    //Resetting the states and current selection is handled by a useEffect
-  };
-
-  //TODO: Go to provided input
-
-  //Go to the next question
-  const handleNextQuestion = () => {
-    questionAnswerRef.current.resetSelection();
-
-    //get Current index
-    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
-
-    //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
-    if (currentIndex + 1 < filteredQuestions.length) {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex + 1].id}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    } else {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[0].id}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    }
-
-    //Resetting the states is handled by a useEffect
-  };
-
-  //Go to last question
-  const toLastQuestion = () => {
-    const lastIDInQuestionArray = filteredQuestions[filteredQuestions.length - 1].id;
-
-    //Only push to history if not already at the last point
-    //TODO notify the user that the end was reached
-    if (params.questionID !== lastIDInQuestionArray) {
-      history.push({
-        pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
-        search: `?mode=${practiceMode.current}`,
-      });
-    }
-    //Resetting the states and current selection is handled by a useEffect
-  };
+  }, [question, setShowAnswer]);
 
   /* EVENT HANDLERS */
   //Prevent default form submission (reload)
-  const preventDef = (e) => {
+  //TODO Move these into custom hook when I figured out how to update ref value inside hook
+  const handleSubmit = (e) => {
     e.preventDefault();
-  };
 
-  //Check answer or click to go to next question
-  const questionCheckButtonOnClick = () => {
-    //If the show answer box is show the svg of the button will change to an arrow and a click will go to the next question
-    if (showAnswer) {
-      handleNextQuestion();
+    //If the correct answer isn't shown (before first form submit), check if the answer is correct by calling the check method on the questionAnswerRef
+    //Else navigate to the next question (before second form submit)
+    if (!showAnswer) {
+      setAnswerCorrect(questionAnswerRef.current.checkAnswer());
+      setShowAnswer(true);
     } else {
-      questionAnswerRef.current.checkAnswer();
-      setFormDisabled(true);
+      questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
+
+      navigateToNextQuestion();
+      setShowAnswer(false);
     }
   };
 
-  const onQuestionRetryClick = () => {
-    //Reset states
-    setFormDisabled(false);
-    setShowAnswer(false);
-    setAnswerCorrect();
-
+  const handleResetRetryQuestion = useCallback(() => {
     if (showAnswer) {
       questionAnswerRef.current.resetAndShuffleOptions();
-      questionDataRef.current.scrollTo(0, 0);
     } else {
       questionAnswerRef.current.resetSelection();
     }
-  };
-
-  const onInputKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-    }
-  };
-
-  //TODO switch to useMemo
-  const moduleLength = useCallback(() => {
-    if (filteredQuestions === undefined || filteredQuestions.length === 0) {
-      return;
-    }
-    return filteredQuestions.length;
-  }, [filteredQuestions]);
+    questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
+    setShowAnswer(false);
+  }, [showAnswer, setShowAnswer, questionDataRef]);
 
   //JSX
   return (
-    <form className='question-form' onSubmit={preventDef}>
-      <div className='question-data' ref={questionDataRef} style={showNav ? { paddingBottom: "120px" } : {}}>
-        <div className='question-id-progress-wrapper'>
-          <p className='question-id' data-testid='question-id'>
-            ID: {question.id}
-          </p>
-          <p className='question-progress'>
-            {currentQuestionPage}/{moduleLength()} Questions
-          </p>
-        </div>
-        <ReactMarkdown
-          className='question-title'
-          rehypePlugins={[rehypeRaw, rehypeKatex]}
-          remarkPlugins={[remarkMath, remarkGfm]}
-          children={question.title}
-        />
-        <p className='question-points'>
-          {question.points} {question.points === 1 ? "Point" : "Points"}
-        </p>
-        <ReactMarkdown
-          className='question-type-help'
-          rehypePlugins={[rehypeRaw, rehypeKatex]}
-          remarkPlugins={[remarkMath, remarkGfm]}
-          children={question.help}
-        />
-        {/* Question */}
-        <section className='question-user-response'>
-          {questionType(question.type, question.answerOptions, formDisabled)}
-        </section>
-        {/* On Check click show if the answer was correct */}
-        {showAnswer && (
-          <section
-            className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`}
-            ref={questionCorrectionRef}
-            data-testid='question-correction'
-          >
-            <p className='question-correction-title'>
-              {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
-            </p>
-            <div id='question-correction'>{questionAnswerRef.current.returnAnswer()}</div>
-          </section>
-        )}
-      </div>
-      <div
-        className={`question-bottom ${
-          collapsedNav ? "question-bottom-when-collapsed" : "question-bottom-when-expanded"
-        }`}
-        ref={questionBottomRef}
-      >
-        <div className='question-check-retry-wrapper'>
-          {/* Check */}
-          <button
-            className='question-check-next'
-            aria-label={showAnswer ? "Next Question" : "Check Question"}
-            data-testid='question-check'
-            onClick={() => questionCheckButtonOnClick()}
-          >
-            {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
-            {showAnswer ? <MdNavigateNext className='next-question-icon' /> : <BiCheck className='check-icon' />}
-          </button>
-          {/* Retry */}
-          <button
-            className='question-retry'
-            aria-label={showAnswer ? "Retry Question" : "Reset Question"}
-            data-testid='question-retry'
-            onClick={() => onQuestionRetryClick()}
-          >
-            <CgUndo className='retry-icon' />
-          </button>
-          {/* Button that appears at a width of 800px to show the navigation */}
-          {collapsedNav && (
-            <button
-              className='show-question-nav'
-              aria-label={showNav ? "Hide Navigation" : "Show Navigation"}
-              onClick={() => setShowNav(!showNav)}
-            >
-              <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} aria-hidden='true' />
-            </button>
-          )}
-        </div>
-        {(showNav || !collapsedNav) && (
-          <div className={`question-navigation ${collapsedNav && "nav-collapsed"}`}>
-            <EditQuestion prev={question} />
-            <Bookmark questionID={question.id} />
-            <button
-              data-testid='first-question-button'
-              aria-label='Navigate to first Question'
-              onClick={() => toFirstQuestion()}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='navigation-start'
-                width='48'
-                height='48'
-                viewBox='0 0 24 24'
-                fill='none'
-                aria-hidden='true'
-              >
-                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                <path d='M20 5v14l-12 -7z' />
-                <line x1='5' y1='5' x2='5' y2='19' />
-              </svg>
-            </button>
-            <button
-              data-testid='previous-question-button'
-              aria-label='Navigate to previous Question'
-              onClick={() => toPreviousQuestion()}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='navigation-before'
-                width='48'
-                height='48'
-                viewBox='0 0 24 24'
-                fill='true'
-                aria-hidden='true'
-              >
-                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                <path d='M7 4v16l13 -8z' />
-              </svg>
-            </button>
-            <input type='number' placeholder={currentQuestionPage} min='1' onKeyDown={onInputKeyDown} />
-            <button
-              data-testid='nav-next-question-button'
-              aria-label='Navigate to next Question'
-              onClick={() => handleNextQuestion()}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='navigation-skip'
-                width='48'
-                height='48'
-                viewBox='0 0 24 24'
-                fill='none'
-                aria-hidden='true'
-              >
-                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                <path d='M7 4v16l13 -8z' />
-              </svg>
-            </button>
-            <button
-              data-testid='last-question-button'
-              aria-label='Navigate to last Question'
-              onClick={() => toLastQuestion()}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='icon icon-tabler icon-tabler-player-skip-forward'
-                width='48'
-                height='48'
-                viewBox='0 0 24 24'
-                fill='none'
-                aria-hidden='true'
-              >
-                <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-                <path d='M4 5v14l12 -7z' />
-                <line x1='19' y1='5' x2='19' y2='19' />
-              </svg>
-            </button>
-          </div>
-        )}
-      </div>
+    <form className='question-form' onSubmit={handleSubmit}>
+      {/* ---- Question data represent the top half of the grid and includes the question -----*/}
+      <QuestionData
+        question={question}
+        loading={loading}
+        questionAnswerRef={questionAnswerRef}
+        questionDataRef={questionDataRef}
+        showAnswer={showAnswer}
+        setShowAnswer={setShowAnswer}
+        answerCorrect={answerCorrect}
+      />
+      {/* -- Question Bottom includes checking/reset/actions(delete/edit/save) and the navigation --*/}
+      <QuestionBottom
+        showAnswer={showAnswer}
+        disabled={loading || !question}
+        handleResetRetryQuestion={handleResetRetryQuestion}
+      />
     </form>
   );
 };
 
 export default Question;
+
+const QuestionData = ({ question, loading, questionAnswerRef, questionDataRef, showAnswer, answerCorrect }) => {
+  // Scroll to top
+  //TODO would be great if this was handle by the question navigation
+  useLayoutEffect(() => {
+    if (!loading && question) {
+      questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [loading, question, questionDataRef]);
+
+  //Return empty div if component is loading (so ui doesn't jump)
+  if (loading) {
+    return <div></div>;
+  }
+
+  //Return QuestionNotFound if question can't be found because false id in url params
+  if (!question) {
+    return <QuestionNotFound />;
+  }
+
+  //Return question when question finished loading and question found
+  return (
+    <div className='question-data' ref={questionDataRef}>
+      <QuestionIdProgress qID={question.id} />
+      <QuestionTitle title={question.title} />
+      <QuestionPoints points={question.points} />
+      <QuestionTypeHelp help={question.help} />
+      <QuestionUserResponseArea
+        type={question.type}
+        options={question.answerOptions}
+        questionAnswerRef={questionAnswerRef}
+        showAnswer={showAnswer}
+      />
+      <QuestionCorrection showAnswer={showAnswer} answerCorrect={answerCorrect} questionAnswerRef={questionAnswerRef} />
+    </div>
+  );
+};
+
+const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
+  //States
+  const [showNav, setShowNav] = useState(false);
+  const [collapsedActionsNav, setCollapsedActionsNav] = useState();
+
+  //URL params
+  const params = useParams();
+
+  //Refs
+  const questionBottomRef = useRef(null);
+
+  //Custom Hook
+  const size = useSize(questionBottomRef);
+
+  //At 800 px collapse the navbar so the buttons and navigation are stacked
+  useLayoutEffect(() => {
+    if (size?.width > 800) {
+      setCollapsedActionsNav(false);
+    } else if (size?.width <= 800) {
+      setCollapsedActionsNav(true);
+    }
+  }, [size?.width, size, setCollapsedActionsNav]);
+
+  return (
+    <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>
+      <div className='question-check-retry-wrapper'>
+        {/* Check or Next*/}
+        <CheckNextButton showAnswer={showAnswer} disabled={disabled} />
+        {/* Retry */}
+        <QuestionRetryButton
+          showAnswer={showAnswer}
+          handleResetRetryQuestion={handleResetRetryQuestion}
+          disabled={disabled}
+        />
+        {/* Button that appears at a width of 800px to show the navigation */}
+        {collapsedActionsNav && <ShowQuestionNavButton showNav={showNav} setShowNav={setShowNav} />}
+      </div>
+      {/* Question navigation and buttons (delete/edit/save) */}
+      {(showNav || !collapsedActionsNav) && (
+        <div className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}>
+          <DeleteQuestion questionID={params.questionID} disabled={disabled} />
+          <EditQuestion prevQuestionID={params.questionID} disabled={disabled} />
+          <BookmarkQuestion questionID={params.questionID} disabled={disabled} />
+          <QuestionNavigation />
+        </div>
+      )}
+    </div>
+  );
+};
+
+//ID and Progress of the current question
+const QuestionIdProgress = memo(({ qID }) => {
+  //Context
+  const { filteredQuestions } = useContext(ModuleContext); //TODO remove this
+
+  return (
+    <div className='question-id-progress-wrapper'>
+      <p className='question-id' data-testid='question-id'>
+        ID: {qID}
+      </p>
+      <p className='question-progress'>
+        {filteredQuestions?.findIndex((item) => item.id === qID) + 1}/{filteredQuestions?.length || "?"} Questions
+      </p>
+    </div>
+  );
+});
+
+//Title of the question
+const QuestionTitle = ({ title }) => {
+  return (
+    <ReactMarkdown
+      className='question-title'
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      remarkPlugins={[remarkMath, remarkGfm]}
+      children={title}
+    />
+  );
+};
+
+//Points of the question
+const QuestionPoints = ({ points }) => {
+  return (
+    <p className='question-points'>
+      {points} {points === 1 ? "Point" : "Points"}
+    </p>
+  );
+};
+
+//Help for the type of the question
+const QuestionTypeHelp = ({ help }) => {
+  return (
+    <ReactMarkdown
+      className='question-type-help'
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      remarkPlugins={[remarkMath, remarkGfm]}
+      children={help}
+    />
+  );
+};
+
+//The correction of the question which scrolls into view on form submit (question check)
+const QuestionCorrection = ({ showAnswer, answerCorrect, questionAnswerRef }) => {
+  const questionCorrectionRef = useRef(null);
+
+  //Sadly this has to run after the question correction component mounts and can therefore not be part of the handleSubmit function
+  useEffect(() => {
+    if (showAnswer) {
+      questionCorrectionRef.current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+    }
+  }, [showAnswer]);
+
+  if (!showAnswer) {
+    return <></>;
+  }
+
+  return (
+    <section
+      className={`question-correction ${answerCorrect ? "answer-correct" : "answer-false"}`}
+      data-testid='question-correction'
+      ref={questionCorrectionRef}
+    >
+      <p className='question-correction-title'>
+        {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
+      </p>
+      <div id='question-correction'>{questionAnswerRef.current.returnAnswer()}</div>
+    </section>
+  );
+};
+
+//Check the question or navigate to next Question depending on if the correction for the answer is shown
+//TODO warn if user tries to submit
+const CheckNextButton = ({ showAnswer, disabled }) => {
+  return (
+    <button
+      type='submit'
+      className='question-check-next'
+      aria-label={showAnswer ? "Next Question" : "Check Question"}
+      data-testid='question-check'
+      disabled={disabled}
+    >
+      {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
+      {showAnswer ? <MdNavigateNext className='next-question-icon' /> : <BiCheck className='check-icon' />}
+    </button>
+  );
+};
+
+const QuestionRetryButton = ({ showAnswer, handleResetRetryQuestion, disabled }) => {
+  return (
+    <button
+      className='question-retry'
+      aria-label={showAnswer ? "Retry Question" : "Reset Question"}
+      data-testid='question-retry'
+      type='button'
+      onClick={handleResetRetryQuestion}
+      disabled={disabled}
+    >
+      <CgUndo className='retry-icon' />
+    </button>
+  );
+};
+
+const ShowQuestionNavButton = ({ showNav, setShowNav }) => {
+  return (
+    <button
+      className='show-question-nav'
+      type='button'
+      aria-label={showNav ? "Hide Navigation" : "Show Navigation"}
+      onClick={() => setShowNav(!showNav)}
+    >
+      <BsChevronDoubleDown className={`show-question-nav-icon ${showNav ? "down" : "up"}`} aria-hidden='true' />
+    </button>
+  );
+};

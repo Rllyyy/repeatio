@@ -1,6 +1,6 @@
 //Imports
 //React
-import { useEffect, useState, forwardRef, useImperativeHandle } from "react";
+import { useState, forwardRef, useImperativeHandle, useLayoutEffect } from "react";
 
 //Markdown related
 import ReactMarkdown from "react-markdown";
@@ -24,14 +24,14 @@ import "./MultipleResponse.css";
 import shuffleArray from "../../../../../functions/shuffleArray.js";
 
 //Component
-const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+const MultipleResponse = forwardRef(({ options, formDisabled }, ref) => {
   //States
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   //Run shuffle function on first render of component or when the user clicks the retry button
   //Also add isChecked state (to false which means unchecked)
-  useEffect(() => {
+  useLayoutEffect(() => {
     setShuffledOptions(shuffleArray(options));
 
     //Cleanup the states
@@ -60,9 +60,8 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
   //Styles on form submit to show what answers are correct
   const customStyle = (option) => {
-    if (!formDisabled) {
-      return;
-    }
+    //If the form hasn't yet been submitted, return
+    if (!formDisabled) return;
 
     if (option.isCorrect && selectedOptions.includes(option.id)) {
       //Selected option is correct
@@ -79,28 +78,22 @@ const MultipleResponse = forwardRef(({ options, setAnswerCorrect, setShowAnswer,
 
   //Method so the parent can interact with this component
   useImperativeHandle(ref, () => ({
-    //Check if the answer is correct.
+    //Check if the answer is correct and return true/false to the question form component
     checkAnswer() {
       //every value should be the same (true/false)
-      //TODO check if every value is included in in there and they have the same length
-      const answeredCorrect = shuffledOptions.every((option) => {
+      return shuffledOptions.every((option) => {
         if (option.isCorrect) {
           return selectedOptions.includes(option.id);
         } else {
           return !selectedOptions.includes(option.id);
         }
       });
-
-      //Show if the answer is correct in the parent component
-      setShowAnswer(true);
-      if (answeredCorrect) {
-        setAnswerCorrect(true);
-      } else {
-        setAnswerCorrect(false);
-      }
     },
 
     //Return the correct answer in JSX so it can be displayed in the parent component
+    //This has to be done in here because this component shuffles the options.
+    //If this wasn't the case the options that the user can selected and the answer options are not in the same order causing confusion.
+    //TODO Maybe change the shuffling to the parent, then correction could be it's own component (see comment above)
     returnAnswer() {
       return (
         <ul className='correction-multipleResponse-list'>

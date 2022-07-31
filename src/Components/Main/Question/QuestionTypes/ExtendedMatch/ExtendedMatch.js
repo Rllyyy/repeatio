@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
+import { forwardRef, useRef, useLayoutEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
 
 //Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
@@ -19,13 +19,20 @@ import "./ExtendedMatch.css";
 import { isEqual } from "lodash";
 import shuffleArray from "../../../../../functions/shuffleArray.js";
 
+//I am really not proud of this component :/ and refactor it for a future release
+//Each line in the canvas is an object in the lines array
+//TODO refactor:
+//- the button setter (left/right)
+//- switch canvas with svg
+//- remove callbacks as they don't do anything
+//- Check if line already in lines array and give message to user
+
 //Component
-const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
   //States
   const [lines, setLines] = useState([]);
   const [shuffledLeftOptions, setShuffledLeftOptions] = useState([]);
   const [shuffledRightOptions, setShuffledRightOptions] = useState([]);
-  const [triggerShuffle, setTriggerShuffle] = useState(0);
   const [highlightRight, setHighlightRight] = useState(false);
   const [highlightLeft, setHighlightLeft] = useState(false);
   const [highlightSelectedCircle, setHighlightSelectedCircle] = useState();
@@ -35,7 +42,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
   const right = useRef();
 
   //Reset the ref options changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     //Remove all lines
     setLines([]);
 
@@ -63,7 +70,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       setHighlightRight(false);
       setHighlightLeft(false);
     };
-  }, [options, triggerShuffle]);
+  }, [options]);
 
   //EventHandler when the user clicks the left circles
   const updateLeftLine = useCallback(
@@ -186,7 +193,6 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
     setHighlightSelectedCircle();
     setHighlightLeft(false);
     setHighlightRight(false);
-    if (formDisabled) return;
     //Reset the state to empty array
     setLines([]);
   };
@@ -219,14 +225,9 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
         return isEqualTest;
       });
 
-      //Check if every option matches the solution and compare the length of the arrays, so the user can't trick the program by matching all possibilities
-      if (everySolutionInState && options.correctMatches.length === lines.length) {
-        //Show if the answer is correct in the parent component
-        setAnswerCorrect(true);
-      } else {
-        setAnswerCorrect(false);
-      }
-      setShowAnswer(true);
+      //Check if every option matches the solution and compare the length of the arrays, so the user can't trick the program by matching all possibilities.
+      //And return boolean (if is correct) to question form
+      return everySolutionInState && options.correctMatches.length === lines.length;
     },
 
     //Return the correct answer as a Component so it can be displayed in the parent component
@@ -249,9 +250,26 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
       removeAllLines();
     },
 
-    //Trigger a useEffect (rerender) by increasing a state value
+    //Reset States (Could be that updating the refs isn't needed)
     resetAndShuffleOptions() {
-      setTriggerShuffle((prev) => prev + 1);
+      //Reset lines array
+      removeAllLines();
+
+      //Reset the refs
+      left.current = null;
+      right.current = null;
+
+      //Reshuffle the options
+      const leftShuffle = shuffleArray(options.leftSide);
+      const rightShuffle = shuffleArray(options.rightSide);
+
+      //Set current refs
+      left.current = leftShuffle.map(() => createRef());
+      right.current = rightShuffle.map(() => createRef());
+
+      //Update the state
+      setShuffledLeftOptions(leftShuffle);
+      setShuffledRightOptions(rightShuffle);
     },
   }));
 
@@ -276,6 +294,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
                   }`}
                   ref={left.current[index]}
                   ident={id}
+                  type='button'
                   onClick={() => updateLeftLine(index)}
                 />
               </div>
@@ -300,6 +319,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
                   }`}
                   ref={right.current[index]}
                   ident={id}
+                  type='button'
                   onClick={() => updateRightLine(index)}
                 />
               </div>
@@ -308,7 +328,7 @@ const ExtendedMatch = forwardRef(({ options, setAnswerCorrect, setShowAnswer, fo
         </div>
       </div>
       {!formDisabled && (
-        <button className='remove-lines-btn' onClick={() => removeAllLines()}>
+        <button className='remove-lines-btn' onClick={removeAllLines} type='button'>
           Remove all lines
         </button>
       )}

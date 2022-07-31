@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
+import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect } from "react";
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
 
@@ -17,11 +17,14 @@ import "./GapTextDropdown.css";
 import AnswerCorrection from "./Components/AnswerCorrection";
 import ReturnOptions from "./Components/ReturnOptions";
 
+//Functions
+import shuffleArray from "../../../../../functions/shuffleArray";
+
 //Component
-const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+const GapTextDropdown = forwardRef(({ options, formDisabled }, ref) => {
   //States
   const [selectedValues, setSelectedValues] = useState([]);
-  const [shuffleTrigger, setShuffleTrigger] = useState(0);
+  const [shuffledDropdownOptions, setShuffledDropdownOptions] = useState([]);
 
   //Update the selected input
   const handleChange = useCallback(
@@ -85,11 +88,11 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
 
   //Inset the select elements at the corresponding select wrapper index,
   //because ReactDOMServer.renderToString ignores onChange handlers
-  useEffect(() => {
-    //Guards
+  useLayoutEffect(() => {
     //Has to be selected with query because ReactDOMServer.renderToString ignores refs
     const selectWrapperLength = document.querySelectorAll(".question-gap-text-with-dropdown .select-wrapper").length;
 
+    //Guards
     if (
       selectedValues === undefined ||
       selectWrapperLength === 0 ||
@@ -110,23 +113,26 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
           onChange={(e) => handleChange(e, index)}
           value={selectedValues[index].value || ""}
         >
-          <ReturnOptions selectIndex={index} dropdowns={options.dropdowns} shuffleTrigger={shuffleTrigger} />
+          <ReturnOptions selectIndex={index} dropdowns={shuffledDropdownOptions[index]} />
         </select>,
         document.getElementById(`select-wrapper-${index}`)
       );
     }
-  }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffleTrigger]);
+  }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffledDropdownOptions]);
 
   //Setup selected empty values
-  useEffect(() => {
+  useLayoutEffect(() => {
     const emptyValues = options.dropdowns.map((dropdown) => {
       return { id: dropdown.id, value: "" };
     });
 
     setSelectedValues([...emptyValues]);
 
+    setShuffledDropdownOptions(options.dropdowns.map((dropdown) => shuffleArray(dropdown.options)));
+
     return () => {
       setSelectedValues([]);
+      setShuffledDropdownOptions([]);
     };
   }, [options.dropdowns]);
 
@@ -134,9 +140,9 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct
     checkAnswer() {
-      //Show if the answer is correct in the parent component
+      //Show if the answer is correct in the parent component by return true/false
       //Every value selected by the user must equal the corresponding value in the original data
-      const answeredCorrect = selectedValues.every((selected) => {
+      return selectedValues.every((selected) => {
         const { id, value } = selected;
         //find corresponding correct item
         const provided = options.dropdowns.find((dropdown) => dropdown.id === id);
@@ -146,14 +152,6 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
           return false;
         }
       });
-
-      //Show if the answer is correct in the parent component
-      setShowAnswer(true);
-      if (answeredCorrect) {
-        setAnswerCorrect(true);
-      } else {
-        setAnswerCorrect(false);
-      }
     },
 
     //Return the correct answer as jsx
@@ -170,12 +168,10 @@ const GapTextDropdown = forwardRef(({ options, setAnswerCorrect, setShowAnswer, 
       setSelectedValues([...emptySelected]);
     },
 
-    //Reset selection and shuffle the options
-    //Triggered when the user clicks question-retry button after form submit
+    //Reset selection and reshuffle the dropdown options
     resetAndShuffleOptions() {
       this.resetSelection();
-      //Trigger a rerender for the dropdown options and therefor randomize them
-      setShuffleTrigger((prev) => prev + 1);
+      setShuffledDropdownOptions(options.dropdowns.map((dropdown) => shuffleArray(dropdown.options)));
     },
   }));
 

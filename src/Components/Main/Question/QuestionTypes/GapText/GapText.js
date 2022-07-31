@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
+import React, { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect } from "react";
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
 
@@ -15,7 +15,6 @@ import "./GapText.css";
 
 //Components
 import AnswerCorrection from "./Components/AnswerCorrection";
-
 //HELP
 //The code in this Component may seem a bit odd.
 //The reason for this weirdness is that it mixes JSON, MarkDown, HTML and JSX so it can use Markdown for syntax like tables, strong, ...
@@ -23,12 +22,12 @@ import AnswerCorrection from "./Components/AnswerCorrection";
 //Because ReactDOMServer.renderToString ignores onChange handlers the input element can't be placed for now.
 //But a marker is placed to know where to append the input later.
 //All the output of the ReactDOMServer.renderToString is then placed inside a dangerouslySetInnerHTML.
-//When the useEffect is called it inserts an input element at the marker.
+//When the useLayoutEffect is called it inserts an input element at the marker.
 //At the end I just have to say this: Is it fast? no. Is it logical? no. Does it work? YES
 //Feel free to update the code but this is honestly the best I can come up with atm that supports Markdown elements (tables, styling, ...) and user set input elements.
 
 //Component
-const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisabled }, ref) => {
+const GapText = forwardRef(({ options, formDisabled }, ref) => {
   //States
   const [inputValues, setInputValues] = useState([]);
 
@@ -102,24 +101,24 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
 
   /* UseEffects */
   //Create array with x amount of empty input values
-  useEffect(() => {
+  useLayoutEffect(() => {
     const emptyValues = options.correctGapValues.map((option) => {
       return "";
     });
     setInputValues(emptyValues);
 
     return () => {
-      setInputValues();
+      setInputValues([]);
     };
   }, [options.correctGapValues]);
 
   //Inset the input elements at the corresponding input wrapper index,
   //because ReactDOMServer.renderToString ignores onChange handlers
-  useEffect(() => {
-    //Guards
+  useLayoutEffect(() => {
     //Has to be selected with query because ReactDOMServer.renderToString ignores refs
     const inputWrapperLength = document.querySelectorAll(".question-gap-text .input-wrapper").length;
 
+    //Guards
     if (inputValues === undefined || inputWrapperLength === 0) {
       return;
     }
@@ -148,23 +147,12 @@ const GapText = forwardRef(({ options, setAnswerCorrect, setShowAnswer, formDisa
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct.
     checkAnswer() {
-      //Strip the input values of any whitespace at the beginning or end and update the state
+      //Strip the input values of any whitespace at the beginning or end and update the state (which will be updated after the function has completely finished)
       const trimmedInputValues = inputValues.map((value) => value.trim());
       setInputValues(trimmedInputValues);
 
-      //Check if every gap correlates with the correct value from the gap array
-      //And trim the input (because the state isn't used yet)
-      const answeredCorrect = options.correctGapValues.every((gapArray, index) =>
-        gapArray.includes(trimmedInputValues[index])
-      );
-
-      //Show if the answer is correct in the parent component
-      setShowAnswer(true);
-      if (answeredCorrect) {
-        setAnswerCorrect(true);
-      } else {
-        setAnswerCorrect(false);
-      }
+      //Check if every gap correlates with the correct value from the gap array and return true/false to question form
+      return options.correctGapValues.every((gapArray, index) => gapArray.includes(trimmedInputValues[index]));
     },
 
     //Return the correct answer in JSX so it can be displayed in the parent component

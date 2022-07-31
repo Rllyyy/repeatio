@@ -543,6 +543,13 @@ describe("<Question />", () => {
     expect(questionCorrectionElement).toBeInTheDocument();
   });
 
+  it("should render QuestionNotFound Component if the provided ID isn't found", () => {
+    render(<MockQuestionWithRouter qID='id-not-found' practiceMode='chronological' />);
+
+    const questionNotFoundTitle = screen.getByText("Question not found!");
+    expect(questionNotFoundTitle).toBeInTheDocument();
+  });
+
   //Test the history hook Expect the url to change to new params when checking a question
   //Expect the history hook and ui to update on next button click
   it("should update the url (useHistory hook) when clicking the next button and update the ui", () => {
