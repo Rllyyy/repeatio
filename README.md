@@ -1,16 +1,18 @@
 # repeatio
 
-_Learn, repeat, memorize tasks with repeatio._
+_Learn, repeat and memorize tasks with repeatio._
 
 ## Adding an existing Module
 
-1. Click on ```Add Module``` in the overview
-2. Select the file ```data.json```
+1. Click on `Add Module` in the overview
+2. Select the file `data.json`
+3. Finally click on `Add`
 
 ## Creating a new Module
 
-It is generally advised to use a code editor like VS Code or Atom to create or edit module files as one wrong value breaks the whole application.
-These programs provide feedback for potential problems.
+1. Click on `Add Module` in the overview
+2. Fill in the fields under `Create new Module`
+3. Finally click on `Create`
 
 ### Module file structure
 
@@ -27,22 +29,19 @@ These programs provide feedback for potential problems.
 }
 ```
 
-**_[View Example](/public/data.json)_**
+**_[View File Example](/public/data.json)_** and **[interactive result](https://repeatio.netlify.app/#/module/types_1/all-questions)**
 
 ### Question Types
 
-Create new question (object) inside the "questions" array.
-JSON key-value pairs can not be empty, so for optional fields use an empty string `""`.
-
 **_Fields:_**
-| Field                   |                   Description                          | value type   |  required?   |
-|------------------------ |:------------------------------------------------------:|:------------:| ------------:|
-| ```id```                |  The id of the questions (has to be unique)            | string       |      yes     |
-| ```title```             |  The title of the question                             | string       |      no      |
-| ```points```            |  Max point value of a question                         | number / "?" |      no      |
-| ```type```              |  The type of the question                              | string       |      yes     |
-| ```questionTypeHelp```  |  Explain what the user needs to do                     | string       |      no      |
-| ```answerOptions```     |  The part of the question that the user interacts with | array/object |      no      |
+| Field               |                   Description                          | Value Type   | Styleable?         | Required?          |
+|:--------------------|:------------------------------------------------------:|:------------:|:------------------:|-------------------:|
+| `id`                |  The id of the questions (has to be unique)            | string       | :x:                | :heavy_check_mark: |
+| `title`             |  The title of the question                             | string       | :heavy_check_mark: | :x:                |
+| `points`            |  Max point value of a question                         | number       | :x:                | :x:                |
+| `type`              |  The type of the question                              | string       | :x:                | :heavy_check_mark: |
+| `help`              |  Explain what the user needs to do                     | string       | :heavy_check_mark: | :x:                |
+| `answerOptions`     |  The part of the question that the user interacts with | array/object | :heavy_check_mark: | :heavy_check_mark: |
 
 **_Types:_**
 
@@ -55,11 +54,11 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
 
   ```json
   {
-    "id": "MOD01-1",
+    "id": "qID-1",
     "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
     "points": 5,
     "type": "multiple-choice",
-    "questionTypeHelp": "Please choose the correct answer.",
+    "help": "Please choose the correct answer.",
     "answerOptions": [
       {
         "id": "option-0",
@@ -85,6 +84,8 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
   }
   ```
 
+  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-1?mode=chronological)_**
+
 </details>
 
 <details>
@@ -96,11 +97,11 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
 
   ```json
   {
-    "id": "MOD01-2",
+    "id": "qID-2",
     "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
     "points": 5,
     "type": "multiple-response",
-    "questionTypeHelp": "Please choose the correct answer(s).",
+    "help": "Please choose the correct answer(s).",
     "answerOptions": [
       {
         "id": "option-0",
@@ -136,6 +137,8 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
   }
   ```
 
+  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-2?mode=chronological)_**
+
 </details>
 
 <details>
@@ -147,11 +150,11 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
 
   ```json
   {
-    "id": "MOD-3",
+    "id": "qID-3",
     "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
     "points": 5,
     "type": "gap-text",
-    "questionTypeHelp": "Fill in the blanks.",
+    "help": "Fill in the blanks.",
     "answerOptions": {
       "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
       "correctGapValues": [
@@ -170,6 +173,8 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
   }
   ```
 
+  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-3?mode=chronological)_**
+
 </details>
 
 <details>
@@ -181,11 +186,11 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
 
   ```json
   {
-    "id": "MOD01-4",
+    "id": "qID-4",
     "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
     "points": 5,
     "type": "gap-text-dropdown",
-    "questionTypeHelp": "Fill in the blanks with the **correct** Values!",
+    "help": "Fill in the blanks with the **correct** Values!",
     "answerOptions": {
       "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
       "dropdowns": [
@@ -214,6 +219,8 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
   }
   ```
 
+  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-4?mode=chronological)_**
+
 </details>
 
 <details>
@@ -225,11 +232,11 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
 
   ```json
   {
-    "id": "MOD01-5",
+    "id": "qID-5",
     "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
     "points": 5,
     "type": "extended-match",
-    "questionTypeHelp": "Connect the dots.",
+    "help": "Connect the dots.",
     "answerOptions": {
       "leftSide": [
         {
@@ -269,11 +276,13 @@ JSON key-value pairs can not be empty, so for optional fields use an empty strin
   }
   ```
 
+  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-5?mode=chronological)_**
+
 </details>
 
 ## Styling
 
-Repeatio supports styling with `Markdown` and `HTML` for the following elements: **title**, **questionTypeHelp** and **answerOptions**.
+Repeatio supports styling with `Markdown` and `HTML` for the following elements: **title**, **help** and **answerOptions**.
 
 <details>
   <summary><b>Line Breaks</b></summary>
@@ -499,7 +508,11 @@ Generally replace every single slash `\` with `\\` and use line breaks to separa
 
 </details>
 
-## General .json
+## When editing the raw JSON file
+
+Some question types and features can't yet be used through the UI. Instead users are required to edit the raw JSON file.
+
+Some general tips:
 
 - Fields can not be empty (provide an empty string instead)
 - Normal quotes don't work (`"text"`) use unicode U+201E/U+201C instead (`„text“`) or escape the string like this `\"text\"`

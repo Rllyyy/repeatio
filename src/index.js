@@ -15,7 +15,7 @@ import Contribute from "./Components/Main/Contribute.js";
 import Thanks from "./Components/Main/Thanks.js";
 import News from "./Components/Main/News.js";
 import Module from "./Components/Main/Module/Module.js";
-import Question from "./Components/Main/Question/Question.js";
+import { Question } from "./Components/Main/Question/Question.js";
 import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions.js";
 
 //Context

@@ -1,15 +1,13 @@
   {
     "id": "types_1",
     "name": "Question Types",
-    "createdAt": "some UTC time",
-    "description": "See what kind a questions can be used with repeatio",
     "questions": [
       {
         "id": "qID-1",
         "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
         "points": 5,
         "type": "multiple-choice",
-        "questionTypeHelp": "Please choose the correct answer.",
+        "help": "Please choose the correct answer.",
         "answerOptions": [
           {
             "id": "option-1",
@@ -30,11 +28,6 @@
             "id": "option-4",
             "text": "Exactly one option can be correct",
             "isCorrect": true
-          },
-          {
-            "id": "option-5",
-            "text": "",
-            "isCorrect": true
           }
         ]
       },
@@ -43,7 +36,7 @@
         "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
         "points": 5,
         "type": "multiple-response",
-        "questionTypeHelp": "Please choose the correct answer(s).",
+        "help": "Please choose the correct answer(s).",
         "answerOptions": [
           {
             "id": "option-1",
@@ -82,7 +75,7 @@
         "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
         "points": 5,
         "type": "gap-text",
-        "questionTypeHelp": "Fill in the blanks.",
+        "help": "Fill in the blanks.",
         "answerOptions": {
           "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
           "correctGapValues": [
@@ -104,7 +97,7 @@
         "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
         "points": 5,
         "type": "gap-text-dropdown",
-        "questionTypeHelp": "Fill in the blanks with the **correct** Values!",
+        "help": "Fill in the blanks with the **correct** Values!",
         "answerOptions": {
           "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
           "dropdowns": [
@@ -136,7 +129,7 @@
         "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
         "points": 5,
         "type": "extended-match",
-        "questionTypeHelp": "Connect the dots.",
+        "help": "Connect the dots.",
         "answerOptions": {
           "leftSide": [
             {
@@ -177,9 +170,9 @@
       {
         "id": "qID-6",
         "title": "Gap texts with and without preselected values can be combined with html tables to achieve this question.",
-        "points": null,
+        "points": 5,
         "type": "gap-text-dropdown",
-        "questionTypeHelp": "Fill in the blanks by choosing the correct answer from the dropdown list!",
+        "help": "Fill in the blanks by choosing the correct answer from the dropdown list!",
         "answerOptions": {
           "text": "<table><tr><th></th><th>Hamburg</th><th>München</th></tr><tr><td>Residents</td><td>[]</td><td>[]</td></tr></table>",
           "dropdowns": [

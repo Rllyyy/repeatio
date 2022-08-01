@@ -1,6 +1,6 @@
 //Import
 //React stuff
-import { useState, useRef, useEffect, useContext, useCallback, memo, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useContext, memo, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 
 //Markdown related
@@ -27,7 +27,6 @@ import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Hooks
 import useQuestion from "./useQuestion.js";
-import { useQuestionNavigation } from "./Components/QuestionNavigation/QuestionNavigation.jsx";
 import { useSize } from "../../../hooks/useSize";
 
 //SVG
@@ -38,54 +37,18 @@ import { MdNavigateNext } from "react-icons/md";
 
 //Main Question Component
 const Question = () => {
-  //States
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [answerCorrect, setAnswerCorrect] = useState(false);
-
-  //Refs
-  const questionDataRef = useRef(null);
-  const questionAnswerRef = useRef(null); //Access child functions (check, return answer, reset)
-
-  //Custom hooks
-  const { navigateToNextQuestion } = useQuestionNavigation();
-  const { question, loading } = useQuestion();
-
-  //On question unmount, set show answer to false
-  //TODO would be great if the useQuestionNavigation would handle this :/
-  useEffect(() => {
-    return () => {
-      setShowAnswer(false);
-    };
-  }, [question, setShowAnswer]);
-
-  /* EVENT HANDLERS */
-  //Prevent default form submission (reload)
-  //TODO Move these into custom hook when I figured out how to update ref value inside hook
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    //If the correct answer isn't shown (before first form submit), check if the answer is correct by calling the check method on the questionAnswerRef
-    //Else navigate to the next question (before second form submit)
-    if (!showAnswer) {
-      setAnswerCorrect(questionAnswerRef.current.checkAnswer());
-      setShowAnswer(true);
-    } else {
-      questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
-
-      navigateToNextQuestion();
-      setShowAnswer(false);
-    }
-  };
-
-  const handleResetRetryQuestion = useCallback(() => {
-    if (showAnswer) {
-      questionAnswerRef.current.resetAndShuffleOptions();
-    } else {
-      questionAnswerRef.current.resetSelection();
-    }
-    questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
-    setShowAnswer(false);
-  }, [showAnswer, setShowAnswer, questionDataRef]);
+  //Get data from hook
+  const {
+    question,
+    loading,
+    handleSubmit,
+    handleResetRetryQuestion,
+    showAnswer,
+    setShowAnswer,
+    answerCorrect,
+    questionDataRef,
+    questionAnswerRef,
+  } = useQuestion();
 
   //JSX
   return (
@@ -110,8 +73,7 @@ const Question = () => {
   );
 };
 
-export default Question;
-
+//Question Data contains all the question info (title, points, type, help, answerOptions)
 const QuestionData = ({ question, loading, questionAnswerRef, questionDataRef, showAnswer, answerCorrect }) => {
   // Scroll to top
   //TODO would be great if this was handle by the question navigation
@@ -149,6 +111,7 @@ const QuestionData = ({ question, loading, questionAnswerRef, questionDataRef, s
   );
 };
 
+//QuestionBottom contains the checking/resetting of a question as well as the actions (save, edit, delete) and the navigation
 const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
   //States
   const [showNav, setShowNav] = useState(false);
@@ -173,7 +136,11 @@ const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
   }, [size?.width, size, setCollapsedActionsNav]);
 
   return (
-    <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>
+    <div
+      className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`}
+      ref={questionBottomRef}
+      data-testid='question-bottom'
+    >
       <div className='question-check-retry-wrapper'>
         {/* Check or Next*/}
         <CheckNextButton showAnswer={showAnswer} disabled={disabled} />
@@ -183,12 +150,15 @@ const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
           handleResetRetryQuestion={handleResetRetryQuestion}
           disabled={disabled}
         />
-        {/* Button that appears at a width of 800px to show the navigation */}
+        {/* Button that appears at a width of 800px and smaller to show the navigation */}
         {collapsedActionsNav && <ShowQuestionNavButton showNav={showNav} setShowNav={setShowNav} />}
       </div>
       {/* Question navigation and buttons (delete/edit/save) */}
       {(showNav || !collapsedActionsNav) && (
-        <div className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}>
+        <div
+          className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
+          data-testid='question-actions-navigation-wrapper'
+        >
           <DeleteQuestion questionID={params.questionID} disabled={disabled} />
           <EditQuestion prevQuestionID={params.questionID} disabled={disabled} />
           <BookmarkQuestion questionID={params.questionID} disabled={disabled} />
@@ -230,9 +200,11 @@ const QuestionTitle = ({ title }) => {
 
 //Points of the question
 const QuestionPoints = ({ points }) => {
+  //Return the points value. If they are undefined return ?
+  //If the value of point is equal to 1 return Point else return Points
   return (
-    <p className='question-points'>
-      {points} {points === 1 ? "Point" : "Points"}
+    <p className='question-points' data-testid='question-points'>
+      {points || "?"} {points === 1 ? "Point" : "Points"}
     </p>
   );
 };
@@ -285,8 +257,8 @@ const CheckNextButton = ({ showAnswer, disabled }) => {
     <button
       type='submit'
       className='question-check-next'
-      aria-label={showAnswer ? "Next Question" : "Check Question"}
-      data-testid='question-check'
+      aria-label={!showAnswer ? "Check Question" : "Next Question"}
+      data-testid={!showAnswer ? "question-check" : "question-next"}
       disabled={disabled}
     >
       {/* If the correct answer is show, switch the svg and give the option to continue with the next Question */}
@@ -322,3 +294,5 @@ const ShowQuestionNavButton = ({ showNav, setShowNav }) => {
     </button>
   );
 };
+
+export { Question, QuestionBottom, QuestionPoints };

@@ -1,7 +1,7 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import Question from "./Question.js";
-import { ModuleContext } from "../../../Context/ModuleContext";
+import { Question } from "../Question.js";
+import { ModuleContext } from "../../../../Context/ModuleContext";
 import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
@@ -134,7 +134,7 @@ jest.mock("rehype-katex", () => (props) => {
 });
 
 //Override the default useSize hook
-jest.mock("../../../hooks/useSize.js", () => ({
+jest.mock("../../../../hooks/useSize.js", () => ({
   useSize: () => ({ x: 10, y: 15, width: 917, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),
 }));
 
@@ -181,7 +181,7 @@ describe("<Question />", () => {
   });
 
   /* INTEGRATION TESTING */
-  //Expect submit button to  and lock answers
+  //Expect submit button to submit and lock answers
   it("should disable form after submit", () => {
     //mock scroll functions
     window.HTMLElement.prototype.scrollIntoView = jest.fn();
@@ -324,9 +324,13 @@ describe("<Question />", () => {
     //render element
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
-    const buttonElement = screen.getByTestId("question-check");
-    user.click(buttonElement);
-    user.click(buttonElement);
+    //Check Question
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Navigate to next question
+    const nextQuestionButton = screen.getByTestId("question-next");
+    user.click(nextQuestionButton);
 
     const idElement = screen.getByText("ID: qID-2");
     expect(idElement).toBeInTheDocument();
@@ -340,9 +344,13 @@ describe("<Question />", () => {
     //render element
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='random' />);
 
-    const buttonElement = screen.getByTestId("question-check");
-    user.click(buttonElement);
-    user.click(buttonElement);
+    //Check Question
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Navigate to next question
+    const nextQuestionButton = screen.getByTestId("question-next");
+    user.click(nextQuestionButton);
 
     //Expect ID: qID-1 not to be in the document (instead it should be something random from the data test array)
     const idElement = screen.queryByText("ID: qID-1");
@@ -357,10 +365,13 @@ describe("<Question />", () => {
     let idElement = screen.getByText(`ID: ${idOfLastElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
 
-    //Click the button 2 times to restart array
-    const buttonElement = screen.getByTestId("question-check");
-    user.click(buttonElement);
-    user.click(buttonElement);
+    //Check Question
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Navigate to next question to restart the array
+    const nextQuestionButton = screen.getByTestId("question-next");
+    user.click(nextQuestionButton);
 
     //check if the first question with the id of qID-1 has rendered
     const idOfFirstElementInTestArray = data.questions[0].id;
@@ -388,7 +399,7 @@ describe("<Question />", () => {
   it("should not render question correction element when clicking on next question button", () => {
     render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
 
-    //Click the question check button twice to trigger a false answer and the question correction to be visible
+    //Click check button to reveal question navigation
     const buttonElement = screen.getByTestId("question-check");
     user.click(buttonElement);
 
@@ -396,10 +407,26 @@ describe("<Question />", () => {
     questionRevealElement = screen.getByTestId("question-correction");
     expect(questionRevealElement).toBeInTheDocument();
 
-    user.click(buttonElement);
+    //Navigate to next question
+    user.click(screen.getByTestId("question-next"));
 
     //Reveal element should not be in the document
     questionRevealElement = screen.queryByTestId("question-correction");
+    expect(questionRevealElement).not.toBeInTheDocument();
+  });
+
+  it("should not render question correction element when clicking on next button in question navigation", () => {
+    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+
+    //Click check button to reveal question navigation
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Navigate to next question no by using the <CheckNextButton /> but instead with the navigation
+    const nextQuestionButtonNavigation = screen.getByTestId("nav-next-question-button");
+    user.click(nextQuestionButtonNavigation);
+
+    const questionRevealElement = screen.queryByTestId("question-correction");
     expect(questionRevealElement).not.toBeInTheDocument();
   });
 
@@ -433,10 +460,13 @@ describe("<Question />", () => {
     const selectedElement = screen.getByText("Lorem ipsum dolor sit amet consectetur adipisicing.");
     user.click(selectedElement);
 
-    //Click the question check button twice to check the question and go to next question
-    const checkButtonElement = screen.getByTestId("question-check");
-    user.click(checkButtonElement);
-    user.click(checkButtonElement);
+    //Check Question
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Navigate to next question
+    const nextQuestionButton = screen.getByTestId("question-next");
+    user.click(nextQuestionButton);
 
     //Get all elements with the regex match
     const answerElements = screen.getAllByTestId(/formControlLabel-checkbox-./);
@@ -550,6 +580,13 @@ describe("<Question />", () => {
     expect(questionNotFoundTitle).toBeInTheDocument();
   });
 
+  it("should disable buttons when Question isn't found", () => {
+    render(<MockQuestionWithRouter qID='id-not-found' practiceMode='chronological' />);
+
+    const questionNotFoundTitle = screen.getByText("Question not found!");
+    expect(questionNotFoundTitle).toBeInTheDocument();
+  });
+
   //Test the history hook Expect the url to change to new params when checking a question
   //Expect the history hook and ui to update on next button click
   it("should update the url (useHistory hook) when clicking the next button and update the ui", () => {
@@ -567,10 +604,13 @@ describe("<Question />", () => {
     //render Component with history prop
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
-    //click the check button twice
-    const buttonElement = screen.getByTestId("question-check");
-    user.click(buttonElement);
-    user.click(buttonElement);
+    //Click the check button
+    const checkQuestionButton = screen.getByTestId("question-check");
+    user.click(checkQuestionButton);
+
+    //Click the next button to navigate to next question
+    const nextQuestionButton = screen.getByTestId("question-next");
+    user.click(nextQuestionButton);
 
     expect(history.location.pathname).toBe(`/module/${data.id}/question/${data.questions[1].id}`);
 

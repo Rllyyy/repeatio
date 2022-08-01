@@ -180,13 +180,12 @@ const useQuestionNavigation = () => {
     //find the current index
     const index = filteredQuestions?.findIndex((question) => question.id === params.questionID);
 
-    //Return Question mark if question can't be found in storage
-    if (index <= -1) {
-      return "?";
+    //Return the index and add 1 so indexes aren't zero based if question can be found
+    if (index >= 0) {
+      return index + 1;
+    } else {
+      return "";
     }
-
-    //Return the index and add 1 so indexes aren't zero based
-    return index + 1;
   };
 
   //Go to the next question

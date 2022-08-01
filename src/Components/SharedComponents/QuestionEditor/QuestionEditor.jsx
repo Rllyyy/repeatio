@@ -13,12 +13,6 @@ import FormInput from "./Components/FormInput.js";
 //CSS
 import "./QuestionEditor.css";
 
-//Helper functions
-//Transform string points to int or return "?"
-const transformPoints = (points) => {
-  return parseInt(points) || "?";
-};
-
 //Add new line but not for html elements
 const transformAnswerOptions = (answerOptions) => {
   const returnValue = [...answerOptions];
@@ -55,7 +49,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
   const [question, setQuestion] = useState({
     id: "",
     title: "",
-    points: undefined,
+    points: "",
     help: "",
     type: "",
     answerOptions: undefined,
@@ -135,10 +129,10 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
       return;
     }
 
-    //Build output by copying the question and transforming points to int and add line breaks
+    //Build output by copying the question, transforming string points to float and adding line breaks
     const output = {
       ...question,
-      points: transformPoints(question.points),
+      points: parseFloat(question.points) || null,
       answerOptions: transformAnswerOptions(question.answerOptions),
     };
 
@@ -204,7 +198,14 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
         {/* Title */}
         <FormInput labelText='Title' value={question.title} onChange={handleChange} type='text' />
         {/* Points */}
-        <FormInput labelText='Points' value={question.points} onChange={handleChange} type='number' min='0' />
+        <FormInput
+          labelText='Points'
+          value={question.points}
+          onChange={handleChange}
+          type='number'
+          min='0'
+          step='any'
+        />
         {/* Type help*/}
         <FormInput labelText='Help' type='string' value={question.help} onChange={handleChange} />
         {/* Type */}

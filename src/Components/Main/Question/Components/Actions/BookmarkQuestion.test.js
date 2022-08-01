@@ -93,4 +93,11 @@ describe("<Bookmark />", () => {
 
     expect(bookmarkRemoveSvg).toBeInTheDocument();
   });
+
+  it("should disable the button if passed disabled prop", () => {
+    render(<BookmarkQuestion questionID='question-id-1' disabled={true} />);
+
+    const bookmarkQuestionButton = screen.getByRole("button");
+    expect(bookmarkQuestionButton).toBeDisabled();
+  });
 });
