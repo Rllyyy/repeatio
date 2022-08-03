@@ -53,6 +53,20 @@ const GapText = forwardRef(({ options, formDisabled }, ref) => {
     }
   }, []);
 
+  const customStyle = useCallback(
+    (index) => {
+      if (!formDisabled) return;
+
+      //!Might need to add trim() if this component ever gets refactored by removing the useEffects
+      if (options.correctGapValues[index]?.includes(inputValues[index])) {
+        return { borderColor: "green" };
+      } else {
+        return { borderColor: "red" };
+      }
+    },
+    [formDisabled, inputValues, options.correctGapValues]
+  );
+
   //Set the dangerouslySetInnerHTML for question-gap-text div element
   const textWithBlanks = useCallback(() => {
     //Render the json string in markdown and return html nodes
@@ -128,7 +142,6 @@ const GapText = forwardRef(({ options, formDisabled }, ref) => {
       render(
         <input
           type='text'
-          className={`${formDisabled ? "input-disabled" : "input-enabled"}`}
           key={`input-${index}`}
           disabled={formDisabled}
           autoCapitalize='off'
@@ -136,12 +149,13 @@ const GapText = forwardRef(({ options, formDisabled }, ref) => {
           spellCheck='false'
           onKeyDown={onKeyDownPreventSubmit}
           onChange={(e) => updateInput(e, index)}
+          style={customStyle(index)}
           value={inputValues[index] || ""}
         />,
         document.getElementById(`input-wrapper-${index}`)
       );
     }
-  }, [inputValues, formDisabled, updateInput, options, onKeyDownPreventSubmit]);
+  }, [inputValues, formDisabled, updateInput, options, onKeyDownPreventSubmit, customStyle]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(ref, () => ({

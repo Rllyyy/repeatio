@@ -26,6 +26,7 @@
 
   background-color: transparent;
   outline: none;
+  outline-offset: -1px;
 
   border: 1px solid var(--custom-border-color-lighter);
   border-radius: 5px;
@@ -35,14 +36,9 @@
   cursor: pointer;
 }
 
-.add-question-form>div>input:hover,
-.add-question-form>div>#modal-question-type-select:hover {
-  border-color: var(--custom-border-color-light);
-}
-
 .add-question-form>div>input:focus-visible,
 .add-question-form>div>#modal-question-type-select:focus-visible {
-  border-color: var(--custom-prime-color);
+  outline: 2px solid var(--custom-prime-color);
 }
 
 .add-question-form .modal-question-type-select {

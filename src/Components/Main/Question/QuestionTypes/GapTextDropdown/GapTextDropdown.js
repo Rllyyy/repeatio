@@ -107,7 +107,6 @@ const GapTextDropdown = forwardRef(({ options, formDisabled }, ref) => {
       //! IDS!!
       render(
         <select
-          className={`${formDisabled ? "select-disabled" : "select-enabled"}`}
           key={`select-${index}`}
           disabled={formDisabled}
           onChange={(e) => handleChange(e, index)}

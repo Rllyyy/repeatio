@@ -8,7 +8,12 @@
   align-items: flex-start;
 }
 
-.question-multiple-choice .formControlLabel>.formControlLabel-label {
+.question-multiple-choice .MuiFormControlLabel-root,
+.question-multiple-choice .css-1jaw3da {
+  margin-left: -6px;
+}
+
+.question-multiple-choice .formControlLabel>.formControlLabel-typography {
   font-size: 18px;
   padding-top: 10px;
   padding-left: 2px;
@@ -31,7 +36,7 @@ This is the only way if found to have it still animated but disable the out anim
   transition: transform 0ms cubic-bezier(0.4, 0, 1, 1) 0ms !important;
 }
 
-.question-multiple-choice .label-disabled {
+.question-multiple-choice .Mui-disabled .formControlLabel-typography {
   color: grey;
 }
 
@@ -81,7 +86,7 @@ This is the only way if found to have it still animated but disable the out anim
     font-size: 30px !important;
   }
 
-  .question-multiple-choice .formControlLabel>.formControlLabel-label {
+  .question-multiple-choice .formControlLabel>.formControlLabel-typography {
     font-size: 18px;
     padding-top: 10px;
     padding-left: 0;

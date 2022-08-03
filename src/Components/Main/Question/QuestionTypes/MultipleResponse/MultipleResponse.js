@@ -156,10 +156,7 @@ const MultipleResponse = forwardRef(({ options, formDisabled }, ref) => {
                   />
                 }
                 label={
-                  <Typography
-                    component={"span"}
-                    className={`formControlLabel-label ${formDisabled ? "label-disabled" : "label-enabled"}`}
-                  >
+                  <Typography component={"span"} className={`formControlLabel-typography`}>
                     <ReactMarkdown
                       children={option.text}
                       rehypePlugins={[rehypeRaw, rehypeKatex]}

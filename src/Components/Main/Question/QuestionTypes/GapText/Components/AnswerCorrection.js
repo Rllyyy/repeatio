@@ -10,7 +10,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
 const concatValues = (values) => {
-  return values.join("; ");
+  return values?.join("; ");
 };
 
 //Component

@@ -24,19 +24,23 @@
 .question-gap-text-with-dropdown select {
   display: inline;
   font-size: 18px;
+  font-weight: inherit;
+
+  border: 1px solid var(--custom-border-color-light);
+  border-radius: 3px;
+  outline: none;
+  outline-offset: -1px;
+
   padding: 3px 5px;
   cursor: pointer;
-  border-radius: 3px;
   background-color: transparent;
-  box-shadow: 0 0 0 1px var(--custom-border-color-light);
-  border: none;
 }
 
 .question-gap-text-with-dropdown select:focus {
-  outline: none;
+  outline: 2px solid var(--custom-prime-color);
 }
 
-.question-gap-text-with-dropdown .select-disabled {
+.question-gap-text-with-dropdown select:disabled {
   cursor: not-allowed;
 }
 
@@ -45,6 +49,7 @@
 .correction-gap-text-with-dropdown table {
   margin: 5px 0;
   border-collapse: collapse;
+  line-height: 1.5;
 }
 
 .question-gap-text-with-dropdown table,
@@ -68,7 +73,7 @@
 .correction-gap-text-with-dropdown td {
   height: 30px;
   /* Tables grow when this value is to short. Think like min-height */
-  padding: 0px 10px;
+  padding: 1px 10px;
 }
 
 /* List related */
@@ -96,28 +101,29 @@
   margin-left: 3px;
   margin-right: 3px;
 
-  outline: none;
-  border: none;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 3px;
 }
 
 .answer-correct .correction-gap-text-with-dropdown .correct-dropdown-value {
   background-color: rgb(160, 217, 187);
-  box-shadow: 0 0 0 1px rgb(100, 149, 120);
+  border-color: rgb(100, 149, 120);
 }
 
 .answer-false .correction-gap-text-with-dropdown .correct-dropdown-value {
   background-color: rgb(250, 190, 190);
-  box-shadow: 0 0 0 1px rgb(180, 131, 126);
+  border-color: rgb(180, 131, 126);
 }
 
 /* Media Query for Desktop */
 @media (pointer: fine) {
-  .question-gap-text-with-dropdown .select-enabled:hover {
-    box-shadow: 0 0 0 1px var(--custom-prime-color);
+  .question-gap-text-with-dropdown select:enabled:hover {
+    outline: 2px solid var(--custom-prime-color);
   }
 
   .question-gap-text-with-dropdown select:focus-visible {
-    box-shadow: 0 0 0 1px var(--custom-prime-color);
+    outline: 2px solid var(--custom-prime-color);
+
   }
 }

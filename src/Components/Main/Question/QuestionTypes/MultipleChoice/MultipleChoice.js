@@ -121,10 +121,7 @@ const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {
                   />
                 }
                 label={
-                  <Typography
-                    component={"span"}
-                    className={`formControlLabel-label ${formDisabled && "label-disabled"}`}
-                  >
+                  <Typography component={"span"} className='formControlLabel-typography'>
                     <ReactMarkdown
                       children={option.text}
                       rehypePlugins={[rehypeRaw, rehypeKatex]}

@@ -16,13 +16,6 @@
   align-items: flex-start;
 }
 
-.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-label {
-  font-size: 18px;
-  padding-top: 8px;
-  padding-left: 2px;
-  padding-right: 5px;
-}
-
 .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-checkbox:hover {
   background-color: transparent;
 }
@@ -32,7 +25,14 @@
   font-size: 26px;
 }
 
-.question-multiple-response .label-disabled {
+.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-typography {
+  font-size: 18px;
+  padding-top: 8px;
+  padding-left: 2px;
+  padding-right: 5px;
+}
+
+.question-multiple-response .Mui-disabled .formControlLabel-typography {
   color: grey;
 }
 
@@ -84,7 +84,7 @@
     font-size: 30px !important;
   }
 
-  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-label {
+  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-typography {
     font-size: 18px;
     padding-top: 10px;
     padding-left: 0;

@@ -4,15 +4,17 @@
 }
 
 .question-gap-text input {
+  display: inline;
   font-size: 18px;
+  font-weight: inherit;
+
   padding: 4px 5px;
   margin: 0 2px;
-  outline: none;
-  border: none;
-  box-shadow: 0 0 0 1px var(--custom-border-color-light);
-  border-radius: 3px;
-  display: inline;
   width: 180px;
+
+  outline: none;
+  border: 1px solid var(--custom-border-color-light);
+  border-radius: 3px;
 }
 
 /* Markdown specific */
@@ -41,6 +43,7 @@
   margin: 5px 0;
   border: 1px solid black;
   border-collapse: collapse;
+  line-height: 1.5;
 }
 
 .question-gap-text table,
@@ -62,7 +65,7 @@
 .question-gap-text td,
 .correction-gap-text th,
 .correction-gap-text td {
-  padding: 0px 10px;
+  padding: 1px 10px;
 }
 
 .question-gap-text ul li,
@@ -70,18 +73,14 @@
   list-style-position: inside;
 }
 
-.question-gap-text .input-enabled:focus,
-.question-gap-text .input-enabled:active {
-  box-shadow: 0 0 0 1px var(--custom-prime-color);
+.question-gap-text input:enabled:focus,
+.question-gap-text input:enabled:active {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: -1px;
 }
 
-.input-disabled {
+.question-gap-text input:disabled {
   cursor: not-allowed;
-}
-
-.input-disabled:focus,
-.input-disabled:active {
-  box-shadow: 0 0 0 1px lightgrey;
 }
 
 /* CSS for the correction box displayed in the question component */
@@ -96,23 +95,23 @@
   font-size: 18px;
   line-height: 1.4rem;
 
-  padding: 2px 5px;
+  padding: 3px 5px;
   margin-left: 2px;
   margin-right: 2px;
 
-  outline: none;
-  border: none;
+  border-width: 1px;
+  border-style: solid;
   border-radius: 3px;
 }
 
 .answer-correct .correction-gap-text .correct-gap-value {
   background-color: rgb(160, 217, 187);
-  box-shadow: 0 0 0 1px rgb(100, 149, 120);
+  border-color: rgb(100, 149, 120);
 }
 
 .answer-false .correction-gap-text .correct-gap-value {
   background-color: rgb(250, 190, 190);
-  box-shadow: 0 0 0 1px rgb(180, 131, 126);
+  border-color: rgb(180, 131, 126);
 }
 
 .correction-gap-text ul li,
