@@ -13,15 +13,7 @@ const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn();
 
 const MockGapText = () => {
-  return (
-    <GapText
-      options={options}
-      setAnswerCorrect={mockSetAnswerCorrect}
-      setShowAnswer={mockSetShowAnswer}
-      formDisabled={false}
-      ref={mockUseRef}
-    />
-  );
+  return <GapText options={options} formDisabled={false} ref={mockUseRef} />;
 };
 
 //React-markdown uses ES6 but jest uses ES5
@@ -92,7 +84,7 @@ describe("<GapText />)", () => {
     expect(everyInputDisabled).toBe(true);
 
     //Check class (this test only covers the first input)
-    expect(inputElements[0]).toHaveClass("input-disabled");
+    expect(inputElements[0]).toBeDisabled();
   });
 
   //Expect all the inputs to be enabled when the form is enabled and change input class to "input-enabled"
@@ -105,6 +97,6 @@ describe("<GapText />)", () => {
     expect(everyInputDisabled).toBe(false);
 
     //Check class (this test only covers the first input)
-    expect(inputElements[0]).toHaveClass("input-enabled");
+    expect(inputElements[0]).toBeEnabled();
   });
 });

@@ -111,6 +111,7 @@ const GapTextDropdown = forwardRef(({ options, formDisabled }, ref) => {
           disabled={formDisabled}
           onChange={(e) => handleChange(e, index)}
           value={selectedValues[index].value || ""}
+          data-testid={`select-${index}`}
         >
           <ReturnOptions selectIndex={index} dropdowns={shuffledDropdownOptions[index]} />
         </select>,

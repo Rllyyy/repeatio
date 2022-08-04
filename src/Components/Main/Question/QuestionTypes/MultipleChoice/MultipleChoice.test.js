@@ -26,15 +26,7 @@ const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn();
 
 const MockMultipleChoice = () => {
-  return (
-    <MultipleChoice
-      options={mockOptions}
-      setAnswerCorrect={mockSetAnswerCorrect}
-      setShowAnswer={mockSetShowAnswer}
-      formDisabled={false}
-      ref={mockUseRef}
-    />
-  );
+  return <MultipleChoice options={mockOptions} formDisabled={false} ref={mockUseRef} />;
 };
 
 //React-markdown uses ES6 but jest uses ES5
@@ -68,7 +60,7 @@ describe("<MultipleChoice />", () => {
     const radioGroup = screen.getByRole("radiogroup");
     expect(radioGroup).toBeInTheDocument();
 
-    const multipleChoiceRootElements = screen.getAllByTestId(/option-/i);
+    const multipleChoiceRootElements = screen.getAllByRole("radio");
     expect(multipleChoiceRootElements).toHaveLength(3);
   });
 

@@ -174,6 +174,26 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
       }
     }
 
+    //Update saved questions json object in localStorage if question is edited and the id changed
+    if (prevQuestionID && prevQuestionID !== question.id) {
+      //Get item from localStorage and transform
+      const savedIDs = JSON.parse(localStorage.getItem(`repeatio-marked-${params.moduleID}`));
+
+      const index = savedIDs?.indexOf(prevQuestionID);
+
+      if (index > -1) {
+        savedIDs.splice(index, 1, question.id);
+      }
+
+      //Update localStorage with the replaced value
+      if (savedIDs?.length >= 1) {
+        localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs), {
+          sameSite: "strict",
+          secure: true,
+        });
+      }
+    }
+
     handleModalClose();
   };
 

@@ -112,6 +112,7 @@ const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {
                 control={
                   <Radio
                     className='formControlLabel-radio'
+                    data-testid={`formControlLabel-radio-${option.id}`}
                     sx={{
                       color: `${!formDisabled ? "var(--custom-prime-color)" : "var(--custom-border-color-light)"}`,
                       "&.Mui-checked": {

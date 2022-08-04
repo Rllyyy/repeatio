@@ -45,15 +45,7 @@ jest.mock("rehype-katex", () => (props) => {
 });
 
 const MockMultipleResponse = ({ disabled }) => {
-  return (
-    <MultipleResponse
-      options={options}
-      setAnswerCorrect={mockSetAnswerCorrect}
-      setShowAnswer={mockSetShowAnswer}
-      formDisabled={disabled}
-      ref={mockUseRef}
-    />
-  );
+  return <MultipleResponse options={options} formDisabled={disabled} ref={mockUseRef} />;
 };
 
 //Tests

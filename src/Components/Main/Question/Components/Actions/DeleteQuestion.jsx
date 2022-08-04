@@ -84,6 +84,25 @@ const DeleteQuestion = ({ questionID, disabled }) => {
         search: `?mode=${new URLSearchParams(search).get("mode") || "chronological"}`,
       });
     }
+
+    //Remove id from saved questions in localStorage
+    //Get item from localStorage and transform to array
+    const savedIDs = JSON.parse(localStorage.getItem(`repeatio-marked-${params.moduleID}`));
+
+    //Filter out deleted question id
+    const filteredSavedIDs = savedIDs?.filter((item) => item !== questionID);
+
+    //Update localStorage with filtered out array. If there is no item left, remove from storage.
+    if (filteredSavedIDs?.length >= 1) {
+      //Update the localStorage
+      localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(filteredSavedIDs), {
+        sameSite: "strict",
+        secure: true,
+      });
+    } else if (filteredSavedIDs?.length === 0) {
+      //Remove localStorage item
+      localStorage.removeItem(`repeatio-marked-${params.moduleID}`);
+    }
   };
 
   //JSX

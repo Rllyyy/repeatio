@@ -193,22 +193,7 @@ describe("<Question />", () => {
     let checkOptionElement = screen.getByTestId("question-check");
     user.click(checkOptionElement);
 
-    //Just check if one checkbox is disabled. There is no need to write test for all elements as the disabled prop is handled by the formControl not the element (but react.screen can't grab the formControl, which internally passes the prop as classnames to some children)
-    const checkOptionElementMarkdown = screen.getByText(
-      "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Expedita nemo unde blanditiis dolorem necessitatibus consequatur omnis, reiciendis doloremque recusandae? Soluta ex sit illum doloremque cum non sunt nesciunt, accusantium dolorem."
-    );
-
-    //because markdown creates a new child, we look for the parent
-    checkOptionElement = checkOptionElementMarkdown.parentElement;
-
-    //Check if the span is disabled
-    expect(checkOptionElement).toHaveClass("label-disabled");
-
-    //Check if the parent (the label in the dom) and the option (the cirlce)
-    expect(checkOptionElement.parentElement).toHaveClass("Mui-disabled");
-
-    //Check if the checkbox
-    expect(checkOptionElement.parentElement.firstChild).toHaveAttribute("aria-disabled");
+    expect(screen.getByTestId("formControlLabel-radio-option-1")).toHaveAttribute("aria-disabled");
   });
 
   //Expect the correction box (red or green) to show up after question submit
@@ -300,12 +285,11 @@ describe("<Question />", () => {
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
     );
 
-    //Because Markdown creates a p where all html elements are stored, we need to call the parentElement
-    const correctElement = correctElementMarkdown.parentElement;
+    //Should remove the attribute Mui-disabled when retrying question
+    expect(screen.getByTestId("formControlLabel-1")).not.toHaveClass("Mui-disabled");
 
-    expect(correctElement).toHaveClass("label-enabled");
-
-    user.click(correctElement);
+    //Interact with the question
+    user.click(correctElementMarkdown);
 
     //Get all checkbox elements and check if they are checked
     const checkBoxElements = screen.getAllByTestId(/formControlLabel-checkbox-./);

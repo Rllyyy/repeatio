@@ -214,6 +214,11 @@
   height: 39px;
 }
 
+.question-check-retry-wrapper>button:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 3px;
+}
+
 .question-check-retry-wrapper>.question-check-next,
 .question-check-retry-wrapper>.question-retry {
   width: 100%;
@@ -222,7 +227,7 @@
   display: flex;
   justify-content: center;
 
-  border-radius: 6px;
+  border-radius: 5px;
 }
 
 .question-check-retry-wrapper>.question-check-next {
@@ -230,7 +235,7 @@
   justify-content: center;
   align-items: center;
 
-  margin-right: 5px;
+  margin-right: 8px;
 
   color: white;
   background-color: var(--custom-prime-color);
@@ -402,7 +407,7 @@
 }
 
 /* Apply focus style just when tabbing */
-.question-bottom button:focus-visible {
+.question-actions-navigation-wrapper button:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 0px;
 }
