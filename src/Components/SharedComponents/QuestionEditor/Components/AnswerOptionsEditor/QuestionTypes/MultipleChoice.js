@@ -11,11 +11,19 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLastSelected }) => {
   const [radioGroupValue, setRadioGroupValue] = useState("");
 
+  //Prevent the modal from closing when hitting escape while on the radio/input
+  const preventLabelEscapeKeyExit = (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   //Update the selected correct value in the QuestionEditor question state
-  const handleChange = (e) => {
+  const handleRadioGroupChange = (e) => {
     const returnVal = answerValues.map((item) => {
       if (item.id === e.target.value) {
-        return { ...item, isCorrect: true };
+        return { ...item, isCorrect: !item.isCorrect };
       } else {
         return { ...item, isCorrect: false };
       }
@@ -43,10 +51,10 @@ const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLas
 
   //Prevent escape closing the form
   //TODO change this to form not closing on escape in general
-  const handleKeyDown = (e) => {
+  const radioPreventSubmission = (e) => {
     e.stopPropagation();
-
     if (e.key === "Enter") {
+      handleRadioGroupChange(e);
       e.preventDefault();
     }
 
@@ -76,19 +84,22 @@ const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLas
   //JSX
   return (
     <FormControl>
-      <RadioGroup value={radioGroupValue} onChange={handleChange}>
+      <RadioGroup value={radioGroupValue} onChange={handleRadioGroupChange}>
         {answerValues?.map((item) => {
           const { id, text } = item;
           return (
             <FormControlLabel
               onClick={() => selected(id)}
-              onKeyDown={handleKeyDown}
+              onKeyDown={preventLabelEscapeKeyExit}
+              data-testid={id}
               className={`${lastSelected === id ? "lastSelected" : ""}`}
               key={id}
+              name='FormControl'
               value={id}
               control={
                 <Radio
                   className='formControlLabel-radio'
+                  onKeyDown={radioPreventSubmission}
                   sx={{
                     color: "var(--custom-prime-color)",
                     "&.Mui-checked": {

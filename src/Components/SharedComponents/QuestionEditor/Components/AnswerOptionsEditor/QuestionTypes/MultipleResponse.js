@@ -7,8 +7,16 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //Component
 const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSelected }) => {
-  //Handle selection change
-  const handleChange = (e) => {
+  //Prevent the modal from closing when hitting escape while on the checkbox
+  const preventLabelEscapeKeyExit = (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  //Handle the change to the checkbox change
+  const handleCheckBoxChange = (e) => {
     const returnVal = options.map((option) => {
       if (option.id === e.target.value) {
         return { ...option, isCorrect: !option.isCorrect };
@@ -20,16 +28,16 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
     handleEditorChange(returnVal);
   };
 
-  //Update checkbox state on enter keypress
-  const handleCheckBoxKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleChange(e);
-      e.preventDefault();
-    }
-  };
-
   //Update text of the option in the QuestionEditor question state
-  const updateText = (e, id) => {
+  const handleCheckBoxInputChange = (e, id) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (e.key === "Escape") {
+      setLastSelected("");
+      return;
+    }
+
     const returnVal = options.map((item) => {
       if (item.id === id) {
         return { ...item, text: e.target.value };
@@ -41,7 +49,15 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
     handleEditorChange([...returnVal]);
   };
 
-  //Update selected value (dotted component)
+  //Update checkbox state on enter keypress on the checkbox
+  const checkBoxPreventSubmission = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleCheckBoxChange(e);
+    }
+  };
+
+  //Update selected value (dotted line)
   const selected = (id) => {
     setLastSelected(id);
   };
@@ -53,6 +69,7 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
           return (
             <FormControlLabel
               onClick={() => selected(option.id)}
+              onKeyDown={preventLabelEscapeKeyExit}
               key={option.id}
               value={option.id}
               className={`formControlLabel ${lastSelected === option.id ? "lastSelected" : ""}`}
@@ -60,8 +77,8 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
               control={
                 <Checkbox
                   checked={option.isCorrect || false}
-                  onKeyDown={(e) => handleCheckBoxKeyPress(e)}
-                  onChange={handleChange}
+                  onChange={handleCheckBoxChange}
+                  onKeyDown={checkBoxPreventSubmission}
                   className='formControlLabel-checkbox'
                   data-testid={`formControlLabel-checkbox-${index}`}
                   sx={{
@@ -77,7 +94,7 @@ const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSe
                   spellCheck='false'
                   autoComplete='false'
                   className='editor-label-textarea'
-                  onChange={(e) => updateText(e, option.id)}
+                  onChange={(e) => handleCheckBoxInputChange(e, option.id)}
                   value={option.text}
                 />
               }

@@ -29,7 +29,7 @@ const transformAnswerOptions = (answerOptions) => {
           !item.endsWith("\n\n") &&
           index < splitOption.length - 1
         ) {
-          return item.concat("  \n");
+          return item.concat("\n");
         } else {
           return item;
         }
