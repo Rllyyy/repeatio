@@ -1,6 +1,8 @@
+//Fetch the module from the public folder
 export default async function fetchModuleFromPublicFolder() {
   try {
-    const data = await fetch("data.json", { mode: "no-cors" });
+    const data = await fetch("/data.json", { mode: "no-cors" });
+
     const toJsObject = await data.json();
 
     if (data.ok) {

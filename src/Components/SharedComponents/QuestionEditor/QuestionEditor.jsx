@@ -203,7 +203,7 @@ const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
       isOpen={isOpen}
       handleModalClose={handleModalClose}
       title={prevQuestionID ? "Edit Question" : "Add Question"}
-      desktopModalHeight='90%'
+      desktopModalHeight='90vh'
     >
       <form className='add-question-form' onSubmit={handleSubmit}>
         {/* ID */}

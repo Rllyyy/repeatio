@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
   grid-gap: 12px;
-  margin: 10px 0 100px 0;
+  margin: 10px 0 20px 0;
 }
 
 /* Media Query for phones */

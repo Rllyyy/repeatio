@@ -5,10 +5,22 @@
 
   top: 0;
   bottom: 0;
+  height: 100vh;
+
+  grid-column: 1;
+  grid-row: 1/2;
+
+
+
+  /* left: 0; */
+
+  /* align-self: start; */
 
   /*Link width + Link padding (10px on each side)*/
   max-width: 64px;
-  height: 100vh;
+  /* height: 100%; */
+
+  /* align-self: end end; */
 
   background-color: rgb(12, 12, 20);
 

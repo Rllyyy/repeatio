@@ -24,15 +24,12 @@
 }
 
 .import-create-module {
-  height: 100%;
   min-height: 380px;
 
-  padding: 20px;
+  padding: 20px 20px 20px 20px;
   display: grid;
-  grid-template-columns: calc(50% - 21px) max-content calc(50% - 21px);
+  grid-template-columns: 1fr max-content 1fr;
   column-gap: 20px;
-
-  overflow-y: auto;
 }
 
 .import-module {
@@ -213,8 +210,6 @@
   width: 100%;
   max-width: 500px;
   place-self: center center;
-
-  /* background-color: lightblue; */
 }
 
 .create-module>div {
@@ -236,6 +231,7 @@
 
   border: 1px solid var(--custom-border-color-lighter);
   border-radius: 5px;
+  outline-offset: -1px;
 }
 
 .create-module #create-module-compatibility-input {
@@ -294,10 +290,17 @@
 @media screen and (max-width: 650px) {
   .import-create-module {
     grid-template-columns: none;
-    grid-template-rows: auto max-content auto;
+    grid-template-rows: 1fr min-content 1fr;
     column-gap: 0px;
     row-gap: 20px;
-    padding: 15px;
+    padding: 15px 15px 0 15px;
+  }
+
+  /* Fix so that the padding at the bottom doesn't collapse. Idk why */
+  .import-create-module:after {
+    content: "";
+    display: block;
+    height: 15px;
   }
 
   .import-create-module .line {

@@ -162,7 +162,6 @@
 
 /* Targets the question-correction section*/
 .question-correction {
-  width: fit-content;
   margin: 15px 0 5px 0;
   padding: 10px;
   border-radius: 5px;
@@ -442,11 +441,9 @@
 @media only screen and (pointer: coarse),
 only screen and (pointer: fine) and (max-width: 650px) {
   .question-form {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 120px);
     /*The viewport of mobile devices includes the address bar. Because why not. */
     margin-bottom: 0;
-    -moz-margin-bottom: 50px;
-    /*Because firefox mobile has the address bar at the bottom. Otherwise there would be a black background at the bottom*/
   }
 
   .question-data {

@@ -29,7 +29,7 @@ _Learn, repeat and memorize tasks with repeatio._
 }
 ```
 
-**_[View File Example](/public/data.json)_** and **[interactive result](https://repeatio.netlify.app/#/module/types_1/all-questions)**
+**_[View File Example](/public/data.json)_** and **[interactive result](https://repeatio.netlify.app/module/types_1/all-questions)**
 
 ### Question Types
 
@@ -84,7 +84,7 @@ _Learn, repeat and memorize tasks with repeatio._
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-1?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-1?mode=chronological)_**
 
 </details>
 
@@ -137,7 +137,7 @@ _Learn, repeat and memorize tasks with repeatio._
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-2?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-2?mode=chronological)_**
 
 </details>
 
@@ -173,7 +173,7 @@ _Learn, repeat and memorize tasks with repeatio._
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-3?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-3?mode=chronological)_**
 
 </details>
 
@@ -219,7 +219,7 @@ _Learn, repeat and memorize tasks with repeatio._
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-4?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-4?mode=chronological)_**
 
 </details>
 
@@ -276,7 +276,7 @@ _Learn, repeat and memorize tasks with repeatio._
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/#/module/types_1/question/qID-5?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-5?mode=chronological)_**
 
 </details>
 
@@ -515,6 +515,7 @@ Some question types and features can't yet be used through the UI. Instead users
 Some general tips:
 
 - Fields can not be empty (provide an empty string instead)
+- Option fields for a question can be left out, but remember to remove the whole property (key-value pair)
 - Normal quotes don't work (`"text"`) use unicode U+201E/U+201C instead (`„text“`) or escape the string like this `\"text\"`
 - .json key-value properties have to be separated by a comma from the next one
 - The .json key value (left side of a property) has to be a string

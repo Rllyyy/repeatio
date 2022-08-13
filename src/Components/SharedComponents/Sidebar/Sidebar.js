@@ -3,7 +3,7 @@ import "./Sidebar.css";
 
 //Components
 import Hamburger from "./Components/Hamburger.js";
-import Categories from "./Components/Categories.js";
+import { Categories } from "./Components/Categories.js";
 
 //Component
 const Sidebar = () => {

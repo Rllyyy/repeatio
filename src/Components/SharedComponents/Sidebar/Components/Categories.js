@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 //Import Icons
@@ -30,7 +30,7 @@ const navbarCategories = [
   { className: "settings", linkTo: "settings", icon: <RiSettings4Fill className='category-icon' />, text: "Settings" },
 ];
 
-const Categories = ({ setExpandSidebar, expandSidebar }) => {
+const Categories = memo(({ setExpandSidebar, expandSidebar }) => {
   const [isMobile, setIsMobile] = useState();
   const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
 
@@ -84,16 +84,19 @@ const Categories = ({ setExpandSidebar, expandSidebar }) => {
           <Link
             to={`/${linkTo}`}
             key={className}
-            onClick={() => closeMenuOnMobileClick()}
+            onClick={closeMenuOnMobileClick}
             className={`${className}${currentlyViewedCategory === linkTo ? " currentView" : ""}`}
           >
             {icon}
-            <p className={`category-title ${expandSidebar && "sidebar-button-expanded"}`}>{text}</p>
+
+            <p className={`category-title ${expandSidebar && "sidebar-button-expanded"}`} aria-hidden={!expandSidebar}>
+              {text}
+            </p>
           </Link>
         );
       })}
     </div>
   );
-};
+});
 
-export default React.memo(Categories);
+export { Categories, navbarCategories };

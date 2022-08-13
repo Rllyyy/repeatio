@@ -1,7 +1,7 @@
 //Import React
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 //Import Css
 import "./index.css";
@@ -17,6 +17,9 @@ import News from "./Components/Main/News.js";
 import Module from "./Components/Main/Module/Module.js";
 import { Question } from "./Components/Main/Question/Question.js";
 import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions.js";
+import Footer from "./Components/SharedComponents/Footer/Footer.jsx";
+import LegalNotice from "./Components/Main/LegalNotice.jsx";
+import Privacy from "./Components/Main/Privacy.jsx";
 
 //Context
 import { ModuleProvider } from "./Context/ModuleContext.js";
@@ -29,10 +32,10 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <Sidebar />
       <ScrollToTop>
-        <main id='main'>
+        <main>
           <Switch>
             <Route exact path='/' component={Home} />
             <Route exact path='/tutorials' component={Tutorials} />
@@ -40,6 +43,8 @@ ReactDOM.render(
             <Route exact path='/thanks' component={Thanks} />
             <Route exact path='/news' component={News} />
             <Route exact path='/settings' component={Settings} />
+            <Route exact path='/legal-notice' component={LegalNotice} />
+            <Route exact path='/privacy' component={Privacy} />
             <ModuleProvider>
               <Route exact path='/module/:moduleID' component={Module} />
               <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
@@ -47,8 +52,9 @@ ReactDOM.render(
             </ModuleProvider>
           </Switch>
         </main>
+        <Footer>Footer</Footer>
       </ScrollToTop>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
