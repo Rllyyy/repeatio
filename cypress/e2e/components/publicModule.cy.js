@@ -13,8 +13,8 @@ describe("Test the module that is provided by the public folder", () => {
     cy.contains("View").click();
 
     cy.contains("Question Types (types_1)").should("be.visible");
-
-    cy.contains("Chronological").click();
+    //Click on start in practice
+    cy.contains("Practice").parent().parent().contains("Start").click();
 
     //Multiple Choice
     cy.contains("Exactly one option can be correct").click();

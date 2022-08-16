@@ -1,10 +1,10 @@
-import { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "../../../Context/ModuleContext.js";
 
 //Components
 import SiteHeading from "../../SharedComponents/SiteHeading/SiteHeading.jsx";
-import Card from "../../SharedComponents/Card/Card.js";
+import { Card, LinkElement, ButtonElement } from "../../SharedComponents/Card/Card.js";
 import Spinner from "../../SharedComponents/Spinner/Spinner.js";
 import QuestionEditor from "../../SharedComponents/QuestionEditor/QuestionEditor.jsx";
 
@@ -131,88 +131,64 @@ const Module = () => {
       title: "Practice",
       description: "Practice all questions in chronological or random order",
       icon: <AiOutlineBook />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Chronological",
-        function: onChronologicalClick,
-      },
-      rightBottom: {
-        type: "button",
-        buttonText: "Random",
-        function: onRandomClick,
-      },
+      bottom: [
+        <ButtonElement key='practice-chronological' handleClick={onChronologicalClick} buttonText='Start' />,
+        <ButtonElement key='practice-random' handleClick={onRandomClick} buttonText='Random' />,
+      ],
     },
     {
       title: "Exam",
       disabled: true,
       description: "Simulate an exam",
       icon: <FaGraduationCap />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Start",
-      },
+      bottom: [<ButtonElement key='exam-start' buttonText='Start' />],
     },
     {
       title: "Question Overview",
       description: "View, filter and sort all questions",
       icon: <BsListOl />,
-      leftBottom: {
-        type: "link",
-        linkTo: `/module/${moduleID}/all-questions`,
-        linkAriaLabel: "View all Questions",
-        linkText: "View",
-      },
+      bottom: [
+        <LinkElement
+          key='overview-view'
+          linkTo={`/module/${moduleID}/all-questions`}
+          linkAriaLabel='View all Questions'
+          linkText='View'
+        />,
+      ],
     },
     {
       title: "Add Question",
       disabled: false,
       description: "Add a missing question",
       icon: <BsPlusCircle />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Add",
-        function: handleAddQuestionClick,
-      },
+      bottom: [<ButtonElement key='add-question' handleClick={handleAddQuestionClick} buttonText='Add' />],
     },
     {
       title: "Last 30 Mistakes",
       disabled: true,
       description: "Train the last 30 mistakes",
       icon: <BsExclamationTriangle />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Start",
-      },
+      bottom: [<ButtonElement key='30-mistakes' buttonText='Start' />],
     },
     {
       title: "Saved Questions",
       description: "Train with your saved questions",
       icon: <MdBookmark />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Start",
-        function: onSavedQuestionsClick,
-      },
+      bottom: [<ButtonElement key='saved-questions' buttonText='Start' handleClick={onSavedQuestionsClick} />],
     },
     {
       title: "Statistics",
       disabled: true,
       description: "",
       icon: <BiStats />,
-      leftBottom: {
-        type: "button",
-        buttonText: "View",
-      },
+      bottom: [<ButtonElement key='statistics-view' buttonText='View' />],
     },
     {
-      title: "Info",
+      title: "Module Info",
       disabled: true,
       description: "",
       icon: <AiOutlineEdit />,
-      leftBottom: {
-        type: "button",
-        buttonText: "Edit",
-      },
+      bottom: [<ButtonElement key='info' buttonText='View' />],
     },
   ];
 
@@ -231,18 +207,19 @@ const Module = () => {
       <SiteHeading title={`${module.name} (${module.id})`} />
       <div className='module-cards'>
         {moduleCards.map((card) => {
-          const { title, disabled, description, icon, leftBottom, rightBottom } = card;
+          const { title, disabled, description, icon, bottom } = card;
           return (
             <Card
               key={title}
+              data-cy={title}
               disabled={disabled}
               type='module-card'
               title={title}
               description={description}
               icon={icon}
-              leftBottom={leftBottom}
-              rightBottom={rightBottom}
-            />
+            >
+              {bottom}
+            </Card>
           );
         })}
       </div>
