@@ -10,7 +10,6 @@
 }
 
 .question-multiple-response .MuiFormControlLabel-root {
-  /* width: 100% !important; */
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -34,23 +33,6 @@
 
 .question-multiple-response .Mui-disabled .formControlLabel-typography {
   color: grey;
-}
-
-/* Style lists set with react markdown */
-.question-multiple-response ul li,
-.question-multiple-response ol li {
-  list-style-position: inside;
-}
-
-/* Style the image that can be set with MarkDown */
-.question-multiple-response .MuiFormControlLabel-root p img {
-  display: block;
-  font-size: 1rem;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
-  max-width: 550px;
-  max-height: 300px;
 }
 
 /* For the correction */

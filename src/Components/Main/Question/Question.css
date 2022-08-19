@@ -7,12 +7,55 @@
   border-radius: 5px;
   border: 1px solid var(--custom-border-color-lighter);
   overflow: hidden;
-  white-space: pre-line;
 
   display: grid;
   grid-template-rows: 1fr min-content;
 }
 
+/* Markdown specific */
+.question-form p {
+  white-space: pre-line;
+}
+
+/* Markdown lists */
+.question-form ul li,
+.question-form ol li {
+  font-weight: inherit;
+  list-style-position: inside;
+}
+
+/* Markdown tables*/
+.question-form table {
+  margin: 5px 0;
+  border-collapse: collapse;
+}
+
+.question-form table,
+.question-form th,
+.question-form td {
+  border: 1px solid var(--custom-secondary-color);
+}
+
+.question-form th,
+.question-form td {
+  padding: 5px 10px;
+  height: 30px;
+  /* Tables grow when this value (height) is to short. Think like min-height */
+}
+
+/* Markdown images */
+.question-form .question-title img {
+  display: block;
+  font-size: 1rem;
+  margin: 2px 0;
+  object-fit: contain;
+  object-position: left center;
+  width: 100%;
+  max-width: 550px;
+  max-height: 300px;
+}
+
+/* All buttons */
 .question-form button:not(:disabled) {
   appearance: none;
   outline: none;
@@ -22,8 +65,8 @@
 .question-data {
   position: relative;
   height: 100%;
-  padding: 20px 15px 20px 20px;
-  overflow-y: auto;
+  padding: 20px 10px 20px 20px;
+  overflow-y: scroll;
 }
 
 .question-id-progress-wrapper {
@@ -34,15 +77,10 @@
   align-items: center;
 }
 
-.question-id-progress-wrapper>p {
-  color: var(--custom-secondary-color);
-}
-
 .question-id-progress-wrapper>.question-id {
   font-size: 0.9rem;
   font-weight: 450;
   line-height: 1;
-  color: var(--custom-secondary-color);
   padding: 6px;
   background-color: rgba(90, 90, 245, 0.3);
   border: 2px solid var(--custom-prime-color);
@@ -71,45 +109,8 @@
 
 /* Targets the markdown (image) in the title */
 .question-form .question-title img {
-  display: block;
-  font-size: 1rem;
-  margin: 2px 0;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
   max-width: 700px;
   max-height: 500px;
-}
-
-/* Target lists in the title of the question */
-.question-title ul li,
-.question-title ol li {
-  font-weight: inherit;
-  list-style-position: inside;
-}
-
-/* Target lists in the title of the question */
-.question-title ul li,
-.question-title ol li {
-  font-weight: inherit;
-  list-style-position: inside;
-}
-
-/* Target table element in the title of the question */
-.question-title table {
-  margin: 5px 0;
-  border-collapse: collapse;
-}
-
-.question-title table,
-.question-title th,
-.question-title td {
-  border: 1px solid var(--custom-secondary-color);
-}
-
-.question-title th,
-.question-title td {
-  padding: 5px 10px;
 }
 
 /* Style the question points */
@@ -135,29 +136,6 @@
   width: 100%;
   max-width: 700px;
   max-height: 500px;
-}
-
-/* Targets the markdown list in the question type help */
-.question-type-help ul li,
-.question-type-help ol li {
-  list-style-position: inside;
-}
-
-/* Target table element in the title of the question */
-.question-type-help table {
-  margin: 5px 0;
-  border-collapse: collapse;
-}
-
-.question-type-help table,
-.question-type-help th,
-.question-type-help td {
-  border: 1px solid var(--custom-secondary-color);
-}
-
-.question-type-help th,
-.question-type-help td {
-  padding: 5px 10px;
 }
 
 /* Targets the question-correction section*/
@@ -447,7 +425,7 @@ only screen and (pointer: fine) and (max-width: 650px) {
   }
 
   .question-data {
-    padding: 10px 7px 10px 12px;
+    padding: 10px 2px 10px 12px;
   }
 
   .question-id-progress-wrapper>.question-progress {

@@ -41,6 +41,18 @@ const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {
     }
   };
 
+  const customStyle = (option) => {
+    if (!formDisabled) return;
+
+    if (option.isCorrect && option.id === radioGroupValue) {
+      return { outline: "1px solid green" };
+    } else if (!option.isCorrect && option.id === radioGroupValue) {
+      return { outline: "1px solid red" };
+    } else if (option.isCorrect && option.id !== radioGroupValue) {
+      return { outline: "1px solid red" };
+    }
+  };
+
   //Run shuffle function on first render of component
   useLayoutEffect(() => {
     //Update the state with the new shuffled array
@@ -106,6 +118,7 @@ const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {
               <FormControlLabel
                 key={option.id}
                 className='formControlLabel'
+                style={customStyle(option)}
                 value={option.id}
                 onKeyDown={(e) => handleRadioEnter(e, option.id)}
                 data-testid={option.id}

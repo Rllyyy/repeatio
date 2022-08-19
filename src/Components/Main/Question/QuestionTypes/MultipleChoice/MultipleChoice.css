@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+  border-radius: 3px;
+  margin-bottom: 5px;
 }
 
 .question-multiple-choice .MuiFormControlLabel-root,
@@ -54,25 +56,6 @@ This is the only way if found to have it still animated but disable the out anim
   bottom: 0;
   font-weight: 900;
   font-size: 24px;
-}
-
-/* Style the image that can be set with MarkDown */
-.question-multiple-choice .formControlLabel p img {
-  display: block;
-  font-size: 1rem;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
-  max-width: 550px;
-  max-height: 300px;
-}
-
-/* Style list set with Markdowns html */
-.question-multiple-choice ul li,
-.question-multiple-choice ol li,
-.correction-multipleChoice-list ul li,
-.correction-multipleChoice-list ol li {
-  list-style-position: inside;
 }
 
 /* Media Query for phones */

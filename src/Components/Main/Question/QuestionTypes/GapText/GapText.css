@@ -17,42 +17,15 @@
   border-radius: 3px;
 }
 
-/* Markdown specific */
 .question-gap-text,
-.correction-gap-text {
-  display: inline;
-}
-
+.correction-gap-text,
 .question-gap-text p,
-.correction-gap-text p {
-  display: inline;
-}
-
+.correction-gap-text p,
 .question-gap-text div,
-.correction-gap-text div {
-  display: inline;
-}
-
+.correction-gap-text div,
 .question-gap-text input,
 .correction-gap-text input {
   display: inline;
-}
-
-.question-gap-text table,
-.correction-gap-text table {
-  margin: 5px 0;
-  border: 1px solid black;
-  border-collapse: collapse;
-  line-height: 1.5;
-}
-
-.question-gap-text table,
-.question-gap-text th,
-.question-gap-text td,
-.correction-gap-text table,
-.correction-gap-text th,
-.correction-gap-text td {
-  border: 1px solid black;
 }
 
 .question-gap-text table input,
@@ -66,11 +39,6 @@
 .correction-gap-text th,
 .correction-gap-text td {
   padding: 1px 10px;
-}
-
-.question-gap-text ul li,
-.question-gap-text ol li {
-  list-style-position: inside;
 }
 
 .question-gap-text input:enabled:focus,

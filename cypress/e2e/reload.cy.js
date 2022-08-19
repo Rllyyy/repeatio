@@ -31,14 +31,9 @@ describe("Refresh", () => {
 
   it("should display same content after reload in a module from localStorage", () => {
     //Add the module from the fixtures folder
-    cy.contains("Add Module").click();
-    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
-      cy.get('input[type="file"]').attachFile({
-        fileContent: fileContent,
-        fileName: "repeatio-module-cypress_1.json",
-      });
+    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
+      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
     });
-    cy.get("form.import-module").contains("button", "Add").click();
 
     //Navigate to practice in added component and reload
     cy.get("article[data-cy='module-cypress_1']").contains("View").click();

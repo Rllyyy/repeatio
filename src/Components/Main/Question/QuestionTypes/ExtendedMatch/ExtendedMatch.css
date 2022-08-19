@@ -70,9 +70,6 @@
 /* Images */
 .extended-match-grid .ext-match-element-text img,
 .extended-match-grid-solution .ext-match-element-text img {
-  display: block;
-  object-fit: contain;
-  width: 100%;
   max-height: 400px;
 }
 
