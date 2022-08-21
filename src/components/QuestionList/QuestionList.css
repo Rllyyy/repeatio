@@ -1,0 +1,145 @@
+/* Table */
+.question-table {
+  margin: 20px 0 100px 0;
+  width: 100%;
+  counter-reset: section;
+}
+
+.question-table .question {
+  display: grid;
+  grid-template-columns: min-content 1fr min-content 4rem max-content;
+  align-items: center;
+  justify-content: center;
+
+
+  font-size: 18px;
+  min-height: 5rem;
+  margin-bottom: 10px;
+  background-color: white;
+
+  border-radius: 5px;
+  border: 1px solid var(--custom-border-color-lighter);
+}
+
+.question-table .custom-checkbox-root .MuiSvgIcon-root {
+  height: 1.6rem;
+  width: 1.6rem;
+}
+
+.question-table .index,
+.question-table .button-to-question,
+.question-table .id {
+  justify-self: center;
+}
+
+.question-table .title {
+  display: inline;
+
+  font-weight: 450;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  padding: 0 5px 0 2px;
+}
+
+.question-table .title::before {
+  /* create number before title */
+  counter-increment: section;
+  content: counters(section, ".") ". ";
+}
+
+.question-table .id {
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  padding: 0 10px 0 5px;
+}
+
+.question-table .results {
+  width: 100%;
+  display: flex;
+  padding: 0 0.15rem;
+  justify-content: space-around;
+}
+
+.question-table .results .rectangle {
+  height: 1.4rem;
+  width: 1.4rem;
+  background-color: rgb(234, 233, 240);
+  border-radius: 5px;
+}
+
+.question-table .button-to-question {
+  height: 100%;
+  width: 60px;
+  cursor: pointer;
+
+  /* Reset default button values*/
+  border: none;
+  appearance: none;
+  outline: none;
+  background-color: transparent;
+
+  border-radius: 5px;
+
+}
+
+.question-table .button-to-question:focus-visible {
+  /* outline: 2px solid var(--custom-prime-color); */
+  /* outline-offset: -10px; */
+  box-shadow: inset 0px 0px 0px 3px var(--custom-prime-color);
+}
+
+
+.question-table .button-to-question svg {
+  height: 35px;
+  width: 35px;
+  color: rgb(18, 24, 40);
+}
+
+/* Media Query for devices that can hover (desktop, not phones) */
+@media (pointer: fine) {
+  .question-table .button-to-question:hover svg {
+    color: var(--custom-prime-color);
+  }
+}
+
+/* Media Query for phones */
+@media (max-width: 650px) {
+  .question-table .question {
+    grid-template-columns: min-content 1fr 3.2rem max-content;
+  }
+
+  .question-table .question-checkbox {
+    padding: 0 8px 0 10px !important;
+  }
+
+  .question-table .custom-checkbox-root .MuiSvgIcon-root {
+    height: 1.8rem;
+    width: 1.8rem;
+  }
+
+  .question-table .title {
+    padding: 0;
+  }
+
+  .question-table .id {
+    display: none;
+  }
+
+  .question-table .results {
+    justify-content: space-between;
+  }
+
+  .question-table .results .rectangle {
+    height: 1.3rem;
+    width: 1.3rem;
+  }
+
+  .question-table .button-to-question {
+    width: 40px;
+  }
+}
