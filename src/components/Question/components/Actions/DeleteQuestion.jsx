@@ -107,7 +107,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
 
   //JSX
   return (
-    <button type='button' onClick={handleDelete} disabled={disabled}>
+    <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question'>
       <BiTrash />
     </button>
   );

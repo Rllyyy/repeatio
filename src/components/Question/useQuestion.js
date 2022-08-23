@@ -61,7 +61,7 @@ export const useQuestion = () => {
       return;
     }
     //Guard to refetch context (could for example happen on F5)
-    if (filteredQuestions.length <= 0) {
+    if (filteredQuestions?.length <= 0) {
       setContextModuleID(params.moduleID);
       return;
     }

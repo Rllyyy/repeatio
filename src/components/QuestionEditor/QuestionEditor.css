@@ -1,15 +1,15 @@
-.add-question-form {
+.question-editor-form {
   display: flex;
   flex-direction: column;
   min-height: 100%;
   padding: 20px 25px 20px 25px;
 }
 
-.add-question-form>div:not(:last-child) {
+.question-editor-form>div:not(:last-child) {
   margin-bottom: 20px;
 }
 
-.add-question-form>div>label {
+.question-editor-form>div>label {
   font-size: 18px;
   font-weight: 500;
   display: inline-block;
@@ -17,12 +17,13 @@
   margin-bottom: 2px;
 }
 
-.add-question-form>div>input,
-.add-question-form div>select {
+.question-editor-form>div>input,
+.question-editor-form div>select,
+.question-editor-form div>textarea {
+  font: inherit;
   font-size: 18px;
-  display: inline-block;
   width: 100%;
-  padding: 10px;
+  padding: 6px 10px;
 
   background-color: transparent;
   outline: none;
@@ -32,28 +33,38 @@
   border-radius: 5px;
 }
 
-.add-question-form div>select {
+.question-editor-form>div>input,
+.question-editor-form div>select {
+  display: inline-block;
+}
+
+.question-editor-form div>textarea {
+  resize: none;
+}
+
+.question-editor-form>div>.question-editor-form div>select {
   cursor: pointer;
 }
 
-.add-question-form>div>input:focus-visible,
-.add-question-form>div>#modal-question-type-select:focus-visible {
+.question-editor-form>div>input:focus-visible,
+.question-editor-form>div>#modal-question-type-select:focus-visible,
+.question-editor-form div>textarea:focus-visible {
   outline: 2px solid var(--custom-prime-color);
 }
 
-.add-question-form .modal-question-type-select {
+.question-editor-form .modal-question-type-select {
   cursor: pointer;
 }
 
-.add-question-form .modal-question-type-select input {
+.question-editor-form .modal-question-type-select input {
   cursor: pointer;
 }
 
-.add-question-form .buttons {
+.question-editor-form .buttons {
   margin-top: auto;
 }
 
-.add-question-form .buttons button {
+.question-editor-form .buttons button {
   all: unset;
   cursor: pointer;
   padding: 10px 20px;
@@ -68,54 +79,54 @@
   max-width: 100px;
 }
 
-.add-question-form .buttons .update-add-question {
+.question-editor-form .buttons .update-add-question {
   color: var(--custom-tertiary-color);
   background-color: var(--custom-prime-color);
 }
 
-.add-question-form .buttons .update-add-question:active {
+.question-editor-form .buttons .update-add-question:active {
   background-color: var(--custom-prime-color-dark);
 }
 
-.add-question-form .buttons .cancel {
+.question-editor-form .buttons .cancel {
   /* background-color: var(--custom-tertiary-color); */
   box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
 }
 
-.add-question-form .buttons .update-add-question:focus-visible,
-.add-question-form .buttons .cancel:focus-visible {
+.question-editor-form .buttons .update-add-question:focus-visible,
+.question-editor-form .buttons .cancel:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 5px;
 }
 
 /* Media Query for devices that can hover */
 @media screen and (hover: hover) and (pointer: fine) {
-  .add-question-form .buttons .update-add-question:hover {
+  .question-editor-form .buttons .update-add-question:hover {
     background-color: var(--custom-prime-color-dark);
   }
 
-  .add-question-form .buttons .cancel:hover {
+  .question-editor-form .buttons .cancel:hover {
     background-color: var(--custom-tertiary-color);
   }
 }
 
 /* Media Query for smaller screens */
 @media only screen and (max-width: 650px) {
-  .add-question-form>div>label {
+  .question-editor-form>div>label {
     font-size: 20px;
   }
 
-  .add-question-form {
+  .question-editor-form {
     padding: 20px;
   }
 
-  .add-question-form .buttons {
+  .question-editor-form .buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
 
-  .add-question-form .buttons button {
+  .question-editor-form .buttons button {
     margin: 0;
   }
 }

@@ -10,22 +10,22 @@
         "help": "Please choose the correct answer.",
         "answerOptions": [
           {
-            "id": "option-1",
+            "id": "option-0",
             "text": "All options can be correct",
             "isCorrect": false
           },
           {
-            "id": "option-2",
+            "id": "option-1",
             "text": "One or more options can be correct",
             "isCorrect": false
           },
           {
-            "id": "option-3",
+            "id": "option-2",
             "text": "No option can be correct",
             "isCorrect": false
           },
           {
-            "id": "option-4",
+            "id": "option-3",
             "text": "Exactly one option can be correct",
             "isCorrect": true
           }
@@ -39,32 +39,32 @@
         "help": "Please choose the correct answer(s).",
         "answerOptions": [
           {
-            "id": "option-1",
+            "id": "option-0",
             "text": "All options can be correct",
             "isCorrect": true
           },
           {
-            "id": "option-2",
+            "id": "option-1",
             "text": "One or more options can be correct",
             "isCorrect": true
           },
           {
-            "id": "option-3",
+            "id": "option-2",
             "text": "No option can be correct",
             "isCorrect": false
           },
           {
-            "id": "option-4",
+            "id": "option-3",
             "text": "One option can be correct",
             "isCorrect": true
           },
           {
-            "id": "option-5",
+            "id": "option-4",
             "text": "This question type is identical with Multiple-Choice questions",
             "isCorrect": false
           },
           {
-            "id": "option-6",
+            "id": "option-5",
             "text": "Half points can be awarded if 50% of the options are correct",
             "isCorrect": false
           }

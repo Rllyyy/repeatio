@@ -14,7 +14,7 @@ export const EditQuestion = ({ prevQuestionID, disabled }) => {
   };
   return (
     <>
-      <button type='button' onClick={() => setShowModal(true)} disabled={disabled}>
+      <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
       {showModal && (

@@ -76,11 +76,11 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
   return (
     <div className='editor'>
       <div className={`editor-toolbar ${!questionType ? "disabled" : "enabled"}`}>
-        <button type='button' onClick={addElement}>
+        <button type='button' onClick={addElement} id='editor-add-item'>
           <CgExtensionAdd />
         </button>
-        <button type='button' onClick={removeElement}>
-          <CgExtensionRemove className='remove-item' />
+        <button type='button' onClick={removeElement} id='editor-remove-item'>
+          <CgExtensionRemove />
         </button>
       </div>
 

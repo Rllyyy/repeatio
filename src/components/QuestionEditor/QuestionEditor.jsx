@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
+import PropTypes from "prop-types";
 
 //Context
 import { ModuleContext } from "../Module/ModuleContext.js";
@@ -8,39 +9,10 @@ import { ModuleContext } from "../Module/ModuleContext.js";
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { AnswerOptionsEditor } from "./AnswerOptionsEditor/AnswerOptionsEditor";
-import { EditorFormInput } from "./EditorFormInput.js";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //CSS
 import "./QuestionEditor.css";
-
-//Add new line but not for html elements
-const transformAnswerOptions = (answerOptions) => {
-  const returnValue = [...answerOptions];
-  if (Array.isArray(answerOptions)) {
-    answerOptions = answerOptions.map((option) => {
-      const splitOption = option.text.split(/\n\r?/g);
-
-      const optionWithLineBreaks = splitOption?.map((item, index) => {
-        //Don't add new line where there is html, manual set new lines or at the end.
-        if (
-          !item.startsWith("<") &&
-          !item.endsWith(">") &&
-          !item.endsWith("\n") &&
-          !item.endsWith("\n\n") &&
-          index < splitOption.length - 1
-        ) {
-          return item.concat("\n");
-        } else {
-          return item;
-        }
-      });
-
-      return { ...option, text: optionWithLineBreaks.join("") };
-    });
-  }
-
-  return returnValue;
-};
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
@@ -133,7 +105,6 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
     const output = {
       ...question,
       points: parseFloat(question.points) || null,
-      answerOptions: transformAnswerOptions(question.answerOptions),
     };
 
     //Adding or updating a question
@@ -205,29 +176,29 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
       title={prevQuestionID ? "Edit Question" : "Add Question"}
       desktopModalHeight='90vh'
     >
-      <form className='add-question-form' onSubmit={handleSubmit}>
+      <form className='question-editor-form' onSubmit={handleSubmit}>
         {/* ID */}
         <EditorFormInput
           labelText='ID'
           value={question.id}
           type='text'
           placeholder='MOD01-1'
-          onChange={handleChange}
+          handleChange={handleChange}
           required
         />
         {/* Title */}
-        <EditorFormInput labelText='Title' value={question.title} onChange={handleChange} type='text' />
+        <EditorFormTextarea labelText='Title' value={question.title} handleChange={handleChange} />
         {/* Points */}
         <EditorFormInput
           labelText='Points'
           value={question.points}
-          onChange={handleChange}
+          handleChange={handleChange}
           type='number'
           min='0'
           step='any'
         />
         {/* Type help*/}
-        <EditorFormInput labelText='Help' type='string' value={question.help} onChange={handleChange} />
+        <EditorFormTextarea labelText='Help' value={question.help} handleChange={handleChange} />
         {/* Type */}
         <div className='modal-question-type'>
           <label htmlFor='modal-question-type-select'>Type</label>
@@ -267,4 +238,55 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
       </form>
     </CustomModal>
   );
+};
+
+//TEXTAREA for multiline inputs
+const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
+  return (
+    <div className={`modal-question-${labelText}`}>
+      <label htmlFor={`modal-question-${labelText}-textarea`}>{labelText}</label>
+      <TextareaAutosize
+        name={labelText.toLowerCase()}
+        id={`modal-question-${labelText}-textarea`}
+        value={value || ""}
+        onChange={handleChange}
+        {...props}
+      />
+    </div>
+  );
+};
+
+EditorFormTextarea.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
+};
+
+//INPUT for single line inputs
+const EditorFormInput = ({ labelText, type, value, handleChange, ...props }) => {
+  const preventSubmit = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  return (
+    <div className={`modal-question-${labelText}`}>
+      <label htmlFor={`modal-question-${labelText}-input`}>{labelText}</label>
+      <input
+        name={labelText.toLowerCase()}
+        type={type}
+        id={`modal-question-${labelText}-input`}
+        value={value || ""}
+        onChange={handleChange}
+        onKeyDown={preventSubmit}
+        {...props}
+      />
+    </div>
+  );
+};
+
+EditorFormInput.propTypes = {
+  labelText: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired,
 };

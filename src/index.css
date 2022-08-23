@@ -198,7 +198,7 @@ h3 {
 }
 
 p,
-span,
+span:not(.math *):not(.math),
 li,
 label,
 input {

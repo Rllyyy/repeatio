@@ -59,7 +59,7 @@
   height: 100%;
 }
 
-.editor .editor-toolbar button .remove-item {
+.editor .editor-toolbar button#editor-remove-item svg {
   margin-top: 2px;
 }
 
@@ -87,7 +87,6 @@
   margin-right: 15px;
   flex-grow: 1;
   padding: 4px 6px;
-
 
   resize: none;
   outline: none;
