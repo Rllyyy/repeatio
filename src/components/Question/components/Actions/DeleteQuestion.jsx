@@ -95,7 +95,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
     //Update localStorage with filtered out array. If there is no item left, remove from storage.
     if (filteredSavedIDs?.length >= 1) {
       //Update the localStorage
-      localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(filteredSavedIDs), {
+      localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(filteredSavedIDs, null, "\t"), {
         sameSite: "strict",
         secure: true,
       });

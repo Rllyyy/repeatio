@@ -26,7 +26,7 @@ const PopoverButton = ({ handleClick, target }) => {
 //PopoverButton Prop Types
 PopoverButton.propTypes = {
   handleClick: PropTypes.func.isRequired,
-  target: PropTypes.string.isRequired,
+  target: PropTypes.string,
 };
 
 /* ------------------------------- Popover Menu ------------------------------- */
@@ -57,6 +57,10 @@ const StyledMenu = styled((props) => (
     },
     "& .MuiMenuItem-root": {
       color: "inherit",
+      cursor: "pointer",
+      "@media screen and (min-width: 600px)": {
+        minHeight: "auto !important",
+      },
       "&:hover": {
         "@media screen and (pointer: fine) and (hover: hover)": {
           backgroundColor: "rgb(240, 240, 245)",
@@ -103,9 +107,9 @@ PopoverMenu.propTypes = {
 
 /* -------------------------------------- POPOVER MENU ITEM ------------------------------------- */
 //Component
-const PopoverMenuItem = ({ handleClick, text, icon }) => {
+const PopoverMenuItem = ({ handleClick, text, icon, disabled }) => {
   return (
-    <MenuItem onClick={handleClick} disableRipple>
+    <MenuItem onClick={handleClick} disableRipple disabled={disabled}>
       {icon}
       <span>{text}</span>
     </MenuItem>

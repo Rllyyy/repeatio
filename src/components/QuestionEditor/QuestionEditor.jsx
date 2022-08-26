@@ -158,7 +158,7 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
 
       //Update localStorage with the replaced value
       if (savedIDs?.length >= 1) {
-        localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs), {
+        localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs, null, "\t"), {
           sameSite: "strict",
           secure: true,
         });

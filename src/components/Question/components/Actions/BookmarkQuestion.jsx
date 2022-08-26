@@ -20,13 +20,16 @@ export const BookmarkQuestion = ({ questionID, disabled }) => {
 
     if (savedQuestions !== null && !savedQuestions.includes(id)) {
       //Add the id to the localStorage array
-      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify([...savedQuestions, id]), {
+      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify([...savedQuestions, id], null, "\t"), {
         sameSite: "strict",
         secure: true,
       });
     } else {
       //Create localStorage item
-      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify([id]), { sameSite: "strict", secure: true });
+      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify([id], null, "\t"), {
+        sameSite: "strict",
+        secure: true,
+      });
     }
     setSaved(true);
   };
@@ -43,8 +46,13 @@ export const BookmarkQuestion = ({ questionID, disabled }) => {
         `repeatio-marked-${moduleID}`,
         JSON.stringify(
           savedQuestions.filter((qID) => qID !== id),
-          { sameSite: "strict", secure: true }
-        )
+          null,
+          "\t"
+        ),
+        {
+          sameSite: "strict",
+          secure: true,
+        }
       );
     } else {
       //Delete the whole storage item if there was just one item left and it gets removed

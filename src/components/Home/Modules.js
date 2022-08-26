@@ -1,5 +1,4 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
-import { saveAs } from "file-saver";
 import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
 
@@ -12,6 +11,9 @@ import { ProgressPie } from "../Card/ProgressPie.jsx";
 
 //Icons
 import { TbFileExport } from "react-icons/tb";
+
+//Functions
+import { saveFile } from "../../utils/saveFile.js";
 
 //Component
 export const Modules = () => {
@@ -171,38 +173,11 @@ const useHomePopover = () => {
       file = JSON.stringify(publicModule, null, "\t");
     }
 
-    if (!file) {
+    if (file) {
+      await saveFile({ file: file, name: `repeatio-module-${moduleID}` });
+    } else {
+      //TODO notify user
       console.error(`Couldn't find file: repeatio-module-${moduleID}`);
-      handlePopoverClose();
-      return;
-    }
-
-    //Cypress doesn't support the filePicker API
-    if (window.Cypress) {
-      const blob = new Blob([file], { type: "application/json" });
-      saveAs(blob, `repeatio-module-${moduleID}.json`);
-      handlePopoverClose();
-      return;
-    }
-
-    //showSaveFilePicker only works with Chrome/Edge/Opera
-    try {
-      // https://web.dev/file-system-access/
-      const fileHandle = await window.showSaveFilePicker({ suggestedName: `repeatio-module-${moduleID}.json` });
-      // Create a FileSystemWritableFileStream to write to.
-      const writable = await fileHandle.createWritable();
-      // Write the content of the file to the stream.
-      await writable.write(file);
-      // Close the file and write the contents to disk.
-      await writable.close();
-    } catch (e) {
-      //If fileHandle isn't supported, use save-as library and catch aborted error
-      if (e.name === "TypeError") {
-        const blob = new Blob([file], { type: "application/json" });
-        saveAs(blob, `repeatio-module-${moduleID}.json`);
-      } else if (e.name !== "AbortError") {
-        console.warn(e.message);
-      }
     }
 
     handlePopoverClose();

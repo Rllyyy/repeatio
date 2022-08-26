@@ -29,7 +29,7 @@ describe("Test Home Component", () => {
   //Test module that is saved in the localStorage
   it("should show modules that are saved in the localStorage", () => {
     cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
-      localStorage.setItem(`repeatio-module-${fileContent.id}`, JSON.stringify(fileContent));
+      localStorage.setItem(`repeatio-module-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
     });
 
     cy.contains("Cypress Fixture Module").should("be.visible");
@@ -106,7 +106,7 @@ describe("Test Home Component", () => {
     const moduleID = "cypress_1";
     //Add item to localStorage
     cy.fixture(`repeatio-module-${moduleID}.json`).then((fileContent) => {
-      localStorage.setItem(`repeatio-module-${moduleID}`, JSON.stringify(fileContent));
+      localStorage.setItem(`repeatio-module-${moduleID}`, JSON.stringify(fileContent, null, "\t"));
     });
 
     //Click export button
