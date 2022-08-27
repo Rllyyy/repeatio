@@ -22,7 +22,7 @@
 }
 
 .question-multiple-choice .formControlLabel>.formControlLabel-radio:hover {
-  background-color: rgba(90, 90, 245, 0.06);
+  background-color: transparent;
 }
 
 .question-multiple-choice .MuiSvgIcon-root {
@@ -73,9 +73,5 @@ This is the only way if found to have it still animated but disable the out anim
     font-size: 18px;
     padding-top: 10px;
     padding-left: 0;
-  }
-
-  .question-multiple-choice .formControlLabel>.formControlLabel-radio:hover {
-    background-color: transparent;
   }
 }

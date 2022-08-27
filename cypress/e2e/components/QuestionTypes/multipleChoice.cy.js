@@ -91,6 +91,18 @@ describe("Multiple Choice", () => {
     cy.get("label[data-testid='option-2']").should("have.css", "outline", "rgb(255, 0, 0) solid 1px");
     cy.get("label[data-testid='option-3']").should("have.css", "outline", "rgb(255, 0, 0) solid 1px");
   });
+
+  //Test if the out animation for material uis radios is removed
+  it("should have no material ui out animation", () => {
+    cy.get("input[type='radio']")
+      .not("checked")
+      .parent()
+      .find("span")
+      .first()
+      .find("svg")
+      .last()
+      .should("have.css", "transition", "transform 0s cubic-bezier(0.4, 0, 1, 1) 0s");
+  });
 });
 
 /** //TODO testing
