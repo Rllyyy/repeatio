@@ -18,7 +18,7 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.contains("h1", "Add Question").should("be.visible");
   });
 
-  it("should show modal when clicking on Add", () => {
+  it("should add new Question", () => {
     const newQuestion = {
       id: "qID-7",
       title: "This question was added with cypress",

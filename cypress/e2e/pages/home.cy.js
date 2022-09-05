@@ -85,7 +85,7 @@ describe("Test Home Component", () => {
   });
 
   //Test download of public folder file (cypress saves it to cypress/downloads)
-  it("should download 'Question Types' file", { browser: "!firefox" }, () => {
+  it("should download 'Question Types' file", () => {
     //Click export module button
     cy.get("article[data-cy='module-types_1']").find("button.popover-button").click();
     cy.contains("Export").click();
@@ -102,7 +102,7 @@ describe("Test Home Component", () => {
   });
 
   //Test download of localStorage Item
-  it("should download module from the localStorage", { browser: "!firefox" }, () => {
+  it("should download module from the localStorage", () => {
     const moduleID = "cypress_1";
     //Add item to localStorage
     cy.fixture(`repeatio-module-${moduleID}.json`).then((fileContent) => {
