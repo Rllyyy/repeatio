@@ -63,10 +63,35 @@ describe("Test Home Component", () => {
     cy.contains("Add Module").click();
 
     cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
-      cy.get('input[type="file"]').attachFile({
-        fileContent: fileContent,
-        fileName: "repeatio-module-cypress_1.json",
-      });
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    cy.get("form.import-module").contains("button", "Add").click();
+    cy.get("article[data-cy='module-cypress_1']").contains("View").click();
+    cy.contains("h1", "Cypress Fixture Module");
+    cy.get("article[data-cy='Question Overview'").contains("a", "View").click();
+
+    cy.get(".question-table").find(".question").should("have.length", 6);
+  });
+
+  //Test if importing a new module by drag'n'drop works
+  it("should add module when importing a module", () => {
+    cy.contains("Add Module").click();
+
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { action: "drag-drop", force: true }
+      );
     });
 
     cy.get("form.import-module").contains("button", "Add").click();

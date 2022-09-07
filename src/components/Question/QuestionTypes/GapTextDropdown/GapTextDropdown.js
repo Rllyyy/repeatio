@@ -61,13 +61,13 @@ export const GapTextDropdown = forwardRef(({ options, formDisabled }, ref) => {
       if (index < htmlStringSplit.length - 1) {
         return ReactDOMServer.renderToString(
           <>
-            <span>{line}</span>
+            <p>{line}</p>
             {/* ReactDOMServer.renderToString ignores event handlers so this is a marker for where to insert the input at the useEffect */}
             <div className={"select-wrapper"} id={`select-wrapper-${index}`}></div>
           </>
         );
       } else {
-        return ReactDOMServer.renderToString(<span>{line}</span>);
+        return ReactDOMServer.renderToString(<p>{line}</p>);
       }
     });
 

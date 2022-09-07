@@ -31,12 +31,12 @@ export const AnswerCorrection = ({ text, correctGapValues }) => {
         const concatenatedValues = concatValues(correctGapValues[index]);
         return ReactDOMServer.renderToString(
           <>
-            <span>{line}</span>
-            <span className='correct-gap-value'>{concatenatedValues}</span>
+            <p>{line}</p>
+            <p className='correct-gap-value'>{concatenatedValues}</p>
           </>
         );
       } else {
-        return ReactDOMServer.renderToString(<span>{line}</span>);
+        return ReactDOMServer.renderToString(<p>{line}</p>);
       }
     });
     //Combine the array to one string again

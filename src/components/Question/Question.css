@@ -18,10 +18,16 @@
 }
 
 /* Markdown lists */
+.question-form ul,
+.question-form ol {
+  white-space: normal;
+}
+
 .question-form ul li,
 .question-form ol li {
   font-weight: inherit;
   list-style-position: inside;
+  font-size: inherit;
 }
 
 /* Markdown tables*/

@@ -26,10 +26,12 @@
 .question-gap-text input,
 .correction-gap-text input {
   display: inline;
+  white-space: pre-line;
 }
 
 .question-gap-text table input,
-.correction-gap-text table span {
+.correction-gap-text table span,
+.correction-gap-text table p {
   width: 100%;
   margin: 8px 0;
 }
@@ -82,29 +84,19 @@
   border-color: rgb(180, 131, 126);
 }
 
-.correction-gap-text ul li,
-.correction-gap-text ol li {
-  list-style-position: inside;
-}
-
 /* Media Query for phones */
 @media only screen and (max-width: 650px) {
-  .question-gap-text {
+
+  .question-gap-text,
+  .question-gap-text p,
+  .correction-gap-text,
+  .correction-gap-text p {
     font-size: 1.15rem;
     line-height: 2.1rem;
   }
 
   .question-gap-text input {
     padding: 3px 5px;
-    font-size: 1.15rem;
-  }
-
-  .correction-gap-text {
-    font-size: 1.15rem;
-    line-height: 2.1rem;
-  }
-
-  .correction-gap-text span {
     font-size: 1.15rem;
   }
 }

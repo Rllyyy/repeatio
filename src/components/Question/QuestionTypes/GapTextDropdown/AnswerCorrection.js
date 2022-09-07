@@ -24,13 +24,13 @@ export const AnswerCorrection = ({ text, dropdowns }) => {
     const mappedArray = htmlStringSplit.map((line, index) => {
       if (index < htmlStringSplit.length - 1 && index !== undefined) {
         return ReactDOMServer.renderToString(
-          <span>
-            <span>{line}</span>
-            <span className='correct-dropdown-value'>{dropdowns[index].correct}</span>
-          </span>
+          <>
+            <p>{line}</p>
+            <p className='correct-dropdown-value'>{dropdowns[index].correct}</p>
+          </>
         );
       } else {
-        return ReactDOMServer.renderToString(<span>{line}</span>);
+        return ReactDOMServer.renderToString(<p>{line}</p>);
       }
     });
     //Combine the array to one string again

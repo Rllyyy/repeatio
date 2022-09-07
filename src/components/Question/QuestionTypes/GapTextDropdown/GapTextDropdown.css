@@ -6,6 +6,7 @@
   font-size: 18px;
   display: inline;
   line-height: 2.2rem;
+  white-space: pre-line;
 }
 
 .question-gap-text-with-dropdown .select-wrapper {
@@ -45,7 +46,8 @@
 }
 
 .question-gap-text-with-dropdown table select,
-.correction-gap-text-with-dropdown table span {
+.correction-gap-text-with-dropdown table span,
+.correction-gap-text-with-dropdown table p {
   width: 100%;
   margin: 5px auto;
 }
@@ -59,7 +61,7 @@
 
 /* Correction related */
 .correction-gap-text-with-dropdown p,
-.correction-gap-text-with-dropdown span {
+.correction-gap-text-with-dropdown p {
   line-height: 2.1rem;
 }
 
@@ -97,6 +99,5 @@
 
   .question-gap-text-with-dropdown select:focus-visible {
     outline: 2px solid var(--custom-prime-color);
-
   }
 }
