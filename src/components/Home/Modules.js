@@ -1,5 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
 import isElectron from "is-electron";
+import { toast } from "react-toastify";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
 
 //Components
@@ -79,7 +80,7 @@ const useAllModules = () => {
           const module = localStorage.getItem(key[0]);
           localStorageModules.push(JSON.parse(module));
         } catch (error) {
-          console.warn(`${key[0]}: ${error.message}`);
+          toast.warn(`${key[0]}: ${error.message}`);
           moduleErrors.push(`${key[0]}: ${error.message}`);
         }
       }
@@ -157,7 +158,8 @@ const useHomePopover = () => {
   const handleExport = async () => {
     //Return if using electron
     if (isElectron()) {
-      console.warn("Action is not supported in Electron!");
+      toast.warning("This action is not supported in Electron!");
+      handlePopoverClose();
       return;
     }
 
@@ -176,8 +178,8 @@ const useHomePopover = () => {
     if (file) {
       await saveFile({ file: file, name: `repeatio-module-${moduleID}` });
     } else {
-      //TODO notify user
-      console.error(`Couldn't find file: repeatio-module-${moduleID}`);
+      //Notify user and log error if file isn't found
+      toast.error(`Couldn't find the file: repeatio-module-${moduleID}`);
     }
 
     handlePopoverClose();

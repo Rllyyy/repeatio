@@ -25,6 +25,7 @@ import { AllQuestionsPage } from "./pages/module/all-questions/index";
 //Import Components
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { Footer } from "./components/Footer/Footer.jsx";
+import { CustomToastContainer } from "./components/toast/toast.jsx";
 
 //Context
 import { ModuleProvider } from "./components/Module/ModuleContext.js";
@@ -59,6 +60,7 @@ ReactDOM.render(
         </main>
         <Footer>Footer</Footer>
       </ScrollToTop>
+      <CustomToastContainer />
     </BrowserRouter>
   </StrictMode>,
   document.getElementById("root")

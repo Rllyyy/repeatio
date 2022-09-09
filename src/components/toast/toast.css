@@ -1,0 +1,99 @@
+/* Increase size of container */
+.Toastify__toast-container {
+  width: 17vw;
+  min-width: 350px;
+  max-width: 450px;
+}
+
+/* Disable default cursor and modify box shadow*/
+.Toastify__toast {
+  cursor: auto;
+  box-shadow: rgba(60, 64, 67, .5) 0px 1px 2px 0px,
+    rgba(60, 64, 67, .25) 0px 2px 6px 2px;
+}
+
+/* Set font size */
+.Toastify__toast p,
+.Toastify__toast a span,
+.Toastify__toast a {
+  font-size: 16px;
+}
+
+/* Customize link color */
+.Toastify__toast a:link {
+  color: var(--custom-prime-color);
+  text-decoration: none;
+}
+
+.Toastify__toast a:visited {
+  color: var(--custom-prime-color);
+}
+
+.Toastify__toast a:hover {
+  text-decoration: underline;
+  color: var(--custom-prime-color-dark);
+}
+
+/* Adds a the background to the toast progress */
+.Toastify__toast::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  height: 5px;
+  width: 100%;
+}
+
+/* Modify color of text when using the theme "light" */
+.Toastify__toast-theme--light {
+  color: var(--custom-secondary-color);
+}
+
+/* Override right property (was too high like 1em) */
+.Toastify__toast-container--bottom-right {
+  right: .6em;
+}
+
+/* Add background color to the progressbar */
+.Toastify__toast--success::after {
+  background-color: rgba(7, 188, 12, .25);
+}
+
+.Toastify__toast--error::after {
+  background-color: rgba(231, 76, 60, .25);
+}
+
+.Toastify__toast--info::after {
+  background-color: rgba(52, 152, 219, .25);
+}
+
+.Toastify__toast--warning::after {
+  background-color: rgba(241, 196, 15, .25);
+}
+
+/* Modify toast for smaller screens */
+@media screen and (max-width: 650px) {
+
+  /* Always center toast container for small devices */
+  .Toastify__toast-container {
+    width: 90vw;
+    min-width: auto;
+    max-width: 450px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 52px;
+  }
+
+  /* Increase font size and decrease default margin */
+  .Toastify__toast {
+    font-size: 18px;
+    margin-bottom: .6rem;
+  }
+
+  /* Increase size of svg in button to make it easier to cklick */
+  .Toastify__close-button>svg {
+    height: 24px;
+    width: 22px;
+  }
+}

@@ -1,5 +1,6 @@
 import { useRef, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 //Context
 import { ModuleContext } from "../../../Module/ModuleContext.js";
@@ -169,7 +170,9 @@ export const useQuestionNavigation = () => {
 
   //TODO: Go to provided input
   const navigateToInputValue = (e) => {
-    console.warn("This isn't implemented yet :/");
+    toast.warn("This feature isn't implemented yet :/", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     if (e.key === "Enter") {
       e.preventDefault();
     }

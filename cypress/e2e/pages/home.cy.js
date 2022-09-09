@@ -80,8 +80,28 @@ describe("Test Home Component", () => {
     cy.get(".question-table").find(".question").should("have.length", 6);
   });
 
+  //Test if the toast for successful imports works
+  it("should show success toast after importing module", () => {
+    cy.contains("Add Module").click();
+
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+    cy.get("form.import-module").contains("button", "Add").click();
+
+    cy.get(".Toastify").find("a").click();
+    cy.url().should("include", "cypress_1");
+    cy.contains("h1", "Cypress Fixture Module").should("be.visible");
+  });
+
   //Test if importing a new module by drag'n'drop works
-  it("should add module when importing a module", () => {
+  it("should add module when importing a module by drag'n'drop", () => {
     cy.contains("Add Module").click();
 
     cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {

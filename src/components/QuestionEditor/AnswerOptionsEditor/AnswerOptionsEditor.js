@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 //Question types
 import { MultipleChoice } from "./QuestionTypes/MultipleChoice.js";
@@ -46,13 +47,13 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
         }
         break;
       case "":
-        console.warn("nothing chosen!");
+        toast.warn("nothing chosen!");
         break;
       case undefined:
-        console.warn("nothing chosen!");
+        toast.warn("nothing chosen!");
         break;
       default:
-        console.warn(`${questionType} isn't implemented yet!`);
+        toast.warn(`${questionType} isn't implemented yet!`);
         break;
     }
   };

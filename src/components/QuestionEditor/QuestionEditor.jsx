@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 //Context
 import { ModuleContext } from "../Module/ModuleContext.js";
@@ -73,7 +74,7 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
     e.stopPropagation();
 
     if (isElectron()) {
-      console.warn("Can't edit question in electron for this time. Use your browser instead!");
+      toast.warn("Can't edit question in electron for this time. Use your browser instead!");
       handleModalClose();
       return;
     }
@@ -81,7 +82,7 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
     //Prevent adding to types module as it is originally saved in the public folder
     //Adding a question would create a module in the localStorage with the same id.
     if (moduleData.id === "types_1") {
-      console.warn("Editing the module types is not allowed!");
+      toast.warn("Editing this module (Question Types) is not allowed!");
       handleModalClose();
       return;
     }
@@ -89,14 +90,14 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
     //TODO Tests
     //Check if ID already exists
     if (moduleData.questions.find((originalQuestion) => originalQuestion.id === question.id) && !prevQuestionID) {
-      //TODO message user
+      //TODO message user in form
       console.warn("ID already exists");
       return;
     }
 
     //AnswerOptions can't be null/undefined
     if (question.answerOptions === null || question.answerOptions === undefined) {
-      //TODO give message to user
+      //TODO give message to user in form
       console.warn("Answer Options can't be empty");
       return;
     }
@@ -129,7 +130,7 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
 
         //If question isn't in moduleData don't modify the storage. In Prod this should never be shown!
         if (index <= -1) {
-          console.warn("Couldn't find questionID!");
+          toast.error("Couldn't find questionID!");
           return;
         }
 

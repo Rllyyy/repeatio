@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 //Fetch the module from the public folder
 export async function fetchModuleFromPublicFolder() {
   try {
@@ -8,7 +10,7 @@ export async function fetchModuleFromPublicFolder() {
     if (data.ok) {
       return toJsObject;
     } else {
-      console.warn(toJsObject.message || toJsObject.statusText);
+      toast.warn(toJsObject.message || toJsObject.statusText);
       return;
     }
   } catch (error) {

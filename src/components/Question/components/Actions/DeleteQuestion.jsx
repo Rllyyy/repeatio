@@ -1,11 +1,13 @@
 import { useContext } from "react";
-import { BiTrash } from "react-icons/bi";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-
 import isElectron from "is-electron";
+import { toast } from "react-toastify";
 
 //Context
 import { ModuleContext } from "../../../Module/ModuleContext.js";
+
+//Icons
+import { BiTrash } from "react-icons/bi";
 
 export const DeleteQuestion = ({ questionID, disabled }) => {
   //params
@@ -24,32 +26,32 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
   const handleDelete = () => {
     //Don't allow deletion for now when using electron
     if (isElectron()) {
-      console.warn("Can't delete Question in electron at this point in time. Please use the website instead");
+      toast.warn("Can't delete Question in electron at this point in time. Please use the website instead");
       return;
     }
 
     //Don't allow to edit the basic module
     if (moduleData.id === "types_1") {
-      console.warn("Can't delete Questions of test module");
+      toast.warn("Can't delete Questions of test module");
       return;
     }
 
     //Don't allow deletion on the last element in the module
     if (moduleData.questions.length <= 1) {
       //TODO fix this
-      console.warn("Can't delete last question in module for now");
+      toast.warn("Can't delete last question in module for now");
       return;
     }
 
     //Don't allow question editing when using mode random
     if (new URLSearchParams(search).get("mode") === "random") {
       //TODO fix this
-      console.warn("Don't delete questions in mode random for this time.");
+      toast.warn("Don't delete questions in mode random for this time.");
       return;
     }
 
     if (moduleData.questions.length !== filteredQuestions.length) {
-      console.warn(
+      toast.warn(
         "Don't delete questions while viewing just saved questions. This causes too many bugs. I will try to fix this in the future. For now access this question not by using saved questions, but instead find the question with mode chronological or use the question overview to find this question."
       );
     }
@@ -59,7 +61,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
 
     //If question isn't in moduleData don't modify the storage. In Prod this error should never be shown!
     if (indexInModuleQuestions <= -1) {
-      console.warn("Couldn't find questionID!");
+      toast.error("Couldn't find questionID!");
       return;
     }
 

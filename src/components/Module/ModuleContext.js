@@ -1,4 +1,5 @@
 import { createContext, useMemo, useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
 
 //Functions
 import isElectron from "is-electron";
@@ -32,7 +33,7 @@ export const ModuleProvider = (props) => {
       try {
         module = JSON.parse(localStorage.getItem(`repeatio-module-${moduleContextID}`));
       } catch (error) {
-        console.warn(error.message);
+        toast.warn(error.message);
       }
     } else {
       //Fetch data from public folder
@@ -87,7 +88,7 @@ export const ModuleProvider = (props) => {
           secure: true,
         });
       } catch (error) {
-        console.warn(error.message);
+        toast.warn(error.message);
       }
     }
   }, [initialData]);

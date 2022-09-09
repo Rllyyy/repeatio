@@ -9,6 +9,7 @@ import { Card, LinkElement, ButtonElement } from "../Card/Card.js";
 import { Spinner } from "../Spinner/Spinner";
 import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover.jsx";
+import { toast } from "react-toastify";
 
 //Icons
 import { AiOutlineBook } from "react-icons/ai";
@@ -66,7 +67,7 @@ export const Module = () => {
         search: "?mode=chronological",
       });
     } else {
-      console.warn("No questions found!");
+      toast.warn("No questions found!");
       return;
     }
   };
@@ -82,7 +83,7 @@ export const Module = () => {
         search: "?mode=random",
       });
     } else {
-      console.warn("No questions found!");
+      toast.warn("No questions found!");
       return;
     }
   };
@@ -235,8 +236,8 @@ const BookmarkedQuestionsBottom = () => {
     if (file) {
       await saveFile({ file: file, name: `repeatio-marked-${moduleID}` });
     } else {
-      //TODO notify user
-      console.error(`Couldn't find file: repeatio-marked-${moduleID}`);
+      //Notify user that there are no marked questions
+      toast.warn(`Couldn't find any marked questions for "${moduleID}"!`);
     }
 
     handlePopoverClose();
@@ -253,17 +254,16 @@ const BookmarkedQuestionsBottom = () => {
       const fileContent = await file.text();
       importedSavedQuestions = JSON.parse(fileContent);
     } catch (error) {
-      //TODO warn user with error.message
-
-      console.error(error);
+      //Notify user of failed import
+      toast.error(error.message);
       handlePopoverClose();
       return;
     }
 
     //TODO check file structure (maybe json file that contains type: marked, compatibility: version and saved ids )
     if (!Array.isArray(importedSavedQuestions)) {
-      //TODO switch to react toastify
-      console.error("Failed to import as the given file does not contain the correct file structure!");
+      //Notify user that import is false file structure
+      toast.error("Failed to import because the file does not contain the correct file structure!");
       handlePopoverClose();
       return;
     }
@@ -271,6 +271,7 @@ const BookmarkedQuestionsBottom = () => {
     //Upload the file to the localStorage
     //Don't add ids of questions that are not in this module or duplicates
     let rejectedIDs = [];
+    let newIDs = [];
     //Get old saved questions from localStorage or provide empty array
     let updatedSavedQuestions = [...(JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`)) || [])];
 
@@ -285,6 +286,7 @@ const BookmarkedQuestionsBottom = () => {
       //If the item is not already in the localStorage and the localStorage exists, add the item to the new array
       if (updatedSavedQuestions?.indexOf(importedID) === -1) {
         updatedSavedQuestions?.push(importedID);
+        newIDs.push(importedID);
       }
     });
 
@@ -294,16 +296,25 @@ const BookmarkedQuestionsBottom = () => {
         sameSite: "strict",
         secure: true,
       });
+
+      //Show message to user (currently even shows if 0 IDs are actually new)
+      toast.success(
+        <>
+          <p>Imported {newIDs.length} question(s).</p>
+          <p>Total saved questions: {updatedSavedQuestions?.length}</p>
+        </>,
+        { data: `Imported ${newIDs.length} question(s).\nTotal saved questions: ${updatedSavedQuestions?.length}` }
+      );
     }
 
-    //Show ids that are rejected
-    //TODO make this a toast with react-toastify
+    //Show ids that are rejected as toast and in console
     if (rejectedIDs?.length > 0) {
-      console.warn(
-        `Failed to import ${rejectedIDs.join(", ")} as ${
-          rejectedIDs.length < 2 ? "this id is" : "these ids are"
-        } not present in this module!`
-      );
+      const warningText = `Failed to import ${rejectedIDs.join(", ")} as ${
+        rejectedIDs.length < 2 ? "this id is" : "these ids are"
+      } not present in this module!`;
+      toast.warn(warningText, {
+        autoClose: warningText.length * 60,
+      });
     }
 
     //TODO toastify add success
@@ -319,7 +330,9 @@ const BookmarkedQuestionsBottom = () => {
     //Return if no such element can be found
     //TODO give user response that no saved questions are defined (maybe with toast)
     if (savedQuestionsID === null) {
-      console.warn("No saved Questions found!");
+      toast.warn("Found 0 bookmarked questions for this module!", {
+        autoClose: 10000,
+      });
       return;
     }
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import isElectron from "is-electron";
 import packageJson from "../../../package.json";
@@ -18,7 +19,8 @@ export const CreateModule = ({ handleModalClose }) => {
     //prevent using electron for this time
     //TODO add ability to use electron
     if (isElectron()) {
-      console.warn("Can't create modules in electron for this time");
+      toast.warn("Can't create modules in electron for this time");
+      handleModalClose();
       return;
     }
 

@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import isElectron from "is-electron";
 import PropTypes from "prop-types";
 
@@ -24,7 +26,8 @@ export const ImportModule = ({ handleModalClose }) => {
   const onDropRejected = useCallback((dropFileRejections) => {
     dropFileRejections?.forEach(({ errors }) => {
       errors.forEach((error) => {
-        console.warn(error.message);
+        //TODO switch to warning in form
+        toast.error(error.message);
       });
     });
   }, []);
@@ -68,28 +71,41 @@ export const ImportModule = ({ handleModalClose }) => {
     //prevent using electron for this time
     //TODO add ability to use electron
     if (isElectron()) {
-      console.warn("Can't import modules in electron for this time");
+      toast.warn("Can't import modules in electron for this time!");
+      handleModalClose();
       return;
     }
 
-    //TODO warn user with tost
+    //TODO disable submit if files?.length < 1
     if (files.length < 1) {
-      console.warn("nothing chosen");
+      toast.warn("Nothing chosen");
     }
 
     //Update the localStorage for each object in the files state array and dispatch event
     files.forEach(async (file) => {
       try {
         const data = await file.text();
+        const { id } = JSON.parse(data);
 
         //Update localeStorage and tell the window that a new storage event occurred
-        localStorage.setItem(`repeatio-module-${JSON.parse(data).id}`, data, {
+        localStorage.setItem(`repeatio-module-${id}`, data, {
           sameSite: "strict",
           secure: true,
         });
         window.dispatchEvent(new Event("storage"));
+
+        //Toast here success
+        toast.success(<ImportSuccessMessage id={id} />, {
+          autoClose: 12000,
+          closeOnClick: true,
+          data: `Imported ${id}`,
+        });
       } catch (error) {
-        console.error(error);
+        //Notify user of import error and console log error
+        toast.error(<ImportErrorMessage errorMessage={error.message} />, {
+          autoClose: 18000,
+          data: `Failed to import the module.\n ${error.message}`,
+        });
       }
     });
 
@@ -139,4 +155,38 @@ export const ImportModule = ({ handleModalClose }) => {
 
 ImportModule.propTypes = {
   handleModalClose: PropTypes.func.isRequired,
+};
+
+/* ------------------------------- Success message for the toast -------------------------------- */
+const ImportSuccessMessage = ({ id }) => {
+  return (
+    <>
+      <p>
+        Successfully imported{" "}
+        <b>
+          <Link to={`/module/${id}`}>{id}</Link>
+        </b>
+        .
+      </p>
+      <p>Click on the ID to view the module.</p>
+    </>
+  );
+};
+
+ImportSuccessMessage.propTypes = {
+  id: PropTypes.string.isRequired,
+};
+
+/* ------------------------------- Error message for the toast ---------------------------------- */
+const ImportErrorMessage = ({ errorMessage }) => {
+  return (
+    <>
+      <p>Failed to import the module.</p>
+      <p>{errorMessage}</p>
+    </>
+  );
+};
+
+ImportErrorMessage.propTypes = {
+  errorMessage: PropTypes.string.isRequired,
 };
