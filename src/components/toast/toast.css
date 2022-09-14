@@ -89,6 +89,7 @@
   .Toastify__toast {
     font-size: 18px;
     margin-bottom: .6rem;
+    border-radius: 5px;
   }
 
   /* Increase size of svg in button to make it easier to cklick */
