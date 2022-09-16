@@ -12,6 +12,7 @@ import { ProgressPie } from "../Card/ProgressPie.jsx";
 
 //Icons
 import { TbFileExport } from "react-icons/tb";
+import { BiTrash } from "react-icons/bi";
 
 //Functions
 import { saveFile } from "../../utils/saveFile.js";
@@ -19,7 +20,7 @@ import { saveFile } from "../../utils/saveFile.js";
 //Component
 export const Modules = () => {
   const { modules, loading } = useAllModules();
-  const { handleExport, handlePopoverButtonClick, anchorEl, handlePopoverClose } = useHomePopover();
+  const { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose } = useHomePopover();
 
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
@@ -54,6 +55,7 @@ export const Modules = () => {
         );
       })}
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
+        <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />
       </PopoverMenu>
     </GridCards>
@@ -147,14 +149,50 @@ const useHomePopover = () => {
     };
   }, []);
 
+  //Set the anchor
   const handlePopoverButtonClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  //Reset the anchor
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
 
+  //Handle deletion of module
+  const handleDelete = () => {
+    //Get id of module by custom attribute
+    const moduleID = anchorEl.getAttribute("data-target");
+
+    //Prevent deletion of example module as that is saved in the public folder
+    if (moduleID === "types_1") {
+      toast.warn("Can't delete example module!");
+      handlePopoverClose();
+      return;
+    }
+
+    //Prevent deletion if using electron
+    if (isElectron()) {
+      toast.warn("Can't delete modules from electron!");
+      handlePopoverClose();
+      return;
+    }
+
+    //Check if item is in localStorage
+    const itemInStorage = Object.keys(localStorage).includes(`repeatio-module-${moduleID}`);
+
+    //Remove item from localStorage if it is present and dispatch event or show error
+    if (itemInStorage) {
+      localStorage.removeItem(`repeatio-module-${moduleID}`);
+      toast.success(`Deleted module ${moduleID}!`);
+      window.dispatchEvent(new Event("storage"));
+    } else {
+      toast.error(`Couldn't find the file repeatio-module-${moduleID} in the localStorage!`);
+    }
+    handlePopoverClose();
+  };
+
+  //Handle the export of module
   const handleExport = async () => {
     //Return if using electron
     if (isElectron()) {
@@ -179,11 +217,11 @@ const useHomePopover = () => {
       await saveFile({ file: file, name: `repeatio-module-${moduleID}` });
     } else {
       //Notify user and log error if file isn't found
-      toast.error(`Couldn't find the file: repeatio-module-${moduleID}`);
+      toast.error(`Couldn't find the file repeatio-module-${moduleID} in the localStorage!`);
     }
 
     handlePopoverClose();
   };
 
-  return { handleExport, handlePopoverButtonClick, anchorEl, handlePopoverClose };
+  return { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose };
 };

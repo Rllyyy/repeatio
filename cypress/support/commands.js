@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add("addModuleFixtureToLocalStorage", () => {
+  cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+    localStorage.setItem(`repeatio-module-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
+  });
+});
