@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useCallback, useLayoutEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { ModuleContext } from "./ModuleContext.js";
+import { ModuleContext } from "./moduleContext.js";
 
 //Components
 import { GridCards } from "../GridCards/GridCards.jsx";
@@ -12,14 +12,11 @@ import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover.jsx
 import { toast } from "react-toastify";
 
 //Icons
-import { AiOutlineBook } from "react-icons/ai";
+import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
+import { BiStats, BiTrash } from "react-icons/bi";
+import { BsListOl, BsPlusCircle, BsExclamationTriangle } from "react-icons/bs";
 import { FaGraduationCap } from "react-icons/fa";
-import { BsListOl } from "react-icons/bs";
-import { BsPlusCircle } from "react-icons/bs";
-import { BsExclamationTriangle } from "react-icons/bs";
 import { MdBookmark } from "react-icons/md";
-import { BiStats } from "react-icons/bi";
-import { AiOutlineEdit } from "react-icons/ai";
 import { TbFileExport, TbFileImport } from "react-icons/tb";
 
 //functions
@@ -229,6 +226,21 @@ const BookmarkedQuestionsBottom = () => {
     setAnchorEl(null);
   };
 
+  const handleBookmarkedDelete = () => {
+    //Get item from storage
+    const itemInStorage = Object.keys(localStorage).includes(`repeatio-marked-${moduleID}`);
+
+    //Remove item from localStorage if it is present and dispatch event or show error
+    if (itemInStorage) {
+      localStorage.removeItem(`repeatio-marked-${moduleID}`);
+      toast.success(`Deleted bookmarked questions for "${moduleID}"!`);
+      window.dispatchEvent(new Event("storage"));
+    } else {
+      toast.error(`Failed to delete the bookmarked questions for "${moduleID}" because there are 0 questions saved!`);
+    }
+    handlePopoverClose();
+  };
+
   //Export saved questions from localStorage
   const handleExport = async () => {
     const file = localStorage.getItem(`repeatio-marked-${moduleID}`);
@@ -237,7 +249,10 @@ const BookmarkedQuestionsBottom = () => {
       await saveFile({ file: file, name: `repeatio-marked-${moduleID}` });
     } else {
       //Notify user that there are no marked questions
-      toast.warn(`Couldn't find any marked questions for "${moduleID}"!`);
+      toast.error(
+        `Failed to export the bookmarked questions for "${moduleID}" because there aren't any bookmarked questions!`,
+        { autoClose: 12000 }
+      );
     }
 
     handlePopoverClose();
@@ -328,7 +343,6 @@ const BookmarkedQuestionsBottom = () => {
     const savedQuestionsID = JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`));
 
     //Return if no such element can be found
-    //TODO give user response that no saved questions are defined (maybe with toast)
     if (savedQuestionsID === null) {
       toast.warn("Found 0 bookmarked questions for this module!", {
         autoClose: 10000,
@@ -362,31 +376,38 @@ const BookmarkedQuestionsBottom = () => {
       <ButtonElement key='saved-questions' buttonText='Start' handleClick={onSavedQuestionsClick} />
       <PopoverButton handleClick={handlePopoverButtonClick} />
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
+        <PopoverMenuItem handleClick={handleBookmarkedDelete} text='Delete' icon={<BiTrash />} />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />
-        <li className='MuiMenuItem-root'>
-          <label
-            htmlFor='file-upload'
-            className='MuiMenuItem-root'
-            style={{
-              minHeight: "48px",
-              padding: "6px 16px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <TbFileImport />
-            <span>Import</span>
-          </label>
-          <input
-            style={{ display: "none" }}
-            className='file-input'
-            id='file-upload'
-            type='file'
-            accept='.json'
-            onChange={handleFileImportChange}
-          />
-        </li>
+        <ImportBookmarkedQuestions handleChange={handleFileImportChange} />
       </PopoverMenu>
     </>
+  );
+};
+
+const ImportBookmarkedQuestions = ({ handleChange }) => {
+  return (
+    <li className='MuiMenuItem-root'>
+      <label
+        htmlFor='file-upload'
+        className='MuiMenuItem-root'
+        style={{
+          minHeight: "48px",
+          padding: "6px 16px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <TbFileImport />
+        <span>Import</span>
+      </label>
+      <input
+        style={{ display: "none" }}
+        className='file-input'
+        id='file-upload'
+        type='file'
+        accept='.json'
+        onChange={handleChange}
+      />
+    </li>
   );
 };

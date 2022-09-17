@@ -63,7 +63,7 @@ describe("Test deletion of module", () => {
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
     cy.get("@consoleError").should(
       "be.calledWithMatch",
-      /\[.*\] Couldn't find the file repeatio-module-cypress_1 in the localStorage\!/
+      /\[.*\] Couldn't find the file repeatio\-module\-cypress_1 in the localStorage\!/
     );
   });
 });

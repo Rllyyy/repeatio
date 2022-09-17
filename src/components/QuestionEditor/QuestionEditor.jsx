@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { toast } from "react-toastify";
 
 //Context
-import { ModuleContext } from "../Module/ModuleContext.js";
+import { ModuleContext } from "../module/moduleContext.js";
 
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";

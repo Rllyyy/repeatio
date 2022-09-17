@@ -63,7 +63,10 @@ describe("Test related to exporting a file from the localStorage", () => {
 
     //Expect toast to show up
     cy.get(".Toastify").contains(`Downloaded module as "repeatio-module-cypress_1.json"`);
-    cy.get("@consoleLog").should("be.calledWithMatch", /\[.*\] Downloaded module as "repeatio-module-cypress_1.json"/);
+    cy.get("@consoleLog").should(
+      "be.calledWithMatch",
+      /\[.*\] Downloaded module as "repeatio\-module\-cypress_1.json"/
+    );
 
     //Read file and check name and question length
     const downloadedFilename = path.join(downloadsFolder, `repeatio-module-${moduleID}.json`);
@@ -90,7 +93,7 @@ describe("Test related to exporting a file from the localStorage", () => {
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
     cy.get("@consoleError").should(
       "be.calledWithMatch",
-      /\[.*\] Couldn't find the file repeatio-module-cypress_1 in the localStorage\!/
+      /\[.*\] Couldn't find the file repeatio\-module\-cypress_1 in the localStorage\!/
     );
   });
 });

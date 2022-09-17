@@ -28,7 +28,7 @@ import { Footer } from "./components/Footer/Footer.jsx";
 import { CustomToastContainer } from "./components/toast/toast.jsx";
 
 //Context
-import { ModuleProvider } from "./components/Module/ModuleContext.js";
+import { ModuleProvider } from "./components/module/moduleContext.js";
 
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";

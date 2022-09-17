@@ -441,9 +441,10 @@ describe("Test the addModule component which is used for importing and creating 
 
     cy.contains(`The ID has to be one word! Use hyphens ("-") to concat the word (id-1)`);
 
-    //Test focus and
+    //Test focus
     cy.focused().should("have.attr", "name", "id");
 
+    //Should have class to add border and background
     cy.get("input[name='id']").should("have.class", "is-invalid");
   });
 

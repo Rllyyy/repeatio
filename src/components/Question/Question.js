@@ -23,7 +23,7 @@ import { EditQuestion } from "./components/Actions/EditQuestion.jsx";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion.jsx";
 
 //Context
-import { ModuleContext } from "../Module/ModuleContext.js";
+import { ModuleContext } from "../module/moduleContext.js";
 
 //Hooks
 import { useQuestion } from "./useQuestion.js";

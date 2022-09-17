@@ -4,7 +4,7 @@ import isElectron from "is-electron";
 import { toast } from "react-toastify";
 
 //Context
-import { ModuleContext } from "../../../Module/ModuleContext.js";
+import { ModuleContext } from "../../../module/moduleContext.js";
 
 //Icons
 import { BiTrash } from "react-icons/bi";
