@@ -174,7 +174,7 @@ export const ImportModule = ({ handleModalClose }) => {
 
   return (
     <form className='import-module' onSubmit={handleImportSubmit}>
-      <h2 id='get.This'>Import Module</h2>
+      <h2>Import Module</h2>
       <div {...getRootProps({ className: "dropzone" })}>
         <input {...getInputProps()} data-testid='dropzone-input' />
         <div className='drop-info'>
@@ -191,17 +191,12 @@ export const ImportModule = ({ handleModalClose }) => {
       <ul className='accepted-files'>
         {files.map((file) => {
           return (
-            <li key={`${file.lastModified}-${file.name}`} id={`${file.lastModified}-${file.name}`} className='file'>
+            <li key={`${file.lastModified}-${file.name}`} id={`${file.id}`} className='file'>
               <CgFileDocument className='file-icon' />
               <span className='file-info'>
                 {file.name} ({file.id})
               </span>
-              <button
-                type='button'
-                className='file-remove-btn'
-                data-testid='file-remove-button'
-                onClick={() => handleRemoveFile(file)}
-              >
+              <button type='button' className='file-remove-btn' onClick={() => handleRemoveFile(file)}>
                 <IoCloseOutline className='file-remove-icon' />
               </button>
             </li>

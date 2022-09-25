@@ -1,7 +1,10 @@
 /// <reference types="cypress" />
 import { version } from "../../package.json";
 
-describe("Test the addModule component which is used for importing and creating new modules", () => {
+/* This file contains e2e tests for the AddModule component which itself contains of the ImportModule and CreateModule component */
+
+/* ------------------------------------ ADDMODULE COMPONENT ----------------------------------- */
+describe("Test the addModule component", () => {
   //Navigate to home url, subscribe to console logs (use regex to catch them) and click on "Add Module"
   beforeEach(() => {
     cy.visit("/", {
@@ -15,13 +18,27 @@ describe("Test the addModule component which is used for importing and creating 
     cy.contains("Add Module").click();
   });
 
-  /* ------------------------------------ ADDMODULE COMPONENT ----------------------------------- */
   //Test if display Import or Create a Module modal on Add Module click
   it("should display 'Import or create Module' Modal when clicking on 'Add Module'", () => {
     cy.contains("h1", "Import or Create a Module").should("be.visible");
   });
+});
 
-  /* ------------------------------------ IMPORTING A MODULE ------------------------------------ */
+/* ------------------------------------ IMPORTING A MODULE ------------------------------------ */
+describe("Test importing a new module", () => {
+  //Navigate to home url, subscribe to console logs (use regex to catch them) and click on "Add Module"
+  beforeEach(() => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.spy(win.console, "log").as("consoleLog");
+        cy.stub(win.console, "error").as("consoleError");
+        cy.stub(win.console, "warn").as("consoleWarn");
+        cy.stub(win.console, "info").as("consoleInfo");
+      },
+    });
+    cy.contains("Add Module").click();
+  });
+
   //Test if importing a new module works
   it("should add module when importing a module", () => {
     //Send file to upload area
@@ -224,7 +241,7 @@ describe("Test the addModule component which is used for importing and creating 
       .should("be.visible")
       .and("have.length", 1);
 
-    cy.get(`li[id='${date}-repeatio-module-lsi-1.json'`).find("button.file-remove-btn").click();
+    cy.get(`li[id='${localStorageItemContent.id}'`).find("button.file-remove-btn").click();
 
     cy.get("ul.import-module-warnings-list")
       .find("li")
@@ -235,8 +252,42 @@ describe("Test the addModule component which is used for importing and creating 
       );
   });
 
-  //Error when trying to import the same file again
-  it("should show error if trying to import the same file again", () => {
+  it("should show error if trying to import the same file again (by comparing lastModified and name prop)", () => {
+    //Setup file content
+    const fileContent = {
+      id: "file_1",
+      name: "File 1",
+      compatibility: "0.3.0",
+      questions: [],
+    };
+
+    //Setup file
+    const file = {
+      contents: Cypress.Buffer.from(JSON.stringify(fileContent)),
+      fileName: "repeatio-module-file-1.json",
+      mimeType: "application/json",
+      lastModified: Date.now(),
+    };
+
+    //Send file to drop area
+    cy.get('input[type="file"]').selectFile({ ...file }, { force: true });
+
+    //Expect element to be added
+    cy.contains("repeatio-module-file-1.json (file_1)").should("be.visible");
+    cy.get("ul.accepted-files").should("have.length", 1);
+
+    //Add same file again
+    cy.get('input[type="file"]').selectFile({ ...file }, { force: true });
+
+    //Expect Toast to show up with error, list to still have length of one and console to log error
+    cy.get(".Toastify").contains("Module is already in the list of imports!");
+    cy.get("ul.accepted-files").should("have.length", 1);
+    cy.get("@consoleError").should("be.calledWithMatch", /\[.*\] Module is already in the list of imports!.*/);
+  });
+
+  //Error when trying to import a file with the same id (happens when user renames imports)
+  //Somehow the lastModified prop of the fixture changes, so it doesn't get caught by the test above
+  it("should show error if trying to import a file with an id that is already in the imports", () => {
     //First import should be ok
     cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
       cy.get('input[type="file"]').selectFile(
@@ -289,12 +340,11 @@ describe("Test the addModule component which is used for importing and creating 
       questions: [],
     };
 
-    const date = Date.now();
     const replacerModule = {
       contents: Cypress.Buffer.from(JSON.stringify(replacerModuleContent)),
       fileName: "repeatio-module-cypress_1.json",
       mimeType: "application/json",
-      lastModified: date,
+      lastModified: Date.now(),
     };
 
     //Add item localStorage
@@ -312,7 +362,83 @@ describe("Test the addModule component which is used for importing and creating 
     cy.contains("This module was replaced by cypress");
   });
 
-  /* ------------------------------------ CREATING A MODULE ------------------------------------- */
+  //Test removing a file
+  it("should remove a imported file if clicking on the remove button", () => {
+    //Import file
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    //Click remove button
+    cy.get("button.file-remove-btn").click();
+
+    //Expect the file to no longer exist in the imports
+    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("not.exist");
+    cy.get("ul.accepted-files").find("li").should("have.length", 0);
+  });
+
+  //Test removing a file if there are multiple files found in the imports
+  it.only("should only remove the correct imported file if clicking on the remove button if there are multiple imports present", () => {
+    //Setup file content
+    const fileContent = {
+      id: "file_1",
+      name: "File 1",
+      compatibility: "0.3.0",
+      questions: [],
+    };
+
+    //Setup file
+    const file = {
+      contents: Cypress.Buffer.from(JSON.stringify(fileContent)),
+      fileName: "repeatio-module-file-1.json",
+      mimeType: "application/json",
+      lastModified: Date.now(),
+    };
+
+    //Send file to drop area
+    cy.get('input[type="file"]').selectFile({ ...file }, { force: true });
+
+    //Import file
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    //Click remove button
+    cy.get("ul.accepted-files").find("li[id='file_1']").find("button.file-remove-btn").click();
+
+    //Expect only one file to be left
+    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("exist").and("be.visible");
+    cy.get("ul.accepted-files").find("li").should("have.length", 1);
+  });
+});
+
+/* ------------------------------------ CREATING A MODULE ------------------------------------- */
+describe("Test creating a new module", () => {
+  //Navigate to home url, subscribe to console logs (use regex to catch them) and click on "Add Module"
+  beforeEach(() => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.spy(win.console, "log").as("consoleLog");
+        cy.stub(win.console, "error").as("consoleError");
+        cy.stub(win.console, "warn").as("consoleWarn");
+        cy.stub(win.console, "info").as("consoleInfo");
+      },
+    });
+    cy.contains("Add Module").click();
+  });
+
   //Test if display Import or Create a Module modal on Add Module click
   it("should display 'Import or create Module' Modal when clicking on 'Add Module'", () => {
     cy.contains("h1", "Import or Create a Module").should("be.visible");

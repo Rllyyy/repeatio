@@ -10,10 +10,6 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.get("div.ReactModal__Overlay").scrollIntoView();
   });
 
-  afterEach(() => {
-    cy.clearLocalStorage();
-  });
-
   it("should show modal when clicking on Add", () => {
     cy.contains("h1", "Add Question").should("be.visible");
   });
@@ -160,3 +156,6 @@ describe("Adding a question using the QuestionEditor component", () => {
       });
   });
 });
+
+//TODO show toast warnings for
+// -id already exists

@@ -102,11 +102,14 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
       return;
     }
 
-    //Build output by copying the question, transforming string points to float and adding line breaks
-    const output = {
-      ...question,
-      points: parseFloat(question.points) || null,
-    };
+    //Build output by filtering out empty values of the object (often "points" and "help")copying the question, transforming string points to float and
+    let output = Object.fromEntries(Object.entries(question).filter(([key, value]) => value !== ""));
+
+    //Transform given points (string) to float and round it to 2 decimal places if output has key "points"
+    if (output.points) {
+      const pointsFloatRound = Math.round(parseFloat(question.points) * 100) / 100;
+      output = { ...output, points: pointsFloatRound };
+    }
 
     //Adding or updating a question
     if (!prevQuestionID) {
@@ -241,7 +244,7 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
   );
 };
 
-//TEXTAREA for multiline inputs
+/* -------------------------------TEXTAREA for multiline inputs --------------------------------- */
 const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
   return (
     <div className={`modal-question-${labelText}`}>
@@ -257,12 +260,13 @@ const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
   );
 };
 
+//Prop Types
 EditorFormTextarea.propTypes = {
   labelText: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
 };
 
-//INPUT for single line inputs
+/* -------------------------------- INPUT for single line inputs -------------------------------- */
 const EditorFormInput = ({ labelText, type, value, handleChange, ...props }) => {
   const preventSubmit = (e) => {
     if (e.key === "Enter") {
@@ -286,6 +290,7 @@ const EditorFormInput = ({ labelText, type, value, handleChange, ...props }) => 
   );
 };
 
+//Prop Types
 EditorFormInput.propTypes = {
   labelText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
