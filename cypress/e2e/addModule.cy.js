@@ -384,7 +384,20 @@ describe("Test importing a new module", () => {
   });
 
   //Test removing a file if there are multiple files found in the imports
-  it.only("should only remove the correct imported file if clicking on the remove button if there are multiple imports present", () => {
+  it("should only remove the correct imported file if clicking on the remove button if there are multiple imports present", () => {
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    //Wait for the content to show up
+    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("exist");
+
     //Setup file content
     const fileContent = {
       id: "file_1",
@@ -401,25 +414,39 @@ describe("Test importing a new module", () => {
       lastModified: Date.now(),
     };
 
+    //Second file
+    const fileContent2 = {
+      id: "file_2",
+      name: "File 2",
+      compatibility: "0.3.0",
+      questions: [],
+    };
+
+    const file2 = {
+      contents: Cypress.Buffer.from(JSON.stringify(fileContent2)),
+      fileName: "repeatio-module-file-2.json",
+      mimeType: "application/json",
+      lastModified: Date.now(),
+    };
+
     //Send file to drop area
-    cy.get('input[type="file"]').selectFile({ ...file }, { force: true });
+    cy.get('input[type="file"]').selectFile([file, file2], { force: true });
 
     //Import file
-    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
-      cy.get('input[type="file"]').selectFile(
-        {
-          contents: fileContent,
-          fileName: "repeatio-module-cypress_1.json",
-        },
-        { force: true }
-      );
-    });
 
-    //Click remove button
+    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("exist");
+    cy.contains("repeatio-module-file-1.json (file_1)").should("exist");
+    cy.contains("repeatio-module-file-2.json (file_2)").should("exist");
+
+    //Expect only two files to be left after removing one file
     cy.get("ul.accepted-files").find("li[id='file_1']").find("button.file-remove-btn").click();
+    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("exist");
+    cy.contains("repeatio-module-file-2.json (file_2)").should("exist");
+    cy.get("ul.accepted-files").find("li").should("have.length", 2);
 
-    //Expect only one file to be left
-    cy.contains("repeatio-module-cypress_1.json (cypress_1)").should("exist").and("be.visible");
+    //Expect only one field to be left after remove click
+    cy.get("ul.accepted-files").find("li[id='cypress_1']").find("button.file-remove-btn").click();
+    cy.contains("repeatio-module-file-2.json (file_2)").should("exist");
     cy.get("ul.accepted-files").find("li").should("have.length", 1);
   });
 });

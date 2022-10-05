@@ -217,6 +217,16 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Remove the default blue background color on mobile chrome if choosing autocomplete value  */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+input[data-autocompleted] {
+  background-color: transparent !important;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;

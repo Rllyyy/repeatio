@@ -155,7 +155,55 @@ describe("Adding a question using the QuestionEditor component", () => {
         expect(addedQuestion.answerOptions[0].isCorrect).to.eq(true);
       });
   });
-});
 
-//TODO show toast warnings for
-// -id already exists
+  it("should show error in form if the id already exists", () => {
+    cy.get("input[name='id']").type("qID-1");
+    cy.get("select[name='type']").select("multiple-choice");
+    cy.get("button#editor-add-item").click();
+    cy.get(".editor-content").find("input[type='radio']").click();
+    cy.get(".editor-content")
+      .find("label[data-testid='option-0']")
+      .find("textarea")
+      .first()
+      .type("Textarea value for option-0");
+
+    cy.get("form button[type='submit']").click();
+
+    cy.contains("A question with this id already exists!").should("exist");
+    //Expect the submit button to not work
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true").click();
+
+    //Visit link in error message
+    cy.contains("a", "View: qID-1").click();
+    cy.url().should("include", "question/qID-1");
+  });
+
+  it("should clear existing id error if changing it", () => {
+    cy.get("input[name='id']").type("qID-1");
+    cy.get("select[name='type']").select("multiple-choice");
+
+    cy.get("button#editor-add-item").click();
+    cy.get(".editor-content").find("input[type='radio']").click();
+    cy.get(".editor-content")
+      .find("label[data-testid='option-0']")
+      .find("textarea")
+      .first()
+      .type("Textarea value for option-0");
+
+    cy.get("form button[type='submit']").click();
+
+    cy.contains("A question with this id already exists!").should("exist");
+    cy.get("input[name='id']").clear().type("new-id");
+    cy.contains("A question with this id already exists!").should("not.exist");
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+
+    //Visit new Question
+    cy.get("article[data-cy='Practice']").contains("button", "Start").click();
+    cy.get("button[aria-label='Navigate to last Question']").click();
+    cy.contains("ID: new-id");
+
+    cy.contains("Textarea value for option-0").click();
+    cy.get("button[type='submit']").click();
+    cy.contains("Yes, that's correct!");
+  });
+});

@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { MultipleChoice } from "./QuestionTypes/MultipleChoice.js";
 import { MultipleResponse } from "./QuestionTypes/MultipleResponse.js";
 
+//Functions
+import { objectWithoutProp } from "../helpers.js";
+
 //CSS
 import "./AnswerOptionsEditor.css";
 
@@ -13,7 +16,14 @@ import { CgExtensionAdd } from "react-icons/cg";
 import { CgExtensionRemove } from "react-icons/cg";
 
 //Editor
-export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorChange }) => {
+export const AnswerOptionsEditor = ({
+  questionType,
+  answerValues,
+  handleEditorChange,
+  answerOptionsError,
+  setErrors,
+  hasSubmitted,
+}) => {
   const [lastSelected, setLastSelected] = useState("");
 
   //Find a new unique id
@@ -24,6 +34,7 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
       const idExists = answerValues.find((item) => item.id === `option-${indexID}`);
       if (!idExists) {
         newID = `option-${indexID}`;
+        break;
       }
     }
     return newID;
@@ -37,6 +48,8 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
           handleEditorChange([...answerValues, { id: findUniqueID(), text: "", isCorrect: false }]);
         } else {
           handleEditorChange([{ id: `option-0`, text: "", isCorrect: false }]);
+          if (!hasSubmitted) return;
+          setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
         }
         break;
       case "multiple-response":
@@ -44,13 +57,15 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
           handleEditorChange([...answerValues, { id: findUniqueID(), text: "", isCorrect: false }]);
         } else {
           handleEditorChange([{ id: `option-0`, text: "", isCorrect: false }]);
+          if (!hasSubmitted) return;
+          setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
         }
         break;
       case "":
-        toast.warn("nothing chosen!");
+        toast.warn("Choose a question type!");
         break;
       case undefined:
-        toast.warn("nothing chosen!");
+        toast.warn("Choose a question type!");
         break;
       default:
         toast.warn(`${questionType} isn't implemented yet!`);
@@ -60,16 +75,25 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
 
   //TODO Move to question type itself maybe
   const removeElement = () => {
+    let newValues = [...answerValues];
     //If a element is selected, remove it else remove the last element of the array
     if (lastSelected) {
       //Remove selected Element
-      const returnVal = answerValues.filter((item) => item.id !== lastSelected);
+      newValues = newValues.filter((item) => item.id !== lastSelected);
       setLastSelected("");
-      handleEditorChange(returnVal);
-    } else if (!lastSelected && answerValues?.length >= 1) {
+      handleEditorChange([...newValues]);
+    } else if (!lastSelected && newValues?.length >= 1) {
       //Remove last element of array
-      answerValues.pop();
-      handleEditorChange([...answerValues]);
+      newValues.pop();
+      handleEditorChange([...newValues]);
+    }
+
+    //Show error message if there is no element left but only if onChange after first submit contains error
+    if (hasSubmitted && newValues?.length === 0) {
+      setErrors((prev) => ({
+        ...objectWithoutProp({ object: prev, deleteProp: "answerOptions" }),
+        ...{ answerOptions: "Add at least one item!" },
+      }));
     }
   };
 
@@ -85,7 +109,7 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
         </button>
       </div>
 
-      <div className='editor-content'>
+      <div className={`editor-content ${answerOptionsError ? "is-invalid" : ""}`}>
         <Switch questionType={questionType}>
           <MultipleChoice
             name='multiple-choice'
@@ -100,6 +124,7 @@ export const AnswerOptionsEditor = ({ questionType, answerValues, handleEditorCh
             handleEditorChange={handleEditorChange}
             lastSelected={lastSelected}
             setLastSelected={setLastSelected}
+            setErrors={setErrors}
           />
           <Empty name='' />
         </Switch>

@@ -1,6 +1,4 @@
 /// <reference types="cypress" />
-import path from "path";
-import { version } from "../../package.json";
 
 describe("Test Home Component", () => {
   const downloadsFolder = Cypress.config("downloadsFolder");

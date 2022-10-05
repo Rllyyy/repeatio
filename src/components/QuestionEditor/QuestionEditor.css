@@ -66,7 +66,6 @@
 
 .question-editor-form .buttons button {
   all: unset;
-  cursor: pointer;
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 18px;
@@ -79,17 +78,50 @@
   max-width: 100px;
 }
 
-.question-editor-form .buttons .update-add-question {
+.question-editor-form .buttons button:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/* Caution: As of 10.2022 user-invalid is currently only supported by firefox (fires if required pattern isn't met on submit) */
+/* It is mainly used because firefox mobile has no visible html validation (box that shows up) */
+/* TODO If firefox mobile ever supports :has() (https://caniuse.com/css-has) use content after to show "field has error" but not if section has custom error message */
+.question-editor-form input:user-invalid,
+.question-editor-form select:user-invalid,
+.question-editor-form textarea:user-invalid {
+  background-color: rgb(253, 241, 239);
+  border-color: rgb(231, 76, 60);
+}
+
+.question-editor-form .modal-question-error,
+.question-editor-form .modal-question-error>span,
+.question-editor-form .modal-question-error * {
+  margin-top: .4em;
+  color: rgb(231, 76, 60);
+  /* TODO make font size dynamic */
+  font-size: 16px;
+}
+
+.question-editor-form .is-invalid {
+  background-color: rgb(253, 241, 239);
+  border-color: rgb(231, 76, 60);
+}
+
+.question-editor-form .buttons .update-add-question[aria-disabled="false"] {
   color: var(--custom-tertiary-color);
   background-color: var(--custom-prime-color);
 }
 
-.question-editor-form .buttons .update-add-question:active {
+.question-editor-form .buttons .update-add-question[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--custom-tertiary-color);
+  background-color: var(--custom-border-color-light);
+}
+
+.question-editor-form .buttons .update-add-question[aria-disabled="false"]:active {
   background-color: var(--custom-prime-color-dark);
 }
 
 .question-editor-form .buttons .cancel {
-  /* background-color: var(--custom-tertiary-color); */
   box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
 }
 
@@ -101,7 +133,7 @@
 
 /* Media Query for devices that can hover */
 @media screen and (hover: hover) and (pointer: fine) {
-  .question-editor-form .buttons .update-add-question:hover {
+  .question-editor-form .buttons .update-add-question:hover:not(:aria-disabled) {
     background-color: var(--custom-prime-color-dark);
   }
 

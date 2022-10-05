@@ -106,12 +106,14 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
                       color: "var(--custom-prime-color)",
                     },
                   }}
+                  required
                 />
               }
               label={
                 <TextareaAutosize
                   spellCheck='false'
                   autoComplete='false'
+                  required
                   className='editor-label-textarea'
                   onChange={(e) => updateText(e, id)}
                   value={text}

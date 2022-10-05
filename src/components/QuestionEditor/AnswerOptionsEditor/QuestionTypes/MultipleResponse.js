@@ -5,8 +5,11 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControl from "@mui/material/FormControl";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
+//Functions
+import { objectWithoutProp } from "../../helpers.js";
+
 //Component
-export const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSelected }) => {
+export const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSelected, setErrors }) => {
   //Prevent the modal from closing when hitting escape while on the checkbox
   const preventLabelEscapeKeyExit = (e) => {
     if (e.key === "Escape") {
@@ -24,6 +27,9 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
         return { ...option };
       }
     });
+
+    //Remove any errors from answerOptions but keep all other errors
+    setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
 
     handleEditorChange(returnVal);
   };
@@ -63,9 +69,9 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
   };
 
   return (
-    <FormControl>
+    <FormControl required /* error={filterTest} */>
       <FormGroup>
-        {options?.map((option, index) => {
+        {options?.map((option) => {
           return (
             <FormControlLabel
               onClick={() => selected(option.id)}
@@ -73,14 +79,14 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
               key={option.id}
               value={option.id}
               className={`formControlLabel ${lastSelected === option.id ? "lastSelected" : ""}`}
-              data-testid={`formControlLabel-${index}`}
+              data-testid={`formControlLabel-${option.id}`}
               control={
                 <Checkbox
                   checked={option.isCorrect || false}
                   onChange={handleCheckBoxChange}
                   onKeyDown={checkBoxPreventSubmission}
                   className='formControlLabel-checkbox'
-                  data-testid={`formControlLabel-checkbox-${index}`}
+                  data-testid={`formControlLabel-checkbox-${option.id}`}
                   sx={{
                     color: "var(--custom-prime-color)",
                     "&.Mui-checked": {
@@ -94,6 +100,7 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
                   spellCheck='false'
                   autoComplete='false'
                   className='editor-label-textarea'
+                  required
                   onChange={(e) => handleCheckBoxInputChange(e, option.id)}
                   value={option.text}
                 />

@@ -1,6 +1,6 @@
 .editor {
   width: 100%;
-  min-height: 200px;
+  /* min-height: 200px; */
   outline: 1px solid var(--custom-border-color-lighter);
 
   border-radius: 3px;
@@ -97,12 +97,12 @@
 }
 
 .editor .editor-label-textarea:focus-visible {
-  /* border-color: var(--custom-prime-color); */
   outline: 2px solid var(--custom-prime-color);
 }
 
 .editor .editor-content {
   padding: 10px;
+  min-height: 170px;
 }
 
 .editor .editor-message {

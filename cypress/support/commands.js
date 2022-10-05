@@ -23,6 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+//To enable tabbing in cypress: https://github.com/kuceb/cypress-plugin-tab
+import "cypress-plugin-tab";
+
+//Command to add the fixture to the localStorage
 Cypress.Commands.add("addModuleFixtureToLocalStorage", () => {
   cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
     localStorage.setItem(`repeatio-module-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));

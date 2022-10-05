@@ -9,10 +9,6 @@ describe("Updating a Question using the Question editor", () => {
     cy.get("div.ReactModal__Overlay").scrollIntoView();
   });
 
-  afterEach(() => {
-    cy.clearLocalStorage();
-  });
-
   it("should show 'Edit Question' when clicking on the edit button", () => {
     cy.contains("h1", "Edit Question");
   });
@@ -53,14 +49,17 @@ describe("Updating a Question using the Question editor", () => {
       type: "multiple-response",
       answerOptions: [
         {
+          id: "option-0",
           text: "This answer is correct",
           isCorrect: true,
         },
         {
+          id: "option-1",
           text: "This answer is false",
           isCorrect: false,
         },
         {
+          id: "option-2",
           text: "This answer is also correct",
           isCorrect: true,
         },
@@ -76,16 +75,16 @@ describe("Updating a Question using the Question editor", () => {
       cy.get("button#editor-add-item").click();
     });
 
-    updatedQuestion.answerOptions.forEach((item, index) => {
+    updatedQuestion.answerOptions.forEach((item) => {
       //Update text
       cy.get("div.editor-content")
-        .find(`[data-testid='formControlLabel-${index}']`)
+        .find(`[data-testid='formControlLabel-${item.id}']`)
         .find("textarea")
         .not("[aria-hidden = 'true']")
         .type(item.text);
 
       if (item.isCorrect) {
-        cy.get("div.editor-content").find(`[data-testid='formControlLabel-${index}']`).find("input").check();
+        cy.get("div.editor-content").find(`[data-testid='formControlLabel-${item.id}']`).find("input").check();
       }
     });
 
