@@ -323,7 +323,7 @@ const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
   );
 };
 
-//Prop Types
+//Prop Types for textarea
 EditorFormTextarea.propTypes = {
   labelText: PropTypes.string.isRequired,
   value: PropTypes.string,
@@ -383,10 +383,11 @@ const EditorFormInput = ({ labelText, type, value, handleChange, errors, setErro
   );
 };
 
+//PropTypes for Input
 EditorFormInput.propTypes = {
   labelText: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   handleChange: PropTypes.func.isRequired,
   setErrors: PropTypes.func,
   hasSubmitted: PropTypes.bool,
@@ -439,20 +440,11 @@ const EditorFormSelect = ({ handleChange, value, typeErrors, hasSubmitted, setEr
   );
 };
 
-//handleChange, value, typeErrors, hasSubmitted, setErrors
-EditorFormInput.propTypes = {
+//PropTypes for the select
+EditorFormSelect.propTypes = {
   handleChange: PropTypes.func.isRequired,
   value: PropTypes.string,
   typeErrors: PropTypes.object,
   hasSubmitted: PropTypes.bool,
   setErrors: PropTypes.func,
 };
-
-//TODO
-// - all lower text ✔
-// - check id if contains space ✔
-// - Don't validate for everything ✔
-// - move select to own component ✔
-// - update propTypes ✔
-// - onChange question type check if supported!
-// - add onchange validation to question editor (+ error if removed)

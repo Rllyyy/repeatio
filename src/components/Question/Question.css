@@ -26,7 +26,6 @@
 .question-form ul li,
 .question-form ol li {
   font-weight: inherit;
-  list-style-position: inside;
   font-size: inherit;
 }
 

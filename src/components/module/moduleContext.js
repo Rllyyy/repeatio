@@ -74,7 +74,7 @@ export const ModuleProvider = (props) => {
   //Update the localStorage/filesystem if initialData changes
   useEffect(() => {
     //Don't update the storage if the data is undefined or from the public folder (id: types_1)
-    if (initialData === undefined || initialData?.length < 1 || initialData?.id === "types_1") {
+    if (initialData === undefined || initialData?.length < 1 || initialData?.id === "types_1" || !initialData) {
       return;
     }
 

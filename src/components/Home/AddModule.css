@@ -300,7 +300,6 @@
 .create-module-errors-list li,
 .import-module-warnings-list li {
   list-style-type: disc;
-  list-style-position: inside;
 
   padding: 3px 0 3px 0px;
   text-indent: -22px;

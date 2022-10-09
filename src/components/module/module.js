@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useCallback, useLayoutEffect } from "react";
+import { useState, useContext, useCallback, useLayoutEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "./moduleContext.js";
 
@@ -10,6 +10,7 @@ import { Spinner } from "../Spinner/Spinner";
 import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover.jsx";
 import { toast } from "react-toastify";
+import { ModuleNotFound } from "./ModuleNotFound.jsx";
 
 //Icons
 import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
@@ -29,7 +30,9 @@ import { saveFile } from "../../utils/saveFile.js";
 //Component
 export const Module = () => {
   //useState
-  const [module, setModule] = useState();
+  const [module, setModule] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   //context
@@ -43,14 +46,42 @@ export const Module = () => {
 
   /* USEEFFECTS */
   //Update the module state by using the data from the context
-  useEffect(() => {
-    if (moduleData?.length === 0 || moduleData === undefined) return;
+  useLayoutEffect(() => {
+    //Module is loading
+    if (moduleData?.length === 0 || moduleData === undefined) {
+      setLoading(true);
+      setError(false);
+      return;
+    }
+
+    //Context returned nothing because module wasn't found
+    if (moduleData === null) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
+
+    //Update module if module was found
     setModule(moduleData);
+    setError(false);
+    setLoading(false);
+
+    return () => {
+      setModule({});
+      setError(false);
+      setLoading(true);
+    };
   }, [moduleData]);
 
   //Tell the context to update with the new module (id is in the url)
-  useEffect(() => {
+  useLayoutEffect(() => {
     setContextModuleID(moduleID);
+
+    return () => {
+      setModule({});
+      setError(false);
+      setLoading(true);
+    };
   }, [moduleID, setContextModuleID]);
 
   /*EVENTS*/
@@ -161,12 +192,16 @@ export const Module = () => {
   ];
 
   //Show loading while module isn't set
-  if (!module) {
+  if (loading) {
     return (
       <div className='module-spinner' style={{ marginTop: "80px" }}>
         <Spinner />
       </div>
     );
+  }
+
+  if (error || Object.keys(module).length < 1) {
+    return <ModuleNotFound />;
   }
 
   //JSX
