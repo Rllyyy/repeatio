@@ -32,6 +32,13 @@ footer a {
   -webkit-user-drag: none;
 }
 
+footer a:focus-visible {
+  color: var(--custom-border-color-lighter);
+  outline: 3px solid var(--custom-tertiary-color);
+  outline-offset: 3px;
+}
+
+
 @media screen and (pointer: fine) and (hover: hover) {
   footer a:hover {
     color: var(--custom-border-color-lighter);

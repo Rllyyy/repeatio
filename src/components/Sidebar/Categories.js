@@ -85,6 +85,7 @@ const Categories = memo(({ setExpandSidebar, expandSidebar }) => {
             to={`/${linkTo}`}
             key={className}
             onClick={closeMenuOnMobileClick}
+            aria-label={className}
             className={`${className}${currentlyViewedCategory === linkTo ? " currentView" : ""}`}
           >
             {icon}
