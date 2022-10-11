@@ -85,10 +85,13 @@
     "build-react": "react-scripts build",
     "test-react": "react-scripts test --env=jsdom",
     "eject-react": "react-scripts eject",
-    "build": "yarn build-react && electron-builder",
+    "build": "yarn pre-build-electron && yarn build-react && electron-builder && yarn post-build-electron",
     "start": "concurrently -k \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
     "test": "yarn test-react",
-    "test:cy": "yarn run cypress open"
+    "test:cy": "yarn run cypress open",
+    "tests": "yarn pre-build-electron && yarn post-build-electron",
+    "pre-build-electron": "cd src/utils && node electronPreBuild.mjs",
+    "post-build-electron": "cd src/utils && node electronPostBuild.mjs"
   },
   "eslintConfig": {
     "extends": [

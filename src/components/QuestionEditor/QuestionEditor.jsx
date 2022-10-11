@@ -444,7 +444,7 @@ const EditorFormSelect = ({ handleChange, value, typeErrors, hasSubmitted, setEr
 EditorFormSelect.propTypes = {
   handleChange: PropTypes.func.isRequired,
   value: PropTypes.string,
-  typeErrors: PropTypes.object,
+  typeErrors: PropTypes.string,
   hasSubmitted: PropTypes.bool,
   setErrors: PropTypes.func,
 };
