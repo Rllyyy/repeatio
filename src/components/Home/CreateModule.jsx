@@ -21,6 +21,7 @@ export const CreateModule = ({ handleModalClose }) => {
     defaultValues: {
       id: "",
       name: "",
+      lang: "",
       compatibility: packageJson.version,
       questions: [],
     },
@@ -147,6 +148,22 @@ export const CreateModule = ({ handleModalClose }) => {
           className={`${errors.name ? "is-invalid" : ""}`}
           onKeyDown={preventSubmit}
         />
+      </div>
+      {/* Module language */}
+      <div className='create-module-language'>
+        <label htmlFor='create-module-language-select'>Language</label>
+        <select
+          id='create-module-language-select'
+          {...register("lang", {
+            required: "Please select a language for the module. In the future it will be used for spellchecking.",
+          })}
+          className={`${errors.lang ? "is-invalid" : ""}`}
+        >
+          {/* language values are defined in ISO-639-1 */}
+          <option value=''></option>
+          <option value='de'>German</option>
+          <option value='en'>English</option>
+        </select>
       </div>
       {/* Compatibility Info (Version of repeatio) */}
       <div className='create-module-compatibility'>

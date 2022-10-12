@@ -197,11 +197,16 @@ h3 {
   line-height: 1.1;
 }
 
+select {
+  cursor: pointer;
+}
+
 p,
 span:not(.math *):not(.math),
 li,
 label,
-input {
+input,
+select {
   font-size: 18px;
 }
 

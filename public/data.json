@@ -1,203 +1,205 @@
-  {
-    "id": "types_1",
-    "name": "Question Types",
-    "questions": [
-      {
-        "id": "qID-1",
-        "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
-        "points": 5,
-        "type": "multiple-choice",
-        "help": "Please choose the correct answer.",
-        "answerOptions": [
-          {
-            "id": "option-0",
-            "text": "All options can be correct",
-            "isCorrect": false
-          },
-          {
-            "id": "option-1",
-            "text": "One or more options can be correct",
-            "isCorrect": false
-          },
-          {
-            "id": "option-2",
-            "text": "No option can be correct",
-            "isCorrect": false
-          },
-          {
-            "id": "option-3",
-            "text": "Exactly one option can be correct",
-            "isCorrect": true
-          }
-        ]
-      },
-      {
-        "id": "qID-2",
-        "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
-        "points": 5,
-        "type": "multiple-response",
-        "help": "Please choose the correct answer(s).",
-        "answerOptions": [
-          {
-            "id": "option-0",
-            "text": "All options can be correct",
-            "isCorrect": true
-          },
-          {
-            "id": "option-1",
-            "text": "One or more options can be correct",
-            "isCorrect": true
-          },
-          {
-            "id": "option-2",
-            "text": "No option can be correct",
-            "isCorrect": false
-          },
-          {
-            "id": "option-3",
-            "text": "One option can be correct",
-            "isCorrect": true
-          },
-          {
-            "id": "option-4",
-            "text": "This question type is identical with Multiple-Choice questions",
-            "isCorrect": false
-          },
-          {
-            "id": "option-5",
-            "text": "Half points can be awarded if 50% of the options are correct",
-            "isCorrect": false
-          }
-        ]
-      },
-      {
-        "id": "qID-3",
-        "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
-        "points": 5,
-        "type": "gap-text",
-        "help": "Fill in the blanks.",
-        "answerOptions": {
-          "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
-          "correctGapValues": [
-            [
-              "gaps"
-            ],
-            [
-              "semicolon",
-              ";"
-            ],
-            [
-              "not"
-            ]
-          ]
+{
+  "id": "types_1",
+  "name": "Question Types",
+  "lang": "en",
+  "compatibility": "0.3.0",
+  "questions": [
+    {
+      "id": "qID-1",
+      "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
+      "points": 5,
+      "type": "multiple-choice",
+      "help": "Please choose the correct answer.",
+      "answerOptions": [
+        {
+          "id": "option-0",
+          "text": "All options can be correct",
+          "isCorrect": false
+        },
+        {
+          "id": "option-1",
+          "text": "One or more options can be correct",
+          "isCorrect": false
+        },
+        {
+          "id": "option-2",
+          "text": "No option can be correct",
+          "isCorrect": false
+        },
+        {
+          "id": "option-3",
+          "text": "Exactly one option can be correct",
+          "isCorrect": true
         }
-      },
-      {
-        "id": "qID-4",
-        "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
-        "points": 5,
-        "type": "gap-text-dropdown",
-        "help": "Fill in the blanks with the **correct** Values!",
-        "answerOptions": {
-          "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
-          "dropdowns": [
-            {
-              "id": "select-0",
-              "options": [
-                "Dropdown",
-                "Pickup",
-                "empty"
-              ],
-              "correct": "Dropdown"
-            },
-            {
-              "id": "select-1",
-              "options": [
-                "0%",
-                "25%",
-                "50%",
-                "75%",
-                "100%"
-              ],
-              "correct": "50%"
-            }
-          ]
+      ]
+    },
+    {
+      "id": "qID-2",
+      "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
+      "points": 5,
+      "type": "multiple-response",
+      "help": "Please choose the correct answer(s).",
+      "answerOptions": [
+        {
+          "id": "option-0",
+          "text": "All options can be correct",
+          "isCorrect": true
+        },
+        {
+          "id": "option-1",
+          "text": "One or more options can be correct",
+          "isCorrect": true
+        },
+        {
+          "id": "option-2",
+          "text": "No option can be correct",
+          "isCorrect": false
+        },
+        {
+          "id": "option-3",
+          "text": "One option can be correct",
+          "isCorrect": true
+        },
+        {
+          "id": "option-4",
+          "text": "This question type is identical with Multiple-Choice questions",
+          "isCorrect": false
+        },
+        {
+          "id": "option-5",
+          "text": "Half points can be awarded if 50% of the options are correct",
+          "isCorrect": false
         }
-      },
-      {
-        "id": "qID-5",
-        "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
-        "points": 5,
-        "type": "extended-match",
-        "help": "Connect the dots.",
-        "answerOptions": {
-          "leftSide": [
-            {
-              "id": "left-0",
-              "text": "Hello"
-            },
-            {
-              "id": "left-1",
-              "text": "7+4"
-            }
+      ]
+    },
+    {
+      "id": "qID-3",
+      "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
+        "correctGapValues": [
+          [
+            "gaps"
           ],
-          "rightSide": [
-            {
-              "id": "right-0",
-              "text": "World"
-            },
-            {
-              "id": "right-1",
-              "text": "20"
-            },
-            {
-              "id": "right-2",
-              "text": "11"
-            }
+          [
+            "semicolon",
+            ";"
           ],
-          "correctMatches": [
-            {
-              "left": "left-0",
-              "right": "right-0"
-            },
-            {
-              "left": "left-1",
-              "right": "right-2"
-            }
+          [
+            "not"
           ]
-        }
-      },
-      {
-        "id": "qID-6",
-        "title": "Gap texts with and without preselected values can be combined with html tables to achieve this question.",
-        "points": 5,
-        "type": "gap-text-dropdown",
-        "help": "Fill in the blanks by choosing the correct answer from the dropdown list!",
-        "answerOptions": {
-          "text": "<table><tr><th></th><th>Hamburg</th><th>München</th></tr><tr><td>Residents</td><td>[]</td><td>[]</td></tr></table>",
-          "dropdowns": [
-            {
-              "id": "select-0",
-              "options": [
-                "1.8 Mio",
-                "1.5 Mio",
-                "2.9 Mio",
-                "2 Tsd."
-              ],
-              "correct": "1.8 Mio"
-            },
-            {
-              "id": "select-1",
-              "options": [
-                "1.8 Mio",
-                "1.5 Mio",
-                "2.9 Mio",
-                "2 Tsd."
-              ],
-              "correct": "1.5 Mio"
-            }
-          ]
-        }
+        ]
       }
-    ]
-  }
+    },
+    {
+      "id": "qID-4",
+      "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
+      "points": 5,
+      "type": "gap-text-dropdown",
+      "help": "Fill in the blanks with the **correct** Values!",
+      "answerOptions": {
+        "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "Dropdown",
+              "Pickup",
+              "empty"
+            ],
+            "correct": "Dropdown"
+          },
+          {
+            "id": "select-1",
+            "options": [
+              "0%",
+              "25%",
+              "50%",
+              "75%",
+              "100%"
+            ],
+            "correct": "50%"
+          }
+        ]
+      }
+    },
+    {
+      "id": "qID-5",
+      "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
+      "points": 5,
+      "type": "extended-match",
+      "help": "Connect the dots.",
+      "answerOptions": {
+        "leftSide": [
+          {
+            "id": "left-0",
+            "text": "Hello"
+          },
+          {
+            "id": "left-1",
+            "text": "7+4"
+          }
+        ],
+        "rightSide": [
+          {
+            "id": "right-0",
+            "text": "World"
+          },
+          {
+            "id": "right-1",
+            "text": "20"
+          },
+          {
+            "id": "right-2",
+            "text": "11"
+          }
+        ],
+        "correctMatches": [
+          {
+            "left": "left-0",
+            "right": "right-0"
+          },
+          {
+            "left": "left-1",
+            "right": "right-2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "qID-6",
+      "title": "Gap texts with and without preselected values can be combined with html tables to achieve this question.",
+      "points": 5,
+      "type": "gap-text-dropdown",
+      "help": "Fill in the blanks by choosing the correct answer from the dropdown list!",
+      "answerOptions": {
+        "text": "<table><tr><th></th><th>Hamburg</th><th>München</th></tr><tr><td>Residents</td><td>[]</td><td>[]</td></tr></table>",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "1.8 Mio",
+              "1.5 Mio",
+              "2.9 Mio",
+              "2 Tsd."
+            ],
+            "correct": "1.8 Mio"
+          },
+          {
+            "id": "select-1",
+            "options": [
+              "1.8 Mio",
+              "1.5 Mio",
+              "2.9 Mio",
+              "2 Tsd."
+            ],
+            "correct": "1.5 Mio"
+          }
+        ]
+      }
+    }
+  ]
+}

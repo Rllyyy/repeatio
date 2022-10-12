@@ -7,4 +7,3 @@ describe("Package.cy.js", () => {
     expect(packageJson).not.to.have.property("homepage");
   });
 });
-//"homepage": "./",

@@ -91,6 +91,8 @@ describe("Test importing a new module", () => {
         expect(localStorageItem).not.to.be.null;
         expect(localStorageItem.id).to.equal("cypress_1");
         expect(localStorageItem.name).to.equal("Cypress Fixture Module");
+        expect(localStorageItem.lang).to.equal("en");
+        expect(localStorageItem.compatibility).to.equal("0.3.0");
         expect(localStorageItem.questions).to.have.length(6);
       });
   });
@@ -187,6 +189,7 @@ describe("Test importing a new module", () => {
     const localStorageItemContent = {
       id: "lsi-1",
       name: "Local Storage Item 1",
+      lang: "en",
       compatibility: "0.3.0",
       questions: [],
     };
@@ -257,6 +260,7 @@ describe("Test importing a new module", () => {
     const fileContent = {
       id: "file_1",
       name: "File 1",
+      lang: "en",
       compatibility: "0.3.0",
       questions: [],
     };
@@ -336,6 +340,7 @@ describe("Test importing a new module", () => {
     const replacerModuleContent = {
       id: "cypress_1",
       name: "This module was replaced by cypress",
+      lang: "en",
       compatibility: "0.3.0",
       questions: [],
     };
@@ -402,6 +407,7 @@ describe("Test importing a new module", () => {
     const fileContent = {
       id: "file_1",
       name: "File 1",
+      lang: "en",
       compatibility: "0.3.0",
       questions: [],
     };
@@ -418,6 +424,7 @@ describe("Test importing a new module", () => {
     const fileContent2 = {
       id: "file_2",
       name: "File 2",
+      lang: "en",
       compatibility: "0.3.0",
       questions: [],
     };
@@ -474,12 +481,20 @@ describe("Test creating a new module", () => {
   //Test creating a new module
   it("should add module and show toast when creating a module", () => {
     //Fill in form and click create button
+    //id
     cy.get("input#create-module-id-input").type("test_cy_1").should("have.value", "test_cy_1");
+    //name
     cy.get("input#create-module-name-input")
       .type("Module created with cypress")
       .should("have.value", "Module created with cypress");
+    //language
+    cy.get("select#create-module-language-select").select("English").should("have.value", "en");
+    cy.get("select#create-module-language-select").find("option:selected").should("have.text", "English");
+    //compatibility
     cy.get("input#create-module-compatibility-input").should("be.disabled").and("have.value", version);
+
     cy.get("form.create-module").contains("button", "Create").click();
+
     //Navigate to newly created module by toast
     cy.get(".Toastify__toast").contains("a", "test_cy_1").click({ force: true });
     cy.contains("h1", "Module created with cypress");
@@ -489,6 +504,7 @@ describe("Test creating a new module", () => {
   it("should add new module to localStorage when creating a module", () => {
     cy.get("input#create-module-id-input").type("cypress-localStorage");
     cy.get("input#create-module-name-input").type("Cypress in localStorage");
+    cy.get("select#create-module-language-select").select("English");
 
     cy.get("form.create-module")
       .contains("button", "Create")
@@ -501,6 +517,8 @@ describe("Test creating a new module", () => {
         expect(localStorageItem).not.to.be.null;
         expect(localStorageItem.id).to.equal("cypress-localStorage");
         expect(localStorageItem.name).to.equal("Cypress in localStorage");
+        expect(localStorageItem.lang).to.equal("en");
+        expect(localStorageItem.compatibility).to.equal("0.3.0");
         expect(localStorageItem.questions).to.have.length(0);
       });
   });
@@ -523,23 +541,33 @@ describe("Test creating a new module", () => {
 
     cy.get("input#create-module-name-input").type("Module created with cypress");
     cy.get(".create-module-errors").should("not.exist");
+
+    cy.get("select#create-module-language-select").select("German");
+    cy.get(".create-module-errors").should("not.exist");
   });
 
   //Show errors
   it("should show errors if trying to submit without filling out required fields", () => {
     cy.contains("button", "Create").click();
 
-    cy.contains("li", "Please provide an ID for the module.");
-    cy.contains("li", "Please provide a name for the module.");
+    cy.get("ul.create-module-errors-list").find("li").should("have.length", 3);
+
+    cy.contains("li", "Please provide an ID for the module.").should("exist");
+    cy.contains("li", "Please provide a name for the module.").should("exist");
+    cy.contains(
+      "li",
+      "Please select a language for the module. In the future it will be used for spellchecking"
+    ).should("exist");
   });
 
   //Error display on submit for id and clearing if error are healed
   it("should show error if id of module is missing on submit and clear error if changing", () => {
     cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.get("select#create-module-language-select").select("English");
     cy.contains("button", "Create").click();
 
     //Expect error message
-    cy.contains("li", "Please provide an ID for the module.");
+    cy.contains("li", "Please provide an ID for the module.").should("exist");
 
     //Expect class invalid
     cy.get("input#create-module-id-input").should("have.class", "is-invalid");
@@ -554,10 +582,11 @@ describe("Test creating a new module", () => {
   //Error for module name if missing and healed
   it("should show error if name of module is missing on submit and clear error if changing", () => {
     cy.get("input#create-module-id-input").type("test_cy_1");
+    cy.get("select#create-module-language-select").select("English");
     cy.contains("button", "Create").click();
 
     //Expect error message
-    cy.contains("li", "Please provide a name for the module.");
+    cy.contains("li", "Please provide a name for the module.").should("exist");
 
     //Expect class invalid
     cy.get("input#create-module-name-input").should("have.class", "is-invalid");
@@ -569,11 +598,39 @@ describe("Test creating a new module", () => {
     cy.get("input#create-module-name-input").should("not.have.class", "is-invalid");
   });
 
+  //Error for module language if missing and healed
+  it("should show error if language of module is missing on submit and clear error if changing", () => {
+    cy.get("input#create-module-id-input").type("test_cy_1");
+    cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.contains("button", "Create").click();
+
+    //Expect error message
+    cy.contains(
+      "li",
+      "Please select a language for the module. In the future it will be used for spellchecking."
+    ).should("exist");
+
+    //Expect class invalid
+    cy.get("select#create-module-language-select").should("have.class", "is-invalid");
+
+    //Expect error message to disappear after typing
+    cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.get("select#create-module-language-select").select("English");
+
+    cy.contains(
+      "li",
+      "Please select a language for the module. In the future it will be used for spellchecking."
+    ).should("not.exist");
+    cy.get(".create-module-errors").should("not.exist");
+    cy.get("select#create-module-language-select").should("not.have.class", "is-invalid");
+  });
+
   //Error when using reserved keywords (module/types_1)
   it('should show error if provided id for module is a reserved keyword ("module"/"types_1")', () => {
     //Check against word "module"
     cy.get("input#create-module-id-input").type("module");
     cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.get("select#create-module-language-select").select("English");
     cy.contains("button", "Create").click();
 
     cy.contains(`The word "module" is a reserved keyword and can't be used inside an ID!`).should("be.visible");
@@ -590,6 +647,7 @@ describe("Test creating a new module", () => {
     //Check against word "module"
     cy.get("input#create-module-id-input").type("id 1");
     cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.get("select#create-module-language-select").select("English");
     cy.contains("button", "Create").click();
 
     cy.contains(`The ID has to be one word! Use hyphens ("-") to concat the word (id-1)`);
@@ -609,6 +667,7 @@ describe("Test creating a new module", () => {
     //Type into inputs
     cy.get("input#create-module-id-input").type("cypress_1");
     cy.get("input#create-module-name-input").type("Module created with cypress");
+    cy.get("select#create-module-language-select").select("English");
     cy.contains("button", "Create").click();
 
     cy.contains(`ID of module ("cypress_1") already exists!`).should("be.visible");

@@ -4,7 +4,6 @@
   line-height: 1;
   text-align: center;
 
-
   background-color: var(--custom-prime-color);
   color: whitesmoke;
   cursor: pointer;
@@ -245,7 +244,7 @@
 }
 
 .create-module>div {
-  margin-bottom: .8rem;
+  margin-bottom: 1rem;
 }
 
 .create-module>div>label {
@@ -256,7 +255,8 @@
   font-weight: 500;
 }
 
-.create-module>div>input {
+.create-module>div>input,
+.create-module>div>select {
   display: block;
   padding: 8px;
   width: 100%;
@@ -266,7 +266,8 @@
   outline-offset: -1px;
 }
 
-.create-module>div>input.is-invalid {
+.create-module>div>input.is-invalid,
+.create-module>div>select.is-invalid {
   border-color: rgb(231, 76, 60);
   background-color: rgba(231, 76, 60, .08);
 }
@@ -318,7 +319,8 @@
   outline-offset: 3px;
 }
 
-.create-module>div>input:focus-visible {
+.create-module>div>input:focus-visible,
+.create-module>div>select:focus-visible {
   outline: 2px solid var(--custom-prime-color);
 }
 
