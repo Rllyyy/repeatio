@@ -139,3 +139,22 @@ describe("Updating a Question using the Question editor", () => {
       });
   });
 });
+
+describe("Update question using mode random", () => {
+  beforeEach(() => {
+    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
+      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
+    });
+    cy.visit("/module/cypress_1");
+    cy.get("article[data-cy='Practice'").contains("button", "Random").click();
+    cy.get("button[aria-label='Edit Question']").click();
+    cy.get("div.ReactModal__Overlay").scrollIntoView();
+  });
+
+  it("should show warning if trying to update question", () => {
+    cy.contains("button", "Update").click();
+    cy.contains(
+      "Can't edit this questions while using mode random! Navigate to this question using the question overview."
+    ).should("exist");
+  });
+});

@@ -112,15 +112,27 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
     //Return if there are any errors
     if (Object.keys(errors).length > 0) return;
 
-    //Setup variables
-    hasSubmitted.current = true;
-    let onSubmitErrors = {};
-
     if (isElectron()) {
       toast.warn("Can't edit question in electron for this time. Use your browser instead!");
       handleModalClose();
       return;
     }
+
+    //Don't allow question editing when using mode random
+    if (new URLSearchParams(search).get("mode") === "random") {
+      //TODO fix this
+      toast.warn(
+        "Can't edit this questions while using mode random! Navigate to this question using the question overview.",
+        {
+          autoClose: 12000,
+        }
+      );
+      return;
+    }
+
+    //Setup variables
+    hasSubmitted.current = true;
+    let onSubmitErrors = {};
 
     //Prevent adding to types module as it is originally saved in the public folder
     //Adding a question would create a module in the localStorage with the same id.

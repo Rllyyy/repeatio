@@ -161,8 +161,8 @@ export const CreateModule = ({ handleModalClose }) => {
         >
           {/* language values are defined in ISO-639-1 */}
           <option value=''></option>
-          <option value='de'>German</option>
           <option value='en'>English</option>
+          <option value='de'>German</option>
         </select>
       </div>
       {/* Compatibility Info (Version of repeatio) */}
