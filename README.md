@@ -27,7 +27,7 @@ Start **[learning](https://repeatio.netlify.app)**.
 ### Mobile
 
 > **Warning**  
-> Devices running iOS are currently **_not_** supported!
+> Devices running iOS are currently **_not_** supported! This includes **_all_** browsers (Safari, Chrome on iOS, ...)!
 
 |             | Chrome            | Edge            | Safari          | Firefox           | Opera           | Samsung Internet |
 |:-----------:|:-----------------:|:---------------:|:---------------:|:-----------------:|:---------------:|:----------------:|
@@ -40,7 +40,7 @@ Start **[learning](https://repeatio.netlify.app)**.
 ### Legend
 
 | Emoji            | Value       |
-|------------------|-------------|
+|:----------------:|-------------|
 |:1st_place_medal: | Excellent   |
 |:2nd_place_medal: | Very good   |
 |:3rd_place_medal: | Ok          |
@@ -107,6 +107,9 @@ To practice with the questions you bookmarked navigate to the module and click t
 The questions are in the order that they were saved in. **[Read](#bookmarked-questions)** how to bookmark a question.
 
 <img src="./.github/Docs/assets/images/train-bookmarked-questions.png" alt="Train Bookmarked Questions" height="180px"/>
+
+> **Warning**  
+> Don't delete or edit questions when using this mode!
 
 ## Adding and editing Questions
 
@@ -433,9 +436,9 @@ This is for example the case if you want to use css, escape the default styling 
     </tr>
     <tr>
       <td>Multiple line break</td>
-      <td>This text is broken into <code>&ensp;</code><sup><a href="#footnote-line-break-1">[1]</a></sup><br /> multiple lines </td>
-      <td>This text is broken into <code>&lt;br /&gt;</code><code>&lt;br /&gt;</code>multiple lines</td>
-      <td>This text is broken into <br /> <br /> multiple lines</td>
+      <td>Text broken<code>&ensp;</code><sup><a href="#footnote-line-break-1">[1]</a></sup><br />into multiple lines </td>
+      <td>Text broken <code>&lt;br /&gt;&lt;br /&gt;</code>into multiple lines</td>
+      <td>Text broken <br /> <br /> into multiple lines</td>
     </tr>
   </table>
 
@@ -794,7 +797,7 @@ $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
   </tr>
 </table>
 
-**[Here](/.github/Docs/KaTeX.md)** is a detailed guide.
+**[Here](/.github/Docs/LaTeX.md)** is a detailed guide.
 
 </details>
 
@@ -864,7 +867,7 @@ Some general tips:
 
 ## Scripts
 
-These scripts are for developers only
+These scripts are only for developers.
 
 <details>
   <summary><b>Clone Repository</b></summary>
