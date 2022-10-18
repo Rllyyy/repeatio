@@ -74,6 +74,7 @@ Round to 2 decimal places.
 
 LaTeX multiline functions are written between double dollar signs `$$...$$`.  
 For a new line in the function use two backslashes `\\`.  
+Center a function with `\begin{gather}` and `\end{gather}`.
 To align a function use `\begin{align}` in combination with `&=` and `\end{align}`.
 
 <table>
@@ -86,18 +87,20 @@ To align a function use `\begin{align}` in combination with `&=` and `\end{align
   </thead>
   <tbody>
   <tr>
-    <td>Unaligned</td>
+    <td>Centered</td>
     <td>
 
 ```latex
 Calculate $x^2+3x+2 = 0$
 
 $$
-x_{1,2} = -\left(\frac{3}{2}\right) \pm \sqrt{ \left(\frac{3}{2}\right)^{2}-2} \\
-x_{1,2} = -1,5 \pm \sqrt{2,25 - 2} \\
-\vdots  \\
-x_1 = -2 \\
-x_2 = -1
+\begin{gather}
+x_{1,2} = -\left(\frac{3}{2}\right) \pm \sqrt{ \left(\frac{3}{2}\right)^{2}-2}\nonumber \\
+x_{1,2} = -1,5 \pm \sqrt{2,25 - 2} \nonumber \\
+\vdots \nonumber \\
+x_1 = -2 \nonumber  \\
+x_2 = -1 \nonumber
+\end{gather}
 $$
 
 ```
@@ -105,7 +108,17 @@ $$
   </td>
     <td>
 
-  <img src="./assets/images/latex-multi-line.png" alt="Latex multi-line function" />
+Calculate $x^2+3x+2 = 0$
+
+$$
+\begin{gather}
+x_{1,2} = -\left(\frac{3}{2}\right) \pm \sqrt{ \left(\frac{3}{2}\right)^{2}-2} \nonumber \\
+x_{1,2} = -1,5 \pm \sqrt{2,25 - 2} \nonumber \\
+\vdots \nonumber \\
+x_1 = -2 \nonumber  \\
+x_2 = -1 \nonumber
+\end{gather}
+$$
 
   </td>
   </tr>
@@ -142,13 +155,13 @@ x_2 &= -1 \nonumber
 \end{align}
 $$
 
-> **Note**  
-> If the numbers next to the function overlap with the content of the function add `\nonumber` to the line.
-
   </td>
     </tr>
   </tbody>
 </table>
+
+> **Note**  
+> If the numbers next to the function overlap with the content of the function add `\nonumber` to the line.
 
 ## 2. Fractions and Binomials
 

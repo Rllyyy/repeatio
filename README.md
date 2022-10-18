@@ -2,7 +2,7 @@
 
 _Learn, repeat and memorize tasks with repeatio._
 
-Start **[learning](https://repeatio.netlify.app)**.
+## [Start Learning](https://repeatio.netlify.app)
 
 ## Current limitations (v0.3)
 
