@@ -1,0 +1,164 @@
+.question-editor-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 20px 25px 20px 25px;
+}
+
+.question-editor-form>div:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.question-editor-form>div>label {
+  font-size: 18px;
+  font-weight: 500;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.question-editor-form>div>input,
+.question-editor-form div>select,
+.question-editor-form div>textarea {
+  font: inherit;
+  font-size: 18px;
+  width: 100%;
+  padding: 6px 10px;
+
+  background-color: transparent;
+  outline: none;
+  outline-offset: -1px;
+
+  border: 1px solid var(--custom-border-color-lighter);
+  border-radius: 5px;
+}
+
+.question-editor-form>div>input,
+.question-editor-form div>select {
+  display: inline-block;
+}
+
+.question-editor-form div>textarea {
+  resize: none;
+}
+
+.question-editor-form>div>.question-editor-form div>select {
+  cursor: pointer;
+}
+
+.question-editor-form>div>input:focus-visible,
+.question-editor-form>div>#modal-question-type-select:focus-visible,
+.question-editor-form div>textarea:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+}
+
+.question-editor-form .modal-question-type-select {
+  cursor: pointer;
+}
+
+.question-editor-form .modal-question-type-select input {
+  cursor: pointer;
+}
+
+.question-editor-form .buttons {
+  margin-top: auto;
+}
+
+.question-editor-form .buttons button {
+  all: unset;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: 600;
+
+  line-height: 1;
+  margin-right: 10px;
+  text-align: center;
+  width: 100%;
+  max-width: 100px;
+}
+
+.question-editor-form .buttons button:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+/* Caution: As of 10.2022 user-invalid is currently only supported by firefox (fires if required pattern isn't met on submit) */
+/* It is mainly used because firefox mobile has no visible html validation (box that shows up) */
+/* TODO If firefox mobile ever supports :has() (https://caniuse.com/css-has) use content after to show "field has error" but not if section has custom error message */
+.question-editor-form input:user-invalid,
+.question-editor-form select:user-invalid,
+.question-editor-form textarea:user-invalid {
+  background-color: rgb(253, 241, 239);
+  border-color: rgb(231, 76, 60);
+}
+
+.question-editor-form .modal-question-error,
+.question-editor-form .modal-question-error>span,
+.question-editor-form .modal-question-error * {
+  margin-top: .4em;
+  color: rgb(231, 76, 60);
+  /* TODO make font size dynamic */
+  font-size: 16px;
+}
+
+.question-editor-form .is-invalid {
+  background-color: rgb(253, 241, 239);
+  border-color: rgb(231, 76, 60);
+}
+
+.question-editor-form .buttons .update-add-question[aria-disabled="false"] {
+  color: var(--custom-tertiary-color);
+  background-color: var(--custom-prime-color);
+}
+
+.question-editor-form .buttons .update-add-question[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--custom-tertiary-color);
+  background-color: var(--custom-border-color-light);
+}
+
+.question-editor-form .buttons .update-add-question[aria-disabled="false"]:active {
+  background-color: var(--custom-prime-color-dark);
+}
+
+.question-editor-form .buttons .cancel {
+  box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
+}
+
+.question-editor-form .buttons .update-add-question:focus-visible,
+.question-editor-form .buttons .cancel:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 5px;
+}
+
+/* Media Query for devices that can hover */
+@media screen and (hover: hover) and (pointer: fine) {
+  .question-editor-form .buttons .update-add-question:hover:not(:aria-disabled) {
+    background-color: var(--custom-prime-color-dark);
+  }
+
+  .question-editor-form .buttons .cancel:hover {
+    background-color: var(--custom-tertiary-color);
+  }
+}
+
+/* Media Query for smaller screens */
+@media only screen and (max-width: 650px) {
+  .question-editor-form>div>label {
+    font-size: 20px;
+  }
+
+  .question-editor-form {
+    padding: 20px;
+  }
+
+  .question-editor-form .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .question-editor-form .buttons button {
+    margin: 0;
+  }
+}

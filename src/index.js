@@ -1,55 +1,69 @@
 //Import React
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
+import { Router } from "./components/Router/Router";
 
 //Import Css
 import "./index.css";
 
+//Import Pages
+import Home from "./pages/index.js";
+
+import { TutorialsPage } from "./pages/tutorials.js";
+import { ContributePage } from "./pages/contribute";
+import { ThanksPage } from "./pages/thanks.js";
+import { NewsPage } from "./pages/news.js";
+import { SettingsPage } from "./pages/settings.js";
+
+import { LegalNoticePage } from "./pages/legal-notice.jsx";
+import { PrivacyPage } from "./pages/privacy.jsx";
+
+import { ModulePage } from "./pages/module/module.jsx";
+import { QuestionPage } from "./pages/module/question/question";
+import { AllQuestionsPage } from "./pages/module/all-questions/index";
+
 //Import Components
-import Home from "./Components/Main/Home/Home.js";
-import Sidebar from "./Components/SharedComponents/Sidebar/Sidebar";
-import Settings from "./Components/Main/Settings.js";
-import Tutorials from "./Components/Main/Tutorials.js";
-import Contribute from "./Components/Main/Contribute.js";
-import Thanks from "./Components/Main/Thanks.js";
-import News from "./Components/Main/News.js";
-import Module from "./Components/Main/Module/Module.js";
-import Question from "./Components/Main/Question/Question.js";
-import AllQuestions from "./Components/Main/Module/AllQuestions/AllQuestions.js";
+import { Sidebar } from "./components/Sidebar/Sidebar";
+import { Footer } from "./components/Footer/Footer.jsx";
+import { CustomToastContainer } from "./components/toast/toast.jsx";
 
 //Context
-import { ModuleProvider } from "./Context/ModuleContext.js";
+import { ModuleProvider } from "./components/module/moduleContext.js";
 
 //Import functions
-import ScrollToTop from "./functions/ScrollToTop";
+import { ScrollToTop } from "./utils/ScrollToTop";
 
 //Web vitals
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <HashRouter>
+  <StrictMode>
+    <Router>
       <Sidebar />
       <ScrollToTop>
         <main>
           <Switch>
             <Route exact path='/' component={Home} />
-            <Route exact path='/tutorials' component={Tutorials} />
-            <Route exact path='/contribute' component={Contribute} />
-            <Route exact path='/thanks' component={Thanks} />
-            <Route exact path='/news' component={News} />
-            <Route exact path='/settings' component={Settings} />
+            <Route exact path='/tutorials' component={TutorialsPage} />
+            <Route exact path='/contribute' component={ContributePage} />
+            <Route exact path='/thanks' component={ThanksPage} />
+            <Route exact path='/news' component={NewsPage} />
+            <Route exact path='/settings' component={SettingsPage} />
+            <Route exact path='/legal-notice' component={LegalNoticePage} />
+            <Route exact path='/privacy' component={PrivacyPage} />
             <ModuleProvider>
-              <Route exact path='/module/:moduleID' component={Module} />
-              <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-              <Route exact path='/module/:moduleID/all-questions' component={AllQuestions} />
+              <Route exact path='/module/:moduleID' component={ModulePage} />
+              <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
+              <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
             </ModuleProvider>
           </Switch>
         </main>
+        <Footer>Footer</Footer>
       </ScrollToTop>
-    </HashRouter>
-  </React.StrictMode>,
+      <CustomToastContainer />
+    </Router>
+  </StrictMode>,
   document.getElementById("root")
 );
 

@@ -8,7 +8,7 @@ export function useSize(target) {
   const [size, setSize] = useState();
 
   useLayoutEffect(() => {
-    setSize(target.current.getBoundingClientRect());
+    setSize(target.current?.getBoundingClientRect());
   }, [target]);
 
   useResizeObserver(target, (entry) => setSize(entry.contentRect));

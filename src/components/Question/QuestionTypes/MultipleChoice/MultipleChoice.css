@@ -1,0 +1,77 @@
+/* ! To manipulate material UI components sometimes a !important is required */
+/* ! Some css properties (mui-checkcolor, color) are defined in the react component  */
+
+.question-multiple-choice .formControlLabel {
+  width: 100% !important;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.question-multiple-choice .MuiFormControlLabel-root,
+.question-multiple-choice .css-1jaw3da {
+  margin-left: -6px;
+}
+
+.question-multiple-choice .formControlLabel>.formControlLabel-typography {
+  font-size: 18px;
+  padding-top: 10px;
+  padding-left: 2px;
+}
+
+.question-multiple-choice .formControlLabel>.formControlLabel-radio:hover {
+  background-color: transparent;
+}
+
+.question-multiple-choice .MuiSvgIcon-root {
+  font-size: 26px;
+}
+
+/* The first value is for development, the second is production. 
+This is the only way if found to have it still animated but disable the out animation */
+.question-multiple-choice .css-1hhw7if-MuiSvgIcon-root,
+.question-multiple-choice .css-1c4tzn {
+  /* Overwrite the out animation for the material UI radio button because on site change it doesn't unmount in time */
+  -webkit-transition: -webkit-transform 0ms cubic-bezier(0.4, 0, 1, 1) 0ms !important;
+  transition: transform 0ms cubic-bezier(0.4, 0, 1, 1) 0ms !important;
+}
+
+.question-multiple-choice .Mui-disabled .formControlLabel-typography {
+  color: grey;
+}
+
+.correction-multipleChoice-list-item {
+  list-style: none;
+  position: relative;
+  padding-left: 14px;
+}
+
+.correction-multipleChoice-list-item::before {
+  content: '•';
+  position: absolute;
+  left: 0px;
+  top: -5px;
+  bottom: 0;
+  font-weight: 900;
+  font-size: 24px;
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .question-multiple-choice .formControlLabel {
+    padding: 2px 0 !important;
+  }
+
+  /* Override the checkbox size of mui */
+  .question-multiple-choice .MuiSvgIcon-root {
+    font-size: 30px !important;
+  }
+
+  .question-multiple-choice .formControlLabel>.formControlLabel-typography {
+    font-size: 18px;
+    padding-top: 10px;
+    padding-left: 0;
+  }
+}

@@ -1,0 +1,126 @@
+.module-not-found {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.module-not-found>*:not(h1) {
+  margin-bottom: 1.5rem;
+}
+
+.module-not-found>h1 {
+  font-size: calc(600% + 10vw);
+  color: rgba(40, 42, 57, 0.12);
+  line-height: 1.1;
+  font-weight: 800;
+  user-select: none;
+  letter-spacing: -0.03em;
+}
+
+.module-not-found h2 {
+  font-size: 32px;
+  text-align: center;
+}
+
+.module-not-found .message p {
+  text-align: center;
+}
+
+.module-not-found .navigation-links a,
+.module-not-found .navigation-links button {
+  all: unset;
+  display: inline-block;
+
+  user-select: none;
+  -webkit-user-drag: none;
+  cursor: pointer;
+
+  padding: 10px 20px;
+  margin: 3px 10px;
+  border-radius: 5px;
+
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+
+  transition: box-shadow .2s;
+}
+
+.module-not-found .navigation-links a:focus-visible,
+.module-not-found .navigation-links button:focus-visible {
+  outline: 3px solid var(--custom-prime-color);
+  outline-offset: 8px;
+}
+
+.module-not-found .navigation-links #back-home {
+  background-color: var(--custom-prime-color);
+  color: white;
+}
+
+.module-not-found .user-modules:has(ul:empty) {
+  display: none;
+}
+
+.module-not-found .user-modules {
+  margin-top: 2rem;
+  min-width: 500px;
+}
+
+.module-not-found ul:not(:empty) {
+  border: 1px solid var(--custom-border-color-light);
+  border-radius: 5px;
+  list-style-type: none;
+}
+
+.module-not-found ul li {
+  padding: 10px;
+  line-height: 1.2;
+  width: 100%;
+}
+
+.module-not-found ul li:not(:last-child) {
+  border-bottom: 1px solid var(--custom-border-color-light);
+}
+
+.module-not-found ul a {
+  width: 100%;
+  text-decoration: none;
+}
+
+.module-not-found .navigation-links button {
+  box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  .module-not-found .navigation-links #back-home:hover {
+    background-color: var(--custom-prime-color-dark);
+  }
+
+  .module-not-found ul a:hover {
+    text-decoration: underline;
+  }
+
+  .navigation-links button:hover {
+    background-color: white;
+    box-shadow: inset var(--custom-prime-color) 0px 0px 0px 2px;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .module-not-found>*:not(h1) {
+    margin-bottom: 1rem;
+  }
+
+  .module-not-found h2 {
+    font-size: 28px;
+    line-height: 1.1;
+  }
+
+  .module-not-found .user-modules {
+    margin-top: 1rem;
+    min-width: auto;
+  }
+}

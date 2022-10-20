@@ -1,0 +1,102 @@
+.question-gap-text {
+  font-size: 18px;
+  line-height: 2.2rem;
+}
+
+.question-gap-text input {
+  display: inline;
+  font-size: 18px;
+  font-weight: inherit;
+
+  padding: 4px 5px;
+  margin: 0 2px;
+  width: 180px;
+
+  outline: none;
+  border: 1px solid var(--custom-border-color-light);
+  border-radius: 3px;
+}
+
+.question-gap-text,
+.correction-gap-text,
+.question-gap-text p,
+.correction-gap-text p,
+.question-gap-text div,
+.correction-gap-text div,
+.question-gap-text input,
+.correction-gap-text input {
+  display: inline;
+  white-space: pre-line;
+}
+
+.question-gap-text table input,
+.correction-gap-text table span,
+.correction-gap-text table p {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.question-gap-text th,
+.question-gap-text td,
+.correction-gap-text th,
+.correction-gap-text td {
+  padding: 1px 10px;
+}
+
+.question-gap-text input:enabled:focus,
+.question-gap-text input:enabled:active {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: -1px;
+}
+
+.question-gap-text input:disabled {
+  cursor: not-allowed;
+}
+
+/* CSS for the correction box displayed in the question component */
+.correction-gap-text {
+  font-size: 18px;
+  line-height: 2rem;
+}
+
+.correction-gap-text .correct-gap-value {
+  display: inline-block;
+
+  font-size: 18px;
+  line-height: 1.4rem;
+
+  padding: 3px 5px;
+  margin-left: 2px;
+  margin-right: 2px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
+}
+
+.answer-correct .correction-gap-text .correct-gap-value {
+  background-color: rgb(160, 217, 187);
+  border-color: rgb(100, 149, 120);
+}
+
+.answer-false .correction-gap-text .correct-gap-value {
+  background-color: rgb(250, 190, 190);
+  border-color: rgb(180, 131, 126);
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+
+  .question-gap-text,
+  .question-gap-text p,
+  .correction-gap-text,
+  .correction-gap-text p {
+    font-size: 1.15rem;
+    line-height: 2.1rem;
+  }
+
+  .question-gap-text input {
+    padding: 3px 5px;
+    font-size: 1.15rem;
+  }
+}

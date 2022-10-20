@@ -1,0 +1,14 @@
+.grid-cards {
+  margin: 10px 0px 20px 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
+  grid-auto-rows: 1fr;
+  grid-gap: 12px;
+}
+
+/* Media Query for phones */
+@media only screen and (max-width: 650px) {
+  .grid-cards {
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}

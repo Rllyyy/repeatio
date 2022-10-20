@@ -1,0 +1,395 @@
+.create-import-module-btn {
+  all: unset;
+
+  line-height: 1;
+  text-align: center;
+
+  background-color: var(--custom-prime-color);
+  color: whitesmoke;
+  cursor: pointer;
+
+  margin-left: 5px;
+  padding: 10px 0;
+
+  width: 100%;
+  max-width: 118px;
+
+  border-radius: 5px;
+}
+
+.create-import-module-btn p {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.import-create-module {
+  min-height: 380px;
+
+  padding: 20px 20px 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr max-content 1fr;
+  column-gap: 20px;
+}
+
+.import-module {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+
+  place-self: center center;
+}
+
+.import-create-module .import-module-btn,
+.import-create-module .create-module-btn {
+  all: unset;
+
+  place-self: start center;
+
+  line-height: 1;
+  font-weight: 600;
+  font-size: 18px;
+
+  color: white;
+  background-color: var(--custom-prime-color);
+
+  padding: 10px 20px;
+  margin-top: auto;
+
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.import-create-module h2 {
+  text-align: start;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* Import Module */
+.import-module>div,
+.import-module>.accepted-files {
+  margin-bottom: .8rem;
+}
+
+.import-module .dropzone {
+  width: 100%;
+  max-width: 500px;
+  height: 200px;
+  padding: 0.6rem;
+
+  display: grid;
+  grid-template-rows: auto auto auto;
+  place-items: center;
+
+  border: 1.5px dashed var(--custom-border-color-light);
+  border-radius: 5px;
+  outline: none;
+}
+
+.import-module .drop-info {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.import-module .dropzone svg[class="folder"] {
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.import-module .dropzone .drop-info p {
+  line-height: 1.3;
+}
+
+.background {
+  z-index: 1;
+  position: relative;
+  width: 70%;
+  text-align: center;
+}
+
+/* https://codepen.io/ericrasch/pen/kWWzzk */
+.background:before {
+  border-top: 1px solid var(--custom-border-color-light);
+  content: "";
+  margin: 0 auto;
+  /* this centers the line to the full width specified */
+  position: absolute;
+  /* positioning must be absolute here, and relative positioning must be applied to the parent */
+  top: 50%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 95%;
+  z-index: -1;
+}
+
+.background span {
+  background-color: white;
+  color: var(--custom-border-color-darker);
+  padding: 0 15px;
+}
+
+.drop-browse-btn {
+  all: unset;
+
+  background-color: var(--custom-secondary-color);
+  color: white;
+
+  place-self: end center;
+  margin-bottom: 8px;
+  padding: 10px 15px;
+
+  line-height: 1;
+  font-weight: 500;
+
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.import-module .accepted-files {
+  width: 100%;
+  list-style: none;
+}
+
+.import-module .accepted-files:empty {
+  display: none;
+}
+
+.import-module .accepted-files .file {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--custom-border-color-lighter);
+
+  background-color: whitesmoke;
+
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+}
+
+.import-module .accepted-files .file:not(:last-child) {
+  margin-bottom: 5px;
+}
+
+.import-module .accepted-files .file .file-icon {
+  font-size: 1.2rem;
+  margin-right: 0.3rem;
+  flex-shrink: 0;
+}
+
+.import-module .accepted-files .file .file-info {
+  font-size: 16px;
+  word-break: break-all;
+}
+
+.import-module .accepted-files .file .file-remove-btn {
+  all: unset;
+  line-height: 0;
+  padding: 0;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.import-module .accepted-files .file .file-remove-icon {
+  font-size: 1.4rem;
+}
+
+.import-module-warnings {
+  width: 100%;
+  border-radius: 5px;
+  background-color: rgba(241, 196, 15, .25);
+  border: 2px solid rgb(241, 196, 15);
+  padding: .6rem;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  place-items: center left;
+  gap: .7rem;
+}
+
+.import-module-warning-icon {
+  color: rgb(241, 196, 15);
+  font-size: 2.2rem;
+}
+
+.import-create-module .import-module-btn.disabled {
+  background-color: var(--custom-border-color-light);
+  cursor: not-allowed;
+}
+
+/*----------------------------------------- Line --------------------------------- */
+.import-create-module .line {
+  background-color: lightgray;
+  width: 1px;
+  height: 100%;
+}
+
+/* -------------------------------------- Create Module -------------------------- */
+.create-module {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  place-self: center center;
+}
+
+.create-module>div {
+  margin-bottom: 1rem;
+}
+
+.create-module>div>label {
+  display: block;
+  line-height: 1;
+  margin-bottom: .4rem;
+
+  font-weight: 500;
+}
+
+.create-module>div>input,
+.create-module>div>select {
+  display: block;
+  padding: 8px;
+  width: 100%;
+
+  border: 1px solid var(--custom-border-color-lighter);
+  border-radius: 5px;
+  outline-offset: -1px;
+}
+
+.create-module>div>input.is-invalid,
+.create-module>div>select.is-invalid {
+  border-color: rgb(231, 76, 60);
+  background-color: rgba(231, 76, 60, .08);
+}
+
+.create-module #create-module-compatibility-input {
+  background-color: whitesmoke;
+}
+
+.create-module-errors {
+  width: 100%;
+  border-radius: 5px;
+  background-color: rgba(231, 76, 60, .25);
+  border: 2px solid rgb(231, 76, 60);
+  padding: .6rem;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  place-items: center left;
+  gap: .7rem;
+}
+
+.create-module-errors-icon {
+  font-size: 2.2rem;
+  color: rgb(231, 76, 60);
+}
+
+.create-module-errors-list,
+.import-module-warnings-list {
+  margin-left: 24px;
+}
+
+.create-module-errors-list li,
+.import-module-warnings-list li {
+  list-style-type: disc;
+
+  padding: 3px 0 3px 0px;
+  text-indent: -22px;
+}
+
+/* States */
+/* Active */
+.drop-browse-btn:active {
+  background-color: rgb(61, 64, 82);
+}
+
+/* Focus visible */
+.import-module .accepted-files .file .file-remove-btn:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  border-radius: 5px;
+  outline-offset: 3px;
+}
+
+.create-module>div>input:focus-visible,
+.create-module>div>select:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+}
+
+.import-create-module button:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 5px;
+}
+
+.import-module .dropzone:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: -1px;
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  .create-import-module-btn:hover {
+    background-color: var(--custom-prime-color-dark);
+  }
+
+  .drop-browse-btn:hover {
+    background-color: rgb(61, 64, 82);
+  }
+
+  .import-create-module .import-module-btn.enabled:hover,
+  .import-create-module .create-module-btn:hover {
+    background-color: var(--custom-prime-color-dark);
+  }
+
+  .import-module .accepted-files .file .file-remove-icon:hover {
+    color: red;
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .import-create-module {
+    grid-template-columns: none;
+    grid-template-rows: min-content min-content min-content;
+    column-gap: 0px;
+    row-gap: 20px;
+    padding: 15px 15px 0 15px;
+  }
+
+  /* Fix so that the padding at the bottom doesn't collapse. Idk why */
+  .import-create-module:after {
+    content: "";
+    display: block;
+    height: 15px;
+  }
+
+  .import-create-module .line {
+    height: 1px;
+    width: 100%;
+  }
+
+  .import-module .dropzone {
+    font-size: 18px;
+  }
+}
+
+/* Align list items for firefox */
+@media(min--moz-device-pixel-ratio:0) {
+
+  .create-module-errors-list,
+  .import-module-warnings-list {
+    margin-left: 0;
+  }
+
+  .create-module-errors-list li,
+  .import-module-warnings-list li {
+    padding: 3px 0 3px 10px;
+    text-indent: -15px;
+  }
+}

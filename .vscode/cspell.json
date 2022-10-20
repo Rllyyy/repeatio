@@ -1,0 +1,51 @@
+// cSpell Settings
+//https://cspell.org/configuration/
+{
+  // Version of the setting file.  Always 0.2
+  "version": "0.2",
+  // language - current active spelling language
+  "language": "en, de-de",
+  // words - list of words to be always considered correct
+  "words": [
+    "asar",
+    "Autosize",
+    "binom",
+    "Bmatrix",
+    "Cloze",
+    "Dropzone",
+    "Exif",
+    "firefox",
+    "grap",
+    "greek",
+    "infty",
+    "katex",
+    "mathring",
+    "mathrm",
+    "Niklas",
+    "nonumber",
+    "nsis",
+    "overleftarrow",
+    "overrightarrow",
+    "overscroll",
+    "pmatrix",
+    "progressbar",
+    "reactroot",
+    "rehype",
+    "repeatio",
+    "streetsidesoftware",
+    "strikethrough",
+    "Styleable",
+    "testid",
+    "toastify",
+    "tsmerge",
+    "unicode",
+    "USEEFFECTS",
+    "vmatrix"
+  ],
+  // flagWords - list of words to be always considered incorrect
+  // This is useful for offensive words and common spelling errors.
+  // For example "hte" should be "the"
+  "flagWords": [
+    "hte"
+  ]
+}

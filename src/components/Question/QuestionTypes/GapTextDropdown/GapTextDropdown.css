@@ -1,0 +1,102 @@
+.question-gap-text-with-dropdown p,
+.question-gap-text-with-dropdown span,
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown,
+.correction-gap-text-with-dropdown span {
+  font-size: 18px;
+  display: inline;
+  line-height: 2.2rem;
+  white-space: pre-line;
+}
+
+.question-gap-text-with-dropdown .select-wrapper {
+  display: inline;
+  margin: 0 3px;
+}
+
+/* Fixes jumping ui because input elements get rendered after useLayoutEffect update */
+/* ! Remove this once gap with dropdown doesn't use innerHTML anymore */
+.question-gap-text-with-dropdown .select-wrapper:empty {
+  width: 180px;
+  background-color: transparent;
+  display: inline-block;
+}
+
+.question-gap-text-with-dropdown select {
+  display: inline;
+  font-size: 18px;
+  font-weight: inherit;
+
+  border: 1px solid var(--custom-border-color-light);
+  border-radius: 3px;
+  outline: none;
+  outline-offset: -1px;
+
+  padding: 3px 5px;
+  background-color: transparent;
+}
+
+.question-gap-text-with-dropdown select:focus {
+  outline: 2px solid var(--custom-prime-color);
+}
+
+.question-gap-text-with-dropdown select:disabled {
+  cursor: not-allowed;
+}
+
+.question-gap-text-with-dropdown table select,
+.correction-gap-text-with-dropdown table span,
+.correction-gap-text-with-dropdown table p {
+  width: 100%;
+  margin: 5px auto;
+}
+
+.question-gap-text-with-dropdown th,
+.question-gap-text-with-dropdown td,
+.correction-gap-text-with-dropdown th,
+.correction-gap-text-with-dropdown td {
+  padding: 1px 10px;
+}
+
+/* Correction related */
+.correction-gap-text-with-dropdown p,
+.correction-gap-text-with-dropdown p {
+  line-height: 2.1rem;
+}
+
+.correction-gap-text-with-dropdown .correct-dropdown-value {
+  display: inline-block;
+
+  font-size: 18px;
+  line-height: 1.4rem;
+
+  padding: 2px 5px;
+
+  margin-left: 3px;
+  margin-right: 3px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
+}
+
+.answer-correct .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(160, 217, 187);
+  border-color: rgb(100, 149, 120);
+}
+
+.answer-false .correction-gap-text-with-dropdown .correct-dropdown-value {
+  background-color: rgb(250, 190, 190);
+  border-color: rgb(180, 131, 126);
+}
+
+/* Media Query for Desktop */
+@media (pointer: fine) {
+  .question-gap-text-with-dropdown select:enabled:hover {
+    outline: 2px solid var(--custom-prime-color);
+  }
+
+  .question-gap-text-with-dropdown select:focus-visible {
+    outline: 2px solid var(--custom-prime-color);
+  }
+}
