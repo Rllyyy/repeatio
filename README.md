@@ -4,7 +4,7 @@ _Learn, repeat and memorize tasks with repeatio._
 
 ## [Start Learning](https://repeatio.netlify.app)
 
-## Current limitations (v0.3)
+## :construction: Current limitations (v0.3) :construction:
 
 > **Warning**  
 > Not all browser and devices are supported!  
@@ -616,7 +616,7 @@ Text outside list
   </table>
 
 > **Warning**  
-> To exit a list in markdown you have a blank line between the list and the following content or to blank spaces at the end of the last list item
+> To exit a list in markdown you have to add a blank line between the list and the following content or add two to blank spaces at the end of the last list item
 
 > **Note**  
 > Unordered list in markdown can use asterisks (<code>*</code>), minuses (<code>-</code>) or pluses (<code>+</code>).
@@ -672,22 +672,14 @@ Text outside table
 </td>
       <!-- Result -->
       <td>
-        <p>some text...</p>
-        <table>
-          <tr>
-            <th>Heading 1</th>
-            <th style="text-align:center">Heading 2</th>
-          </tr>
-          <tr>
-            <td>Item 1</td>
-            <td style="text-align:center">Item 2</td>
-          </tr>
-          <tr>
-            <td>Item 3</td>
-            <td style="text-align:center">Item 4</td>
-          </tr>
-        </table>
-        <p>Text outside table</p>
+some text
+
+| Heading 1 | Heading 2 |
+| --------- | :-----------: |
+| Item 1    | Item 2 |
+| Item 3    | Item 4 |
+
+Text outside table
       </td>
     </tr>
   </table>
