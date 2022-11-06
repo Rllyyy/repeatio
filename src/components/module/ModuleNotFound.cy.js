@@ -22,7 +22,7 @@ const MockUserModulesListWithRouter = () => {
 
 describe("Test order of Modules in QuestionNotFound component", () => {
   it("should order the existing user modules in alphabetical order on initial render", () => {
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Add two files to localStorage
     //First item
@@ -30,7 +30,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       id: "lsi-1",
       name: "Z Module",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -44,7 +44,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       id: "lsi-2",
       name: "B Module",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 

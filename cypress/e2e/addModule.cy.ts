@@ -92,7 +92,7 @@ describe("Test importing a new module", () => {
         expect(localStorageItem.id).to.equal("cypress_1");
         expect(localStorageItem.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem.lang).to.equal("en");
-        expect(localStorageItem.compatibility).to.equal("0.3.0");
+        expect(localStorageItem.compatibility).to.equal("0.4.0");
         expect(localStorageItem.questions).to.have.length(6);
       });
   });
@@ -158,7 +158,7 @@ describe("Test importing a new module", () => {
 
   //Show errors when trying to overwrite existing file in localStorage with import
   it("should show overwriting warning if item is already in localStorage", () => {
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Send fixture to upload area
     cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
@@ -190,7 +190,7 @@ describe("Test importing a new module", () => {
       id: "lsi-1",
       name: "Local Storage Item 1",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -261,7 +261,7 @@ describe("Test importing a new module", () => {
       id: "file_1",
       name: "File 1",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -341,7 +341,7 @@ describe("Test importing a new module", () => {
       id: "cypress_1",
       name: "This module was replaced by cypress",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -353,7 +353,7 @@ describe("Test importing a new module", () => {
     };
 
     //Add item localStorage
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Adding files
     cy.get('input[type="file"]').selectFile(replacerModule, { force: true });
@@ -408,7 +408,7 @@ describe("Test importing a new module", () => {
       id: "file_1",
       name: "File 1",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -425,7 +425,7 @@ describe("Test importing a new module", () => {
       id: "file_2",
       name: "File 2",
       lang: "en",
-      compatibility: "0.3.0",
+      compatibility: "0.4.0",
       questions: [],
     };
 
@@ -518,7 +518,7 @@ describe("Test creating a new module", () => {
         expect(localStorageItem.id).to.equal("cypress-localStorage");
         expect(localStorageItem.name).to.equal("Cypress in localStorage");
         expect(localStorageItem.lang).to.equal("en");
-        expect(localStorageItem.compatibility).to.equal("0.3.0");
+        expect(localStorageItem.compatibility).to.equal("0.4.0");
         expect(localStorageItem.questions).to.have.length(0);
       });
   });
@@ -662,7 +662,7 @@ describe("Test creating a new module", () => {
   //Error if module in already in localStorage and clearing of error if fixed by user
   it("should show error if id of module already in localStorage", () => {
     //Setup localStorage to have item
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Type into inputs
     cy.get("input#create-module-id-input").type("cypress_1");

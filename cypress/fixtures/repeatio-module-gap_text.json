@@ -1,0 +1,161 @@
+{
+  "id": "gap_text",
+  "name": "Test gap-text question type",
+  "lang": "en",
+  "compatibility": "0.4.0",
+  "questions": [
+    {
+      "id": "gt-1",
+      "title": "This is the title of the first question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This is the [] question",
+        "correctGapValues": [
+          [
+            "first"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-2",
+      "title": "This is the title of the second question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This is the [] question",
+        "correctGapValues": [
+          [
+            "second"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-3",
+      "title": "This is the title of the third question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This is the [] question. It [] multiple gaps. Even gaps that have more than [] correct answer.",
+        "correctGapValues": [
+          [
+            "third"
+          ],
+          [
+            "contains"
+          ],
+          [
+            "one",
+            "1"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-4",
+      "title": "This is the title of the forth question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This line shouldn't contain any \\[] gaps.",
+        "correctGapValues": []
+      }
+    },
+    {
+      "id": "gt-5",
+      "title": "This is the title of the fifth question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": " - This is a []\n - at the beginning\n\n This should not be a list item",
+        "correctGapValues": [
+          [
+            "list"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-6",
+      "title": "This is the title of the sixth question",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "Render this:\n - This is a []\n - at the beginning\n\n This should not be a list item",
+        "correctGapValues": [
+          [
+            "list"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-7",
+      "title": "This is the title of the seventh question with table",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This is a table\n | This | table |\n|------|------|\n| should   | []   |\n\nText below **table**",
+        "correctGapValues": [
+          [
+            "work"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-8",
+      "title": "This is the title of the seventh question with table",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "<table><tr><th>This</th><th>table</th></tr><tr><td>should</td><td>[]</td></tr></table>\n\n This should be _italic_",
+        "correctGapValues": [
+          [
+            "work"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-9",
+      "title": "This is the title of the ninth question with table",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "                                    Should not break with a lot of white-spaces.\n             Hey []",
+        "correctGapValues": [
+          [
+            "yeah"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "gt-10",
+      "title": "This is the title of the tenth question with a list",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "[] should be a gap here and here is a:\n - List",
+        "correctGapValues": [
+          [
+            "There"
+          ]
+        ]
+      }
+    }
+  ]
+}

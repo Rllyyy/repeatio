@@ -2,9 +2,8 @@
 
 describe("Adding a question using the QuestionEditor component", () => {
   beforeEach(() => {
-    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
-      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
     cy.visit("/module/cypress_1");
     cy.get("article[data-cy='Add Question']").contains("button", "Add").click();
     cy.get("div.ReactModal__Overlay").scrollIntoView();
@@ -44,7 +43,7 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.get("textarea[name='title']").type(newQuestion.title).should("have.value", newQuestion.title);
 
     //Points
-    cy.get("input[name='points']").type(newQuestion.points).should("have.value", newQuestion.points);
+    cy.get("input[name='points']").type(newQuestion.points.toString()).should("have.value", newQuestion.points);
 
     //Help
     cy.get("textarea[name='help']").type(newQuestion.help).should("have.value", newQuestion.help);

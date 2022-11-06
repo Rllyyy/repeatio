@@ -27,9 +27,25 @@
 //To enable tabbing in cypress: https://github.com/kuceb/cypress-plugin-tab
 import "cypress-plugin-tab";
 
-//Command to add the fixture to the localStorage
-Cypress.Commands.add("addModuleFixtureToLocalStorage", () => {
-  cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
-    localStorage.setItem(`repeatio-module-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      /**
+       * Add a file from the cypress fixture folder to the localStorage
+       * @param fileName - The name of the file with the the file extension
+       */
+      fixtureToLocalStorage(fileName: string): Chainable<Element>;
+    }
+  }
+}
+
+//Add a fixture to the localStorage
+
+Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
+  cy.fixture(fileName).then((fileContent) => {
+    //get string before "." (the file ending)
+    localStorage.setItem(fileName.split(".")[0], JSON.stringify(fileContent, null, "\t"));
+    //TODO if bookmarked and module json files have the property type and id change to this
+    //localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
   });
 });

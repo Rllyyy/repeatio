@@ -3,9 +3,7 @@
 describe("Multiple Choice", () => {
   //Add example module to local Storage and visit first question in module which is the multiple response question
   beforeEach(() => {
-    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
-      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.visit("/module/cypress_1/question/qID-1");
   });
 

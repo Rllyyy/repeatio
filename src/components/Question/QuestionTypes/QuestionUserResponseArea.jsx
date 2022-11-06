@@ -1,7 +1,7 @@
 //Import Question Types
 import { MultipleChoice } from "./MultipleChoice/MultipleChoice.js";
 import { MultipleResponse } from "./MultipleResponse/MultipleResponse.js";
-import { GapText } from "./GapText/GapText.js";
+import { GapText } from "./GapText/GapText";
 import { GapTextDropdown } from "./GapTextDropdown/GapTextDropdown.js";
 import { ExtendedMatch } from "./ExtendedMatch/ExtendedMatch.js";
 

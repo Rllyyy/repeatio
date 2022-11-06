@@ -1,8 +1,7 @@
 describe("Updating a Question using the Question editor", () => {
   beforeEach(() => {
-    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
-      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
     cy.visit("/module/cypress_1");
     cy.get("article[data-cy='Practice'").contains("button", "Start").click();
     cy.get("button[aria-label='Edit Question']").click();
@@ -142,9 +141,8 @@ describe("Updating a Question using the Question editor", () => {
 
 describe("Update question using mode random", () => {
   beforeEach(() => {
-    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
-      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
     cy.visit("/module/cypress_1");
     cy.get("article[data-cy='Practice'").contains("button", "Random").click();
     cy.get("button[aria-label='Edit Question']").click();

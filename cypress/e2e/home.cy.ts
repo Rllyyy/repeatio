@@ -26,7 +26,7 @@ describe("Test Home Component", () => {
 
   //Test module that is saved in the localStorage to be shown
   it("should show modules that are saved in the localStorage", () => {
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     cy.contains("Cypress Fixture Module").should("be.visible");
     cy.get("article[data-cy='module-cypress_1']").contains("a", "View").click();

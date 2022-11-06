@@ -16,7 +16,7 @@ describe("Test deletion of module", () => {
   //Test download of public folder file (cypress saves it to cypress/downloads)
   it("should delete module that is located in localStorage", () => {
     //Add item to localStorage and check existence
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.contains("Cypress Fixture Module (cypress_1)").should("exist");
 
     //Click delete module button
@@ -48,7 +48,7 @@ describe("Test deletion of module", () => {
 
   it("should toast error if to be deleted file can't be found in localStorage ", () => {
     //Add fixture to localStorage
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Click on dots
     cy.get(`article[data-cy='module-cypress_1']`).find("button.popover-button").click();

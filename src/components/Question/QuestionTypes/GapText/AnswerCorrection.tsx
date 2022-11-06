@@ -8,12 +8,18 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-const concatValues = (values) => {
+const concatValues = (values: Array<string>) => {
   return values?.join("; ");
 };
 
 //Component
-export const AnswerCorrection = ({ text, correctGapValues }) => {
+export const AnswerCorrection = ({
+  text,
+  correctGapValues,
+}: {
+  text: string;
+  correctGapValues: Array<Array<string>>;
+}) => {
   const textWithBlanks = () => {
     //Render the json string in markdown and return html nodes
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)

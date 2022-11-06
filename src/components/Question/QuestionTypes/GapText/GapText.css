@@ -3,6 +3,15 @@
   line-height: 2.2rem;
 }
 
+#replace-dot::before {
+  display: inline-block;
+  content: "";
+  height: 1rem;
+  width: 5px;
+  background-color: red;
+  transform: translate(-100%, 50%);
+}
+
 .question-gap-text input {
   display: inline;
   font-size: 18px;
@@ -17,16 +26,18 @@
   border-radius: 3px;
 }
 
-.question-gap-text,
-.correction-gap-text,
+.question-gap-text .remove-margin-left input {
+  margin: 0 2px 0 -4px;
+}
+
 .question-gap-text p,
 .correction-gap-text p,
 .question-gap-text div,
 .correction-gap-text div,
 .question-gap-text input,
 .correction-gap-text input {
+  white-space: pre-wrap;
   display: inline;
-  white-space: pre-line;
 }
 
 .question-gap-text table input,
@@ -86,7 +97,6 @@
 
 /* Media Query for phones */
 @media only screen and (max-width: 650px) {
-
   .question-gap-text,
   .question-gap-text p,
   .correction-gap-text,

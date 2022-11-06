@@ -51,14 +51,10 @@ describe("Test related to exporting a file from the localStorage", () => {
 
   //Test download of localStorage Item
   it("should download module from the localStorage and show toast", () => {
-    const moduleID = "cypress_1";
-    //Add item to localStorage
-    cy.fixture(`repeatio-module-${moduleID}.json`).then((fileContent) => {
-      localStorage.setItem(`repeatio-module-${moduleID}`, JSON.stringify(fileContent, null, "\t"));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Click export button
-    cy.get(`article[data-cy='module-${moduleID}']`).find("button.popover-button").click();
+    cy.get(`article[data-cy='module-cypress_1']`).find("button.popover-button").click();
     cy.contains("Export").click();
 
     //Expect toast to show up
@@ -69,7 +65,7 @@ describe("Test related to exporting a file from the localStorage", () => {
     );
 
     //Read file and check name and question length
-    const downloadedFilename = path.join(downloadsFolder, `repeatio-module-${moduleID}.json`);
+    const downloadedFilename = path.join(downloadsFolder, `repeatio-module-cypress_1.json`);
     cy.readFile(downloadedFilename).then((module) => {
       expect(module.name).to.equal("Cypress Fixture Module");
     });
@@ -78,7 +74,7 @@ describe("Test related to exporting a file from the localStorage", () => {
 
   it("should toast error if file can't be found in localStorage ", () => {
     //Add fixture to localStorage
-    cy.addModuleFixtureToLocalStorage();
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Click on dots
     cy.get(`article[data-cy='module-cypress_1']`).find("button.popover-button").click();

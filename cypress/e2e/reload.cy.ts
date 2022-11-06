@@ -31,9 +31,7 @@ describe("Refresh", () => {
 
   it("should display same content after reload in a module from localStorage", () => {
     //Add the module from the fixtures folder
-    cy.fixture("repeatio-module-cypress_1.json").then((value) => {
-      localStorage.setItem("repeatio-module-cypress_1", JSON.stringify(value));
-    });
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     //Navigate to practice in added component and reload
     cy.get("article[data-cy='module-cypress_1']").contains("View").click();

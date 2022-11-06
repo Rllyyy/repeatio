@@ -1,6 +1,6 @@
 {
   "name": "repeatio",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Learn, repeat and memorize tasks with repeatio.",
   "author": "Niklas Fischer",
   "private": true,
@@ -16,6 +16,11 @@
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^12.8.3",
     "@types/file-saver": "^2.0.5",
+    "@types/jest": "^29.2.0",
+    "@types/node": "^18.11.8",
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "@types/react-router-dom": "^5.3.3",
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",
     "cypress": "10.10.0",
@@ -41,6 +46,7 @@
     "rehype-raw": "^6.1.1",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
+    "typescript": "^4.8.4",
     "wait-on": "^6.0.1",
     "web-vitals": "^2.1.4"
   },

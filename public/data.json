@@ -2,7 +2,7 @@
   "id": "types_1",
   "name": "Question Types",
   "lang": "en",
-  "compatibility": "0.3.0",
+  "compatibility": "0.4.0",
   "questions": [
     {
       "id": "qID-1",

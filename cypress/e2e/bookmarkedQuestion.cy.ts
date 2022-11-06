@@ -9,9 +9,7 @@ describe("Test usage of bookmarked Questions", () => {
 
   it("should display questions that are marked in the localStorage", () => {
     //Setup localStorage
-    cy.fixture("repeatio-marked-types_1.json").then((fileContent) => {
-      localStorage.setItem("repeatio-marked-types_1", JSON.stringify(fileContent, null, "\t"));
-    });
+    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
 
     //Click on start
     cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
@@ -55,9 +53,7 @@ describe("Test export of bookmarked Questions", () => {
 
   it("should download marked questions from localStorage", () => {
     //Add fixture to localStorage
-    cy.fixture("repeatio-marked-types_1.json").then((fileContent) => {
-      localStorage.setItem("repeatio-marked-types_1", JSON.stringify(fileContent, null, "\t"));
-    });
+    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
     cy.contains("li", "Export").click();
@@ -93,9 +89,8 @@ describe("Test export of bookmarked Questions", () => {
 describe("Test import of bookmarked Questions", () => {
   //Add fixture to localStorage and navigate to module url
   beforeEach(() => {
-    cy.fixture("repeatio-marked-types_1.json").then((fileContent) => {
-      localStorage.setItem("repeatio-marked-types_1", JSON.stringify(fileContent, null, "\t"));
-    });
+    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
+
     cy.visit("/module/types_1");
   });
 
@@ -247,9 +242,7 @@ describe("Test deletion of bookmarked Questions", () => {
 
   it("should delete bookmarked questions on delete click", () => {
     //Setup localStorage with fixture
-    cy.fixture("repeatio-marked-types_1.json").then((fileContent) => {
-      localStorage.setItem("repeatio-marked-types_1", JSON.stringify(fileContent, null, "\t"));
-    });
+    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
     cy.contains("li", "Delete")
