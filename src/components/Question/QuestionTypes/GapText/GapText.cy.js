@@ -29,6 +29,16 @@ describe("GapText", () => {
     cy.get("input").first().type("One").should("have.value", "One");
   });
 
+  it("should render gap text even if there are no gaps", () => {
+    const options = {
+      text: "Text without any gaps",
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+    cy.contains("Text without any gaps").should("exist");
+    cy.get("input").should("not.exist");
+  });
+
   it("should tab through inputs", () => {
     const options = {
       text: "[] two three. One [] three. One two [].",
@@ -40,9 +50,15 @@ describe("GapText", () => {
     cy.get("input[value='One']").tab().focused().type("two").should("have.value", "two");
   });
 
+  it("should not show error if there is no text and no correctGapValues", () => {
+    const options = {};
+    cy.mount(<GapText options={options} formDisabled={false} />);
+    cy.get(".question-gap-text").should("exist");
+  });
+
   it("should render links instead of gaps", () => {
     const options = {
-      text: "[]()This line should [not](www.google.com) include any links. []()\nBut this one can have a [].",
+      text: "[]()This line should [not](www.google.com) include any gaps. []()\nBut this one can have a [].",
       correctGapValues: [["gap"]],
     };
 

@@ -6,7 +6,12 @@ import { RiFileEditLine } from "react-icons/ri";
 //Components
 import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
 
-export const EditQuestion = ({ prevQuestionID, disabled }) => {
+interface EditQuestionI {
+  prevQuestionID: string;
+  disabled: boolean;
+}
+
+export const EditQuestion = ({ prevQuestionID, disabled }: EditQuestionI) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleModalClose = () => {
@@ -17,9 +22,7 @@ export const EditQuestion = ({ prevQuestionID, disabled }) => {
       <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
-      {showModal && (
-        <QuestionEditor isOpen={showModal} handleModalClose={handleModalClose} prevQuestionID={prevQuestionID} />
-      )}
+      {showModal && <QuestionEditor handleModalClose={handleModalClose} prevQuestionID={prevQuestionID} />}
     </>
   );
 };

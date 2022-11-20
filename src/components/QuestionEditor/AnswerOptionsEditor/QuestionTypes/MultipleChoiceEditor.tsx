@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 //Material UI
 import Radio from "@mui/material/Radio";
@@ -7,12 +7,36 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
+//Import functions
+import { objectWithoutProp } from "../../helpers";
+
+//Import Types
+import { IMultipleChoice, IErrors } from "../../QuestionEditor";
+
+interface IMultipleChoiceEditor {
+  name?: string;
+  answerValues: IMultipleChoice[];
+  handleEditorChange: (arg0: any) => any;
+  lastSelected: string;
+  setLastSelected: React.Dispatch<React.SetStateAction<string>>;
+  answerOptionsError: string;
+  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+}
+
 //Component
-export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected, setLastSelected }) => {
+export const MultipleChoiceEditor = ({
+  name,
+  answerValues,
+  handleEditorChange,
+  lastSelected,
+  setLastSelected,
+  answerOptionsError,
+  setErrors,
+}: IMultipleChoiceEditor) => {
   const [radioGroupValue, setRadioGroupValue] = useState("");
 
   //Prevent the modal from closing when hitting escape while on the radio/input
-  const preventLabelEscapeKeyExit = (e) => {
+  const preventLabelEscapeKeyExit = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
@@ -20,7 +44,7 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
   };
 
   //Update the selected correct value in the QuestionEditor question state
-  const handleRadioGroupChange = (e) => {
+  const handleRadioGroupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const returnVal = answerValues.map((item) => {
       if (item.id === e.target.value) {
         return { ...item, isCorrect: !item.isCorrect };
@@ -28,13 +52,19 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
         return { ...item, isCorrect: false };
       }
     });
+    //Remove any errors from answerOptions but keep all other errors
+    //Clears firefox mobile errors because firefox android does not support HTML5 validation
+    if (answerOptionsError) {
+      setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+    }
+
     handleEditorChange([...returnVal]);
   };
 
   //Update text in the QuestionEditor question state
-  const updateText = (e, id) => {
+  const updateText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const returnVal = answerValues.map((item) => {
-      if (item.id === id) {
+      if (item.id === e.target.getAttribute("data-id")) {
         return { ...item, text: e.target.value };
       } else {
         return { ...item };
@@ -45,16 +75,15 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
   };
 
   //Update the last selected value
-  const selected = (id) => {
-    setLastSelected(id);
+  const selectElement = (e: React.MouseEvent<HTMLLabelElement>) => {
+    setLastSelected(e.currentTarget.getAttribute("data-id") || "");
   };
 
   //Prevent escape closing the form
   //TODO change this to form not closing on escape in general
-  const radioPreventSubmission = (e) => {
+  const radioPreventSubmission = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     if (e.key === "Enter") {
-      handleRadioGroupChange(e);
       e.preventDefault();
     }
 
@@ -62,6 +91,13 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
       setLastSelected("");
     }
   };
+
+  function exitSelection(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Escape") {
+      setLastSelected("");
+      return;
+    }
+  }
 
   //TODO: https://stackoverflow.com/questions/61564465/how-do-i-create-a-tab-spacing-inside-textarea-reactjs-bootstrap
   /* const preventTabFocusLost = (e) => {
@@ -83,15 +119,16 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
 
   //JSX
   return (
-    <FormControl>
+    <FormControl required>
       <RadioGroup value={radioGroupValue} onChange={handleRadioGroupChange}>
         {answerValues?.map((item) => {
           const { id, text } = item;
           return (
             <FormControlLabel
-              onClick={() => selected(id)}
+              onClick={selectElement}
               onKeyDown={preventLabelEscapeKeyExit}
               data-testid={id}
+              data-id={id}
               className={`${lastSelected === id ? "lastSelected" : ""}`}
               key={id}
               name='FormControl'
@@ -115,7 +152,9 @@ export const MultipleChoice = ({ answerValues, handleEditorChange, lastSelected,
                   autoComplete='false'
                   required
                   className='editor-label-textarea'
-                  onChange={(e) => updateText(e, id)}
+                  onChange={updateText}
+                  data-id={id}
+                  onKeyDown={exitSelection}
                   value={text}
                 />
               }

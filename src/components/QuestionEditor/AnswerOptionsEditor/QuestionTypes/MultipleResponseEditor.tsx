@@ -1,3 +1,5 @@
+import React from "react";
+
 //Material UI
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -6,12 +8,35 @@ import FormControl from "@mui/material/FormControl";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //Functions
-import { objectWithoutProp } from "../../helpers.js";
+import { objectWithoutProp } from "../../helpers";
+
+//Import Interfaces
+import { IMultipleResponse } from "../../QuestionEditor.js";
+import { IErrors } from "../../QuestionEditor.js";
+
+//interface
+interface IMultipleResponseEditor {
+  name?: string;
+  options: IMultipleResponse[];
+  handleEditorChange: (arg0: IMultipleResponse[]) => void;
+  lastSelected: string;
+  setLastSelected: React.Dispatch<React.SetStateAction<string>>;
+  answerOptionsError: string;
+  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+}
 
 //Component
-export const MultipleResponse = ({ options, handleEditorChange, lastSelected, setLastSelected, setErrors }) => {
+export const MultipleResponseEditor = ({
+  name,
+  options,
+  handleEditorChange,
+  lastSelected,
+  setLastSelected,
+  answerOptionsError,
+  setErrors,
+}: IMultipleResponseEditor) => {
   //Prevent the modal from closing when hitting escape while on the checkbox
-  const preventLabelEscapeKeyExit = (e) => {
+  const preventLabelEscapeKeyExit = (e: React.KeyboardEvent<HTMLLabelElement>) => {
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
@@ -19,7 +44,7 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
   };
 
   //Handle the change to the checkbox change
-  const handleCheckBoxChange = (e) => {
+  const handleCheckBoxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const returnVal = options.map((option) => {
       if (option.id === e.target.value) {
         return { ...option, isCorrect: !option.isCorrect };
@@ -29,23 +54,21 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
     });
 
     //Remove any errors from answerOptions but keep all other errors
-    setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+    //Clears firefox mobile errors because firefox android does not support HTML5 validation
+    if (answerOptionsError) {
+      setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+    }
 
     handleEditorChange(returnVal);
   };
 
   //Update text of the option in the QuestionEditor question state
-  const handleCheckBoxInputChange = (e, id) => {
+  const handleCheckBoxInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.stopPropagation();
     e.preventDefault();
 
-    if (e.key === "Escape") {
-      setLastSelected("");
-      return;
-    }
-
     const returnVal = options.map((item) => {
-      if (item.id === id) {
+      if (item.id === e.target.getAttribute("data-id")) {
         return { ...item, text: e.target.value };
       } else {
         return { ...item };
@@ -55,8 +78,15 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
     handleEditorChange([...returnVal]);
   };
 
+  function exitSelection(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Escape") {
+      setLastSelected("");
+      return;
+    }
+  }
+
   //Update checkbox state on enter keypress on the checkbox
-  const checkBoxPreventSubmission = (e) => {
+  const checkBoxPreventSubmission = (e: any) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleCheckBoxChange(e);
@@ -64,20 +94,21 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
   };
 
   //Update selected value (dotted line)
-  const selected = (id) => {
-    setLastSelected(id);
+  const selectElement = (e: React.MouseEvent<HTMLLabelElement>) => {
+    setLastSelected(e.currentTarget.getAttribute("data-id") || "");
   };
 
   return (
-    <FormControl required /* error={filterTest} */>
+    <FormControl required>
       <FormGroup>
         {options?.map((option) => {
           return (
             <FormControlLabel
-              onClick={() => selected(option.id)}
+              onClick={selectElement}
               onKeyDown={preventLabelEscapeKeyExit}
               key={option.id}
               value={option.id}
+              data-id={option.id}
               className={`formControlLabel ${lastSelected === option.id ? "lastSelected" : ""}`}
               data-testid={`formControlLabel-${option.id}`}
               control={
@@ -101,7 +132,9 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
                   autoComplete='false'
                   className='editor-label-textarea'
                   required
-                  onChange={(e) => handleCheckBoxInputChange(e, option.id)}
+                  onChange={handleCheckBoxInputChange}
+                  onKeyDown={exitSelection}
+                  data-id={option.id}
                   value={option.text}
                 />
               }
@@ -112,5 +145,3 @@ export const MultipleResponse = ({ options, handleEditorChange, lastSelected, se
     </FormControl>
   );
 };
-
-export default MultipleResponse;

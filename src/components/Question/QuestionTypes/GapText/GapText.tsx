@@ -27,7 +27,7 @@ import { AnswerCorrection } from "./AnswerCorrection";
 //Feel free to update the code but this is honestly the best I can come up with atm that supports Markdown elements (tables, styling, ...) and user set input elements.
 
 interface GapTextProps {
-  options: { text: string; correctGapValues: Array<Array<string>> };
+  options: { text: string; correctGapValues?: Array<Array<string>> };
   formDisabled: boolean;
 }
 
@@ -72,7 +72,7 @@ export const GapText = forwardRef<ForwardRefFunctions, GapTextProps>(({ options,
     (index: number) => {
       if (!formDisabled) return;
 
-      if (options.correctGapValues[index]?.includes(inputValues[index])) {
+      if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
         return { borderColor: "green" };
       } else {
         return { borderColor: "red" };
@@ -86,7 +86,7 @@ export const GapText = forwardRef<ForwardRefFunctions, GapTextProps>(({ options,
   /* UseEffects */
   //Create array with x amount of empty input values
   useLayoutEffect(() => {
-    setInputValues(Array(options.correctGapValues.length).fill(""));
+    setInputValues(Array(options?.correctGapValues?.length).fill(""));
 
     return () => {
       setInputValues([]);
@@ -136,14 +136,16 @@ export const GapText = forwardRef<ForwardRefFunctions, GapTextProps>(({ options,
         setInputValues(trimmedInputValues);
 
         //Check if every gap correlates with the correct value from the gap array and return true/false to question form
-        return options.correctGapValues.every((gapArray: string[], index: number) =>
-          gapArray.includes(trimmedInputValues[index])
+        return (
+          options.correctGapValues?.every((gapArray: string[], index: number) =>
+            gapArray?.includes(trimmedInputValues[index])
+          ) || false
         );
       },
 
       //Return the correct answer in JSX so it can be displayed in the parent component
       returnAnswer() {
-        return <AnswerCorrection text={options.text} correctGapValues={options.correctGapValues} />;
+        return <AnswerCorrection text={options.text} correctGapValues={options?.correctGapValues} />;
       },
 
       //Reset User selection

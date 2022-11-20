@@ -275,14 +275,14 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
     "type": "gap-text",
     "help": "Fill in the blanks.",
     "answerOptions": {
-      "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
+      "text": "A gap text question can have multiple []. A semicolon separates the [] words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
       "correctGapValues": [
         [
           "gaps"
         ],
         [
-          "semicolon",
-          ";"
+          "correct",
+          "right"
         ],
         [
           "not"

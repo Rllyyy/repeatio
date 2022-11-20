@@ -8,7 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-const concatValues = (values: Array<string>) => {
+const concatValues = (values?: Array<string>) => {
   return values?.join("; ");
 };
 
@@ -18,7 +18,7 @@ export const AnswerCorrection = ({
   correctGapValues,
 }: {
   text: string;
-  correctGapValues: Array<Array<string>>;
+  correctGapValues?: Array<Array<string>>;
 }) => {
   const textWithBlanks = () => {
     //Render the json string in markdown and return html nodes
@@ -34,7 +34,7 @@ export const AnswerCorrection = ({
     //Insert the input marker between the array elements but not at the end
     const mappedArray = htmlStringSplit.map((line, index) => {
       if (index < htmlStringSplit.length - 1) {
-        const concatenatedValues = concatValues(correctGapValues[index]);
+        const concatenatedValues = concatValues(correctGapValues?.[index]);
         return ReactDOMServer.renderToString(
           <>
             <p>{line}</p>

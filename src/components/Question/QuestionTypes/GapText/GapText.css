@@ -3,15 +3,6 @@
   line-height: 2.2rem;
 }
 
-#replace-dot::before {
-  display: inline-block;
-  content: "";
-  height: 1rem;
-  width: 5px;
-  background-color: red;
-  transform: translate(-100%, 50%);
-}
-
 .question-gap-text input {
   display: inline;
   font-size: 18px;

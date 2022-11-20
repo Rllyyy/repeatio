@@ -1,8 +1,9 @@
 /// <reference types="cypress" />
-import { Form } from "./QuestionEditor.jsx";
+import { Form } from "./QuestionEditor";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import { ModuleProvider } from "../module/moduleContext.js";
+import { CustomToastContainer } from "../toast/toast";
 
 //CSS
 import "../../index.css";
@@ -18,6 +19,7 @@ const MockFormWithRouter = () => {
     <Router history={history}>
       <ModuleProvider>
         <Form handleModalClose={handleModalCloseSpy} />
+        <CustomToastContainer />
       </ModuleProvider>
     </Router>
   );
@@ -365,6 +367,143 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.contains("Add at least one item!").should("not.exist");
     });
   });
+
+  context("GapText", () => {
+    beforeEach(() => {
+      cy.get("select[name='type']").select("gap-text");
+    });
+    it("should update the textarea with a given value", () => {
+      cy.get("#editor-gap-text-textarea").type("This is a [test]").should("have.value", "This is a [test]");
+    });
+
+    it("should update the textarea with a given value and multiple correct answers", () => {
+      cy.get("#editor-gap-text-textarea")
+        .type("This is a [test] that has more than [one; 1] correct value")
+        .should("have.value", "This is a [test] that has more than [one; 1] correct value");
+    });
+
+    it("should update textarea if user doesn't use a gap between the semicolon and the next correct value", () => {
+      //The difference to the test above is the missing blank in-between the values
+      cy.get("#editor-gap-text-textarea")
+        .type("The user doesn't need to [type;insert] a gap after the semicolon")
+        .should("have.value", "The user doesn't need to [type;insert] a gap after the semicolon");
+    });
+
+    it("should support typing at the end after the user has stopped typing ", () => {
+      cy.get("#editor-gap-text-textarea")
+        .type("This is the first [line]")
+        .type(" and here is the [rest]")
+        .should("have.value", "This is the first [line] and here is the [rest]");
+    });
+
+    it("should support updating a gap with keyboard arrows", () => {
+      cy.get("#editor-gap-text-textarea")
+        .type("This text was [edited]")
+        .type("{leftArrow}")
+        .type("; updated")
+        .should("have.value", "This text was [edited; updated]");
+    });
+
+    it("should add gap to textarea value if the user adds a gap with the button to an empty textarea", () => {
+      cy.get("button#editor-add-item").click();
+      cy.get("#editor-gap-text-textarea").should("have.value", "[value] ");
+    });
+
+    it("should clear textarea value when switching to other question type and reset back", () => {
+      cy.get("#editor-gap-text-textarea").type("This will be removed");
+      cy.get("select[name='type']").select("multiple-choice");
+      cy.contains("This will be removed").should("not.exist");
+      cy.get("select[name='type']").select("gap-text");
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "");
+    });
+
+    it("should not submit new question when hitting enter", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("{enter}");
+      cy.get("@handleModalCloseSpy").should("not.have.been.called");
+    });
+
+    it("should add gap when clicking on the editor-add-item button in the question editor", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("Add a gap ");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "Add a gap [value]");
+    });
+
+    it("should add gap with blank space in front if user did not provide blank space", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("Add a gap"); //no blank space at the end!
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "Add a gap [value]");
+    });
+
+    it("should not add blank space before gap at beginning of textarea but add a blank space after the gap", () => {
+      //cy.get("textarea#editor-gap-text-textarea").type("surround{enter}");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "[value] ");
+    });
+
+    it("should not add blank space before gap at beginning of newLine", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("text{enter}");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "text\n[value]");
+    });
+
+    it("should not add space at the end of a line and there is content in the new line", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("text{enter}Line").setCursorAfter("text");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "text [value]\nLine");
+    });
+
+    it("should not add space at the end ", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("No blank space at the end");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "No blank space at the end [value]");
+    });
+
+    it("should add brackets around selected value", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("Replace that").setSelection("Replace");
+      cy.get("button#editor-add-item").click();
+
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "[Replace] that");
+    });
+
+    it("should add brackets around selected value and add blank space after", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("Replace that").setSelection("Replace ");
+      cy.get("button#editor-add-item").click();
+
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "[Replace] that");
+    });
+
+    it("should add brackets around selected value in the middle of the textarea", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("This part should be replaced").setSelection("part");
+
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "This [part] should be replaced");
+    });
+
+    it("should not add brackets around selected value and should not add blank space after if if is last last element in the line", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("text replace{enter}Line").setSelection("replace");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "text [replace]\nLine");
+    });
+
+    it("should add brackets around selected value and should NOT not add a blank space after if it is the last element in the textarea", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("This should be replaced").setSelection("replaced");
+
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea#editor-gap-text-textarea").should("have.value", "This should be [replaced]");
+    });
+
+    it("should show warning if the user didn't selected anything with the mouse and clicked on remove element when using gap-text", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("This is a test");
+      cy.get("button#editor-remove-item").click();
+      cy.get(".Toastify").contains("Highlight the gap you want to remove!").should("exist");
+    });
+
+    it("should show warning if selection of user doesn't contain any gaps when using remove on gap text", () => {
+      cy.get("textarea#editor-gap-text-textarea").type("There is no gap here").setSelection("no");
+      cy.get("button#editor-remove-item").click();
+      cy.get(".Toastify").contains("Found no gaps inside the selection!").should("exist");
+    });
+  });
 });
 
 /* -------------------------------------- onSubmit errors ----------------------------------------*/
@@ -496,6 +635,16 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("button[type='submit']").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
+
+    it("should show HTML5 validation errors onSubmit", () => {
+      cy.get("input[name='id']").type("new-id");
+      cy.get("select[name='type']").select("gap-text");
+      cy.get("button[type='submit']").click();
+
+      cy.get("textarea#editor-gap-text-textarea").then(($textarea) => {
+        expect($textarea[0].validationMessage).to.eq("Please fill in this field.");
+      });
+    });
   });
 
   context("Custom form validation", () => {
@@ -550,6 +699,17 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
       cy.contains("button", "Add").click();
       cy.contains("p", "Add at least one item!");
+    });
+
+    it("should show error if input for gap-text starts with '|' and clear error onChange", () => {
+      cy.get("input[name='id']").type("new-id");
+      cy.get("select[name='type']").select("gap-text");
+      cy.get("textarea#editor-gap-text-textarea").type("|");
+      cy.contains("button", "Add").click();
+      cy.contains("Can't start with this key!").should("exist");
+
+      cy.get("textarea#editor-gap-text-textarea").type("new text");
+      cy.contains("Can't start with this key!").should("not.exist");
     });
 
     it("should show errors for different form elements at the same time", () => {
@@ -815,6 +975,17 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
+    it("should clear answerOptions Error if changing question type after submit", () => {
+      cy.get("input[name='id']").type("new-id");
+      cy.get("select[name='type']").select("multiple-response");
+      cy.contains("button", "Add").click();
+
+      cy.get("select[name='type']").select("gap-text");
+
+      cy.get("div.editor-content").should("not.have.class", "is-invalid");
+      cy.contains("Add at least one item").should("not.exist");
+    });
+
     it("should submit after fixing multiple errors", () => {
       cy.get("input[name='id']").type("#");
       cy.get("select[name='type']").select("multiple-choice");
@@ -839,10 +1010,3 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
     });
   });
 });
-
-//TODO
-// - no error on update and same id
-// - no error on updating and id
-
-//should focus elements
-//should focus elements on click

@@ -63,8 +63,7 @@
       "type": "gap-text",
       "help": "Fill in the blanks.",
       "answerOptions": {
-        "text": "This line shouldn't contain any \\[] gaps.",
-        "correctGapValues": []
+        "text": "This line does not contain any [] gaps"
       }
     },
     {

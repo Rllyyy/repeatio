@@ -1,8 +1,8 @@
-import { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useRef, useLayoutEffect } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
-import PropTypes from "prop-types";
 import { toast } from "react-toastify";
+import { isSafari } from "react-device-detect";
 
 //Context
 import { ModuleContext } from "../module/moduleContext.js";
@@ -14,6 +14,8 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //CSS
 import "./QuestionEditor.css";
+
+//Functions
 import {
   objectWithoutProp,
   checkNotEmpty,
@@ -21,21 +23,32 @@ import {
   checkForbiddenUrlChars,
   checkContainsSpaces,
   validator,
-} from "./helpers.js";
+} from "./helpers";
+import {
+  removeGapContent,
+  extractCorrectGapValues,
+  getGapTextTempText,
+} from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
 To cut down on performance the first validation is only done on the first submit and then after each onChange.
 Some elements are excluded from the onChange validation as they require a lot of performance (duplicate checking).
+For some reason firefox android does not support HTML5 validation.
 */
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
-export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => {
+export const QuestionEditor = ({
+  handleModalClose,
+  prevQuestionID,
+}: {
+  handleModalClose: () => void;
+  prevQuestionID: string;
+}) => {
   //JSX
   return (
     <CustomModal
-      isOpen={isOpen}
       handleModalClose={handleModalClose}
       title={prevQuestionID ? "Edit Question" : "Add Question"}
       desktopModalHeight='90vh'
@@ -45,9 +58,52 @@ export const QuestionEditor = ({ isOpen, handleModalClose, prevQuestionID }) => 
   );
 };
 
-export const Form = ({ prevQuestionID, handleModalClose }) => {
+export interface IMultipleChoice {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface IMultipleResponse {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface IGapText {
+  text: string;
+  isCorrect: Array<Array<string>>;
+  tempText: string;
+}
+
+export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapText;
+
+export interface IQuestion {
+  id: string;
+  title: string;
+  points: string;
+  help: string;
+  type: "multiple-choice" | "multiple-response" | "gap-text" | "gap-text-dropdown" | "extended-match" | (string & {});
+  answerOptions: TAnswerOptions | undefined;
+}
+
+export interface IErrors {
+  [x: string]: string;
+}
+
+export interface IParams {
+  moduleID: string;
+}
+
+export const Form = ({
+  prevQuestionID,
+  handleModalClose,
+}: {
+  prevQuestionID: string;
+  handleModalClose: () => void;
+}) => {
   //State
-  const [question, setQuestion] = useState({
+  const [question, setQuestion] = useState<IQuestion>({
     id: "",
     title: "",
     points: "",
@@ -56,11 +112,11 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
     answerOptions: undefined,
   });
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<IErrors>({});
   const hasSubmitted = useRef(false);
 
   //Params
-  const params = useParams();
+  const params = useParams<IParams>();
 
   //History
   let history = useHistory();
@@ -69,15 +125,26 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
   const { search } = useLocation();
 
   //Context
-  const { moduleData, setModuleData } = useContext(ModuleContext);
+  //TODO fix this any
+  const { moduleData, setModuleData } = useContext<any>(ModuleContext);
 
-  //useEffect
-  useEffect(() => {
+  //Fetch Data from Context
+  useLayoutEffect(() => {
     //TODO fetch from name param not context
 
     if (prevQuestionID) {
-      // condition
-      const questionFromContext = moduleData.questions.find((question) => question.id === prevQuestionID);
+      //Find question if the user is editing a question (this is the case if prevQuestionID is passed)
+      let questionFromContext = moduleData.questions.find((question: IQuestion) => question.id === prevQuestionID);
+
+      //Combine the text and correctGapValues of gap-text to a variable that is used for the input
+      //Prevent Safari because lookbehind support: https://bugs.webkit.org/show_bug.cgi?id=174931
+      //TODO check if safari ever supports this feature
+      if (questionFromContext.type === "gap-text" && !isSafari) {
+        questionFromContext = {
+          ...questionFromContext,
+          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions) },
+        };
+      }
 
       //!Somehow it keeps the order of the answer options from the question
       //If this isn't the case anymore when using the storage, pass the question
@@ -85,13 +152,13 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
     }
 
     return () => {
-      setQuestion({});
+      setQuestion({} as IQuestion);
       hasSubmitted.current = false;
     };
   }, [prevQuestionID, moduleData?.questions]);
 
   //Change the value of the question object at the target.name
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     //If the target is the type selection, remove the answerOptions
     setQuestion({
       ...question,
@@ -100,12 +167,12 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
     });
   };
 
-  const handleEditorChange = (value) => {
+  const handleEditorChange = (value: TAnswerOptions) => {
     setQuestion({ ...question, answerOptions: value });
   };
 
   //Handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -142,6 +209,7 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
       return;
     }
 
+    //Error in ID
     const idError = validator({
       functions: [
         checkContainsSpaces,
@@ -160,17 +228,9 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
 
     onSubmitErrors = { ...(idError ? { id: idError } : null) };
 
-    const emptyAnswerOptions = ({ answerOptions }) => {
-      if (answerOptions === null || answerOptions === undefined || answerOptions?.length < 1) {
-        return "Add at least one item!";
-      }
+    //Error in answerOptions
+    const answerOptionsError = getAnswerOptionsError({ answerOptions: question?.answerOptions, type: question.type });
 
-      if (question.type === "multiple-response" && !question.answerOptions?.some((option) => option.isCorrect)) {
-        return "Check at least one item!";
-      }
-    };
-
-    const answerOptionsError = emptyAnswerOptions({ answerOptions: question?.answerOptions });
     onSubmitErrors = { ...onSubmitErrors, ...(answerOptionsError ? { answerOptions: answerOptionsError } : null) };
 
     //Cancel submit if there are any new errors else continue
@@ -186,8 +246,20 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
 
     //Transform given points (string) to float and round it to 2 decimal places if output has key "points"
     if (output.points) {
-      const pointsFloatRound = Math.round(parseFloat(question.points) * 100) / 100;
+      const pointsFloatRound = Math.round(parseFloat(output.points) * 100) / 100;
       output = { ...output, points: pointsFloatRound };
+    }
+
+    /* Question Type specific */
+    //The tempText value has to be transformed back to text and correctGapValues (so users on the safari browser can use gap-text questions in combination with markdown, reason no lookbehind support )
+    if (question.type === "gap-text" && output.answerOptions.hasOwnProperty("tempText")) {
+      output = {
+        ...output,
+        answerOptions: {
+          text: removeGapContent(replaceUnsupportedChars(output.answerOptions.tempText)),
+          correctGapValues: extractCorrectGapValues(output.answerOptions.tempText),
+        },
+      };
     }
 
     //Adding or updating a question
@@ -199,7 +271,7 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
       //Handle updating a question
 
       //Try finding the index of the question
-      const index = moduleData?.questions?.findIndex((question) => question.id === output.id);
+      const index = moduleData?.questions?.findIndex((question: IQuestion) => question.id === output.id);
 
       //If the user changes the id (index <= -1), the question gets inserted at that position
       if (index > -1) {
@@ -208,7 +280,7 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
         window.dispatchEvent(new Event("storage"));
       } else {
         //Find index of the old id by the provided question id
-        const index = moduleData.questions.findIndex((question) => question.id === prevQuestionID);
+        const index = moduleData.questions.findIndex((question: IQuestion) => question.id === prevQuestionID);
 
         //If question isn't in moduleData don't modify the storage. In Prod this should never be shown!
         if (index <= -1) {
@@ -231,20 +303,20 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
     //Update saved questions json object in localStorage if question is edited and the id changed
     if (prevQuestionID && prevQuestionID !== question.id) {
       //Get item from localStorage and transform
-      const savedIDs = JSON.parse(localStorage.getItem(`repeatio-marked-${params.moduleID}`));
+      const localStorageMarked = localStorage.getItem(`repeatio-marked-${params.moduleID}`);
+      if (typeof localStorageMarked === "string") {
+        const savedIDs = JSON.parse(localStorageMarked);
 
-      const index = savedIDs?.indexOf(prevQuestionID);
+        const index = savedIDs.indexOf(prevQuestionID);
 
-      if (index > -1) {
-        savedIDs.splice(index, 1, question.id);
-      }
+        if (index > -1) {
+          savedIDs.splice(index, 1, question.id);
+        }
 
-      //Update localStorage with the replaced value
-      if (savedIDs?.length >= 1) {
-        localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs, null, "\t"), {
-          sameSite: "strict",
-          secure: true,
-        });
+        //Update localStorage with the replaced value
+        if (savedIDs?.length >= 1) {
+          localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs, null, "\t"));
+        }
       }
     }
 
@@ -317,8 +389,84 @@ export const Form = ({ prevQuestionID, handleModalClose }) => {
   );
 };
 
+//Helpers
+function getAnswerOptionsError({
+  answerOptions,
+  type,
+}: {
+  answerOptions: TAnswerOptions | undefined;
+  type: IQuestion["type"];
+}) {
+  if (answerOptions === null || answerOptions === undefined) {
+    switch (type) {
+      case "multiple-choice":
+        return "Add at least one item!";
+      case "multiple-response":
+        return "Add at least one item!";
+      case "gap-text":
+        return "Add a text!";
+      default:
+        return "Add at least one item!";
+    }
+  }
+
+  //Used for firefox mobile because required property doesn't work
+  if (
+    type === "multiple-choice" &&
+    Array.isArray(answerOptions) &&
+    (answerOptions as IMultipleChoice[])?.filter((option) => option.isCorrect).length !== 1
+  ) {
+    return "Check one item!";
+  }
+
+  //Used for firefox mobile because required property doesn't work
+  if (
+    type === "multiple-response" &&
+    Array.isArray(answerOptions) &&
+    !(answerOptions as IMultipleResponse[])?.some((option) => option.isCorrect)
+  ) {
+    return "Check at least one item!";
+  }
+
+  if (
+    type === "gap-text" &&
+    "tempText" in (answerOptions as IGapText) &&
+    (answerOptions as IGapText).tempText.startsWith("|")
+  ) {
+    return "Can't start with this key! If want to render a table wrap the markdown for the table in <div style='white-space: normal'>(line break) Markdown (line break)</div>.";
+  }
+}
+
+/**
+ * Replace the characters that are not supported by gap-text and gap-text-dropdown
+ * Ignores unsupported characters inside html tags as they aren't rendered later
+ */
+function replaceUnsupportedChars(text: string) {
+  let count = 0;
+  return text
+    .split(/(?<!<[^>]*)"/g)
+    .map((str) => {
+      if (count++ % 2 !== 0) {
+        return `„${str}“`;
+      } else {
+        return str;
+      }
+    })
+    .join("")
+    .replaceAll(/(?<!<[^>]*)'/g, "‘");
+}
+
 /* -------------------------------TEXTAREA for multiline inputs --------------------------------- */
-const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
+const EditorFormTextarea = ({
+  labelText,
+  value,
+  handleChange,
+  ...props
+}: {
+  labelText: string;
+  value?: string;
+  handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}) => {
   const labelTextLowerCase = labelText.toLowerCase();
 
   return (
@@ -335,27 +483,41 @@ const EditorFormTextarea = ({ labelText, value, handleChange, ...props }) => {
   );
 };
 
-//Prop Types for textarea
-EditorFormTextarea.propTypes = {
-  labelText: PropTypes.string.isRequired,
-  value: PropTypes.string,
-  handleChange: PropTypes.func.isRequired,
-};
-
 /* -------------------------------- INPUT for single line inputs -------------------------------- */
-const EditorFormInput = ({ labelText, type, value, handleChange, errors, setErrors, hasSubmitted, ...props }) => {
-  const preventSubmit = (e) => {
+const EditorFormInput = ({
+  labelText,
+  type,
+  value,
+  handleChange,
+  errors,
+  setErrors,
+  hasSubmitted,
+  ...props
+}: {
+  labelText: string;
+  type: string;
+  value?: string | number;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: IErrors;
+  setErrors?: React.Dispatch<React.SetStateAction<IErrors>>;
+  hasSubmitted?: boolean;
+  [x: string]: any;
+}) => {
+  const preventSubmit = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
     }
   };
 
+  const labelTextLowerCase = labelText.toLowerCase();
+
   //Handle change to the input field
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleChange(e);
 
     //Only run after the form submit, to revalidate onChange
     if (hasSubmitted) {
+      if (!setErrors) return;
       //define new field error
       const fieldError = validator({
         functions: [checkContainsSpaces, checkForbiddenUrlChars, checkNotEmpty],
@@ -366,14 +528,12 @@ const EditorFormInput = ({ labelText, type, value, handleChange, errors, setErro
       //Remove the corresponding prop from the error object
       //Then combine the old errors (without the field) and the new field error
       //If there is no new field error, just return the old errors
-      setErrors((prev) => ({
+      setErrors((prev: IErrors) => ({
         ...objectWithoutProp({ object: prev, deleteProp: e.target.name }),
         ...(fieldError ? { [e.target.name]: fieldError } : null),
       }));
     }
   };
-
-  const labelTextLowerCase = labelText.toLowerCase();
 
   return (
     <div className={`modal-question-${labelTextLowerCase}`}>
@@ -395,19 +555,21 @@ const EditorFormInput = ({ labelText, type, value, handleChange, errors, setErro
   );
 };
 
-//PropTypes for Input
-EditorFormInput.propTypes = {
-  labelText: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  handleChange: PropTypes.func.isRequired,
-  setErrors: PropTypes.func,
-  hasSubmitted: PropTypes.bool,
-};
-
 /* ----------------------------------- SELECT for form ------------------------------------------ */
-const EditorFormSelect = ({ handleChange, value, typeErrors, hasSubmitted, setErrors }) => {
-  const handleSelectChange = (e) => {
+const EditorFormSelect = ({
+  handleChange,
+  value,
+  typeErrors,
+  hasSubmitted,
+  setErrors,
+}: {
+  handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  value?: string;
+  typeErrors: IErrors[string];
+  hasSubmitted: boolean;
+  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+}) => {
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     handleChange(e);
 
     //Only run after the form submit, to revalidate onChange
@@ -419,11 +581,12 @@ const EditorFormSelect = ({ handleChange, value, typeErrors, hasSubmitted, setEr
         fieldName: e.target.name,
       });
 
-      //Remove the corresponding prop from the error object
-      //Then combine the old errors (without the field) and the new field error
-      //If there is no new field error, just return the old errors
-      setErrors((prev) => ({
-        ...objectWithoutProp({ object: prev, deleteProp: e.target.name }),
+      //Remove select type and answerOptions errors from the errors state but keep other errors
+      setErrors((prev: IErrors) => ({
+        ...objectWithoutProp({
+          object: prev,
+          deleteProp: [e.target.name, "answerOptions"],
+        }),
         ...(fieldError ? { [e.target.name]: fieldError } : null),
       }));
     }
@@ -450,13 +613,4 @@ const EditorFormSelect = ({ handleChange, value, typeErrors, hasSubmitted, setEr
       {typeErrors && <p className='modal-question-error'>{typeErrors}</p>}
     </div>
   );
-};
-
-//PropTypes for the select
-EditorFormSelect.propTypes = {
-  handleChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
-  typeErrors: PropTypes.string,
-  hasSubmitted: PropTypes.bool,
-  setErrors: PropTypes.func,
 };

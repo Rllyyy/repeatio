@@ -150,6 +150,11 @@ describe("Gap Text", () => {
     cy.get(".question-gap-text").find("input").last().type("1").should("have.value", "1");
   });
 
+  it("should render text even if there is no gap", () => {
+    cy.visit("/module/gap_text/question/gt-4");
+    cy.contains("This line does not contain any gaps").should("exist");
+  });
+
   it("should render list", () => {
     cy.visit("/module/gap_text/question/gt-5");
     cy.get(".question-user-response ul").find("li").should("have.length", 2);

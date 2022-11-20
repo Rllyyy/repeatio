@@ -34,7 +34,7 @@ describe("Test the module that is provided by the public folder", () => {
     //Gap Text
     cy.contains("Yes, that's correct!").should("not.exist");
     cy.get("#input-wrapper-0").find("input").type("gaps");
-    cy.get("#input-wrapper-1").find("input").type("semicolon");
+    cy.get("#input-wrapper-1").find("input").type("correct");
     cy.get("#input-wrapper-2").find("input").type("not");
     cy.get("button[aria-label='Check Question']").click();
     cy.contains("Yes, that's correct!");

@@ -15,11 +15,11 @@ import "katex/dist/katex.min.css";
 import "./Question.css";
 
 //Import Components
-import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound.jsx"; //TODO switch to jsx
+import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound.jsx";
 import { QuestionUserResponseArea } from "./QuestionTypes/QuestionUserResponseArea.jsx";
 import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation.jsx";
 import { DeleteQuestion } from "./components/Actions/DeleteQuestion.jsx";
-import { EditQuestion } from "./components/Actions/EditQuestion.jsx";
+import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion.jsx";
 
 //Context
