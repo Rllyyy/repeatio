@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { IParams } from "../../utils/types";
 
 //Interfaces + Types
-import { IParams, IQuestion } from "./QuestionEditor";
+import { IQuestion } from "./QuestionEditor";
 
 //The order of give functions is important
 export function validator({
@@ -78,11 +79,13 @@ export function checkNotIdDuplicate({
   questionID,
   params,
 }: {
-  prevQuestionID: string;
+  prevQuestionID?: string;
   questions: IQuestion[];
   questionID: string;
   params: IParams;
 }) {
+  if (!questionID) return;
+
   //Don't search if editing question and the id wasn't changed
   if (prevQuestionID && prevQuestionID === questionID) {
     return;

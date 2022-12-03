@@ -5,8 +5,8 @@ import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFo
 
 //Components
 import { GridCards } from "../GridCards/GridCards.jsx";
-import { Card, LinkElement } from "../Card/Card.js";
-import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover.jsx";
+import { Card, LinkElement } from "../Card/Card";
+import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { Spinner } from "../Spinner/Spinner.js";
 import { ProgressPie } from "../Card/ProgressPie.jsx";
 

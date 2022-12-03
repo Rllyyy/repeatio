@@ -1,14 +1,15 @@
-import { useState, useContext, useCallback, useLayoutEffect } from "react";
+import React, { useState, useContext, useCallback, useLayoutEffect, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ModuleContext } from "./moduleContext.js";
+import packageJSON from "../../../package.json";
 
 //Components
 import { GridCards } from "../GridCards/GridCards.jsx";
 import { SiteHeading } from "../SiteHeading/SiteHeading";
-import { Card, LinkElement, ButtonElement } from "../Card/Card.js";
+import { Card, LinkElement, ButtonElement } from "../Card/Card";
 import { Spinner } from "../Spinner/Spinner";
-import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
-import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover.jsx";
+import { IQuestion, QuestionEditor } from "../QuestionEditor/QuestionEditor";
+import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
 import { ModuleNotFound } from "./ModuleNotFound.jsx";
 
@@ -24,25 +25,42 @@ import { TbFileExport, TbFileImport } from "react-icons/tb";
 import { shuffleArray } from "../../utils/shuffleArray";
 import { saveFile } from "../../utils/saveFile.js";
 
+//Interfaces and types
+import { IParams } from "../../utils/types.js";
+import {
+  getBookmarkedLocalStorageItem,
+  getBookmarkedQuestionsFromModule,
+  IBookmarkedQuestions,
+} from "../Question/components/Actions/BookmarkQuestion";
+
 //TODO
 // - test if no saved questions but then imported => should enable export
+
+interface IModule {
+  id: string;
+  name: string;
+  lang: "en" | "de";
+  compatibility: string;
+  questions: IQuestion[];
+}
 
 //Component
 export const Module = () => {
   //useState
-  const [module, setModule] = useState({});
+  const [module, setModule] = useState<IModule | {}>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   //context
-  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext(ModuleContext);
+  //TODO fix this any
+  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext<any>(ModuleContext);
 
   //History
   let history = useHistory();
 
   //Params
-  const { moduleID } = useParams();
+  const { moduleID } = useParams<{ moduleID: string }>();
 
   /* USEEFFECTS */
   //Update the module state by using the data from the context
@@ -84,6 +102,27 @@ export const Module = () => {
     };
   }, [moduleID, setContextModuleID]);
 
+  //TODO remove this with v0.5
+  useEffect(() => {
+    const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
+
+    if (Array.isArray(bookmarkedLocalStorageItem) && !bookmarkedLocalStorageItem?.compatibility) {
+      localStorage.setItem(
+        `repeatio-marked-${moduleID}`,
+        JSON.stringify({
+          id: moduleID,
+          type: "bookmark",
+          compatibility: packageJSON.version,
+          questions: bookmarkedLocalStorageItem,
+        })
+      );
+    }
+
+    return () => {
+      //second
+    };
+  }, [moduleID]);
+
   /*EVENTS*/
   //Train with all questions in chronological order
   const onChronologicalClick = () => {
@@ -91,7 +130,7 @@ export const Module = () => {
 
     if (moduleData.questions !== undefined && moduleData.questions.length >= 1) {
       history.push({
-        pathname: `/module/${moduleID}/question/${module.questions[0].id}`,
+        pathname: `/module/${moduleID}/question/${(module as IModule).questions[0].id}`,
         search: "?mode=chronological",
       });
     } else {
@@ -206,8 +245,8 @@ export const Module = () => {
 
   //JSX
   return (
-    <div id={`module-${module.id}`}>
-      <SiteHeading title={`${module.name} (${module.id})`} />
+    <div id={`module-${(module as IModule).id}`}>
+      <SiteHeading title={`${(module as IModule).name} (${(module as IModule).id})`} />
       <GridCards>
         {moduleCards.map((card) => {
           const { title, disabled, description, icon, bottom } = card;
@@ -233,16 +272,17 @@ export const Module = () => {
 
 //Display bottom of BookmarkedQuestions
 const BookmarkedQuestionsBottom = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   //History
   let history = useHistory();
 
   //Params
-  const { moduleID } = useParams();
+  const { moduleID } = useParams<IParams>();
 
   //Context
-  const { setFilteredQuestions, moduleData } = useContext(ModuleContext);
+  //TODO fix this
+  const { setFilteredQuestions, moduleData } = useContext<any>(ModuleContext);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {
@@ -252,7 +292,7 @@ const BookmarkedQuestionsBottom = () => {
   }, []);
 
   //Update location of popover button
-  const handlePopoverButtonClick = (event) => {
+  const handlePopoverButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -277,7 +317,7 @@ const BookmarkedQuestionsBottom = () => {
   };
 
   //Export saved questions from localStorage
-  const handleExport = async () => {
+  const handleExport = async (): Promise<void> => {
     const file = localStorage.getItem(`repeatio-marked-${moduleID}`);
 
     if (file) {
@@ -294,24 +334,28 @@ const BookmarkedQuestionsBottom = () => {
   };
 
   //Import saved questions from .json file (needs to be onChange on input type file as filePicker api is not supported on firefox/chrome)
-  const handleFileImportChange = async (e) => {
-    let importedSavedQuestions;
+  const handleFileImportChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    let importedBookmarkedFile: IBookmarkedQuestions;
+
     try {
-      const file = e.target.files[0];
+      const file = e.target.files?.[0];
 
       //Get file content and transform to JSON
       if (!file) return;
       const fileContent = await file.text();
-      importedSavedQuestions = JSON.parse(fileContent);
+      importedBookmarkedFile = JSON.parse(fileContent);
     } catch (error) {
       //Notify user of failed import
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
       handlePopoverClose();
       return;
     }
 
-    //TODO check file structure (maybe json file that contains type: marked, compatibility: version and saved ids )
-    if (!Array.isArray(importedSavedQuestions)) {
+    //If bookmarked file has old file structure (just array) show error
+    //TODO
+    if (Array.isArray(importedBookmarkedFile)) {
       //Notify user that import is false file structure
       toast.error("Failed to import because the file does not contain the correct file structure!");
       handlePopoverClose();
@@ -320,32 +364,44 @@ const BookmarkedQuestionsBottom = () => {
 
     //Upload the file to the localStorage
     //Don't add ids of questions that are not in this module or duplicates
-    let rejectedIDs = [];
-    let newIDs = [];
+    let rejectedIDs: IBookmarkedQuestions["questions"] = [];
+    let newIDs: IBookmarkedQuestions["questions"] = [];
+
     //Get old saved questions from localStorage or provide empty array
-    let updatedSavedQuestions = [...(JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`)) || [])];
+    const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
+
+    //Get the ids from the bookmarked item or add empty array
+    let updatedSavedQuestions = [...(bookmarkedLocalStorageItem?.questions || [])];
 
     //Add only ids that are in the module (as question ids) and only if not already in localStorage
-    importedSavedQuestions?.forEach((importedID) => {
+    importedBookmarkedFile?.questions?.forEach((importedID) => {
       //Return if id of the imported saved questions is not in the module
-      if (moduleData.questions?.findIndex((question) => question.id === importedID) === -1) {
-        rejectedIDs.push(importedID);
+      if (moduleData.questions?.findIndex((question: IQuestion) => question.id === importedID) === -1) {
+        rejectedIDs?.push(importedID);
         return false;
       }
 
       //If the item is not already in the localStorage and the localStorage exists, add the item to the new array
       if (updatedSavedQuestions?.indexOf(importedID) === -1) {
         updatedSavedQuestions?.push(importedID);
-        newIDs.push(importedID);
+        newIDs?.push(importedID);
       }
     });
 
-    //Update localStorage with new array
+    //Update localStorage with the combined bookmarked questions
     if (updatedSavedQuestions?.length > 0) {
-      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify(updatedSavedQuestions, null, "\t"), {
-        sameSite: "strict",
-        secure: true,
-      });
+      //Add new Ids to the existing bookmark item or use the data (id, compatibility, type) from the import for the new bookmark
+      if (bookmarkedLocalStorageItem) {
+        localStorage.setItem(
+          `repeatio-marked-${moduleID}`,
+          JSON.stringify({ ...bookmarkedLocalStorageItem, questions: updatedSavedQuestions }, null, "\t")
+        );
+      } else {
+        localStorage.setItem(
+          `repeatio-marked-${moduleID}`,
+          JSON.stringify({ ...importedBookmarkedFile, questions: updatedSavedQuestions }, null, "\t")
+        );
+      }
 
       //Show message to user (currently even shows if 0 IDs are actually new)
       toast.success(
@@ -372,43 +428,44 @@ const BookmarkedQuestionsBottom = () => {
   };
 
   //Train with only the saved Questions
-  const onSavedQuestionsClick = () => {
-    //Get the data from the localStorage
+  const onBookmarkedQuestionsClick = () => {
     //TODO for electron get from filesystem
-    const savedQuestionsID = JSON.parse(localStorage.getItem(`repeatio-marked-${moduleID}`));
+
+    //Get the bookmarked ids from the localStorage item
+    const bookmarkedQuestionsIDs = getBookmarkedQuestionsFromModule(moduleID);
 
     //Return if no such element can be found
-    if (savedQuestionsID === null) {
+    if (bookmarkedQuestionsIDs === null || bookmarkedQuestionsIDs === undefined) {
       toast.warn("Found 0 bookmarked questions for this module!", {
         autoClose: 10000,
       });
       return;
     }
 
-    //For each element in the array return the question object
+    //For each element in the bookmarked array return the question object
     //kinda expensive calculation (array in array) :/
-    let savedQuestions = [];
-    savedQuestionsID.forEach((questionID) => {
-      const question = moduleData.questions.find((question) => question.id === questionID);
+    let bookmarkedQuestions: IQuestion[] = [];
+    bookmarkedQuestionsIDs.forEach((item) => {
+      const question = moduleData.questions.find((question: IQuestion) => question.id === item);
       //push question object to array if question is found
       if (question !== undefined) {
-        savedQuestions.push(question);
+        bookmarkedQuestions.push(question);
       }
     });
 
     //Update the context
-    setFilteredQuestions(savedQuestions);
+    setFilteredQuestions(bookmarkedQuestions);
 
     //Navigate to question component
     history.push({
-      pathname: `/module/${moduleID}/question/${savedQuestions[0].id}`,
+      pathname: `/module/${moduleID}/question/${bookmarkedQuestions[0].id}`,
       search: "?mode=chronological",
     });
   };
 
   return (
     <>
-      <ButtonElement key='saved-questions' buttonText='Start' handleClick={onSavedQuestionsClick} />
+      <ButtonElement key='saved-questions' buttonText='Start' handleClick={onBookmarkedQuestionsClick} />
       <PopoverButton handleClick={handlePopoverButtonClick} />
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
         <PopoverMenuItem handleClick={handleBookmarkedDelete} text='Delete' icon={<BiTrash />} />
@@ -419,7 +476,11 @@ const BookmarkedQuestionsBottom = () => {
   );
 };
 
-const ImportBookmarkedQuestions = ({ handleChange }) => {
+const ImportBookmarkedQuestions = ({
+  handleChange,
+}: {
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+}) => {
   return (
     <li className='MuiMenuItem-root'>
       <label

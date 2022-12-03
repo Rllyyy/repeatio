@@ -2,16 +2,29 @@ import { useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 import { toast } from "react-toastify";
+import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 
 //Context
 import { ModuleContext } from "../../../module/moduleContext.js";
 
+//TODO add moduleID as Component param not useParams
+
 //Icons
 import { BiTrash } from "react-icons/bi";
 
-export const DeleteQuestion = ({ questionID, disabled }) => {
+//Interfaces/Types
+import { IParams } from "../../../../utils/types";
+import { IQuestion } from "../../../QuestionEditor/QuestionEditor";
+
+interface IDeleteQuestion
+  extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+  questionID: IQuestion["id"];
+  disabled: boolean;
+}
+
+export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuestion) => {
   //params
-  const params = useParams();
+  const params = useParams<IParams>();
 
   //URL parameters
   const { search } = useLocation();
@@ -20,7 +33,8 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
   let history = useHistory();
 
   //Access Module
-  const { moduleData, setModuleData, filteredQuestions } = useContext(ModuleContext);
+  //TODO fix this any
+  const { moduleData, setModuleData, filteredQuestions } = useContext<any>(ModuleContext);
 
   //Delete Question from storage
   const handleDelete = () => {
@@ -57,7 +71,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
     }
 
     //TODO Refactor the code below when the ModuleContext gets refactored
-    const indexInModuleQuestions = moduleData.questions.findIndex((question) => question.id === questionID);
+    const indexInModuleQuestions = moduleData.questions.findIndex((question: IQuestion) => question.id === questionID);
 
     //If question isn't in moduleData don't modify the storage. In Prod this error should never be shown!
     if (indexInModuleQuestions <= -1) {
@@ -72,7 +86,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
     setModuleData({ ...moduleData, questions: moduleData.questions });
 
     //Navigate to new path with new id
-    const indexInFilteredQuestions = filteredQuestions.findIndex((question) => question.id === questionID);
+    const indexInFilteredQuestions = filteredQuestions.findIndex((question: IQuestion) => question.id === questionID);
 
     //Because the Push to new url
     if (indexInFilteredQuestions >= 1) {
@@ -88,19 +102,19 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
     }
 
     //Remove id from saved questions in localStorage
-    //Get item from localStorage and transform to array
-    const savedIDs = JSON.parse(localStorage.getItem(`repeatio-marked-${params.moduleID}`));
+    //Get whole bookmarked item from localStorage
+    const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(params.moduleID);
 
-    //Filter out deleted question id
-    const filteredSavedIDs = savedIDs?.filter((item) => item !== questionID);
+    //Filter out the deleted question id from the questions array inside the localStorage
+    const filteredSavedIDs = bookmarkedLocalStorageItem?.questions?.filter((item) => item !== questionID);
 
     //Update localStorage with filtered out array. If there is no item left, remove from storage.
-    if (filteredSavedIDs?.length >= 1) {
+    if (filteredSavedIDs && filteredSavedIDs?.length >= 1) {
       //Update the localStorage
-      localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(filteredSavedIDs, null, "\t"), {
-        sameSite: "strict",
-        secure: true,
-      });
+      localStorage.setItem(
+        `repeatio-marked-${params.moduleID}`,
+        JSON.stringify({ ...bookmarkedLocalStorageItem, questions: filteredSavedIDs }, null, "\t")
+      );
     } else if (filteredSavedIDs?.length === 0) {
       //Remove localStorage item
       localStorage.removeItem(`repeatio-marked-${params.moduleID}`);
@@ -109,7 +123,7 @@ export const DeleteQuestion = ({ questionID, disabled }) => {
 
   //JSX
   return (
-    <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question'>
+    <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question' {...props}>
       <BiTrash />
     </button>
   );

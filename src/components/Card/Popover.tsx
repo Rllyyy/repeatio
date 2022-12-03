@@ -14,8 +14,13 @@ import MenuItem from "@mui/material/MenuItem";
 import { HiDotsVertical } from "react-icons/hi";
 
 /* ------------------------------- Popover Button (vertical Dots) ------------------------------- */
+//Interface
+interface IPopoverButton {
+  handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  target?: string;
+}
 //Component
-const PopoverButton = ({ handleClick, target }) => {
+export const PopoverButton = ({ handleClick, target }: IPopoverButton) => {
   return (
     <button className='popover-button' onClick={handleClick} data-target={target}>
       <HiDotsVertical />
@@ -23,15 +28,9 @@ const PopoverButton = ({ handleClick, target }) => {
   );
 };
 
-//PopoverButton Prop Types
-PopoverButton.propTypes = {
-  handleClick: PropTypes.func.isRequired,
-  target: PropTypes.string,
-};
-
 /* ------------------------------- Popover Menu ------------------------------- */
 //Style Material UI Menu
-const StyledMenu = styled((props) => (
+const StyledMenu = styled((props: any) => (
   <Menu
     elevation={0}
     anchorOrigin={{
@@ -84,8 +83,14 @@ const StyledMenu = styled((props) => (
   },
 }));
 
+interface IPopoverMenu {
+  anchorEl: HTMLButtonElement | null;
+  handlePopoverClose: () => void;
+  children: React.ReactNode;
+}
+
 //PopoverMenu that is returned
-const PopoverMenu = ({ anchorEl, handlePopoverClose, children }) => {
+export const PopoverMenu = ({ anchorEl, handlePopoverClose, children }: IPopoverMenu) => {
   return (
     <StyledMenu
       MenuListProps={{
@@ -106,23 +111,27 @@ PopoverMenu.propTypes = {
 };
 
 /* -------------------------------------- POPOVER MENU ITEM ------------------------------------- */
-//Component
-const PopoverMenuItem = ({ handleClick, text, icon, disabled }) => {
+interface IPopoverMenuItem {
+  handleClick: () => void | Promise<void>;
+  text: string;
+  icon: JSX.Element;
+  disabled?: boolean;
+}
+
+const IconWithText = ({ icon, text }: { icon: JSX.Element; text: string }) => {
   return (
-    <MenuItem onClick={handleClick} disableRipple disabled={disabled}>
+    <>
       {icon}
       <span>{text}</span>
-    </MenuItem>
+    </>
   );
 };
 
-//PopoverMenuItems Prop Types
-PopoverMenuItem.propTypes = {
-  handleClick: PropTypes.func,
-  text: PropTypes.string.isRequired,
-  icon: PropTypes.object.isRequired,
+//Component
+export const PopoverMenuItem = ({ handleClick, text, icon, disabled }: IPopoverMenuItem) => {
+  return (
+    <MenuItem onClick={handleClick} disableRipple disabled={disabled}>
+      <IconWithText icon={icon} text={text} />
+    </MenuItem>
+  );
 };
-
-/* ------------------------------------------------------------------------- */
-
-export { PopoverButton, PopoverMenu, PopoverMenuItem };

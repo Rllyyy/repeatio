@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 //css
@@ -8,9 +7,16 @@ import "./Card.css";
 import { IoIosArrowForward } from "react-icons/io";
 
 /* ----------------------------------------- CARD -------------------------------------------- */
+interface ICard extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+  type: "module-card" | "module";
+  disabled?: boolean;
+  title: string;
+  description?: string;
+  icon: JSX.Element;
+}
 
 //Card Component
-export const Card = ({ type, disabled, title, description, icon, children, ...props }) => {
+export const Card = ({ type, disabled, title, description, icon, children, ...props }: ICard) => {
   return (
     <article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
       <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
@@ -25,20 +31,17 @@ export const Card = ({ type, disabled, title, description, icon, children, ...pr
   );
 };
 
-//Card Prop Types
-Card.propTypes = {
-  type: PropTypes.string,
-  disabled: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  icon: PropTypes.object.isRequired,
-};
-
 /* ----------------------------------------- LINK -------------------------------------------- */
+//!This extend might be false
+interface ILinkElement extends React.RefAttributes<HTMLAnchorElement> {
+  linkTo: string;
+  linkAriaLabel: string;
+  linkText: string;
+}
 
 //!URL might not work with special characters (äöß/#....)
 //Link Element Component
-export const LinkElement = ({ linkTo, linkAriaLabel, linkText }, props) => {
+export const LinkElement = ({ linkTo, linkAriaLabel, linkText, ...props }: ILinkElement) => {
   return (
     <Link className='card-link' to={linkTo} role='button' aria-label={linkAriaLabel} {...props}>
       <span>{linkText}</span>
@@ -47,27 +50,19 @@ export const LinkElement = ({ linkTo, linkAriaLabel, linkText }, props) => {
   );
 };
 
-//Link Prop Types
-LinkElement.propTypes = {
-  linkTo: PropTypes.string.isRequired,
-  linkAriaLabel: PropTypes.string.isRequired,
-  linkText: PropTypes.string.isRequired,
-};
-
 /* ----------------------------------- BUTTON (Start, View, etc.) ------------------------------- */
+interface IButtonElement
+  extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+  buttonText: string;
+  handleClick?: () => void;
+}
 
 //Button Component
-export const ButtonElement = ({ handleClick, buttonText, ...props }) => {
+export const ButtonElement = ({ handleClick, buttonText, ...props }: IButtonElement) => {
   return (
     <button className='card-button' onClick={handleClick} {...props}>
       <span>{buttonText}</span>
       <IoIosArrowForward className='card-button-svg' />
     </button>
   );
-};
-
-//Prop Types
-ButtonElement.propTypes = {
-  handleClick: PropTypes.func,
-  buttonText: PropTypes.string.isRequired,
 };

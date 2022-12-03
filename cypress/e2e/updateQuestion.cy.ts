@@ -1,3 +1,7 @@
+/// <reference types="cypress" />
+import { getBookmarkedLocalStorageItem } from "../../src/components/Question/components/Actions/BookmarkQuestion";
+import { IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+
 describe("Updating a question using the Question editor", () => {
   beforeEach(() => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
@@ -133,16 +137,45 @@ describe("Updating a question using the Question editor", () => {
     cy.contains("A question with this id already exists!").should("exist");
   });
 
-  it("should update the localStorage when changing the id", () => {
+  it("should update the localStorage of the module when changing the id", () => {
     cy.get("input[name='id']").clear().type("updated-id-1");
 
     cy.contains("button", "Update")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-cypress_1")).questions;
-        const updatedQuestion = questions.find((question) => question.id === "updated-id-1");
-        expect(updatedQuestion.id).to.eq("updated-id-1");
+        const questions: IQuestion[] = JSON.parse(localStorage.getItem("repeatio-module-cypress_1")).questions;
+
+        //Create new array with just ids
+        const ids: Array<IQuestion["id"]> = questions.reduce((acc, { id }) => {
+          acc.push(id);
+          return acc;
+        }, []);
+
+        expect(ids).to.include("updated-id-1").and.to.have.length(6);
       });
+  });
+
+  it("should update the bookmark localStorage item if the id changes", () => {
+    //Setup localStorage bookmark item
+    const newBookmarkLocalStorageItem = {
+      id: "cypress_1",
+      type: "bookmark",
+      compatibility: "0.4.0",
+      questions: ["qID-1", "qID-6"],
+    };
+
+    localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(newBookmarkLocalStorageItem, null, "\t"));
+
+    cy.get("input[name='id']").clear().type("qID-10");
+    cy.contains("button", "Update")
+      .click()
+      .should(() => {
+        const bookmarkLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
+        expect(bookmarkLocalStorageItem.id).to.equal("cypress_1");
+        expect(bookmarkLocalStorageItem.questions).to.deep.eq(["qID-10", "qID-6"]);
+      });
+
+    cy.get("button.bookmark-question-button").find("svg").should("have.class", "bookmark-remove");
   });
 });
 
@@ -222,6 +255,26 @@ describe("Updating a question of type gap-text", () => {
           );
 
           const correctGapValues = [["third"], ["contains", "includes"], ["one", "1"]];
+          expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+        });
+    });
+
+    it("should remove gap from gap-text", () => {
+      cy.visit("/module/gap_text/question/gt-3");
+      cy.get("button[aria-label='Edit Question'").click();
+
+      cy.get("textarea#editor-gap-text-textarea").setSelection("[contains]").type("{del}").type("{del}");
+
+      cy.contains("button", "Update")
+        .click()
+        .should(() => {
+          const questions = JSON.parse(localStorage.getItem("repeatio-module-gap_text")).questions;
+          const addedQuestion = questions.find((question) => question.id === "gt-3");
+          expect(addedQuestion.answerOptions.text).to.eq(
+            "This is the [] question. It multiple gaps. Even gaps that have more than [] correct answer."
+          );
+
+          const correctGapValues = [["third"], ["one", "1"]];
           expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
         });
     });

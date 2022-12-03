@@ -18,9 +18,9 @@ import "./Question.css";
 import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound.jsx";
 import { QuestionUserResponseArea } from "./QuestionTypes/QuestionUserResponseArea.jsx";
 import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation.jsx";
-import { DeleteQuestion } from "./components/Actions/DeleteQuestion.jsx";
+import { DeleteQuestion } from "./components/Actions/DeleteQuestion";
 import { EditQuestion } from "./components/Actions/EditQuestion";
-import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion.jsx";
+import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
 
 //Context
 import { ModuleContext } from "../module/moduleContext.js";
@@ -203,8 +203,8 @@ const QuestionPoints = ({ points }) => {
   //Return the points value. If they are undefined return ?
   //If the value of point is equal to 1 return Point else return Points
   return (
-    <p className='question-points' data-testid='question-points'>
-      {points || "?"} {points === 1 ? "Point" : "Points"}
+    <p className='question-points'>
+      {points ?? "?"} {points === 1 ? "Point" : "Points"}
     </p>
   );
 };

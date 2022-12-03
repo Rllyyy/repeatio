@@ -30,6 +30,10 @@ import {
   getGapTextTempText,
 } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 
+//Interfaces
+import { IParams } from "../../utils/types.js";
+import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/BookmarkQuestion";
+
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
 To cut down on performance the first validation is only done on the first submit and then after each onChange.
@@ -44,7 +48,7 @@ export const QuestionEditor = ({
   prevQuestionID,
 }: {
   handleModalClose: () => void;
-  prevQuestionID: string;
+  prevQuestionID?: string;
 }) => {
   //JSX
   return (
@@ -78,6 +82,7 @@ export interface IGapText {
 
 export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapText;
 
+//TODO change export to Question/Questions.tsx
 export interface IQuestion {
   id: string;
   title: string;
@@ -91,15 +96,11 @@ export interface IErrors {
   [x: string]: string;
 }
 
-export interface IParams {
-  moduleID: string;
-}
-
 export const Form = ({
   prevQuestionID,
   handleModalClose,
 }: {
-  prevQuestionID: string;
+  prevQuestionID?: string;
   handleModalClose: () => void;
 }) => {
   //State
@@ -302,20 +303,25 @@ export const Form = ({
 
     //Update saved questions json object in localStorage if question is edited and the id changed
     if (prevQuestionID && prevQuestionID !== question.id) {
-      //Get item from localStorage and transform
-      const localStorageMarked = localStorage.getItem(`repeatio-marked-${params.moduleID}`);
-      if (typeof localStorageMarked === "string") {
-        const savedIDs = JSON.parse(localStorageMarked);
+      //Get whole bookmarked item from localStorage
+      const localStorageBookmarkedItem = getBookmarkedLocalStorageItem(params.moduleID);
 
-        const index = savedIDs.indexOf(prevQuestionID);
+      //Extract questions array from bookmarked localStorage item
+      const savedIDs = localStorageBookmarkedItem?.questions;
 
-        if (index > -1) {
-          savedIDs.splice(index, 1, question.id);
-        }
+      //Check if question exists in bookmarked array
+      const index = savedIDs?.indexOf(prevQuestionID);
+
+      //Replaces the previous id with the new id if the id existed in the previous bookmarked questions
+      if (index !== undefined && index > -1) {
+        savedIDs?.splice(index, 1, question.id);
 
         //Update localStorage with the replaced value
-        if (savedIDs?.length >= 1) {
-          localStorage.setItem(`repeatio-marked-${params.moduleID}`, JSON.stringify(savedIDs, null, "\t"));
+        if (savedIDs && savedIDs?.length >= 1) {
+          localStorage.setItem(
+            `repeatio-marked-${params.moduleID}`,
+            JSON.stringify({ ...localStorageBookmarkedItem, questions: savedIDs }, null, "\t")
+          );
         }
       }
     }
@@ -543,7 +549,7 @@ const EditorFormInput = ({
         type={type}
         id={`modal-question-${labelTextLowerCase}-input`}
         className={`${errors?.[labelTextLowerCase] ? "is-invalid" : "is-valid"}`}
-        value={value || ""}
+        value={value ?? ""}
         onChange={handleInputChange}
         onKeyDown={preventSubmit}
         autoComplete='off'

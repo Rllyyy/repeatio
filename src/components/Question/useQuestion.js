@@ -67,7 +67,9 @@ export const useQuestion = () => {
     }
 
     //Find the correct question in the moduleData context
-    const returnQuestion = filteredQuestions.find((questionItem) => questionItem.id === params.questionID);
+    const returnQuestion = filteredQuestions?.find((questionItem) => questionItem.id === params.questionID);
+
+    //TODO what if filteredQuestions is undefined/null??
 
     //Set the question state
     setQuestion(returnQuestion);

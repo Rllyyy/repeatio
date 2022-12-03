@@ -1,6 +1,9 @@
-import PropTypes from "prop-types";
+interface ISiteHeading {
+  title: string;
+  children?: React.ReactNode;
+}
 
-export const SiteHeading = ({ title, children }) => {
+export const SiteHeading = ({ title, children }: ISiteHeading) => {
   return (
     <div className='site-heading' style={{ display: "flex", alignItems: "center" }}>
       <h1
@@ -12,8 +15,4 @@ export const SiteHeading = ({ title, children }) => {
       {children}
     </div>
   );
-};
-
-SiteHeading.propTypes = {
-  title: PropTypes.string.isRequired,
 };
