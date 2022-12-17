@@ -1,5 +1,9 @@
 /// <reference types="cypress" />
 
+import { IModule } from "../../src/components/Home/CreateModule";
+import { IGapText, IMultipleChoice } from "../../src/components/QuestionEditor/QuestionEditor";
+import { parseJSON } from "../../src/utils/parseJSON";
+
 describe("Adding a question using the QuestionEditor component", () => {
   beforeEach(() => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
@@ -129,13 +133,13 @@ describe("Adding a question using the QuestionEditor component", () => {
       .contains("button", "Add")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-cypress_1")).questions;
-        const addedQuestion = questions.find((question) => question.id === "ls-id-1");
-        expect(addedQuestion.id).to.eq("ls-id-1");
-        expect(addedQuestion.title).to.eq("This question should be in the localStorage");
-        expect(addedQuestion.type).to.eq("multiple-choice");
-        expect(addedQuestion.answerOptions[0].text).to.eq("This is correct");
-        expect(addedQuestion.answerOptions[0].isCorrect).to.eq(true);
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+        const addedQuestion = questions?.find((question) => question.id === "ls-id-1");
+        expect(addedQuestion?.id).to.eq("ls-id-1");
+        expect(addedQuestion?.title).to.eq("This question should be in the localStorage");
+        expect(addedQuestion?.type).to.eq("multiple-choice");
+        expect((addedQuestion?.answerOptions as IMultipleChoice[])[0].text).to.eq("This is correct");
+        expect((addedQuestion?.answerOptions as IMultipleChoice[])[0].isCorrect).to.eq(true);
       });
   });
 
@@ -248,12 +252,12 @@ describe("Adding a question of type gap-text", () => {
     cy.get("button[type='submit']")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-empty-questions")).questions;
-        const addedQuestion = questions.find((question) => question.id === "test-id");
-        expect(addedQuestion.answerOptions.text).to.eq("This text supports[]correct values");
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
+        const addedQuestion = questions?.find((question) => question.id === "test-id");
+        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq("This text supports[]correct values");
 
         const correctGapValues = [["multiple", "more than one"]];
-        expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq(correctGapValues);
       });
   });
 
@@ -286,13 +290,13 @@ describe("Adding a question of type gap-text", () => {
     cy.get("button[type='submit']")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-empty-questions")).questions;
-        const addedQuestion = questions.find((question: { id: string }) => question.id === "test-id");
-        expect(addedQuestion.answerOptions.text).to.eq(
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
+        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
           "[] is a [link](https://github.com/Rllyyy/repeatio) and here is a [] with [another link](www.github.com)"
         );
 
-        expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq([["This"], ["gap", "hole"]]);
+        expect((addedQuestion?.answerOptions as IGapText).correctGapValues).to.deep.eq([["This"], ["gap", "hole"]]);
       });
 
     cy.visit("/module/empty-questions/question/test-id");
@@ -320,13 +324,13 @@ describe("Adding a question of type gap-text", () => {
     cy.get("button[type='submit']")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-empty-questions")).questions;
-        const addedQuestion = questions.find((question: { id: string }) => question.id === "test-id");
-        expect(addedQuestion.answerOptions.text).to.eq(
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
+        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+        expect((addedQuestion?.answerOptions as IGapText).text).to.eq(
           "This is an image: ![icon](https://raw.githubusercontent.com/Rllyyy/repeatio/main/public/icon.ico) and here is a []."
         );
 
-        expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq([["gap", "hole"]]);
+        expect((addedQuestion?.answerOptions as IGapText).correctGapValues).to.deep.eq([["gap", "hole"]]);
       });
 
     cy.visit("/module/empty-questions/question/test-id");
@@ -343,13 +347,13 @@ describe("Adding a question of type gap-text", () => {
     cy.get("button[type='submit']")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-empty-questions")).questions;
-        const addedQuestion = questions.find((question: { id: string }) => question.id === "test-id");
-        expect(addedQuestion.answerOptions.text).to.eq(
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
+        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
           `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
         );
 
-        expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq([[`"gaps"`]]);
+        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
       });
   });
 
@@ -362,13 +366,15 @@ describe("Adding a question of type gap-text", () => {
     cy.get("button[type='submit']")
       .click()
       .should(() => {
-        const questions = JSON.parse(localStorage.getItem("repeatio-module-empty-questions")).questions;
-        const addedQuestion = questions.find((question: { id: string }) => question.id === "test-id");
-        expect(addedQuestion.answerOptions.text).to.eq(
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
+        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
           `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
         );
 
-        expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
+        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
       });
   });
 });
+
+export {};

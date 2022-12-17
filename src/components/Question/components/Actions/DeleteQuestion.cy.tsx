@@ -1,13 +1,29 @@
 /// <reference types="cypress" />
+
+// Components
 import { Question } from "../../Question";
-import { Route, MemoryRouter } from "react-router-dom";
-import "../../../../index.css";
 import { ModuleProvider } from "../../../module/moduleContext";
-import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 import { CustomToastContainer } from "../../../toast/toast";
 
-//Setup Router to access context and useParams
-const RenderWithRouter = ({ moduleID, questionID }) => {
+// Router
+import { Route, MemoryRouter } from "react-router-dom";
+
+// css
+import "../../../../index.css";
+
+// Functions
+import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
+
+//Interfaces
+import { IParams } from "../../../../utils/types";
+
+//Mocha for typescript
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
+declare const expect: Chai.ExpectStatic;
+
+// Setup Router to access context and useParams
+const RenderWithRouter = ({ moduleID, questionID }: IParams) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
       <main>
@@ -51,8 +67,8 @@ describe("Delete a Question", () => {
       .click()
       .should(() => {
         const localStorageItem = getBookmarkedLocalStorageItem("cypress_1");
-        expect(localStorageItem.id).to.equal("cypress_1");
-        expect(localStorageItem.questions).to.deep.equal(["qID-2"]);
+        expect(localStorageItem?.id).to.equal("cypress_1");
+        expect(localStorageItem?.questions).to.deep.equal(["qID-2"]);
       });
   });
 
@@ -73,7 +89,7 @@ describe("Delete a Question", () => {
       .click()
       .should(() => {
         const localStorageItem = getBookmarkedLocalStorageItem("cypress_1");
-        expect(localStorageItem).to.be.null;
+        expect(localStorageItem).to.equal(null);
       });
   });
 });

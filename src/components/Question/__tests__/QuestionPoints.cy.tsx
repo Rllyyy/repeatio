@@ -2,14 +2,17 @@
 
 import { QuestionPoints } from "../Question";
 
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
+
 describe("Testing Question Points", () => {
   it("Should render the QuestionPoints component)", () => {
-    cy.mount(<QuestionPoints />);
+    cy.mount(<QuestionPoints points={undefined} />);
     cy.get(".question-points").should("exist");
   });
 
   it('should render "? Points" if the value is undefined', () => {
-    cy.mount(<QuestionPoints />);
+    cy.mount(<QuestionPoints points={undefined} />);
     cy.contains("? Points").should("exist");
   });
 

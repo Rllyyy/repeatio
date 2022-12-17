@@ -42,3 +42,5 @@ describe("Refresh", () => {
     cy.contains("qID-1").should("be.visible");
   });
 });
+
+export {};

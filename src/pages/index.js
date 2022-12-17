@@ -1,6 +1,6 @@
 //Components
 import { Modules } from "../components/Home/Modules.js";
-import { AddModule } from "../components/Home/AddModule.jsx";
+import { AddModule } from "../components/Home/AddModule";
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 
 const Home = () => {

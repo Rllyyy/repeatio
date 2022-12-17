@@ -1,7 +1,12 @@
 /// <reference types="cypress" />
+
 import { GapText } from "./GapText";
 import "../../../../index.css";
 import "../../Question.css";
+
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
+declare const expect: Chai.ExpectStatic;
 
 describe("GapText", () => {
   it("should render 3 gap text elements", () => {
@@ -51,7 +56,7 @@ describe("GapText", () => {
   });
 
   it("should not show error if there is no text and no correctGapValues", () => {
-    const options = {};
+    const options = { text: "" };
     cy.mount(<GapText options={options} formDisabled={false} />);
     cy.get(".question-gap-text").should("exist");
   });

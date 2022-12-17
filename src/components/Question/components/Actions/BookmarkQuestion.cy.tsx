@@ -1,28 +1,46 @@
 /// <reference types="cypress" />
+
+// Components
 import { Question } from "../../Question";
 import { BookmarkQuestion } from "./BookmarkQuestion";
-import { Route, MemoryRouter } from "react-router-dom";
-import "../../../../index.css";
 import { ModuleProvider } from "../../../module/moduleContext";
-import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 import { CustomToastContainer } from "../../../toast/toast";
 
-function RenderBookmarkButtonWithRouter({ moduleID, questionID }) {
+// Router
+import { Route, MemoryRouter } from "react-router-dom";
+
+// css
+import "../../../../index.css";
+
+// functions
+import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
+
+// Interfaces
+import { IParams } from "../../../../utils/types";
+
+//Setup mocha for Typescript
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
+declare const expect: Chai.ExpectStatic;
+
+function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
-      <Route path='/module/:moduleID/question/:questionID'>
-        <div className='question-form'>
-          <div className='question-actions-navigation-wrapper'>
-            <BookmarkQuestion questionID={`${questionID}`} disabled={false} />
+      <ModuleProvider>
+        <Route path='/module/:moduleID/question/:questionID'>
+          <div className='question-form'>
+            <div className='question-actions-navigation-wrapper'>
+              <BookmarkQuestion questionID={`${questionID}`} disabled={false} />
+            </div>
           </div>
-        </div>
-      </Route>
+        </Route>
+      </ModuleProvider>
     </MemoryRouter>
   );
 }
 
 //Setup Router to access context and useParams
-const RenderQuestionWithRouter = ({ moduleID, questionID }) => {
+const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
       <main>
@@ -54,10 +72,10 @@ describe("Bookmark a Question", () => {
       .click()
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedItem.id).to.eq("types_1");
-        expect(bookmarkedItem.type).to.equal("bookmark");
-        expect(bookmarkedItem.compatibility).to.eq("0.4.0");
-        expect(bookmarkedItem.questions).to.include("qID-1");
+        expect(bookmarkedItem?.id).to.eq("types_1");
+        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.compatibility).to.eq("0.4.0");
+        expect(bookmarkedItem?.questions).to.include("qID-1");
       });
   });
 
@@ -76,10 +94,10 @@ describe("Bookmark a Question", () => {
       .click()
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedItem.id).to.equal("types_1");
-        expect(bookmarkedItem.type).to.equal("bookmark");
-        expect(bookmarkedItem.compatibility).to.equal("0.4.0");
-        expect(bookmarkedItem.questions).to.deep.equal(["qID-1", "qID-3", "qID-2"]);
+        expect(bookmarkedItem?.id).to.equal("types_1");
+        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
+        expect(bookmarkedItem?.questions).to.deep.equal(["qID-1", "qID-3", "qID-2"]);
       });
 
     //should display svg with minus (remove button)
@@ -100,10 +118,10 @@ describe("Bookmark a Question", () => {
       .click()
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedItem.id).to.equal("types_1");
-        expect(bookmarkedItem.type).to.equal("bookmark");
-        expect(bookmarkedItem.compatibility).to.equal("0.4.0");
-        expect(bookmarkedItem.questions).not.to.include("qID-1");
+        expect(bookmarkedItem?.id).to.equal("types_1");
+        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
+        expect(bookmarkedItem?.questions).not.to.include("qID-1");
       });
 
     //should display svg with plus (add button)
@@ -142,7 +160,7 @@ describe("Bookmark a Question", () => {
       .click()
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedItem).to.be.null;
+        expect(bookmarkedItem).to.equal(null);
       });
   });
 
@@ -151,5 +169,3 @@ describe("Bookmark a Question", () => {
     cy.get(".bookmark-question-button").should("be.disabled");
   });
 });
-
-//TODO convert this test to typescript (cy.mount is currently not working)

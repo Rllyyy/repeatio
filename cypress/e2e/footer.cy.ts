@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe("Footer component", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -54,3 +56,5 @@ describe("Footer component", () => {
     cy.url().should("include", "/privacy");
   });
 });
+
+export {};

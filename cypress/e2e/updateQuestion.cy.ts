@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
+import { IModule } from "../../src/components/Home/CreateModule";
 import { getBookmarkedLocalStorageItem } from "../../src/components/Question/components/Actions/BookmarkQuestion";
-import { IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+import { IGapText, IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+import { parseJSON } from "../../src/utils/parseJSON";
 
 describe("Updating a question using the Question editor", () => {
   beforeEach(() => {
@@ -143,13 +145,13 @@ describe("Updating a question using the Question editor", () => {
     cy.contains("button", "Update")
       .click()
       .should(() => {
-        const questions: IQuestion[] = JSON.parse(localStorage.getItem("repeatio-module-cypress_1")).questions;
+        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
 
         //Create new array with just ids
-        const ids: Array<IQuestion["id"]> = questions.reduce((acc, { id }) => {
+        const ids = questions?.reduce((acc, { id }) => {
           acc.push(id);
           return acc;
-        }, []);
+        }, [] as Array<IQuestion["id"]>);
 
         expect(ids).to.include("updated-id-1").and.to.have.length(6);
       });
@@ -171,8 +173,8 @@ describe("Updating a question using the Question editor", () => {
       .click()
       .should(() => {
         const bookmarkLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
-        expect(bookmarkLocalStorageItem.id).to.equal("cypress_1");
-        expect(bookmarkLocalStorageItem.questions).to.deep.eq(["qID-10", "qID-6"]);
+        expect(bookmarkLocalStorageItem?.id).to.equal("cypress_1");
+        expect(bookmarkLocalStorageItem?.questions).to.deep.eq(["qID-10", "qID-6"]);
       });
 
     cy.get("button.bookmark-question-button").find("svg").should("have.class", "bookmark-remove");
@@ -217,12 +219,12 @@ describe("Updating a question of type gap-text", () => {
       cy.contains("button", "Update")
         .click()
         .should(() => {
-          const questions = JSON.parse(localStorage.getItem("repeatio-module-gap_text")).questions;
-          const addedQuestion = questions.find((question) => question.id === "gt-1");
-          expect(addedQuestion.answerOptions.text).to.eq("This is the [] question");
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-gap_text"))?.questions;
+          const addedQuestion = questions?.find((question) => question.id === "gt-1");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq("This is the [] question");
 
           const correctGapValues = [["updated"]];
-          expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq(correctGapValues);
         });
 
       cy.get("section.question-user-response").find("input").type("updated");
@@ -248,14 +250,14 @@ describe("Updating a question of type gap-text", () => {
       cy.contains("button", "Update")
         .click({ force: true })
         .should(() => {
-          const questions = JSON.parse(localStorage.getItem("repeatio-module-gap_text")).questions;
-          const addedQuestion = questions.find((question) => question.id === "gt-3");
-          expect(addedQuestion.answerOptions.text).to.eq(
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-gap_text"))?.questions;
+          const addedQuestion = questions?.find((question) => question.id === "gt-3");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
             "This is the [] question. It [] multiple gaps. Even gaps that have more than [] correct answer."
           );
 
           const correctGapValues = [["third"], ["contains", "includes"], ["one", "1"]];
-          expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq(correctGapValues);
         });
     });
 
@@ -268,14 +270,14 @@ describe("Updating a question of type gap-text", () => {
       cy.contains("button", "Update")
         .click()
         .should(() => {
-          const questions = JSON.parse(localStorage.getItem("repeatio-module-gap_text")).questions;
-          const addedQuestion = questions.find((question) => question.id === "gt-3");
-          expect(addedQuestion.answerOptions.text).to.eq(
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-gap_text"))?.questions;
+          const addedQuestion = questions?.find((question) => question.id === "gt-3");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
             "This is the [] question. It multiple gaps. Even gaps that have more than [] correct answer."
           );
 
           const correctGapValues = [["third"], ["one", "1"]];
-          expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq(correctGapValues);
         });
     });
 
@@ -297,14 +299,14 @@ describe("Updating a question of type gap-text", () => {
       cy.contains("button", "Update")
         .click()
         .should(() => {
-          const questions = JSON.parse(localStorage.getItem("repeatio-module-gap_text")).questions;
-          const addedQuestion = questions.find((question) => question.id === "gt-3");
-          expect(addedQuestion.answerOptions.text).to.eq(
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-gap_text"))?.questions;
+          const addedQuestion = questions?.find((question) => question.id === "gt-3");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
             "This is the [] question. It [] multiple gaps. Even gaps that have more than [] correct answer."
           );
 
           const correctGapValues = [["third"], ["contains", "includes"], ["one", "1"]];
-          expect(addedQuestion.answerOptions.correctGapValues).to.deep.eq(correctGapValues);
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq(correctGapValues);
         });
     });
   });

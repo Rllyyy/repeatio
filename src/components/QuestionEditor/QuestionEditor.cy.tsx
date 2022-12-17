@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+
 import { Form } from "./QuestionEditor";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
@@ -7,6 +8,11 @@ import { CustomToastContainer } from "../toast/toast";
 
 //CSS
 import "../../index.css";
+
+//Mocha / Chai for typescript
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
+declare const expect: Chai.ExpectStatic;
 
 //Mock Component with Router and Context
 const MockFormWithRouter = () => {
@@ -532,7 +538,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
     it("should show browser validation error for required id input", () => {
       cy.get("button[type='submit']").click();
       cy.get("input[name='id']").then(($input) => {
-        expect($input[0].validationMessage).to.eq("Please fill in this field.");
+        expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please fill in this field.");
       });
     });
 
@@ -541,7 +547,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
       cy.get("button[type='submit']").click();
       cy.get("select[name='type']").then(($input) => {
-        expect($input[0].validationMessage).to.eq("Please select an item in the list.");
+        expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please select an item in the list.");
       });
     });
 
@@ -552,7 +558,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
       cy.get("button[type='submit']").click();
       cy.get("input[name='points']").then(($input) => {
-        expect($input[0].validationMessage).to.eq("Value must be greater than or equal to 0.");
+        expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Value must be greater than or equal to 0.");
       });
     });
 
@@ -566,7 +572,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get(".editor-content")
         .find("input[type='radio']")
         .then(($input) => {
-          expect($input[0].validationMessage).to.eq("Please select one of these options.");
+          expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please select one of these options.");
         })
         .click();
 
@@ -575,8 +581,8 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get(".editor-content")
         .find("textarea")
         .first()
-        .then(($input) => {
-          expect($input[0].validationMessage).to.eq("Please fill in this field.");
+        .then(($textarea) => {
+          expect($textarea[0].validationMessage).to.eq("Please fill in this field.");
         });
     });
 
@@ -591,7 +597,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .find("label[data-testid='option-0']")
         .find("input[type='radio']")
         .then(($input) => {
-          expect($input[0].validationMessage).to.eq("Please select one of these options.");
+          expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please select one of these options.");
         })
         .click();
 
@@ -642,7 +648,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("button[type='submit']").click();
 
       cy.get("textarea#editor-gap-text-textarea").then(($textarea) => {
-        expect($textarea[0].validationMessage).to.eq("Please fill in this field.");
+        expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.eq("Please fill in this field.");
       });
     });
   });

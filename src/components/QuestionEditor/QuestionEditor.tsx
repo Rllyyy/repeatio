@@ -76,7 +76,7 @@ export interface IMultipleResponse {
 
 export interface IGapText {
   text: string;
-  isCorrect: Array<Array<string>>;
+  correctGapValues?: Array<Array<string>>;
   tempText: string;
 }
 

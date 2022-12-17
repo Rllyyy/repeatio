@@ -70,3 +70,5 @@ describe("Test the module that is provided by the public folder", () => {
     cy.contains("ID: qID-1");
   });
 });
+
+export {};

@@ -1,4 +1,6 @@
 /// <reference types="cypress" />
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
 
 describe("module Page", () => {
   it("should show default module if navigating from home", () => {
@@ -76,3 +78,5 @@ describe("404 Page if module isn't found", () => {
     cy.contains("Cypress Fixture Module (cypress_1)").should("exist");
   });
 });
+
+export {};

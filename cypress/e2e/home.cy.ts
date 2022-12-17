@@ -34,3 +34,5 @@ describe("Test Home Component", () => {
     cy.contains("ID: qID-1").should("be.visible");
   });
 });
+
+export {};

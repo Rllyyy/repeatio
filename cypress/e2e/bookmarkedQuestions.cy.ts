@@ -111,9 +111,9 @@ describe("Test import of bookmarked Questions", () => {
         .selectFile({ contents: fileContent, fileName: "repeatio-marked-types_1.json" }, { force: true })
         .should(() => {
           const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-          expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-          expect(bookmarkedLocalStorageItem.type).to.equal("bookmark");
-          expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-1", "qID-3"]);
+          expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+          expect(bookmarkedLocalStorageItem?.type).to.equal("bookmark");
+          expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
         });
     });
 
@@ -132,8 +132,8 @@ describe("Test import of bookmarked Questions", () => {
       .selectFile(file, { force: true })
       .should(() => {
         const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-        expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-1", "qID-3", "qID-4"]);
+        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3", "qID-4"]);
       });
 
     //Show toast for success (Caution no space because of new line)
@@ -170,8 +170,8 @@ describe("Test import of bookmarked Questions", () => {
       .selectFile(file, { force: true })
       .should(() => {
         const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-        expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-1", "qID-3"]);
+        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
       });
   });
 
@@ -187,8 +187,8 @@ describe("Test import of bookmarked Questions", () => {
       .should(() => {
         const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
 
-        expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-        expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-2", "qID-4", "qID-5"]);
+        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-2", "qID-4", "qID-5"]);
       });
   });
 
@@ -203,8 +203,8 @@ describe("Test import of bookmarked Questions", () => {
       .should(() => {
         const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
 
-        expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-        expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-1", "qID-3"]);
+        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
       });
   });
 });
@@ -262,10 +262,10 @@ describe("Transform from Bookmark to v0.4 Test", () => {
     cy.visit("module/types_1").should(() => {
       const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
 
-      expect(bookmarkedLocalStorageItem.id).to.equal("types_1");
-      expect(bookmarkedLocalStorageItem.type).to.equal("bookmark");
-      expect(bookmarkedLocalStorageItem.compatibility).to.equal("0.4.0");
-      expect(bookmarkedLocalStorageItem.questions).to.deep.equal(["qID-1", "qID-3"]);
+      expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+      expect(bookmarkedLocalStorageItem?.type).to.equal("bookmark");
+      expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.4.0");
+      expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
     });
   });
 });

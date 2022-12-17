@@ -1,17 +1,22 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2019",
     "lib": [
-      "es5",
-      "dom"
+      "es2022",
+      "dom",
+      "dom.iterable"
     ],
     "types": [
       "cypress",
       "node"
     ],
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "paths": {
+      "@cypress/react": [
+        "../lib"
+      ]
+    }
   },
   "include": [
     "**/*.ts"

@@ -67,3 +67,5 @@ describe("Test deletion of module", () => {
     );
   });
 });
+
+export {};

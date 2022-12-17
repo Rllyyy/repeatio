@@ -27,6 +27,9 @@
 //To enable tabbing in cypress: https://github.com/kuceb/cypress-plugin-tab
 import "cypress-plugin-tab";
 
+// React 16, 17
+import { mount } from "cypress/react";
+
 type Fixtures =
   | "repeatio-module-gap_text.json"
   | "repeatio-module-empty-questions.json"
@@ -43,6 +46,7 @@ declare global {
        */
       //| Object | HTMLElement |Selection
       fixtureToLocalStorage(fileName: Fixtures): Chainable<Element>;
+      mount: typeof mount;
       setSelection: (subject?: any, query?: any, endQuery?: any) => Chainable<Element>;
       selection: (subject?: any, fn?: Function) => any;
       setCursor: (subject?: any, query?: any, atStart?: any) => Chainable<Element>;
@@ -51,6 +55,12 @@ declare global {
     }
   }
 }
+
+Cypress.Commands.add("mount", (component, options) => {
+  // Wrap any parent components needed
+  // ie: return mount(<MyProvider>{component}</MyProvider>, options)
+  return mount(component, options);
+});
 
 //Add a fixture to the localStorage
 Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
@@ -112,7 +122,7 @@ Cypress.Commands.add("selection", { prevSubject: true }, (subject, fn) => {
 });
 
 Cypress.Commands.add("setSelection", { prevSubject: true }, (subject, query, endQuery) => {
-  return cy.wrap(subject).selection(($el) => {
+  return cy.wrap(subject).selection(($el: any) => {
     const el = $el[0];
     if (isInputOrTextArea(el)) {
       const text = $el.text();
@@ -123,9 +133,9 @@ Cypress.Commands.add("setSelection", { prevSubject: true }, (subject, query, end
     } else if (typeof query === "string") {
       const anchorNode = getTextNode(el, query);
       const focusNode = endQuery ? getTextNode(el, endQuery) : anchorNode;
-      const anchorOffset = anchorNode.wholeText.indexOf(query);
+      const anchorOffset = anchorNode?.wholeText.indexOf(query);
       const focusOffset = endQuery
-        ? focusNode.wholeText.indexOf(endQuery) + endQuery.length
+        ? focusNode?.wholeText.indexOf(endQuery) + endQuery.length
         : anchorOffset + query.length;
       setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
     } else if (typeof query === "object") {
@@ -141,7 +151,7 @@ Cypress.Commands.add("setSelection", { prevSubject: true }, (subject, query, end
 // Low level command reused by `setCursorBefore` and `setCursorAfter`, equal to `setCursorAfter`
 //If this doesn't work try: https://github.com/netlify/netlify-cms/blob/a4b7481a99f58b9abe85ab5712d27593cde20096/cypress/support/commands.js
 Cypress.Commands.add("setCursor", { prevSubject: true }, (subject, query, atStart) => {
-  return cy.wrap(subject).selection(($el) => {
+  return cy.wrap(subject).selection(($el: any) => {
     const el = $el[0];
 
     if (isInputOrTextArea(el)) {
@@ -150,10 +160,10 @@ Cypress.Commands.add("setCursor", { prevSubject: true }, (subject, query, atStar
       $el[0].setSelectionRange(position, position);
     } else {
       const node = getTextNode(el, query);
-      const offset = node.wholeText.indexOf(query) + (atStart ? 0 : query.length);
-      const document = node.ownerDocument;
-      document.getSelection().removeAllRanges();
-      document.getSelection().collapse(node, offset);
+      const offset = node?.wholeText.indexOf(query) + (atStart ? 0 : query.length);
+      const document = node?.ownerDocument;
+      document?.getSelection()?.removeAllRanges();
+      document?.getSelection()?.collapse(node!, offset);
     }
   });
   // Depending on what you're testing, you may need to chain a `.click()` here to ensure
@@ -175,7 +185,7 @@ function getTextNode(el?: any, match?: any) {
     return walk.nextNode();
   }
 
-  let node;
+  let node: any;
   while ((node = walk.nextNode())) {
     if (node.wholeText.includes(match)) {
       return node;
@@ -183,7 +193,7 @@ function getTextNode(el?: any, match?: any) {
   }
 }
 
-function setBaseAndExtent(...args) {
+function setBaseAndExtent(...args: any[]) {
   const node = args[0];
   const document = node.ownerDocument;
   const selection = document.getSelection();

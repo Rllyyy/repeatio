@@ -1,9 +1,13 @@
 /// <reference types="cypress" />
+
 import { UserModulesList } from "./ModuleNotFound.jsx";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 
 import "../../index.css";
+
+declare var it: Mocha.TestFunction;
+declare var describe: Mocha.SuiteFunction;
 
 //Setup Component with Router
 const MockUserModulesListWithRouter = () => {

@@ -4,8 +4,8 @@ import { useState, useLayoutEffect } from "react";
 import useResizeObserver from "@react-hook/resize-observer";
 
 //https://www.npmjs.com/package/@react-hook/resize-observer
-export function useSize(target) {
-  const [size, setSize] = useState();
+export function useSize<T extends React.MutableRefObject<HTMLElement | null>>(target: T) {
+  const [size, setSize] = useState<DOMRectReadOnly | undefined>();
 
   useLayoutEffect(() => {
     setSize(target.current?.getBoundingClientRect());

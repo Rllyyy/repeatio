@@ -103,6 +103,8 @@ describe("Multiple Choice", () => {
   });
 });
 
+export {};
+
 /** //TODO testing
  * - Tabbing
  *

@@ -1,17 +1,45 @@
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Modal from "react-modal/lib/components/Modal";
+import Modal from "react-modal";
 
 import { IoClose } from "react-icons/io5";
 
 //CSS
 import "./CustomModal.css";
+type Unit = "%" | "px" | "em" | "vh" | "vh";
+type CustomHeight = `${string}${Unit}`;
 
-export const CustomModal = ({ handleModalClose, title, desktopModalHeight, children }) => {
+type Globals = "-moz-initial" | "inherit" | "initial" | "revert" | "revert-layer" | "unset";
+
+/**
+ * Pass any valid css height
+ */
+type Height =
+  | Globals
+  | "90vh"
+  | "-moz-max-content"
+  | "-moz-min-content"
+  | "-webkit-fit-content"
+  | "auto"
+  | "fit-content"
+  | `fit-content(${CustomHeight})`
+  | "max-content"
+  | "min-content"
+  | CustomHeight;
+
+interface ICustomModal {
+  handleModalClose: () => void;
+  title: string;
+  //Pass any valid css height
+  desktopModalHeight: Height;
+  children: JSX.Element;
+}
+
+export const CustomModal = ({ handleModalClose, title, desktopModalHeight, children }: ICustomModal) => {
   const [mobileLayout, setMobileLayout] = useState(false);
 
   Modal.setAppElement("main");
 
+  //TODO replace this in the future with css container query
   useEffect(() => {
     const handleResize = () => {
       const { innerWidth: width } = window;
@@ -33,7 +61,7 @@ export const CustomModal = ({ handleModalClose, title, desktopModalHeight, child
       isOpen={true}
       parentSelector={() => document.getElementsByTagName("main")[0]}
       onRequestClose={handleModalClose}
-      className={desktopModalHeight === "fit-content" ? "min-modal" : "max-modal"}
+      className={desktopModalHeight === "fit-content" ? "fit-content" : "max-modal"}
       style={
         !mobileLayout
           ? {
@@ -55,10 +83,4 @@ export const CustomModal = ({ handleModalClose, title, desktopModalHeight, child
       <div className='modal-content'>{children}</div>
     </Modal>
   );
-};
-
-CustomModal.propTypes = {
-  handleModalClose: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  desktopModalHeight: PropTypes.string.isRequired,
 };

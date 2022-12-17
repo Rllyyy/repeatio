@@ -205,3 +205,5 @@ describe("Gap Text", () => {
     cy.get(".question-gap-text").find("input").should("exist");
   });
 });
+
+export {};
