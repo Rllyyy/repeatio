@@ -1,7 +1,7 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { Question } from "../Question.js";
-import { ModuleContext } from "../../module/moduleContext.js";
+import { ModuleContext } from "../../module/moduleContext";
 import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
 

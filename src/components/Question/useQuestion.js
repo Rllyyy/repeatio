@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation.jsx";
 
 //Context
-import { ModuleContext } from "../module/moduleContext.js";
+import { ModuleContext } from "../module/moduleContext";
 
 export const useQuestion = () => {
   //States

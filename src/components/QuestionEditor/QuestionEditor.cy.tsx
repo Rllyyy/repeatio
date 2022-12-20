@@ -3,7 +3,7 @@
 import { Form } from "./QuestionEditor";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import { ModuleProvider } from "../module/moduleContext.js";
+import { ModuleProvider } from "../module/moduleContext";
 import { CustomToastContainer } from "../toast/toast";
 
 //CSS

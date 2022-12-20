@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { isSafari } from "react-device-detect";
 
 //Context
-import { ModuleContext } from "../module/moduleContext.js";
+import { IModuleContext, ModuleContext } from "../module/moduleContext";
 
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
@@ -75,9 +75,9 @@ export interface IMultipleResponse {
 }
 
 export interface IGapText {
-  text: string;
+  text?: string;
   correctGapValues?: Array<Array<string>>;
-  tempText: string;
+  tempText?: string;
 }
 
 export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapText;
@@ -126,8 +126,7 @@ export const Form = ({
   const { search } = useLocation();
 
   //Context
-  //TODO fix this any
-  const { moduleData, setModuleData } = useContext<any>(ModuleContext);
+  const { moduleData, setModuleData } = useContext<IModuleContext>(ModuleContext);
 
   //Fetch Data from Context
   useLayoutEffect(() => {
@@ -140,12 +139,14 @@ export const Form = ({
       //Combine the text and correctGapValues of gap-text to a variable that is used for the input
       //Prevent Safari because lookbehind support: https://bugs.webkit.org/show_bug.cgi?id=174931
       //TODO check if safari ever supports this feature
-      if (questionFromContext.type === "gap-text" && !isSafari) {
+      if (questionFromContext?.type === "gap-text" && !isSafari) {
         questionFromContext = {
           ...questionFromContext,
-          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions) },
+          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions as IGapText) },
         };
       }
+
+      if (questionFromContext === undefined) return;
 
       //!Somehow it keeps the order of the answer options from the question
       //If this isn't the case anymore when using the storage, pass the question
@@ -266,7 +267,7 @@ export const Form = ({
     //Adding or updating a question
     if (!prevQuestionID) {
       //If the user is adding a question (not given prevQuestion), push the new question to the end of the array
-      moduleData?.questions?.push(output);
+      moduleData?.questions?.push(output as IQuestion);
       setModuleData({ ...moduleData, questions: moduleData?.questions });
     } else {
       //Handle updating a question
@@ -276,7 +277,7 @@ export const Form = ({
 
       //If the user changes the id (index <= -1), the question gets inserted at that position
       if (index > -1) {
-        moduleData.questions.splice(index, 1, output);
+        moduleData.questions.splice(index, 1, output as IQuestion);
         setModuleData({ ...moduleData, questions: moduleData.questions });
         window.dispatchEvent(new Event("storage"));
       } else {
@@ -290,7 +291,7 @@ export const Form = ({
         }
 
         //Insert and update context
-        moduleData.questions.splice(index, 1, output);
+        moduleData.questions.splice(index, 1, output as IQuestion);
         setModuleData({ ...moduleData, questions: moduleData.questions });
 
         //Navigate to new path with new id
@@ -437,7 +438,7 @@ function getAnswerOptionsError({
   if (
     type === "gap-text" &&
     "tempText" in (answerOptions as IGapText) &&
-    (answerOptions as IGapText).tempText.startsWith("|")
+    (answerOptions as IGapText).tempText?.startsWith("|")
   ) {
     return "Can't start with this key! If want to render a table wrap the markdown for the table in <div style='white-space: normal'>(line break) Markdown (line break)</div>.";
   }

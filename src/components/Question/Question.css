@@ -1,7 +1,7 @@
 .question-form {
   position: relative;
   /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
-  height: calc(100vh - 40px);
+  height: calc(100dvh - 40px);
   width: 100%;
   background-color: white;
   border-radius: 5px;
@@ -406,12 +406,9 @@
 }
 
 /* Media query for phones */
-/* Second query is for development on desktop */
-@media only screen and (pointer: coarse), only screen and (pointer: fine) and (max-width: 650px) {
+@media only screen and (max-width: 650px) {
   .question-form {
-    height: calc(100vh - 120px);
-    /*The viewport of mobile devices includes the address bar. Because why not. */
-    margin-bottom: 0;
+    height: calc(100dvh - 70px); /* Height of the header + padding of main - 3px to look beetter */
   }
 
   .question-data {
@@ -447,13 +444,6 @@
 
   .question-navigation > button {
     width: 38px;
-  }
-}
-
-/* For desktop very small */
-@media only screen and (pointer: fine) and (max-width: 650px) {
-  .question-form {
-    height: calc(100vh - 70px);
   }
 }
 

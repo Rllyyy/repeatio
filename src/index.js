@@ -19,7 +19,7 @@ import { SettingsPage } from "./pages/settings.js";
 import { LegalNoticePage } from "./pages/legal-notice.jsx";
 import { PrivacyPage } from "./pages/privacy.jsx";
 
-import { ModulePage } from "./pages/module/module.jsx";
+import { ModulePage } from "./pages/module/module";
 import { QuestionPage } from "./pages/module/question/question";
 import { AllQuestionsPage } from "./pages/module/all-questions/index";
 
@@ -29,7 +29,7 @@ import { Footer } from "./components/Footer/Footer.jsx";
 import { CustomToastContainer } from "./components/toast/toast.jsx";
 
 //Context
-import { ModuleProvider } from "./components/module/moduleContext.js";
+import { ModuleProvider } from "./components/module/moduleContext";
 
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";

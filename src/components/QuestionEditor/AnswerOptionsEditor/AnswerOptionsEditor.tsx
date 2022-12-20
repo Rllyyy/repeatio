@@ -126,7 +126,11 @@ export const AnswerOptionsEditor = ({
       const { selectionStart, selectionEnd } = ref.current;
       if (selectionStart !== selectionEnd) {
         handleEditorChange({
-          tempText: removeBracketsFromSelection((answerValues as IGapText)?.tempText, selectionStart, selectionEnd),
+          tempText: removeBracketsFromSelection(
+            (answerValues as IGapText)?.tempText || "",
+            selectionStart,
+            selectionEnd
+          ),
         });
         ref.current.focus();
       } else {
@@ -170,7 +174,7 @@ export const AnswerOptionsEditor = ({
           <GapTextEditor
             ref={ref}
             name='gap-text'
-            tempText={(answerValues as IGapText)?.tempText}
+            tempText={(answerValues as IGapText)?.tempText || ""}
             handleEditorChange={handleEditorChange}
             answerOptionsError={answerOptionsError}
             setErrors={setErrors}

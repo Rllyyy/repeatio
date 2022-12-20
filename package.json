@@ -121,6 +121,7 @@
   },
   "devDependencies": {
     "@types/react-modal": "^3.13.1",
+    "@types/wicg-file-system-access": "^2020.9.5",
     "cypress-plugin-tab": "^1.0.5",
     "electron": "^17.4.7",
     "electron-builder": "^23.6.0"

@@ -1,5 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
+import { IParams } from "../../utils/types";
+import { IModule } from "../Home/CreateModule";
 
 //Css
 import "./ModuleNotFound.css";
@@ -7,7 +9,7 @@ import "./ModuleNotFound.css";
 //Get all items from localStorage and filter out everything that is not a module
 //inspired by: https://ui.mantine.dev/category/error-pages
 export const ModuleNotFound = () => {
-  const { moduleID } = useParams();
+  const { moduleID } = useParams<IParams>();
   let history = useHistory();
 
   return (
@@ -38,12 +40,15 @@ export const ModuleNotFound = () => {
   );
 };
 
+type TOrder = "alphabetical";
+type ModuleItem = Pick<IModule, "id" | "name">;
+
 //Render list of users modules
 export const UserModulesList = () => {
-  const [modules, setModules] = useState([]);
+  const [modules, setModules] = useState<ModuleItem[]>([]);
 
   //Update the order of the users modules
-  const updateModuleOrder = ({ order }) => {
+  const updateModuleOrder = (order: TOrder) => {
     //Take all elements from the localStorage that include module and then return a new object with the id and name
     let idAndNameOfModules = Object.entries(localStorage)
       .filter(([key, _]) => key.includes("module"))
@@ -70,7 +75,7 @@ export const UserModulesList = () => {
 
   //On initial render order the modules from the localStorage alphabetically
   useLayoutEffect(() => {
-    updateModuleOrder({ order: "alphabetical" });
+    updateModuleOrder("alphabetical");
 
     return () => {
       setModules([]);

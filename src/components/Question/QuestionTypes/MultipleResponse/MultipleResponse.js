@@ -21,7 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import "./MultipleResponse.css";
 
 //Import functions
-import { shuffleArray } from "../../../../utils/shuffleArray.js";
+import { shuffleArray } from "../../../../utils/shuffleArray";
 
 //Component
 export const MultipleResponse = forwardRef(({ options, formDisabled }, ref) => {

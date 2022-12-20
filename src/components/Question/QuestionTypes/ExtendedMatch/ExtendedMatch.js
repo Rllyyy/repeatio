@@ -17,7 +17,7 @@ import "./ExtendedMatch.css";
 
 //Import functions
 import { isEqual } from "lodash";
-import { shuffleArray } from "../../../../utils/shuffleArray.js";
+import { shuffleArray } from "../../../../utils/shuffleArray";
 
 //I am really not proud of this component :/ and refactor it for a future release
 //Each line in the canvas is an object in the lines array

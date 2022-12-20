@@ -1,5 +1,5 @@
 //Components
-import { Modules } from "../components/Home/Modules.js";
+import { Modules } from "../components/Home/Modules";
 import { AddModule } from "../components/Home/AddModule";
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 

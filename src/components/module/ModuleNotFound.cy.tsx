@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { UserModulesList } from "./ModuleNotFound.jsx";
+import { UserModulesList } from "./ModuleNotFound";
 import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
 

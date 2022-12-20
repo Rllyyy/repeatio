@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
 
 //Components
-import { GridCards } from "../GridCards/GridCards.jsx";
+import { GridCards } from "../GridCards/GridCards";
 import { Card, LinkElement } from "../Card/Card";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { Spinner } from "../Spinner/Spinner.js";
@@ -15,7 +15,11 @@ import { TbFileExport } from "react-icons/tb";
 import { BiTrash } from "react-icons/bi";
 
 //Functions
-import { saveFile } from "../../utils/saveFile.js";
+import { saveFile } from "../../utils/saveFile";
+
+//Interfaces and Types
+import { IModule } from "./CreateModule";
+import { parseJSON } from "../../utils/parseJSON";
 
 //Component
 export const Modules = () => {
@@ -33,12 +37,11 @@ export const Modules = () => {
   return (
     <GridCards>
       {modules?.map((module) => {
-        const { id, name, questions, disabled } = module;
+        const { id, name, questions } = module;
         return (
           <Card
             key={id}
             data-cy={`module-${id}`}
-            disabled={disabled}
             type='module'
             title={`${name} (${id})`}
             description={`${questions?.length} Questions`}
@@ -65,25 +68,30 @@ export const Modules = () => {
 // Return the whole localStorage
 const useAllModules = () => {
   const [loading, setLoading] = useState(true);
-  const [modules, setModules] = useState([]);
-  const [errors, setErrors] = useState([]);
+  const [modules, setModules] = useState<IModule[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
 
   //Get the modules from the localStorage and set the module state
   //Updates every time localeStorage changes
   const modulesFromBrowserStorage = useCallback(async () => {
     //Setup variables for the module and possible errors
-    let localStorageModules = [];
-    let moduleErrors = [];
+    let localStorageModules: IModule[] = [];
+    let moduleErrors: string[] = [];
 
     Object.entries(localStorage).forEach((key) => {
       if (key[0].startsWith("repeatio-module")) {
         //Get item, transform to object, on error add to moduleErrors array
         try {
           const module = localStorage.getItem(key[0]);
-          localStorageModules.push(JSON.parse(module));
+          const moduleJSON = parseJSON<IModule>(module);
+          if (moduleJSON !== undefined && moduleJSON !== null) {
+            localStorageModules.push(moduleJSON);
+          }
         } catch (error) {
-          toast.warn(`${key[0]}: ${error.message}`);
-          moduleErrors.push(`${key[0]}: ${error.message}`);
+          if (error instanceof Error) {
+            toast.warn(`${key[0]}: ${error.message}`);
+            moduleErrors.push(`${key[0]}: ${error.message}`);
+          }
         }
       }
     });
@@ -114,10 +122,10 @@ const useAllModules = () => {
   useEffect(() => {
     if (isElectron()) {
       // Send a message to the main process
-      window.api.request("toMain", ["getModules"]);
+      (window as any).api.request("toMain", ["getModules"]);
 
       // Called when message received from main process
-      window.api.response("fromMain", (data) => {
+      (window as any).api.response("fromMain", (data: IModule[]) => {
         setModules(data);
         setLoading(false);
       });
@@ -140,7 +148,7 @@ const useAllModules = () => {
 
 //Hook to use the functions inside the Popover component
 const useHomePopover = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {
@@ -150,7 +158,7 @@ const useHomePopover = () => {
   }, []);
 
   //Set the anchor
-  const handlePopoverButtonClick = (event) => {
+  const handlePopoverButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -162,7 +170,7 @@ const useHomePopover = () => {
   //Handle deletion of module
   const handleDelete = () => {
     //Get id of module by custom attribute
-    const moduleID = anchorEl.getAttribute("data-target");
+    const moduleID = anchorEl?.getAttribute("data-target");
 
     //Prevent deletion of example module as that is saved in the public folder
     if (moduleID === "types_1") {
@@ -202,7 +210,7 @@ const useHomePopover = () => {
     }
 
     //Get id of the module from the button
-    const moduleID = anchorEl.getAttribute("data-target");
+    const moduleID = anchorEl?.getAttribute("data-target");
     let file;
 
     if (moduleID !== "types_1") {

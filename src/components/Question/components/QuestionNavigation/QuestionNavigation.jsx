@@ -3,7 +3,7 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //Context
-import { ModuleContext } from "../../../module/moduleContext.js";
+import { ModuleContext } from "../../../module/moduleContext";
 
 //Navigation svg from https://tablericons.com
 

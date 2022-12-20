@@ -1,18 +1,28 @@
-import { createContext, useMemo, useState, useEffect, useCallback } from "react";
+import React, { createContext, useMemo, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
 //Functions
 import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
+import { parseJSON } from "../../utils/parseJSON";
+import { IModule } from "../Home/CreateModule";
+
+export interface IModuleContext {
+  moduleData: IModule;
+  setModuleData: React.Dispatch<React.SetStateAction<IModule>>;
+  setContextModuleID: React.Dispatch<React.SetStateAction<string>>;
+  filteredQuestions: IModule["questions"];
+  setFilteredQuestions: React.Dispatch<React.SetStateAction<IModule["questions"]>>;
+}
 
 //Create Question Context
-export const ModuleContext = createContext([]);
+export const ModuleContext = createContext({} as IModuleContext);
 
 //Provide the data to all children
-export const ModuleProvider = (props) => {
-  const [initialData, setInitialData] = useState([]);
-  const [filteredQuestions, setFilteredQuestions] = useState([]);
-  const [moduleContextID, setContextModuleID] = useState("");
+export const ModuleProvider = ({ children }: { children: React.ReactNode }) => {
+  const [initialData, setInitialData] = useState<IModule>({} as IModule);
+  const [filteredQuestions, setFilteredQuestions] = useState<IModule["questions"]>([]);
+  const [moduleContextID, setContextModuleID] = useState<IModule["id"]>("");
 
   //Change every time module name changes
   const initialDataProvider = useMemo(() => ({ initialData, setInitialData }), [initialData, setInitialData]);
@@ -31,9 +41,12 @@ export const ModuleProvider = (props) => {
     if (moduleContextID !== "types_1") {
       //Fetch data from the locale Storage
       try {
-        module = JSON.parse(localStorage.getItem(`repeatio-module-${moduleContextID}`));
+        //module = JSON.parse(localStorage.getItem(`repeatio-module-${moduleContextID}`));
+        module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleContextID}`));
       } catch (error) {
-        toast.warn(error.message);
+        if (error instanceof Error) {
+          toast.warn(error.message);
+        }
       }
     } else {
       //Fetch data from public folder
@@ -52,10 +65,10 @@ export const ModuleProvider = (props) => {
     //Get the data from the locale file system when using the electron application else (when using the website) get the data from the public folder/browser storage
     if (isElectron()) {
       // Send a message to the main process
-      window.api.request("toMain", ["getModule", moduleContextID]);
+      (window as any).api.request("toMain", ["getModule", moduleContextID]);
 
       // Called when message received from main process
-      window.api.response("fromMain", (data) => {
+      (window as any).api.response("fromMain", (data: IModule) => {
         setInitialData(data);
         setFilteredQuestions(data.questions);
       });
@@ -66,7 +79,7 @@ export const ModuleProvider = (props) => {
 
     //Cleanup
     return () => {
-      setInitialData([]);
+      setInitialData({} as IModule);
       setFilteredQuestions([]);
     };
   }, [moduleContextID, getDataFromBrowser]);
@@ -74,7 +87,12 @@ export const ModuleProvider = (props) => {
   //Update the localStorage/filesystem if initialData changes
   useEffect(() => {
     //Don't update the storage if the data is undefined or from the public folder (id: types_1)
-    if (initialData === undefined || initialData?.length < 1 || initialData?.id === "types_1" || !initialData) {
+    if (
+      !initialData ||
+      initialData === undefined ||
+      Object.keys(initialData)?.length < 1 ||
+      initialData?.id === "types_1"
+    ) {
       return;
     }
 
@@ -83,12 +101,11 @@ export const ModuleProvider = (props) => {
       //TODO save to filesystem
     } else if (!isElectron()) {
       try {
-        localStorage.setItem(`repeatio-module-${initialData.id}`, JSON.stringify(initialData, null, "\t"), {
-          sameSite: "strict",
-          secure: true,
-        });
+        localStorage.setItem(`repeatio-module-${initialData.id}`, JSON.stringify(initialData, null, "\t"));
       } catch (error) {
-        toast.warn(error.message);
+        if (error instanceof Error) {
+          toast.warn(error.message);
+        }
       }
     }
   }, [initialData]);
@@ -103,7 +120,7 @@ export const ModuleProvider = (props) => {
         setFilteredQuestions: filterProvider.setFilteredQuestions,
       }}
     >
-      {props.children}
+      {children}
     </ModuleContext.Provider>
   );
 };

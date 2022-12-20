@@ -1,17 +1,17 @@
 import React, { useState, useContext, useCallback, useLayoutEffect, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { ModuleContext } from "./moduleContext.js";
+import { ModuleContext } from "./moduleContext";
 import packageJSON from "../../../package.json";
 
 //Components
-import { GridCards } from "../GridCards/GridCards.jsx";
+import { GridCards } from "../GridCards/GridCards";
 import { SiteHeading } from "../SiteHeading/SiteHeading";
 import { Card, LinkElement, ButtonElement } from "../Card/Card";
 import { Spinner } from "../Spinner/Spinner";
 import { IQuestion, QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
-import { ModuleNotFound } from "./ModuleNotFound.jsx";
+import { ModuleNotFound } from "./ModuleNotFound";
 
 //Icons
 import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
@@ -23,10 +23,11 @@ import { TbFileExport, TbFileImport } from "react-icons/tb";
 
 //functions
 import { shuffleArray } from "../../utils/shuffleArray";
-import { saveFile } from "../../utils/saveFile.js";
+import { saveFile } from "../../utils/saveFile";
 
 //Interfaces and types
 import { IParams } from "../../utils/types.js";
+import { IModuleContext } from "./moduleContext";
 import {
   getBookmarkedLocalStorageItem,
   getBookmarkedQuestionsFromModule,
@@ -53,8 +54,7 @@ export const Module = () => {
   const [showModal, setShowModal] = useState(false);
 
   //context
-  //TODO fix this any
-  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext<any>(ModuleContext);
+  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext<IModuleContext>(ModuleContext);
 
   //History
   let history = useHistory();
@@ -65,17 +65,16 @@ export const Module = () => {
   /* USEEFFECTS */
   //Update the module state by using the data from the context
   useLayoutEffect(() => {
-    //Module is loading
-    if (moduleData?.length === 0 || moduleData === undefined) {
-      setLoading(true);
-      setError(false);
-      return;
-    }
-
     //Context returned nothing because module wasn't found
     if (moduleData === null) {
       setError(true);
       setLoading(false);
+      return;
+    }
+
+    if (Object.keys(moduleData)?.length === 0 || moduleData === undefined) {
+      setLoading(true);
+      setError(false);
       return;
     }
 
@@ -281,8 +280,7 @@ const BookmarkedQuestionsBottom = () => {
   const { moduleID } = useParams<IParams>();
 
   //Context
-  //TODO fix this
-  const { setFilteredQuestions, moduleData } = useContext<any>(ModuleContext);
+  const { setFilteredQuestions, moduleData } = useContext<IModuleContext>(ModuleContext);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {

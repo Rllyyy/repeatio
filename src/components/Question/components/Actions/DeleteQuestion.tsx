@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 
 //Context
-import { ModuleContext } from "../../../module/moduleContext.js";
+import { IModuleContext, ModuleContext } from "../../../module/moduleContext";
 
 //TODO add moduleID as Component param not useParams
 
@@ -33,8 +33,7 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
   let history = useHistory();
 
   //Access Module
-  //TODO fix this any
-  const { moduleData, setModuleData, filteredQuestions } = useContext<any>(ModuleContext);
+  const { moduleData, setModuleData, filteredQuestions } = useContext<IModuleContext>(ModuleContext);
 
   //Delete Question from storage
   const handleDelete = () => {

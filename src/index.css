@@ -34,76 +34,60 @@ https://google-webfonts-helper.herokuapp.com/fonts
 
 /* roboto-300 - latin */
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 300;
-  src: url('../public/fonts/roboto-v27-latin-300.eot');
+  src: url("../public/fonts/roboto-v27-latin-300.eot");
   /* IE9 Compat Modes */
-  src: local(''),
-    url('../public/fonts/roboto-v27-latin-300.woff2') format('woff2'),
-    /* Super Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-300.woff') format('woff'),
-    /* Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-300.ttf') format('truetype'),
-    /* Safari, Android, iOS */
-    url('../public/fonts/roboto-v27-latin-300.svg#Roboto') format('svg');
+  src: local(""), url("../public/fonts/roboto-v27-latin-300.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("../public/fonts/roboto-v27-latin-300.woff") format("woff"),
+    /* Modern Browsers */ url("../public/fonts/roboto-v27-latin-300.ttf") format("truetype"),
+    /* Safari, Android, iOS */ url("../public/fonts/roboto-v27-latin-300.svg#Roboto") format("svg");
   /* Legacy iOS */
   font-display: swap;
 }
 
 /* roboto-regular - latin */
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 400;
-  src: url('../public/fonts/roboto-v27-latin-regular.eot');
+  src: url("../public/fonts/roboto-v27-latin-regular.eot");
   /* IE9 Compat Modes */
-  src: local(''),
-    url('../public/fonts/roboto-v27-latin-regular.woff2') format('woff2'),
-    /* Super Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-regular.woff') format('woff'),
-    /* Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-regular.ttf') format('truetype'),
-    /* Safari, Android, iOS */
-    url('../public/fonts/roboto-v27-latin-regular.svg#Roboto') format('svg');
+  src: local(""), url("../public/fonts/roboto-v27-latin-regular.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("../public/fonts/roboto-v27-latin-regular.woff") format("woff"),
+    /* Modern Browsers */ url("../public/fonts/roboto-v27-latin-regular.ttf") format("truetype"),
+    /* Safari, Android, iOS */ url("../public/fonts/roboto-v27-latin-regular.svg#Roboto") format("svg");
   /* Legacy iOS */
   font-display: swap;
 }
 
 /* roboto-500 - latin */
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
-  src: url('../public/fonts/roboto-v27-latin-500.eot');
+  src: url("../public/fonts/roboto-v27-latin-500.eot");
   /* IE9 Compat Modes */
-  src: local(''),
-    url('../public/fonts/roboto-v27-latin-500.woff2') format('woff2'),
-    /* Super Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-500.woff') format('woff'),
-    /* Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-500.ttf') format('truetype'),
-    /* Safari, Android, iOS */
-    url('../public/fonts/roboto-v27-latin-500.svg#Roboto') format('svg');
+  src: local(""), url("../public/fonts/roboto-v27-latin-500.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("../public/fonts/roboto-v27-latin-500.woff") format("woff"),
+    /* Modern Browsers */ url("../public/fonts/roboto-v27-latin-500.ttf") format("truetype"),
+    /* Safari, Android, iOS */ url("../public/fonts/roboto-v27-latin-500.svg#Roboto") format("svg");
   /* Legacy iOS */
   font-display: swap;
 }
 
 /* roboto-700 - latin */
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 700;
-  src: url('../public/fonts/roboto-v27-latin-700.eot');
+  src: url("../public/fonts/roboto-v27-latin-700.eot");
   /* IE9 Compat Modes */
-  src: local(''),
-    url('../public/fonts/roboto-v27-latin-700.woff2') format('woff2'),
-    /* Super Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-700.woff') format('woff'),
-    /* Modern Browsers */
-    url('../public/fonts/roboto-v27-latin-700.ttf') format('truetype'),
-    /* Safari, Android, iOS */
-    url('../public/fonts/roboto-v27-latin-700.svg#Roboto') format('svg');
+  src: local(""), url("../public/fonts/roboto-v27-latin-700.woff2") format("woff2"),
+    /* Super Modern Browsers */ url("../public/fonts/roboto-v27-latin-700.woff") format("woff"),
+    /* Modern Browsers */ url("../public/fonts/roboto-v27-latin-700.ttf") format("truetype"),
+    /* Safari, Android, iOS */ url("../public/fonts/roboto-v27-latin-700.svg#Roboto") format("svg");
   /* Legacy iOS */
   font-display: swap;
 }
@@ -132,7 +116,7 @@ body {
 
 body {
   margin: 0;
-  font-family: 'Roboto', 'Helvetica', 'Arial';
+  font-family: "Roboto", "Helvetica", "Arial";
   line-height: 1.5;
   /* background-color: rgb(227, 233, 245); */
   background-color: var(--custom-tertiary-color);
@@ -144,8 +128,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 #root {
@@ -302,7 +285,7 @@ Mobile CSS
 
   main {
     margin-top: 46px;
-    padding: 15px 10px 5px 10px;
+    padding: 15px 10px 10px 10px;
   }
 
   ::-webkit-scrollbar {
@@ -319,8 +302,7 @@ Mobile CSS
 }
 
 /* Firefox query*/
-@media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
-
+@media (min--moz-device-pixel-ratio: 0) and (max-width: 650px) {
   /* Fix for firefox on android not being able to fully zoom out again */
   /* https://stackoverflow.com/questions/71561637/bug-in-firefox-for-android-small-pages-not-zooming-out-100 */
   /* !Remove later when content can overflow again */

@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 
 //Context
-import { ModuleContext } from "../module/moduleContext.js";
+import { ModuleContext } from "../module/moduleContext";
 
 //Components
 import { Spinner } from "../Spinner/Spinner";

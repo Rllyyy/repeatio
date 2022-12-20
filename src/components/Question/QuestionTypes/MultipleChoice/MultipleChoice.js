@@ -21,7 +21,7 @@ import "katex/dist/katex.min.css";
 import "./MultipleChoice.css";
 
 //Import functions
-import { shuffleArray } from "../../../../utils/shuffleArray.js";
+import { shuffleArray } from "../../../../utils/shuffleArray";
 
 /* Component */
 export const MultipleChoice = forwardRef(({ options, formDisabled }, ref) => {

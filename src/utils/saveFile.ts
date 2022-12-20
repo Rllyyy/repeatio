@@ -2,10 +2,15 @@ import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import isElectron from "is-electron";
 
+export type TSaveFile = {
+  file: string;
+  name: string;
+};
+
 //Download a file as json to user selected location or downloads folder
-export async function saveFile({ file, name }) {
+export async function saveFile({ file, name }: TSaveFile) {
   //Cypress/Electron don't support the filePicker API
-  if (window.Cypress || isElectron()) {
+  if ((window as any).Cypress || isElectron()) {
     const blob = new Blob([file], { type: "application/json" });
     saveAs(blob, `${name}.json`);
     toast.success(`Downloaded module as "${name}.json"`);
@@ -14,6 +19,7 @@ export async function saveFile({ file, name }) {
 
   //Use the FilePicker api to allow the user to choose a location, if it is not supported use saveAs library
   // https://web.dev/file-system-access/
+  //TODO currently using @types/wicg-file-system-access for showSaveFilePicker because there is currently no native Typescript support (see: https://stackoverflow.com/questions/71309058/property-showsavefilepicker-does-not-exist-on-type-window-typeof-globalthis)
   try {
     const fileHandle = await window.showSaveFilePicker({
       suggestedName: `${name}.json`,
@@ -27,14 +33,16 @@ export async function saveFile({ file, name }) {
     await writable.close();
     toast.success(`Downloaded module as "${fileHandle.name}"`);
   } catch (e) {
-    //If fileHandle isn't supported (firefox/safari/mobile), use save-as library and catch aborted error
-    //compatibility: https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle#browser_compatibility
-    if (e.name === "TypeError") {
-      const blob = new Blob([file], { type: "application/json" });
-      saveAs(blob, `${name}.json`);
-      toast.success(`Downloaded module as "${name}.json"`);
-    } else if (e.name !== "AbortError") {
-      toast.warn(e.message);
+    if (e! instanceof Error) {
+      //If fileHandle isn't supported (firefox/safari/mobile), use save-as library and catch aborted error
+      //compatibility: https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle#browser_compatibility
+      if (e.name === "TypeError") {
+        const blob = new Blob([file], { type: "application/json" });
+        saveAs(blob, `${name}.json`);
+        toast.success(`Downloaded module as "${name}.json"`);
+      } else if (e.name !== "AbortError") {
+        toast.warn(e.message);
+      }
     }
   }
 }
