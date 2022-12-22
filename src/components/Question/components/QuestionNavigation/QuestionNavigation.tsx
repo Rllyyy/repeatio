@@ -1,6 +1,7 @@
-import { useRef, useContext } from "react";
+import React, { useRef, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import { IParams } from "../../../../utils/types";
 
 //Context
 import { ModuleContext } from "../../../module/moduleContext";
@@ -124,7 +125,7 @@ export const useQuestionNavigation = () => {
   const { filteredQuestions } = useContext(ModuleContext);
 
   //params
-  const params = useParams();
+  const params = useParams<IParams>();
 
   //History
   let history = useHistory();
@@ -169,7 +170,7 @@ export const useQuestionNavigation = () => {
   };
 
   //TODO: Go to provided input
-  const navigateToInputValue = (e) => {
+  const navigateToInputValue = (e: React.KeyboardEvent<HTMLInputElement>) => {
     toast.warn("This feature isn't implemented yet :/", {
       position: toast.POSITION.TOP_RIGHT,
     });
@@ -185,9 +186,9 @@ export const useQuestionNavigation = () => {
 
     //Return the index and add 1 so indexes aren't zero based if question can be found
     if (index >= 0) {
-      return index + 1;
+      return (index + 1).toString();
     } else {
-      return "";
+      return undefined;
     }
   };
 

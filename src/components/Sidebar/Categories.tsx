@@ -9,6 +9,9 @@ import { BiNews } from "react-icons/bi";
 import { RiSettings4Fill } from "react-icons/ri";
 import { MdOndemandVideo } from "react-icons/md";
 
+//Types
+import { TExpandSidebar } from "./Sidebar";
+
 //Navbar categories
 //TODO if custom navbar comes, this has to be moved into the component as a state
 const navbarCategories = [
@@ -30,8 +33,8 @@ const navbarCategories = [
   { className: "settings", linkTo: "settings", icon: <RiSettings4Fill className='category-icon' />, text: "Settings" },
 ];
 
-const Categories = memo(({ setExpandSidebar, expandSidebar }) => {
-  const [isMobile, setIsMobile] = useState();
+const Categories = memo(({ setExpandSidebar, expandSidebar }: TExpandSidebar) => {
+  const [isMobile, setIsMobile] = useState<boolean | undefined>();
   const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
 
   //Detect url changes to highlight background of current component in navbar

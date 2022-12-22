@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation.jsx";
+import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 
 //Context
 import { ModuleContext } from "../module/moduleContext";

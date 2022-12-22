@@ -8,16 +8,16 @@ import { Router } from "./components/Router/Router";
 import "./index.css";
 
 //Import Pages
-import Home from "./pages/index.js";
+import Home from "./pages/index";
 
-import { TutorialsPage } from "./pages/tutorials.js";
+import { TutorialsPage } from "./pages/tutorials";
 import { ContributePage } from "./pages/contribute";
-import { ThanksPage } from "./pages/thanks.js";
-import { NewsPage } from "./pages/news.js";
-import { SettingsPage } from "./pages/settings.js";
+import { ThanksPage } from "./pages/thanks";
+import { NewsPage } from "./pages/news";
+import { SettingsPage } from "./pages/settings";
 
-import { LegalNoticePage } from "./pages/legal-notice.jsx";
-import { PrivacyPage } from "./pages/privacy.jsx";
+import { LegalNoticePage } from "./pages/legal-notice";
+import { PrivacyPage } from "./pages/privacy";
 
 import { ModulePage } from "./pages/module/module";
 import { QuestionPage } from "./pages/module/question/question";
@@ -25,8 +25,8 @@ import { AllQuestionsPage } from "./pages/module/all-questions/index";
 
 //Import Components
 import { Sidebar } from "./components/Sidebar/Sidebar";
-import { Footer } from "./components/Footer/Footer.jsx";
-import { CustomToastContainer } from "./components/toast/toast.jsx";
+import { Footer } from "./components/Footer/Footer";
+import { CustomToastContainer } from "./components/toast/toast";
 
 //Context
 import { ModuleProvider } from "./components/module/moduleContext";
@@ -59,7 +59,7 @@ ReactDOM.render(
             </ModuleProvider>
           </Switch>
         </main>
-        <Footer>Footer</Footer>
+        <Footer />
       </ScrollToTop>
       <CustomToastContainer />
     </Router>

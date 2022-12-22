@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 //Functions
 import isElectron from "is-electron";
-import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
+import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
 import { parseJSON } from "../../utils/parseJSON";
 import { IModule } from "../Home/CreateModule";
 

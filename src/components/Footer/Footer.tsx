@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import { navbarCategories } from "../Sidebar/Categories.js";
+import { navbarCategories } from "../Sidebar/Categories";
 
 //CSS
 import "./Footer.css";

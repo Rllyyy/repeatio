@@ -11,8 +11,8 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { objectWithoutProp } from "../../helpers";
 
 //Import Interfaces
-import { IMultipleResponse } from "../../QuestionEditor.js";
-import { IErrors } from "../../QuestionEditor.js";
+import { IMultipleResponse } from "../../QuestionEditor";
+import { IErrors } from "../../QuestionEditor";
 
 //interface
 interface IMultipleResponseEditor {
@@ -86,10 +86,10 @@ export const MultipleResponseEditor = ({
   }
 
   //Update checkbox state on enter keypress on the checkbox
-  const checkBoxPreventSubmission = (e: any) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleCheckBoxChange(e);
+  const checkBoxPreventSubmission = (e: unknown) => {
+    if ((e as React.KeyboardEvent<HTMLInputElement>).key === "Enter") {
+      (e as React.KeyboardEvent<HTMLInputElement>).preventDefault();
+      handleCheckBoxChange(e as React.ChangeEvent<HTMLInputElement>);
     }
   };
 

@@ -1,11 +1,12 @@
 import { useParams, useHistory } from "react-router-dom";
+import { IParams } from "../../../../utils/types";
 
 //css
 import "./QuestionNotFound.css";
 
 //Component
 export const QuestionNotFound = () => {
-  const params = useParams();
+  const params = useParams<IParams>();
   let history = useHistory();
 
   //Go back in history

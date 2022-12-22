@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Animate } from "react-move";
-import PropTypes from "prop-types";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { easeQuadInOut } from "d3-ease";
 
@@ -8,11 +7,11 @@ import { easeQuadInOut } from "d3-ease";
 import "react-circular-progressbar/dist/styles.css";
 
 //Progress Component
-export const ProgressPie = ({ progress }) => {
+export const ProgressPie = ({ progress }: { progress: number }) => {
   //https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
   return (
     <AnimatedProgressProvider valueStart={0} valueEnd={progress} duration={0.7} easingFunction={easeQuadInOut}>
-      {(value) => {
+      {(value: number) => {
         const roundedValue = Math.round(value);
         return (
           <CircularProgressbar
@@ -33,13 +32,23 @@ export const ProgressPie = ({ progress }) => {
   );
 };
 
-ProgressPie.propTypes = {
-  progress: PropTypes.number.isRequired,
+type TAnimatedProgressProvider = {
+  valueStart: number;
+  valueEnd: number;
+  duration: number;
+  easingFunction: (normalizedTime: number) => number;
+  children: any; //TODO fix this any
 };
 
 //Animate the progress bar
 //Pre 16.8 react code can be found here: https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
-const AnimatedProgressProvider = ({ valueStart, valueEnd, duration, easingFunction, children }) => {
+const AnimatedProgressProvider = ({
+  valueStart,
+  valueEnd,
+  duration,
+  easingFunction,
+  children,
+}: TAnimatedProgressProvider) => {
   const [isAnimated, setIsAnimated] = useState(false);
 
   //Trigger animation on mount

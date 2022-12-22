@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ToastContainer, Slide, toast } from "react-toastify";
+import { ToastContainer, Slide, toast, TypeOptions } from "react-toastify";
 
 //css
 import "react-toastify/dist/ReactToastify.css";
@@ -12,7 +12,10 @@ import "./toast.css";
 
 export const CustomToastContainer = () => {
   //Every time a toast is rendered, show it in the console
+
   useEffect(() => {
+    //Don't know if this return is correct :/
+    //https://github.com/fkhadra/react-toastify/issues/450
     toast.onChange((payload) => {
       const { content, type, data, status } = payload;
 
@@ -21,10 +24,6 @@ export const CustomToastContainer = () => {
         logToConsole({ type: type, content: content, data: data });
       }
     });
-
-    //Don't know if this return is correct :/
-    //https://github.com/fkhadra/react-toastify/issues/450
-    return null;
   }, []);
 
   return (
@@ -47,8 +46,14 @@ export const CustomToastContainer = () => {
   );
 };
 
+type TLogToConsole = {
+  type: TypeOptions | undefined;
+  data: string | {};
+  content: React.ReactNode;
+};
+
 //Log toast to console
-function logToConsole({ type, data, content }) {
+function logToConsole({ type, data, content }: TLogToConsole) {
   let toastMessage;
   //The message should be in the content prop as a string but when using jsx in the toast,
   //the developer must pass the same message (as a string) ALSO in the data prop because the console can't render (jsx) objects

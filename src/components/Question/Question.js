@@ -15,9 +15,9 @@ import "katex/dist/katex.min.css";
 import "./Question.css";
 
 //Import Components
-import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound.jsx";
+import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound";
 import { QuestionUserResponseArea } from "./QuestionTypes/QuestionUserResponseArea.jsx";
-import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation.jsx";
+import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 import { DeleteQuestion } from "./components/Actions/DeleteQuestion";
 import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";

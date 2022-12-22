@@ -2,10 +2,15 @@ import { useState } from "react";
 import "./Sidebar.css";
 
 //Components
-import { Categories } from "./Categories.js";
+import { Categories } from "./Categories";
 
 //Icon
 import { FiMenu } from "react-icons/fi";
+
+export type TExpandSidebar = {
+  expandSidebar: boolean;
+  setExpandSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 //Sidebar Component
 export const Sidebar = () => {
@@ -22,7 +27,7 @@ export const Sidebar = () => {
 };
 
 //Hamburger Component
-const Hamburger = ({ setExpandSidebar, expandSidebar }) => {
+const Hamburger = ({ setExpandSidebar, expandSidebar }: TExpandSidebar) => {
   return (
     <button className='hamburger' onClick={() => setExpandSidebar(!expandSidebar)}>
       <FiMenu className='hamburger-icon category-icon' />

@@ -14,7 +14,9 @@ export async function fetchModuleFromPublicFolder() {
       return;
     }
   } catch (error) {
-    console.warn(error.message);
+    if (error instanceof Error) {
+      console.warn(error.message);
+    }
     return;
   }
 }

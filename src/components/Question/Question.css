@@ -55,14 +55,8 @@
 
 /* Markdown images */
 .question-form img {
-  display: block;
-  font-size: 1rem;
   margin: 2px 0;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
-  max-width: 700px;
-  max-height: 500px;
+  max-width: 100%;
 }
 
 /* All buttons */

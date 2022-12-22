@@ -1,14 +1,14 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
 import isElectron from "is-electron";
 import { toast } from "react-toastify";
-import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder.js";
+import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
 import { Card, LinkElement } from "../Card/Card";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
-import { Spinner } from "../Spinner/Spinner.js";
-import { ProgressPie } from "../Card/ProgressPie.jsx";
+import { Spinner } from "../Spinner/Spinner";
+import { ProgressPie } from "../Card/ProgressPie";
 
 //Icons
 import { TbFileExport } from "react-icons/tb";

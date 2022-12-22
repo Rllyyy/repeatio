@@ -21,16 +21,6 @@ export interface IFile extends File {
   fileType?: "bookmark" | "module";
 }
 
-/* 
-const ErrorObj = {
-  "existInLc": ["ids"],
-  "version": 
-}
-
-
-
-*/
-
 export const ImportModule = ({ handleModalClose }: IImportModule) => {
   const [files, setFiles] = useState<IFile[]>([]);
 

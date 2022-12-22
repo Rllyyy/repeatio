@@ -3,8 +3,6 @@
 */
 
 /* ----------------------------------- Imports -------------------------------------------- */
-import PropTypes from "prop-types";
-
 //MaterialUI
 import { styled } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
@@ -103,11 +101,6 @@ export const PopoverMenu = ({ anchorEl, handlePopoverClose, children }: IPopover
       {children}
     </StyledMenu>
   );
-};
-
-PopoverMenu.propTypes = {
-  anchorEl: PropTypes.object,
-  handlePopoverClose: PropTypes.func.isRequired,
 };
 
 /* -------------------------------------- POPOVER MENU ITEM ------------------------------------- */
