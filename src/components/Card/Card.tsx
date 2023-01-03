@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { memo } from "react";
 
 //css
 import "./Card.css";
@@ -16,7 +17,7 @@ interface ICard extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement
 }
 
 //Card Component
-export const Card = ({ type, disabled, title, description, icon, children, ...props }: ICard) => {
+export const Card = memo(({ type, disabled, title, description, icon, children, ...props }: ICard) => {
   return (
     <article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
       <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
@@ -29,7 +30,7 @@ export const Card = ({ type, disabled, title, description, icon, children, ...pr
       <div className='card-bottom'>{children}</div>
     </article>
   );
-};
+});
 
 /* ----------------------------------------- LINK -------------------------------------------- */
 //!This extend might be false

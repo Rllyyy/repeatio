@@ -37,42 +37,51 @@ type TAnimatedProgressProvider = {
   valueEnd: number;
   duration: number;
   easingFunction: (normalizedTime: number) => number;
-  children: any; //TODO fix this any
+  children: (value: number) => React.ReactElement;
 };
 
 //Animate the progress bar
 //Pre 16.8 react code can be found here: https://codesandbox.io/s/vymm4oln6y?file=/index.js:3609-3739
-const AnimatedProgressProvider = ({
+const AnimatedProgressProvider: React.FC<TAnimatedProgressProvider> = ({
   valueStart,
   valueEnd,
   duration,
   easingFunction,
   children,
-}: TAnimatedProgressProvider) => {
+}) => {
+  // State to track whether the animation is currently running
   const [isAnimated, setIsAnimated] = useState(false);
 
-  //Trigger animation on mount
+  // Trigger the animation to start on component mount
   useEffect(() => {
     setIsAnimated(true);
+    // Clean up the animation state when the component unmounts
     return () => {
       setIsAnimated(false);
     };
   }, []);
 
-  //JSX
+  // JSX for the component
   return (
+    // Use the Animate component to control the animation
     <Animate
+      // Set the starting value for the animation
       start={() => ({
         value: valueStart,
       })}
+      // Update the animation value and timing
       update={() => ({
+        // Use the current value of `isAnimated` to determine the end value for the animation
         value: [isAnimated ? valueEnd : valueStart],
         timing: {
+          // Convert the duration from seconds to milliseconds
           duration: duration * 1000,
+          // Use the provided easing function
           ease: easingFunction,
         },
       })}
     >
+      {/* Render the children with the current value of the animation */}
       {({ value }) => children(value)}
     </Animate>
   );

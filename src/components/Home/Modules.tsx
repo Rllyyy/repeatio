@@ -29,6 +29,7 @@ export const Modules = () => {
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
 
+  //const MemoedIcon = useMemo(() => <ProgressPie progress={55} />, []);
   if (loading) {
     return <Spinner />;
   }
@@ -69,14 +70,12 @@ export const Modules = () => {
 const useAllModules = () => {
   const [loading, setLoading] = useState(true);
   const [modules, setModules] = useState<IModule[]>([]);
-  const [errors, setErrors] = useState<string[]>([]);
 
   //Get the modules from the localStorage and set the module state
   //Updates every time localeStorage changes
   const modulesFromBrowserStorage = useCallback(async () => {
     //Setup variables for the module and possible errors
     let localStorageModules: IModule[] = [];
-    let moduleErrors: string[] = [];
 
     Object.entries(localStorage).forEach((key) => {
       if (key[0].startsWith("repeatio-module")) {
@@ -90,7 +89,6 @@ const useAllModules = () => {
         } catch (error) {
           if (error instanceof Error) {
             toast.warn(`${key[0]}: ${error.message}`);
-            moduleErrors.push(`${key[0]}: ${error.message}`);
           }
         }
       }
@@ -108,13 +106,11 @@ const useAllModules = () => {
     }
 
     //Update states
-    setErrors(moduleErrors);
     setLoading(false);
   }, []);
 
   //Refetch the modules if the localeStorage changes
   const onStorageChange = useCallback(() => {
-    setLoading(true);
     modulesFromBrowserStorage();
   }, [modulesFromBrowserStorage]);
 
@@ -143,7 +139,7 @@ const useAllModules = () => {
     };
   }, [modulesFromBrowserStorage, onStorageChange]);
 
-  return { modules, loading, errors };
+  return { modules, loading };
 };
 
 //Hook to use the functions inside the Popover component

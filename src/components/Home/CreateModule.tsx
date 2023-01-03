@@ -126,8 +126,6 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
     handleModalClose();
   };
 
-  console.log();
-
   //JSX
   return (
     <form className='create-module' onSubmit={handleSubmit(formSubmit)}>
