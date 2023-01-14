@@ -33,6 +33,9 @@ import {
 //Interfaces
 import { IParams } from "../../utils/types.js";
 import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/BookmarkQuestion";
+import { IMultipleChoice } from "../Question/QuestionTypes/MultipleChoice/MultipleChoice";
+import { IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
+import { IMultipleResponse } from "../Question/QuestionTypes/MultipleResponse/MultipleResponse";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
@@ -62,25 +65,7 @@ export const QuestionEditor = ({
   );
 };
 
-export interface IMultipleChoice {
-  id: string;
-  text: string;
-  isCorrect: boolean;
-}
-
-export interface IMultipleResponse {
-  id: string;
-  text: string;
-  isCorrect: boolean;
-}
-
-export interface IGapText {
-  text?: string;
-  correctGapValues?: Array<Array<string>>;
-  tempText?: string;
-}
-
-export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapText;
+export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapTextWithTempText;
 
 //TODO change export to Question/Questions.tsx
 export interface IQuestion {
@@ -142,7 +127,7 @@ export const Form = ({
       if (questionFromContext?.type === "gap-text" && !isSafari) {
         questionFromContext = {
           ...questionFromContext,
-          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions as IGapText) },
+          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions as IGapTextWithTempText) },
         };
       }
 
@@ -437,8 +422,8 @@ function getAnswerOptionsError({
 
   if (
     type === "gap-text" &&
-    "tempText" in (answerOptions as IGapText) &&
-    (answerOptions as IGapText).tempText?.startsWith("|")
+    "tempText" in (answerOptions as IGapTextWithTempText) &&
+    (answerOptions as IGapTextWithTempText).tempText?.startsWith("|")
   ) {
     return "Can't start with this key! If want to render a table wrap the markdown for the table in <div style='white-space: normal'>(line break) Markdown (line break)</div>.";
   }

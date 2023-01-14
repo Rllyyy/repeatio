@@ -16,7 +16,7 @@ const mockOptions = [
   {
     id: "option-2",
     text: "this is another false multiple choice value",
-    isCorrect: true,
+    isCorrect: false,
   },
 ];
 

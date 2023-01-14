@@ -2,7 +2,7 @@ import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
 
-//React markdown related imports
+// React markdown related imports
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
@@ -10,11 +10,25 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-//css
+// css
 import "./GapText.css";
 
-//Components
+// Components
 import { AnswerCorrection } from "./AnswerCorrection";
+
+// Interfaces/Types
+import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
+
+// Define Interfaces
+export interface IGapText {
+  text: string;
+  correctGapValues?: Array<Array<string>>;
+}
+
+interface IGapTextProps extends IQuestionTypeComponent {
+  options: IGapText;
+}
+
 //HELP
 //The code in this Component may seem a bit odd.
 //The reason for this weirdness is that it mixes JSON, MarkDown, HTML and JSX so it can use Markdown for syntax like tables, strong, ...
@@ -26,20 +40,8 @@ import { AnswerCorrection } from "./AnswerCorrection";
 //At the end I just have to say this: Is it fast? no. Is it logical? no. Does it work? YES
 //Feel free to update the code but this is honestly the best I can come up with atm that supports Markdown elements (tables, styling, ...) and user set input elements.
 
-interface GapTextProps {
-  options: { text: string; correctGapValues?: Array<Array<string>> };
-  formDisabled: boolean;
-}
-
-interface ForwardRefFunctions {
-  checkAnswer: () => boolean;
-  returnAnswer: () => JSX.Element;
-  resetSelection: () => void;
-  resetAndShuffleOptions: () => void;
-}
-
 //Component
-export const GapText = forwardRef<ForwardRefFunctions, GapTextProps>(({ options, formDisabled }, ref) => {
+export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ options, formDisabled }, ref) => {
   //States
   const [inputValues, setInputValues] = useState<string[]>([]);
 
@@ -128,7 +130,7 @@ export const GapText = forwardRef<ForwardRefFunctions, GapTextProps>(({ options,
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
     ref,
-    (): ForwardRefFunctions => ({
+    (): IForwardRefFunctions => ({
       //Check if the answer is correct.
       checkAnswer() {
         //Strip the input values of any whitespace at the beginning or end and update the state (which will be updated after the function has completely finished)

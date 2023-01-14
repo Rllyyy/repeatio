@@ -41,26 +41,25 @@ ReactDOM.render(
   <StrictMode>
     <Router>
       <Sidebar />
-      <ScrollToTop>
-        <main>
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/tutorials' component={TutorialsPage} />
-            <Route exact path='/contribute' component={ContributePage} />
-            <Route exact path='/thanks' component={ThanksPage} />
-            <Route exact path='/news' component={NewsPage} />
-            <Route exact path='/settings' component={SettingsPage} />
-            <Route exact path='/legal-notice' component={LegalNoticePage} />
-            <Route exact path='/privacy' component={PrivacyPage} />
-            <ModuleProvider>
-              <Route exact path='/module/:moduleID' component={ModulePage} />
-              <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
-              <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
-            </ModuleProvider>
-          </Switch>
-        </main>
-        <Footer />
-      </ScrollToTop>
+      <ScrollToTop />
+      <main>
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/tutorials' component={TutorialsPage} />
+          <Route exact path='/contribute' component={ContributePage} />
+          <Route exact path='/thanks' component={ThanksPage} />
+          <Route exact path='/news' component={NewsPage} />
+          <Route exact path='/settings' component={SettingsPage} />
+          <Route exact path='/legal-notice' component={LegalNoticePage} />
+          <Route exact path='/privacy' component={PrivacyPage} />
+          <ModuleProvider>
+            <Route exact path='/module/:moduleID' component={ModulePage} />
+            <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
+            <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
+          </ModuleProvider>
+        </Switch>
+      </main>
+      <Footer />
       <CustomToastContainer />
     </Router>
   </StrictMode>,

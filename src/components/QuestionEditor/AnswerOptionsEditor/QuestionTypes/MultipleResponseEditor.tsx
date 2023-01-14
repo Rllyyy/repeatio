@@ -11,7 +11,7 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { objectWithoutProp } from "../../helpers";
 
 //Import Interfaces
-import { IMultipleResponse } from "../../QuestionEditor";
+import { IMultipleResponse } from "../../../Question/QuestionTypes/MultipleResponse/MultipleResponse";
 import { IErrors } from "../../QuestionEditor";
 
 //interface

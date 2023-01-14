@@ -16,7 +16,7 @@ import "./Question.css";
 
 //Import Components
 import { QuestionNotFound } from "./components/QuestionNotFound/QuestionNotFound";
-import { QuestionUserResponseArea } from "./QuestionTypes/QuestionUserResponseArea.jsx";
+import { QuestionUserResponseArea } from "./QuestionTypes/QuestionUserResponseArea";
 import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 import { DeleteQuestion } from "./components/Actions/DeleteQuestion";
 import { EditQuestion } from "./components/Actions/EditQuestion";

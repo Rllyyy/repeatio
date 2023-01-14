@@ -11,7 +11,8 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { objectWithoutProp } from "../../helpers";
 
 //Import Types
-import { IMultipleChoice, IErrors } from "../../QuestionEditor";
+import { IErrors } from "../../QuestionEditor";
+import { IMultipleChoice } from "../../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
 
 interface IMultipleChoiceEditor {
   name?: string;

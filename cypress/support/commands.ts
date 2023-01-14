@@ -32,6 +32,9 @@ import { mount } from "cypress/react";
 
 type Fixtures =
   | "repeatio-module-gap_text.json"
+  | "repeatio-module-gap_text_dropdown.json"
+  | "repeatio-module-multiple_choice.json"
+  | "repeatio-module-multiple_response.json"
   | "repeatio-module-empty-questions.json"
   | "repeatio-module-cypress_1.json"
   | "repeatio-marked-types_1.json"

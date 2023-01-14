@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, createRef } from "react";
+////@ts-nocheck
+import { useState, useEffect, useRef, createRef, RefObject } from "react";
 
 //Markdown
 import ReactMarkdown from "react-markdown";
@@ -11,25 +12,52 @@ import "katex/dist/katex.min.css";
 //Components
 import { Canvas } from "./Canvas";
 
+// Interfaces
+import { IExtendedMatch } from "./ExtendedMatch";
+
+export interface IExtendedMatchLineCorrection {
+  left?: HTMLDivElement | undefined | null;
+  right?: HTMLDivElement | undefined | null;
+}
+
+interface IExtendedMatchAnswerCorrectionProps {
+  correctMatches: IExtendedMatch["correctMatches"];
+  shuffledLeftOptions: IExtendedMatch["leftSide"];
+  shuffledRightOptions: IExtendedMatch["rightSide"];
+  left: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
+  right: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
+}
+
 //Component
-export const AnswerCorrection = ({ correctMatches, shuffledLeftOptions, shuffledRightOptions, left, right }) => {
+export const AnswerCorrection = ({
+  correctMatches,
+  shuffledLeftOptions,
+  shuffledRightOptions,
+  left,
+  right,
+}: IExtendedMatchAnswerCorrectionProps) => {
   //useState
-  const [correctLines, setCorrectLines] = useState([]);
+  const [correctLines, setCorrectLines] = useState<IExtendedMatchLineCorrection[]>([]);
 
   //useRef
-  const leftCorrection = useRef(left.current.map(() => createRef()));
-  const rightCorrection = useRef(right.current.map(() => createRef()));
+  const leftCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(left?.current?.map(() => createRef()));
+  const rightCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(
+    right?.current?.map(() => createRef())
+  );
 
   //Update the correct lines array
   useEffect(() => {
     const newCorrectMatches = correctMatches.map((item) => {
       //Find left item
-      const resultLeft = leftCorrection.current.find((obj) => obj.current?.attributes.ident.value === item.left);
+      const resultLeft = leftCorrection.current?.find((obj) => obj.current?.getAttribute("data-ident") === item.left);
 
-      const resultRight = rightCorrection.current.find((obj) => obj.current?.attributes.ident.value === item.right);
+      const resultRight = rightCorrection.current?.find(
+        (obj) => obj.current?.getAttribute("data-ident") === item.right
+      );
 
-      return { left: resultLeft.current, right: resultRight.current };
+      return { left: resultLeft?.current, right: resultRight?.current };
     });
+
     setCorrectLines([...newCorrectMatches]);
 
     return () => {
@@ -52,8 +80,8 @@ export const AnswerCorrection = ({ correctMatches, shuffledLeftOptions, shuffled
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={leftCorrection.current[index]}
-                ident={id}
+                ref={leftCorrection.current?.[index]}
+                data-ident={id}
               />
             </div>
           );
@@ -73,8 +101,8 @@ export const AnswerCorrection = ({ correctMatches, shuffledLeftOptions, shuffled
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={rightCorrection.current[index]}
-                ident={id}
+                ref={rightCorrection.current?.[index]}
+                data-ident={id}
               />
             </div>
           );

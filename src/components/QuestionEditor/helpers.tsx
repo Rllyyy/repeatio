@@ -26,17 +26,16 @@ export function validator({
   return res;
 }
 
-// TODO add prop
 /**
  * Returns an object without the given prop
  * Pass in the object and then the prop or properties that should be deleted
  */
-export function objectWithoutProp({
+export function objectWithoutProp<T extends object>({
   object,
   deleteProp,
 }: {
-  object: { [x: string]: any };
-  deleteProp: string | string[];
+  object: T;
+  deleteProp: (keyof T & string) | ((keyof T)[] & string[]);
 }) {
   //Throw error if programmer forgot to pass both props
   if (object === undefined || deleteProp === undefined) {
@@ -60,11 +59,11 @@ export function objectWithoutProp({
   return object;
 }
 
-//Return error message if given value is empty
 /**
- *
- * @param param0
- * @returns
+ * Return error message if given value is empty
+ * @param {string} value - test
+ * @param {string} [fieldName] - The name of the html element that is empty
+ * @returns  an error message if the value is empty, or nothing if the value is not empty
  */
 export function checkNotEmpty({ value, fieldName }: { value: string; fieldName?: string }) {
   if (value === "") {
@@ -109,9 +108,9 @@ export function checkNotIdDuplicate({
 //Return error if given value contains characters that aren't permitted to be in the url
 export function checkForbiddenUrlChars({ value, fieldName }: { value: string; fieldName?: string }) {
   //Check if the field contains non allowed characters
-  const regex = /[^a-zA-Z0-9-ß_~.\u0080-\uFFFF]/g;
+  const forbiddenCharRegex = /[^a-zA-Z0-9-ß_~.\u0080-\uFFFF]/g;
   const notAllowedChars = value
-    .match(regex)
+    .match(forbiddenCharRegex)
     ?.map((el) => `"${el}"`)
     .join(", ");
 

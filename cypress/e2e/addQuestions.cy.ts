@@ -1,7 +1,8 @@
 /// <reference types="cypress" />
 
 import { IModule } from "../../src/components/Home/CreateModule";
-import { IGapText, IMultipleChoice } from "../../src/components/QuestionEditor/QuestionEditor";
+import { IGapText } from "../../src/components/Question/QuestionTypes/GapText/GapText";
+import { IMultipleChoice } from "../../src/components/Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { parseJSON } from "../../src/utils/parseJSON";
 
 describe("Adding a question using the QuestionEditor component", () => {
@@ -334,7 +335,7 @@ describe("Adding a question of type gap-text", () => {
       });
 
     cy.visit("/module/empty-questions/question/test-id");
-    cy.get("img").invoke("height").should("be.greaterThan", 400);
+    cy.get("img").invoke("height").should("equal", 256);
     cy.get("section.question-user-response").find("input").should("have.length", 1);
   });
 

@@ -7,10 +7,11 @@ import { MultipleResponseEditor } from "./QuestionTypes/MultipleResponseEditor";
 import { GapTextEditor } from "./QuestionTypes/GapTextEditor";
 
 //Interfaces/Types
-import { TAnswerOptions, IGapText, IQuestion } from "../QuestionEditor";
+import { TAnswerOptions, IQuestion } from "../QuestionEditor";
 import { IErrors } from "../QuestionEditor";
-import { IMultipleChoice } from "../QuestionEditor";
-import { IMultipleResponse } from "../QuestionEditor";
+import { IGapTextWithTempText } from "./QuestionTypes/GapTextEditor";
+import { IMultipleChoice } from "../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
+import { IMultipleResponse } from "../../Question/QuestionTypes/MultipleResponse/MultipleResponse";
 
 //Functions
 import { objectWithoutProp } from "../helpers";
@@ -127,7 +128,7 @@ export const AnswerOptionsEditor = ({
       if (selectionStart !== selectionEnd) {
         handleEditorChange({
           tempText: removeBracketsFromSelection(
-            (answerValues as IGapText)?.tempText || "",
+            (answerValues as IGapTextWithTempText)?.tempText || "",
             selectionStart,
             selectionEnd
           ),
@@ -174,7 +175,7 @@ export const AnswerOptionsEditor = ({
           <GapTextEditor
             ref={ref}
             name='gap-text'
-            tempText={(answerValues as IGapText)?.tempText || ""}
+            tempText={(answerValues as IGapTextWithTempText)?.tempText || ""}
             handleEditorChange={handleEditorChange}
             answerOptionsError={answerOptionsError}
             setErrors={setErrors}

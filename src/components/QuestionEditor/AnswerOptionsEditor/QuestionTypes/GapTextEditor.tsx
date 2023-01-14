@@ -5,8 +5,13 @@ import { isSafari } from "react-device-detect";
 
 //Types
 import { IErrors } from "../../QuestionEditor";
+import { IGapText } from "../../../Question/QuestionTypes/GapText/GapText";
 
-interface IGapTextEditor {
+export interface IGapTextWithTempText extends Partial<IGapText> {
+  tempText?: string;
+}
+
+interface IGapTextEditorComponent {
   name: string;
   tempText: string;
   handleEditorChange: ({ tempText }: { tempText: string }) => void;
@@ -14,7 +19,7 @@ interface IGapTextEditor {
   setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
 }
 
-export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditor>(
+export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorComponent>(
   ({ name, tempText, handleEditorChange, answerOptionsError, setErrors }, ref) => {
     //handleChange
     function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {

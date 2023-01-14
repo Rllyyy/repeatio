@@ -1,4 +1,13 @@
-import { forwardRef, useRef, useLayoutEffect, useState, createRef, useImperativeHandle, useCallback } from "react";
+import {
+  forwardRef,
+  useRef,
+  useLayoutEffect,
+  useState,
+  createRef,
+  useImperativeHandle,
+  useCallback,
+  RefObject,
+} from "react";
 
 //Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
@@ -9,8 +18,8 @@ import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 
 //Import Components
-import { Canvas } from "./Canvas.js";
-import { AnswerCorrection } from "./AnswerCorrection.js";
+import { Canvas } from "./Canvas";
+import { AnswerCorrection } from "./AnswerCorrection";
 
 //Import css
 import "./ExtendedMatch.css";
@@ -18,6 +27,9 @@ import "./ExtendedMatch.css";
 //Import functions
 import { isEqual } from "lodash";
 import { shuffleArray } from "../../../../utils/shuffleArray";
+
+// Interfaces
+import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
 
 //I am really not proud of this component :/ and refactor it for a future release
 //Each line in the canvas is an object in the lines array
@@ -27,19 +39,44 @@ import { shuffleArray } from "../../../../utils/shuffleArray";
 //- remove callbacks as they don't do anything
 //- Check if line already in lines array and give message to user
 
+interface IExtendedMatchItem {
+  id: string;
+  text: string;
+}
+
+interface ICorrectMatch {
+  left: IExtendedMatchItem["id"];
+  right: IExtendedMatchItem["id"];
+}
+
+export interface IExtendedMatch {
+  leftSide: IExtendedMatchItem[];
+  rightSide: IExtendedMatchItem[];
+  correctMatches: ICorrectMatch[];
+}
+
+interface IExtendedMatchProps extends IQuestionTypeComponent {
+  options: IExtendedMatch;
+}
+
+export interface IExtendedMatchLine {
+  left?: HTMLButtonElement | undefined | null;
+  right?: HTMLButtonElement | undefined | null;
+}
+
 //Component
-export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
+export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProps>(({ options, formDisabled }, ref) => {
   //States
-  const [lines, setLines] = useState([]);
-  const [shuffledLeftOptions, setShuffledLeftOptions] = useState([]);
-  const [shuffledRightOptions, setShuffledRightOptions] = useState([]);
+  const [lines, setLines] = useState<IExtendedMatchLine[]>([]);
+  const [shuffledLeftOptions, setShuffledLeftOptions] = useState<IExtendedMatchProps["options"]["leftSide"]>([]);
+  const [shuffledRightOptions, setShuffledRightOptions] = useState<IExtendedMatchProps["options"]["rightSide"]>([]);
   const [highlightRight, setHighlightRight] = useState(false);
   const [highlightLeft, setHighlightLeft] = useState(false);
-  const [highlightSelectedCircle, setHighlightSelectedCircle] = useState();
+  const [highlightSelectedCircle, setHighlightSelectedCircle] = useState<string | null>();
 
   //Refs
-  const left = useRef();
-  const right = useRef();
+  const left = useRef<RefObject<HTMLButtonElement>[] | null | undefined>();
+  const right = useRef<RefObject<HTMLButtonElement>[] | null | undefined>();
 
   //Reset the ref options changes
   useLayoutEffect(() => {
@@ -74,7 +111,7 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
 
   //EventHandler when the user clicks the left circles
   const updateLeftLine = useCallback(
-    (circleIndex) => {
+    (circleIndex: number) => {
       //Guards
       if (formDisabled) return;
 
@@ -85,14 +122,14 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
       //Update the lines state depending on the user action
       if (updatedLines.length === 0) {
         //If length of the lines array is zero there needs to be no further checking, the object can just be pushed to the array
-        updatedLines.push({ left: left.current[circleIndex].current });
+        updatedLines.push({ left: left.current?.[circleIndex].current });
 
         //Highlight the selected circle and the opposite side
         setHighlightSelectedCircle(`left-${circleIndex}`);
         setHighlightRight(true);
       } else if (lastLineElement.right !== undefined && lastLineElement.left !== undefined) {
         //Set the left property of a new line, but it's not the first line by checking if both elements (left/right) of the line before are set.
-        updatedLines.push({ left: left.current[circleIndex].current });
+        updatedLines.push({ left: left.current?.[circleIndex].current });
 
         //Highlight the circle the user clicked on and the opposite side
         setHighlightSelectedCircle(`left-${circleIndex}`);
@@ -101,20 +138,20 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
         //Case if the user first clicks a right side element
         updatedLines = updatedLines.map((element, index) => {
           if (index === updatedLines.length - 1) {
-            return { ...element, left: left.current[circleIndex].current };
+            return { ...element, left: left.current?.[circleIndex].current };
           } else {
             return element;
           }
         });
 
         //Remove the highlight from the single circle and the whole left section
-        setHighlightSelectedCircle();
+        setHighlightSelectedCircle(null);
         setHighlightLeft(false);
       } else if (lastLineElement.right === undefined && lastLineElement.left !== undefined) {
         //Case if the user clicks a left element but then clicks another left element, so just the most recent value is used
         updatedLines = updatedLines.map((element, index) => {
           if (index === updatedLines.length - 1) {
-            return { left: left.current[circleIndex].current };
+            return { left: left?.current?.[circleIndex]?.current };
           } else {
             return element;
           }
@@ -132,7 +169,7 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
 
   //EventHandler when the user clicks the right circles
   const updateRightLine = useCallback(
-    (circleIndex) => {
+    (circleIndex: number) => {
       //Guards
       if (formDisabled) return;
 
@@ -143,14 +180,14 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
       //Update the lines state depending on the user action
       if (updatedLines.length === 0) {
         //If length of the lines state is zero there needs to be no further checking, the object can just be pushed to the array
-        updatedLines.push({ right: right.current[circleIndex].current });
+        updatedLines.push({ right: right.current?.[circleIndex].current });
 
         //Highlight the selected circle and the opposite side
         setHighlightSelectedCircle(`right-${circleIndex}`);
         setHighlightLeft(true);
       } else if (lastLineElement.left !== undefined && lastLineElement.right !== undefined) {
         //Set the right property of a new line, but it's not the first line by checking if both elements (left/right) of the line before are set.
-        updatedLines.push({ right: right.current[circleIndex].current });
+        updatedLines.push({ right: right.current?.[circleIndex].current });
 
         //Highlight the clicked circle and the opposite side
         setHighlightSelectedCircle(`right-${circleIndex}`);
@@ -159,20 +196,20 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
         //Case if the user first clicks a left side element but there are already at least one line
         updatedLines = updatedLines.map((element, index) => {
           if (index === updatedLines.length - 1) {
-            return { ...element, right: right.current[circleIndex].current };
+            return { ...element, right: right.current?.[circleIndex].current };
           } else {
             return element;
           }
         });
 
         //Remove the highlights
-        setHighlightSelectedCircle();
+        setHighlightSelectedCircle(null);
         setHighlightRight(false);
       } else if (lastLineElement.left === undefined && lastLineElement.right !== undefined) {
         //Case if the user clicks a right element but then clicks another right element, so just the most recent selected circle is used
         updatedLines = updatedLines.map((element, index) => {
           if (index === updatedLines.length - 1) {
-            return { right: right.current[circleIndex].current };
+            return { right: right.current?.[circleIndex].current };
           } else {
             return element;
           }
@@ -190,7 +227,7 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
 
   //Remove all the lines from the canvas/state
   const removeAllLines = () => {
-    setHighlightSelectedCircle();
+    setHighlightSelectedCircle(null);
     setHighlightLeft(false);
     setHighlightRight(false);
     //Reset the state to empty array
@@ -201,7 +238,7 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
   useImperativeHandle(ref, () => ({
     //Check if the answer is correct.
     checkAnswer() {
-      setHighlightSelectedCircle();
+      setHighlightSelectedCircle(null);
       setHighlightRight(false);
       setHighlightLeft(false);
 
@@ -211,15 +248,11 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
       const everySolutionInState = options.correctMatches.every((match) => {
         const isEqualTest = lines.some((line) => {
           const matchObject = {
-            left: line.left?.attributes.ident.value,
-            right: line.right?.attributes.ident.value,
+            left: line.left?.getAttribute("data-ident"),
+            right: line.right?.getAttribute("data-ident"),
           };
 
-          if (isEqual(match, matchObject)) {
-            return true;
-          } else {
-            return false;
-          }
+          return isEqual(match, matchObject);
         });
 
         return isEqualTest;
@@ -292,8 +325,8 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
                   }`}
-                  ref={left.current[index]}
-                  ident={id}
+                  ref={left.current?.[index]}
+                  data-ident={id}
                   type='button'
                   onClick={() => updateLeftLine(index)}
                 />
@@ -317,8 +350,8 @@ export const ExtendedMatch = forwardRef(({ options, formDisabled }, ref) => {
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === `right-${index}` && "highlight-single-circle"
                   }`}
-                  ref={right.current[index]}
-                  ident={id}
+                  ref={right.current?.[index]}
+                  data-ident={id}
                   type='button'
                   onClick={() => updateRightLine(index)}
                 />
