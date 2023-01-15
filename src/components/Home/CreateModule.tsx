@@ -9,18 +9,10 @@ import packageJson from "../../../package.json";
 import { moduleAlreadyInStorage } from "./helpers";
 
 //interfaces
-import { IQuestion } from "../QuestionEditor/QuestionEditor";
+import { IModule } from "../module/module";
 
 interface ICreateModule {
   handleModalClose: () => void;
-}
-
-export interface IModule {
-  id: string;
-  name: string;
-  lang: "de" | "en" | (string & {});
-  compatibility: string;
-  questions: IQuestion[];
 }
 
 export const CreateModule = ({ handleModalClose }: ICreateModule) => {
@@ -33,6 +25,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
     defaultValues: {
       id: "",
       name: "",
+      type: "module",
       lang: "",
       compatibility: packageJson.version,
       questions: [],

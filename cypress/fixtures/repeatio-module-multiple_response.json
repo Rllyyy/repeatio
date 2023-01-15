@@ -1,6 +1,7 @@
 {
   "id": "multiple_response",
   "name": "Test multiple response question type",
+  "type": "module",
   "lang": "en",
   "compatibility": "0.4.0",
   "questions": [

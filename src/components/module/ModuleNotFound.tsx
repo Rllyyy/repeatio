@@ -1,7 +1,7 @@
 import { useState, useLayoutEffect } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import { IParams } from "../../utils/types";
-import { IModule } from "../Home/CreateModule";
+import { IModule } from "./module";
 
 //Css
 import "./ModuleNotFound.css";

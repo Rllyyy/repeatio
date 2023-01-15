@@ -18,7 +18,7 @@ interface IImportModule {
 export interface IFile extends File {
   id: string;
   alreadyExistInLS?: boolean;
-  fileType?: "bookmark" | "module";
+  fileType?: "marked" | "module" | "bookmark";
 }
 
 export const ImportModule = ({ handleModalClose }: IImportModule) => {
@@ -36,7 +36,7 @@ export const ImportModule = ({ handleModalClose }: IImportModule) => {
         const fileTypeAndID = await getFileTypeAndID(acceptedFile);
 
         //Check if the imported file is a bookmark file and show error if so
-        if (fileTypeAndID.fileType === "bookmark") {
+        if (fileTypeAndID.fileType === "marked" || fileTypeAndID.fileType === "bookmark") {
           toast.error(
             `Failed to import the bookmarked questions for "${fileTypeAndID.id}"! Navigate to the module and click import inside the 3 dots found at 'Bookmarked Questions' to import bookmarked Questions!`,
             { autoClose: 12000 }

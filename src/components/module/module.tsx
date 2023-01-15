@@ -37,10 +37,11 @@ import {
 //TODO
 // - test if no saved questions but then imported => should enable export
 
-interface IModule {
+export interface IModule {
   id: string;
   name: string;
-  lang: "en" | "de";
+  type?: "module";
+  lang: "en" | "de" | (string & {});
   compatibility: string;
   questions: IQuestion[];
 }
@@ -110,7 +111,7 @@ export const Module = () => {
         `repeatio-marked-${moduleID}`,
         JSON.stringify({
           id: moduleID,
-          type: "bookmark",
+          type: "marked",
           compatibility: packageJSON.version,
           questions: bookmarkedLocalStorageItem,
         })

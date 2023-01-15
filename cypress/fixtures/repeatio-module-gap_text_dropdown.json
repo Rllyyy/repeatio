@@ -1,6 +1,7 @@
 {
   "id": "gap_text_dropdown",
   "name": "Test gap text with dropdown question type",
+  "type": "module",
   "lang": "en",
   "compatibility": "0.4.0",
   "questions": [

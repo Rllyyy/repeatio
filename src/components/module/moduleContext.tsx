@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
 import { parseJSON } from "../../utils/parseJSON";
-import { IModule } from "../Home/CreateModule";
+import { IModule } from "./module";
 
 export interface IModuleContext {
   moduleData: IModule;

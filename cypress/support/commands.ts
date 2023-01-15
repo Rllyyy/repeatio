@@ -68,10 +68,8 @@ Cypress.Commands.add("mount", (component, options) => {
 //Add a fixture to the localStorage
 Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
   cy.fixture(fileName).then((fileContent) => {
-    //get string before "." (the file ending)
-    localStorage.setItem(fileName.split(".")[0], JSON.stringify(fileContent, null, "\t"));
-    //TODO if bookmarked and module json files have the property type and id change to this
-    //localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
+    //Build localStorage name from the type (module/marked) and the id
+    localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
   });
 });
 

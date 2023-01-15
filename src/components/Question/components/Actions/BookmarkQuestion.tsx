@@ -16,7 +16,7 @@ export type TBookmarkedQuestionID = IQuestion["id"];
 
 export interface IBookmarkedQuestions {
   id: string;
-  type: "bookmark";
+  type: "marked";
   compatibility: string;
   questions: TBookmarkedQuestionID[] | null | undefined;
 }
@@ -53,7 +53,7 @@ export const BookmarkQuestion = ({ questionID, disabled, ...props }: IBookmarkQu
       //Get comb, set id with params;
       const newBookmarkedItem: IBookmarkedQuestions = {
         id: moduleID || "error", //TODO change this
-        type: "bookmark",
+        type: "marked",
         compatibility: packageJSON.version,
         questions: [id],
       };

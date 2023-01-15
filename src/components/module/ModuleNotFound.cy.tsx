@@ -33,6 +33,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
     const localStorageItemContent = {
       id: "lsi-1",
       name: "Z Module",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
@@ -47,6 +48,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
     const localStorageItemContent2 = {
       id: "lsi-2",
       name: "B Module",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],

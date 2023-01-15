@@ -1,6 +1,7 @@
 {
   "id": "multiple_choice",
   "name": "Test multiple choice question type",
+  "type": "module",
   "lang": "en",
   "compatibility": "0.4.0",
   "questions": [

@@ -73,7 +73,7 @@ describe("Bookmark a Question", () => {
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.eq("types_1");
-        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.type).to.equal("marked");
         expect(bookmarkedItem?.compatibility).to.eq("0.4.0");
         expect(bookmarkedItem?.questions).to.include("qID-1");
       });
@@ -95,7 +95,7 @@ describe("Bookmark a Question", () => {
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.equal("types_1");
-        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.type).to.equal("marked");
         expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
         expect(bookmarkedItem?.questions).to.deep.equal(["qID-1", "qID-3", "qID-2"]);
       });
@@ -119,7 +119,7 @@ describe("Bookmark a Question", () => {
       .should(() => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.equal("types_1");
-        expect(bookmarkedItem?.type).to.equal("bookmark");
+        expect(bookmarkedItem?.type).to.equal("marked");
         expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
         expect(bookmarkedItem?.questions).not.to.include("qID-1");
       });

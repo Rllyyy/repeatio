@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { IModule } from "../../src/components/Home/CreateModule";
+import { IModule } from "../../src/components/module/module";
 import { IGapText } from "../../src/components/Question/QuestionTypes/GapText/GapText";
 import { IMultipleChoice } from "../../src/components/Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { parseJSON } from "../../src/utils/parseJSON";

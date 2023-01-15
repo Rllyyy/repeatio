@@ -112,7 +112,7 @@ describe("Test import of bookmarked Questions", () => {
         .should(() => {
           const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
           expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
-          expect(bookmarkedLocalStorageItem?.type).to.equal("bookmark");
+          expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
           expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
         });
     });
@@ -263,7 +263,7 @@ describe("Transform from Bookmark to v0.4 Test", () => {
       const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
 
       expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
-      expect(bookmarkedLocalStorageItem?.type).to.equal("bookmark");
+      expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
       expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.4.0");
       expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
     });
@@ -279,7 +279,7 @@ describe("Transform from Bookmark to v0.4 Test", () => {
 export function buildBookmarkFile(moduleID: "types_1" | (string & {}), questions: IBookmarkedQuestions["questions"]) {
   const fileContent = {
     id: moduleID,
-    type: "bookmark",
+    type: "marked",
     compatibility: "0.4.0",
     questions: questions,
   };

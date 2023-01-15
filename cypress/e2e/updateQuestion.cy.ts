@@ -1,9 +1,14 @@
 /// <reference types="cypress" />
-import { IModule } from "../../src/components/Home/CreateModule";
-import { getBookmarkedLocalStorageItem } from "../../src/components/Question/components/Actions/BookmarkQuestion";
-import { IGapText, IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+
 import { parseJSON } from "../../src/utils/parseJSON";
 
+// Interfaces
+import { IModule } from "../../src/components/module/module";
+import { getBookmarkedLocalStorageItem } from "../../src/components/Question/components/Actions/BookmarkQuestion";
+import { IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+import { IGapText } from "../../src/components/Question/QuestionTypes/GapText/GapText";
+
+// Test
 describe("Updating a question using the Question editor", () => {
   beforeEach(() => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
@@ -161,7 +166,7 @@ describe("Updating a question using the Question editor", () => {
     //Setup localStorage bookmark item
     const newBookmarkLocalStorageItem = {
       id: "cypress_1",
-      type: "bookmark",
+      type: "marked",
       compatibility: "0.4.0",
       questions: ["qID-1", "qID-6"],
     };

@@ -20,7 +20,7 @@ import Checkbox from "@mui/material/Checkbox";
 
 //Types & Interfaces
 import { IParams } from "../../utils/types";
-import { IModule } from "../Home/CreateModule";
+import { IModule } from "../module/module";
 import { IQuestion } from "../QuestionEditor/QuestionEditor";
 
 export const QuestionList = () => {

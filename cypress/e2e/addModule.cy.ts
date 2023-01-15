@@ -1,7 +1,8 @@
 /// <reference types="cypress" />
 import { version } from "../../package.json";
-import { IModule } from "../../src/components/Home/CreateModule";
 import { parseJSON } from "../../src/utils/parseJSON";
+
+import { IModule } from "../../src/components/module/module";
 
 /* This file contains e2e tests for the AddModule component which itself contains of the ImportModule and CreateModule component .
 All lot more component tests can be found in und src/components/Home/...
@@ -66,6 +67,7 @@ describe("Test importing a new module", () => {
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.id).to.equal("cypress_1");
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
+        expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
         expect(localStorageItem?.compatibility).to.equal("0.4.0");
         expect(localStorageItem?.questions).to.have.length(6);

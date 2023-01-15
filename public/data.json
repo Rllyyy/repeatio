@@ -1,6 +1,7 @@
 {
   "id": "types_1",
   "name": "Question Types",
+  "type": "module",
   "lang": "en",
   "compatibility": "0.4.0",
   "questions": [
@@ -128,7 +129,7 @@
     },
     {
       "id": "qID-5",
-      "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
+      "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br />Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
       "points": 5,
       "type": "extended-match",
       "help": "Connect the dots.",

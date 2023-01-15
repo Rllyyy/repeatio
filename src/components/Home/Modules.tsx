@@ -16,10 +16,10 @@ import { BiTrash } from "react-icons/bi";
 
 //Functions
 import { saveFile } from "../../utils/saveFile";
+import { parseJSON } from "../../utils/parseJSON";
 
 //Interfaces and Types
-import { IModule } from "./CreateModule";
-import { parseJSON } from "../../utils/parseJSON";
+import { IModule } from "../module/module";
 
 //Component
 export const Modules = () => {

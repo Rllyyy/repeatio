@@ -6,7 +6,7 @@ import { CustomToastContainer } from "../toast/toast";
 import { MemoryRouter } from "react-router-dom";
 import packageJSON from "../../../package.json";
 import { parseJSON } from "../../utils/parseJSON";
-import { IModule } from "./CreateModule";
+import { IModule } from "../module/module";
 
 // CSS
 import "../../index.css";
@@ -59,6 +59,7 @@ describe("Creating a module", () => {
 
         expect(localStorageItem?.id).to.equal("test_cy_1");
         expect(localStorageItem?.name).to.equal("Module created with cypress");
+        expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
         expect(localStorageItem?.compatibility).to.equal("0.4.0");
         expect(localStorageItem?.questions).to.have.length(0);
@@ -238,6 +239,7 @@ describe("Creating a module", () => {
 
         expect(localStorageItem?.id).to.equal("cypress_2");
         expect(localStorageItem?.name).to.equal("Module created with cypress");
+        expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
         expect(localStorageItem?.compatibility).to.equal("0.4.0");
         expect(localStorageItem?.questions).to.have.length(0);

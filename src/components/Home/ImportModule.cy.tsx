@@ -4,7 +4,7 @@ import { ImportModule } from "./ImportModule";
 import { CustomToastContainer } from "../toast/toast";
 import { MemoryRouter } from "react-router-dom";
 import { parseJSON } from "../../utils/parseJSON";
-import { IModule } from "./CreateModule";
+import { IModule } from "../module/module";
 
 import "../../index.css";
 import "./AddModule.css";
@@ -55,6 +55,7 @@ describe("Importing a Module", () => {
 
         expect(localStorageItem?.id).to.equal("cypress_1");
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
+        expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
         expect(localStorageItem?.compatibility).to.equal("0.4.0");
         expect(localStorageItem?.questions).to.have.length(6);
@@ -107,6 +108,7 @@ describe("Importing a Module", () => {
 
         expect(localStorageItem?.id).to.equal("cypress_1");
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
+        expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
         expect(localStorageItem?.compatibility).to.equal("0.4.0");
         expect(localStorageItem?.questions).to.have.length(6);
@@ -151,6 +153,7 @@ describe("Importing a Module", () => {
     const localStorageItemContent = {
       id: "lsi-1",
       name: "Local Storage Item 1",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
@@ -215,6 +218,7 @@ describe("Importing a Module", () => {
     const fileContent = {
       id: "file_1",
       name: "File 1",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
@@ -316,6 +320,7 @@ describe("Importing a Module", () => {
     const replacerModuleContent = {
       id: "cypress_1",
       name: "This module was replaced by cypress",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
@@ -398,6 +403,7 @@ describe("Importing a Module", () => {
     const fileContent = {
       id: "file_1",
       name: "File 1",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
@@ -415,6 +421,7 @@ describe("Importing a Module", () => {
     const fileContent2 = {
       id: "file_2",
       name: "File 2",
+      type: "module",
       lang: "en",
       compatibility: "0.4.0",
       questions: [],
