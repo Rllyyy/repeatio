@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { IParams } from "../../utils/types";
 
 //Interfaces + Types
-import { IQuestion } from "./QuestionEditor";
+import { IQuestion } from "../Question/useQuestion";
 
 //The order of give functions is important
 export function validator({

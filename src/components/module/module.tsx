@@ -8,7 +8,7 @@ import { GridCards } from "../GridCards/GridCards";
 import { SiteHeading } from "../SiteHeading/SiteHeading";
 import { Card, LinkElement, ButtonElement } from "../Card/Card";
 import { Spinner } from "../Spinner/Spinner";
-import { IQuestion, QuestionEditor } from "../QuestionEditor/QuestionEditor";
+import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
 import { ModuleNotFound } from "./ModuleNotFound";
@@ -33,6 +33,7 @@ import {
   getBookmarkedQuestionsFromModule,
   IBookmarkedQuestions,
 } from "../Question/components/Actions/BookmarkQuestion";
+import { IQuestion } from "../Question/useQuestion";
 
 //TODO
 // - test if no saved questions but then imported => should enable export

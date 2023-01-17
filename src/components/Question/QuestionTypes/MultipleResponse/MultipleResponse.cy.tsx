@@ -179,11 +179,25 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
     // Submit the form
     cy.get("button[type='submit']").click();
 
-    // Click reset button
+    // Click retry button
     cy.get("button[aria-label='Retry Question']").click();
 
     // Assert that the checkbox input is not checked
     cy.get("input[value='option-0']").should("not.be.checked");
+  });
+
+  it("should remove the outline on retry click ", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='multiple_response' questionID='mr-1' />);
+
+    // Submit form
+    cy.get("button[type='submit']").click();
+
+    // Click on retry button
+    cy.get("button[aria-label='Retry Question']").click();
+
+    // Get the elements that had the outline after the submit and assert that they have no outline
+    cy.contains("This is the correct multiple response value").should("have.css", "outlineWidth", "0px");
+    cy.contains("This is another correct multiple response value").should("have.css", "outlineWidth", "0px");
   });
 
   it("should randomize the options after retry click", { retries: 10 }, () => {
@@ -215,7 +229,7 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
       });
   });
 
-  it("should disable all input in form after submit", () => {
+  it("should disable all input in form on submit", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='multiple_response' questionID='mr-1' />);
 
     // Submit form

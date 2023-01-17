@@ -137,13 +137,13 @@ describe("Multiple Choice component inside Question component", () => {
   it("should keep the order of radio items after the reset button click", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='multiple_choice' questionID='mc-1' />);
 
-    let orderBeforeRetryClick: string[] = [];
+    let orderBeforeResetClick: string[] = [];
 
     cy.get("span.formControlLabel-typography")
       .find("p")
       .then((paragraphs) => {
         // store order of items in array
-        orderBeforeRetryClick = paragraphs.get().map((paragraph) => paragraph.textContent || "");
+        orderBeforeResetClick = paragraphs.get().map((paragraph) => paragraph.textContent || "");
       });
 
     // Click on reset button
@@ -157,7 +157,7 @@ describe("Multiple Choice component inside Question component", () => {
         const orderAfterRetryClick = paragraphs.get().map((paragraph) => paragraph.textContent || "");
 
         // Assert that both arrays are identical
-        expect(orderBeforeRetryClick).to.deep.eq(orderAfterRetryClick);
+        expect(orderBeforeResetClick).to.deep.eq(orderAfterRetryClick);
       });
   });
 
@@ -170,11 +170,24 @@ describe("Multiple Choice component inside Question component", () => {
     // Submit the form
     cy.get("button[type='submit']").click();
 
-    // Click reset button
+    // Click retry button
     cy.get("button[aria-label='Retry Question']").click();
 
     // Assert that the radio input is not checked
     cy.get("input[value='option-0']").should("not.be.checked");
+  });
+
+  it("should remove the outline on retry click ", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='multiple_choice' questionID='mc-1' />);
+
+    // Submit form
+    cy.get("button[type='submit']").click();
+
+    // Click on retry button
+    cy.get("button[aria-label='Retry Question']").click();
+
+    // Get the element that had the outline after the submit and assert that it has no outline
+    cy.get("label[data-testid='option-0']").should("have.css", "outlineWidth", "0px");
   });
 
   it("should randomize the options after retry click", { retries: 10 }, () => {
@@ -206,7 +219,7 @@ describe("Multiple Choice component inside Question component", () => {
       });
   });
 
-  it("should disable all input in form after submit", () => {
+  it("should disable all input in form on submit", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='multiple_choice' questionID='mc-1' />);
 
     // Submit form
@@ -412,4 +425,4 @@ describe("Multiple Choice component inside Question component", () => {
   });
 });
 
-//TODO: - On reset click order should stay the same
+// Should remove oultine on

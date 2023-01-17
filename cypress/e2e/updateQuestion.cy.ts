@@ -5,7 +5,7 @@ import { parseJSON } from "../../src/utils/parseJSON";
 // Interfaces
 import { IModule } from "../../src/components/module/module";
 import { getBookmarkedLocalStorageItem } from "../../src/components/Question/components/Actions/BookmarkQuestion";
-import { IQuestion } from "../../src/components/QuestionEditor/QuestionEditor";
+import { IQuestion } from "../../src/components/Question/useQuestion";
 import { IGapText } from "../../src/components/Question/QuestionTypes/GapText/GapText";
 
 // Test

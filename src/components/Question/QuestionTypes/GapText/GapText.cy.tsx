@@ -1,6 +1,12 @@
 /// <reference types="cypress" />
 
+import { MemoryRouter, Route } from "react-router-dom";
+import { ModuleProvider } from "../../../module/moduleContext";
+import { Question } from "../../Question";
 import { GapText } from "./GapText";
+
+import { IParams } from "../../../../utils/types";
+
 import "../../../../index.css";
 import "../../Question.css";
 
@@ -226,5 +232,444 @@ describe("GapText", () => {
     cy.mount(<GapText options={options} formDisabled={false} />);
     cy.contains("strong", "test");
     cy.get("input").should("exist");
+  });
+});
+
+//Setup Router to access context and useParams
+const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
+  return (
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+      <main style={{ marginTop: 0 }}>
+        <ModuleProvider>
+          <Route path='/module/:moduleID/question/:questionID' component={Question} />
+        </ModuleProvider>
+      </main>
+    </MemoryRouter>
+  );
+};
+
+describe("Gap Text component inside Question component", () => {
+  // Add localStorage item before each test
+  beforeEach(() => {
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+  });
+
+  it("should render GapText component with one input", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    // Assert that one input elements renders and the input can be typed into
+    cy.get("input#input-0").should("have.length", 1);
+    cy.get("input#input-0").type("first").should("have.value", "first");
+  });
+
+  it("should not submit the question on enter key press", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    cy.get("input#input-0").type("{enter}");
+    cy.get("section.question-correction").should("not.exist");
+  });
+
+  it("should reset the input values if clicking on the reset button", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    cy.get("input#input-0").type("reset this", { delay: 2 });
+    cy.get("button[aria-label='Reset Question']").click();
+    cy.get("input#input-0").should("not.have.value", "reset this").and("have.value", "");
+  });
+
+  it("should reset the values if clicking on retry button and check answer with new values", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    cy.get("input#input-0").type("retry this", { delay: 2 });
+    cy.get("button[type='submit']").click(); //submit question
+    cy.get("button[aria-label='Retry Question']").click(); //click retry
+    cy.get("input#input-0").should("not.have.value", "retry this").and("have.value", "");
+
+    //Check to type again
+    cy.get("input#input-0").type("first").should("have.value", "first");
+    cy.get("button[type='submit']").click();
+
+    cy.contains("Yes, that's correct!");
+  });
+
+  it("should reset the border color on retry click to gray", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    //Submit Question and click retry button
+    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Retry Question']").click();
+
+    cy.get("input#input-0").should("have.css", "border", "1px solid rgb(180, 180, 180)");
+  });
+
+  it("should disable all input elements on question submit", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    // Submit Question
+    cy.get("button[type='submit']").click();
+
+    // Assert that all input elements are disabled
+    cy.get("section.question-user-response")
+      .get("input")
+      .each(($el) => {
+        expect($el).to.have.prop("disabled", true);
+      });
+  });
+
+  it("should enable all input elements on retry question click", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+    // Submit Question and click retry
+    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Retry Question']").click();
+
+    // Assert that all input elements are disabled
+    cy.get("section.question-user-response")
+      .get("input")
+      .each(($el) => {
+        expect($el).to.have.prop("disabled", false);
+      });
+  });
+
+  it("should enable all inputs after submit and navigating to next question", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    // Submit form and navigate to next question
+    cy.get("button[type='submit']").click().click();
+
+    // Assert each element to be enabled (not disabled)
+    cy.get("section.question-user-response")
+      .get("input")
+      .each(($el) => {
+        expect($el).to.have.prop("disabled", false);
+      });
+
+    // Assert that element is still interactive
+    cy.get("input#input-0").type("second").should("have.value", "second");
+  });
+
+  it("should clear the values if navigating to the next question and use the new values for correction", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+    // Type into the input
+    cy.get("input#input-0").type("first", { delay: 2 });
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Navigate to new site
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    // Assert that the input has empty value after navigation
+    cy.get("input#input-0").should("have.value", "");
+
+    // Check correct answer
+    cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
+
+    // Submit question
+    cy.get("button[type='submit']").click();
+
+    // Check correction
+    cy.contains("Yes, that's correct!").should("exist");
+  });
+
+  context("Question correction on submit", () => {
+    it("should show that the answer is correct if the answer is correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      // Type correct input
+      cy.get("input#input-0").type("third");
+      cy.get("input#input-1").type("contains");
+      cy.get("input#input-2").type("one");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is correct
+      cy.contains("Yes, that's correct!");
+    });
+
+    it("should show that the answer is correct if the answer is correct but entered in a non chronological order", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      // Type correct input
+      cy.get("input#input-2").type("one");
+      cy.get("input#input-0").type("third");
+      cy.get("input#input-1").type("contains");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is correct
+      cy.contains("Yes, that's correct!");
+    });
+
+    it("should show the answer as correct if the input has multiple correct values", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-4' />);
+
+      // Type correct values using "1"
+      cy.get("input#input-0").type("1");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is correct
+      cy.contains("Yes, that's correct!");
+
+      // Retry question
+      cy.get("button[aria-label='Retry Question']").click();
+
+      // Type correct values using "one"
+      cy.get("input#input-0").type("one");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is correct
+      cy.contains("Yes, that's correct!");
+    });
+
+    it("should show question correction after submit even if answer was correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type correct input
+      cy.get("input#input-0").type("first");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer correction works
+      cy.get(".question-correction").contains("This is the").should("exist");
+      cy.get(".question-correction").find(".correct-gap-value").should("have.text", "first");
+    });
+
+    it("should separate the items in the question correction with semicolons", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-4' />);
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the values are separated by semicolons
+      cy.get(".correct-gap-value").should("have.text", "1; one; One");
+    });
+
+    it("should show that the given answer is incorrect", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type incorrect value
+      cy.get("input#input-0").type("false");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Check correction
+      cy.contains("No, that's false!").should("exist");
+    });
+
+    it("should show question correction after submit if answer was incorrect", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type correct input
+      cy.get("input#input-0").type("last");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer correction works
+      cy.get(".question-correction").contains("This is the").should("exist");
+      cy.get(".question-correction").find(".correct-gap-value").should("have.text", "first");
+    });
+
+    it("should work after moving from a question with one input to multiple inputs", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-2' />);
+
+      cy.get("input#input-0").type("second");
+
+      cy.get("button[type='submit']").click().click();
+
+      cy.get("input#input-0").type("third").should("have.value", "third");
+      cy.get("input#input-1").type("contains", { delay: 2 }).should("have.value", "contains");
+      cy.get("input#input-2").type("1").should("have.value", "1");
+
+      cy.get("button[type='submit']").click();
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
+    //BORDERS
+    it("should render green border on input element if the answer if correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type correct input
+      cy.get("input#input-0").type("first");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+    });
+
+    it("should show red border on input element if the answer of the user is incorrect or the user didn't input anything", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      // Type incorrect answer
+      cy.get("input#input-0").type("last");
+
+      // submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green on the elements
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("input#input-1").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+    });
+
+    it("should render a red border if the user doesn't input anything and show answer as incorrect", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green on the elements
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+
+      // Assert that the given answer is incorrect
+      cy.contains("No, that's false!").should("exist");
+    });
+
+    it("should add a green border to the correctly answered gap and a red border to those answered incorrectly", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      // Type correct value
+      cy.get("input#input-1").type("multiple");
+
+      // Type incorrect value
+      cy.get("input#input-2").type("false");
+
+      // submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green or red on the input elements
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("input#input-1").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+
+      // Assert that the given answer is incorrect
+      cy.contains("No, that's false!").should("exist");
+    });
+
+    it("should show the answer as correct if the first answer was incorrect but the user clicked retry and answered correctly", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type incorrect input
+      cy.get("input#input-0").type("false");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Retry question
+      cy.get("button[aria-label='Retry Question']").click();
+
+      // Type correct input
+      cy.get("input#input-0").type("first");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is correct
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
+    it("should show the answer as incorrect if the first answer was correct but the user clicked retry and answered incorrectly", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type correct input
+      cy.get("input#input-0").type("first");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      // Retry question
+      cy.get("button[aria-label='Retry Question']").click();
+
+      // Type incorrect input
+      cy.get("input#input-0").type("incorrect");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the answer is incorrect
+      cy.contains("No, that's false!").should("exist");
+    });
+  });
+
+  context("Markdown and HTML elements", () => {
+    it("should render list", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-5' />);
+
+      // Assert that the list has two items
+      cy.get(".question-user-response ul").find("li").should("have.length", 2);
+
+      // Assert that there is a p element after the list
+      cy.contains("p", "This should not be a list item").should("exist");
+    });
+
+    it("should render list after content without any white space", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-6' />);
+
+      cy.get(".question-user-response ul").find("li").should("have.length", 2);
+      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 150);
+    });
+
+    it("should render markdown table", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-7' />);
+
+      //Testing that white-space isn't pushing the table out of view
+      cy.get("table").should("exist").and("be.visible");
+      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 180);
+      cy.get("input#input-0").type("work").should("have.value", "work");
+
+      cy.contains("Text below table").should("be.visible");
+      cy.contains("strong", "table").should("exist");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      cy.contains("Yes, that's correct!").should("exist");
+      cy.get(".question-correction").invoke("height").should("be.greaterThan", 47);
+    });
+
+    it("should render html table", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-8' />);
+
+      // Assert that the table is in view and the values get rendered
+      cy.get("table").should("exist").and("be.visible");
+      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 180);
+      cy.get("td .input-wrapper").find("input").type("work").should("have.value", "work");
+      cy.contains("em", "italic");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      cy.contains("Yes, that's correct!").should("exist");
+      cy.get(".question-correction").invoke("height").should("be.greaterThan", 47);
+    });
+
+    it("should allow multiple blank spaces in front of the actual test", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-9' />);
+
+      cy.contains("Should not break with a lot of white-spaces.").should("exist");
+    });
+
+    it("should render markdown list if the first item is a gap", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-10' />);
+
+      // Assert that the list renders and there is a gap in the beginning
+      cy.contains("li", "List").should("exist");
+      cy.get("input#input-0").should("exist");
+    });
   });
 });

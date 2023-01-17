@@ -113,6 +113,7 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         <input
           type='text'
           key={`input-${index}`}
+          id={`input-${index}`}
           disabled={formDisabled}
           autoCapitalize='off'
           autoComplete='off'

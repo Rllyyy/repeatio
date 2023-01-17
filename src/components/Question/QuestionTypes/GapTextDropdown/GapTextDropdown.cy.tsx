@@ -237,7 +237,7 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       });
   });
 
-  it("should clear all select values on reset button click", () => {
+  it("should clear all select values on retry button click", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
 
     // Select values
@@ -251,6 +251,16 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     // Assert that the value has cleared
     cy.get("select#select-0").should("have.value", "");
     cy.get("select#select-1").should("have.value", "");
+  });
+
+  it("should reset the border color on retry click to gray", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+    //Submit Question and click retry button
+    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Retry Question']").click();
+
+    cy.get("select#select-0").should("have.css", "border", "1px solid rgb(180, 180, 180)");
   });
 
   it("should render the same order of options after question retry", { retries: 10 }, () => {
@@ -282,8 +292,6 @@ describe("Gap Text with Dropdown component inside Question component", () => {
         expect(itemsOrderBeforeRetry).not.to.deep.eq(itemsOrderAfterRetry);
       });
   });
-
-  // ----------------------------- Disabled tests ------------------------------------//
 
   it("should disable all select elements on question submit", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
@@ -375,6 +383,20 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       cy.contains("Yes, that's correct!").should("exist");
     });
 
+    it("should show that the answer is correct if the answer is correct but entered in a non chronological order", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+      // Select correct values in non chronological order
+      cy.get("select#select-1").select("fixture");
+      cy.get("select#select-0").select("Gap Text with Dropdown");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Check correction
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
     it("should show question correction after submit even if answer was correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
 
@@ -419,6 +441,62 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       cy.get(".question-correction").contains("Gap Text with Dropdown").should("exist");
       cy.get(".question-correction").contains("question comes from").should("exist");
       cy.get(".question-correction").contains("fixture").should("exist");
+    });
+
+    it("should work after moving from a question with one input to multiple inputs", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-2' />);
+
+      cy.get("select#select-0").select("second");
+
+      // Click show navigation button that only exists on small displays
+      cy.get("body").then((body) => {
+        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+          cy.get("button[aria-label='Show Navigation']").click();
+        }
+      });
+
+      // Navigate to new site
+      cy.get("button[aria-label='Navigate to previous Question']").click();
+
+      // Select correct values
+      cy.get("select#select-0").select("Gap Text with Dropdown");
+      cy.get("select#select-1").select("fixture");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Check correction
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
+    // BORDER
+    it("should show green border on select element if the answer of the user is correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+      // Select correct answers
+      cy.get("select#select-0").select("Gap Text with Dropdown");
+      cy.get("select#select-1").select("fixture");
+
+      // submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green on both elements
+      cy.get("select#select-0").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+      cy.get("select#select-1").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+    });
+
+    it("should show red border on select element if the answer of the user is incorrect or the user didn't select anything", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+      // Select incorrect answer
+      cy.get("select#select-0").select("Gap Text");
+
+      // submit Question
+      cy.get("button[type='submit']").click();
+
+      // Assert that the the border changes to green on both elements
+      cy.get("select#select-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("select#select-1").should("have.css", "border", "1px solid rgb(255, 0, 0)");
     });
 
     it("should show answer as incorrect if the user doesn't select anything", () => {
@@ -480,13 +558,3 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     });
   });
 });
-
-// test
-// - Consider adding a try catch with error
-
-// Inside Question
-
-// - different order after reset + same order after
-// - correct after false
-
-//TODO : - css border

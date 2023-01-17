@@ -1,16 +1,20 @@
 import { useState } from "react";
 
-//Icons
+// Icons
 import { RiFileEditLine } from "react-icons/ri";
 
-//Components
+// Components
 import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
 
+// Interfaces
+import { IQuestion } from "../../useQuestion";
+
 interface EditQuestionI {
-  prevQuestionID: string;
+  prevQuestionID: IQuestion["id"] | undefined;
   disabled: boolean;
 }
 
+// Component
 export const EditQuestion = ({ prevQuestionID, disabled }: EditQuestionI) => {
   const [showModal, setShowModal] = useState(false);
 

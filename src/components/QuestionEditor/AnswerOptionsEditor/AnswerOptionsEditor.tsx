@@ -7,7 +7,7 @@ import { MultipleResponseEditor } from "./QuestionTypes/MultipleResponseEditor";
 import { GapTextEditor } from "./QuestionTypes/GapTextEditor";
 
 //Interfaces/Types
-import { TAnswerOptions, IQuestion } from "../QuestionEditor";
+import { TAnswerOptions, IQuestion } from "../../Question/useQuestion";
 import { IErrors } from "../QuestionEditor";
 import { IGapTextWithTempText } from "./QuestionTypes/GapTextEditor";
 import { IMultipleChoice } from "../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
@@ -25,7 +25,7 @@ import { CgExtensionRemove } from "react-icons/cg";
 import { FaMarkdown } from "react-icons/fa";
 
 interface IAnswerOptionsEditor {
-  questionType: string;
+  questionType: IQuestion["type"];
   answerValues: TAnswerOptions | undefined;
   handleEditorChange: any;
   answerOptionsError: string;
@@ -73,11 +73,17 @@ export const AnswerOptionsEditor = ({
         const { selectionStart, selectionEnd } = ref.current;
         if (selectionStart === selectionEnd) {
           //Not selection
-          handleEditorChange({ tempText: insertGapAtCaret(answerValues?.tempText, selectionStart) });
+          handleEditorChange({
+            tempText: insertGapAtCaret((answerValues as IGapTextWithTempText)?.tempText, selectionStart),
+          });
         } else {
           //selection
           handleEditorChange({
-            tempText: replaceSelectionWithGap(answerValues?.tempText, selectionStart, selectionEnd),
+            tempText: replaceSelectionWithGap(
+              (answerValues as IGapTextWithTempText)?.tempText,
+              selectionStart,
+              selectionEnd
+            ),
           });
         }
         ref.current.focus();
@@ -192,7 +198,13 @@ export const AnswerOptionsEditor = ({
 };
 
 //To find the correct question type
-const Switch = ({ questionType, children }: { questionType: IQuestion["type"]; children?: JSX.Element[] }) => {
+const Switch = ({
+  questionType,
+  children,
+}: {
+  questionType: IQuestion["type"] | "" | undefined;
+  children?: JSX.Element[];
+}) => {
   //Return the empty component if question type is undefined
   if (questionType === undefined) {
     return <Empty name='' />;

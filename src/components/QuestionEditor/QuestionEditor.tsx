@@ -36,6 +36,8 @@ import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/Bo
 import { IMultipleChoice } from "../Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IMultipleResponse } from "../Question/QuestionTypes/MultipleResponse/MultipleResponse";
+import { IQuestion } from "../Question/useQuestion";
+import { TAnswerOptions } from "../Question/useQuestion";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
@@ -65,17 +67,17 @@ export const QuestionEditor = ({
   );
 };
 
-export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapTextWithTempText;
+/* export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapTextWithTempText;
 
 //TODO change export to Question/Questions.tsx
-export interface IQuestion {
+interface IEditQuestion {
   id: string;
   title: string;
   points: string;
   help: string;
-  type: "multiple-choice" | "multiple-response" | "gap-text" | "gap-text-dropdown" | "extended-match" | (string & {});
+  type: "multiple-choice" | "multiple-response" | "gap-text" | "gap-text-dropdown" | "extended-match" | "";
   answerOptions: TAnswerOptions | undefined;
-}
+} */
 
 export interface IErrors {
   [x: string]: string;
@@ -127,7 +129,9 @@ export const Form = ({
       if (questionFromContext?.type === "gap-text" && !isSafari) {
         questionFromContext = {
           ...questionFromContext,
-          answerOptions: { tempText: getGapTextTempText(questionFromContext.answerOptions as IGapTextWithTempText) },
+          answerOptions: {
+            tempText: getGapTextTempText((questionFromContext as IQuestion).answerOptions as IGapTextWithTempText),
+          },
         };
       }
 
@@ -135,7 +139,7 @@ export const Form = ({
 
       //!Somehow it keeps the order of the answer options from the question
       //If this isn't the case anymore when using the storage, pass the question
-      setQuestion({ ...questionFromContext });
+      setQuestion({ ...questionFromContext } as IQuestion);
     }
 
     return () => {
@@ -488,7 +492,7 @@ const EditorFormInput = ({
 }: {
   labelText: string;
   type: string;
-  value?: string | number;
+  value?: IQuestion["id"] | IQuestion["points"];
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errors?: IErrors;
   setErrors?: React.Dispatch<React.SetStateAction<IErrors>>;

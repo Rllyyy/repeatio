@@ -26,7 +26,7 @@ import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
 import { ModuleContext } from "../module/moduleContext";
 
 //Hooks
-import { useQuestion } from "./useQuestion.js";
+import { useQuestion } from "./useQuestion";
 import { useSize } from "../../hooks/useSize";
 
 //SVG
@@ -34,6 +34,10 @@ import { BiCheck } from "react-icons/bi";
 import { BsChevronDoubleDown } from "react-icons/bs";
 import { CgUndo } from "react-icons/cg";
 import { MdNavigateNext } from "react-icons/md";
+
+//Interfaces
+import { IParams } from "../../utils/types";
+import { IQuestion, TUseQuestion } from "./useQuestion";
 
 //Main Question Component
 const Question = () => {
@@ -44,7 +48,6 @@ const Question = () => {
     handleSubmit,
     handleResetRetryQuestion,
     showAnswer,
-    setShowAnswer,
     answerCorrect,
     questionDataRef,
     questionAnswerRef,
@@ -60,7 +63,6 @@ const Question = () => {
         questionAnswerRef={questionAnswerRef}
         questionDataRef={questionDataRef}
         showAnswer={showAnswer}
-        setShowAnswer={setShowAnswer}
         answerCorrect={answerCorrect}
       />
       {/* -- Question Bottom includes checking/reset/actions(delete/edit/save) and the navigation --*/}
@@ -73,13 +75,33 @@ const Question = () => {
   );
 };
 
+// TODO maybe use Pick instead
+type TQuestionData = Pick<
+  TUseQuestion,
+  "question" | "loading" | "questionAnswerRef" | "questionDataRef" | "showAnswer" | "answerCorrect"
+>;
+/*   question: IQuestion | undefined;
+  loading: boolean;
+  showAnswer: boolean;
+  answerCorrect: boolean;
+  questionDataRef: React.RefObject<HTMLDivElement>;
+  questionAnswerRef: React.RefObject<IForwardRefFunctions>;
+} */
+
 //Question Data contains all the question info (title, points, type, help, answerOptions)
-const QuestionData = ({ question, loading, questionAnswerRef, questionDataRef, showAnswer, answerCorrect }) => {
+const QuestionData: React.FC<TQuestionData> = ({
+  question,
+  loading,
+  questionAnswerRef,
+  questionDataRef,
+  showAnswer,
+  answerCorrect,
+}) => {
   // Scroll to top
   //TODO would be great if this was handle by the question navigation
   useLayoutEffect(() => {
     if (!loading && question) {
-      questionDataRef.current.scrollTo({ top: 0, behavior: "instant" });
+      questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [loading, question, questionDataRef]);
 
@@ -112,13 +134,19 @@ const QuestionData = ({ question, loading, questionAnswerRef, questionDataRef, s
 };
 
 //QuestionBottom contains the checking/resetting of a question as well as the actions (save, edit, delete) and the navigation
-const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
+interface IQuestionBottom {
+  showAnswer: TUseQuestion["showAnswer"];
+  disabled: boolean;
+  handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
+}
+
+const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
   //States
   const [showNav, setShowNav] = useState(false);
-  const [collapsedActionsNav, setCollapsedActionsNav] = useState();
+  const [collapsedActionsNav, setCollapsedActionsNav] = useState<boolean | null>(null);
 
   //URL params
-  const params = useParams();
+  const params = useParams<IParams>();
 
   //Refs
   const questionBottomRef = useRef(null);
@@ -128,9 +156,9 @@ const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useLayoutEffect(() => {
-    if (size?.width > 800) {
+    if (size && size?.width > 800) {
       setCollapsedActionsNav(false);
-    } else if (size?.width <= 800) {
+    } else if (size && size?.width <= 800) {
       setCollapsedActionsNav(true);
     }
   }, [size?.width, size, setCollapsedActionsNav]);
@@ -170,7 +198,7 @@ const QuestionBottom = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
 };
 
 //ID and Progress of the current question
-const QuestionIdProgress = memo(({ qID }) => {
+const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   //Context
   const { filteredQuestions } = useContext(ModuleContext); //TODO remove this
 
@@ -187,7 +215,7 @@ const QuestionIdProgress = memo(({ qID }) => {
 });
 
 //Title of the question
-const QuestionTitle = ({ title }) => {
+const QuestionTitle = ({ title }: { title: IQuestion["title"] }) => {
   return (
     <ReactMarkdown
       className='question-title'
@@ -199,7 +227,7 @@ const QuestionTitle = ({ title }) => {
 };
 
 //Points of the question
-const QuestionPoints = ({ points }) => {
+const QuestionPoints = ({ points }: { points: IQuestion["points"] }) => {
   //Return the points value. If they are undefined return ?
   //If the value of point is equal to 1 return Point else return Points
   return (
@@ -210,7 +238,7 @@ const QuestionPoints = ({ points }) => {
 };
 
 //Help for the type of the question
-const QuestionTypeHelp = ({ help }) => {
+const QuestionTypeHelp = ({ help }: { help: IQuestion["help"] }) => {
   return (
     <ReactMarkdown
       className='question-type-help'
@@ -222,13 +250,20 @@ const QuestionTypeHelp = ({ help }) => {
 };
 
 //The correction of the question which scrolls into view on form submit (question check)
-const QuestionCorrection = ({ showAnswer, answerCorrect, questionAnswerRef }) => {
-  const questionCorrectionRef = useRef(null);
+
+interface IQuestionCorrection {
+  showAnswer: TUseQuestion["showAnswer"];
+  answerCorrect: TUseQuestion["answerCorrect"];
+  questionAnswerRef: TUseQuestion["questionAnswerRef"];
+}
+
+const QuestionCorrection: React.FC<IQuestionCorrection> = ({ showAnswer, answerCorrect, questionAnswerRef }) => {
+  const questionCorrectionRef = useRef<HTMLSelectElement>(null);
 
   //Sadly this has to run after the question correction component mounts and can therefore not be part of the handleSubmit function
   useEffect(() => {
     if (showAnswer) {
-      questionCorrectionRef.current.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+      questionCorrectionRef.current?.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
     }
   }, [showAnswer]);
 
@@ -245,14 +280,19 @@ const QuestionCorrection = ({ showAnswer, answerCorrect, questionAnswerRef }) =>
       <p className='question-correction-title'>
         {answerCorrect ? "Yes, that's correct!" : "No, that's false! The correct answer is:"}
       </p>
-      <div id='question-correction'>{questionAnswerRef.current.returnAnswer()}</div>
+      <div id='question-correction'>{questionAnswerRef.current?.returnAnswer()}</div>
     </section>
   );
 };
 
 //Check the question or navigate to next Question depending on if the correction for the answer is shown
+interface ICheckNextButton {
+  showAnswer: TUseQuestion["showAnswer"];
+  disabled: boolean;
+}
+
 //TODO warn if user tries to submit
-const CheckNextButton = ({ showAnswer, disabled }) => {
+const CheckNextButton: React.FC<ICheckNextButton> = ({ showAnswer, disabled }) => {
   return (
     <button
       type='submit'
@@ -267,7 +307,13 @@ const CheckNextButton = ({ showAnswer, disabled }) => {
   );
 };
 
-const QuestionRetryButton = ({ showAnswer, handleResetRetryQuestion, disabled }) => {
+interface IQuestionRetryButton {
+  showAnswer: TUseQuestion["showAnswer"];
+  handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
+  disabled: boolean;
+}
+
+const QuestionRetryButton: React.FC<IQuestionRetryButton> = ({ showAnswer, handleResetRetryQuestion, disabled }) => {
   return (
     <button
       className='question-retry'
@@ -282,7 +328,13 @@ const QuestionRetryButton = ({ showAnswer, handleResetRetryQuestion, disabled })
   );
 };
 
-const ShowQuestionNavButton = ({ showNav, setShowNav }) => {
+// Show or hide the question navigation bar on small displays
+interface IShowQuestionNavButton {
+  showNav: boolean;
+  setShowNav: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ShowQuestionNavButton: React.FC<IShowQuestionNavButton> = ({ showNav, setShowNav }) => {
   return (
     <button
       className='show-question-nav'

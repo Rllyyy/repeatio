@@ -1,4 +1,4 @@
-import { IQuestion } from "../../QuestionEditor/QuestionEditor";
+import { IQuestion } from "../useQuestion";
 
 export interface IQuestionTypeComponent {
   formDisabled: boolean;

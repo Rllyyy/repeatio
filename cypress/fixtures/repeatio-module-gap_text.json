@@ -64,7 +64,14 @@
       "type": "gap-text",
       "help": "Fill in the blanks.",
       "answerOptions": {
-        "text": "This line does not contain any [] gaps"
+        "text": "[] + 1 = 2",
+        "correctGapValues": [
+          [
+            "1",
+            "one",
+            "One"
+          ]
+        ]
       }
     },
     {

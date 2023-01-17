@@ -14,11 +14,11 @@ import { BiTrash } from "react-icons/bi";
 
 //Interfaces/Types
 import { IParams } from "../../../../utils/types";
-import { IQuestion } from "../../../QuestionEditor/QuestionEditor";
+import { IQuestion } from "../../useQuestion";
 
 interface IDeleteQuestion
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
-  questionID: IQuestion["id"];
+  questionID: IQuestion["id"] | undefined;
   disabled: boolean;
 }
 

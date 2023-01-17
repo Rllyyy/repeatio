@@ -13,6 +13,7 @@ export const Canvas = ({ lines }: { lines: IExtendedMatchLine[] | IExtendedMatch
   //Redraw the whole canvas
   useEffect(() => {
     if (canvasSize === undefined || lines.length <= 0 || canvasSize.width === undefined) {
+      // Clear the canvas
       const ctx = canvasRef.current?.getContext("2d");
       ctx?.clearRect(0, 0, ctx?.canvas.width, ctx?.canvas.height);
       return;
@@ -57,7 +58,8 @@ export const Canvas = ({ lines }: { lines: IExtendedMatchLine[] | IExtendedMatch
 
     return () => {
       try {
-        ctx?.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        // Using the ref width (more accurate) and canvas ctx as fallback
+        ctx?.clearRect(0, 0, canvasSize.width || ctx?.canvas.width, canvasSize.height || ctx?.canvas.height);
       } catch (error) {}
     };
   }, [canvasSize]); // eslint-disable-line react-hooks/exhaustive-deps

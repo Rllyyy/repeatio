@@ -10,7 +10,7 @@ import { MdBookmarkAdd, MdBookmarkRemove } from "react-icons/md";
 
 //Types or Interfaces
 import { IParams } from "../../../../utils/types";
-import { IQuestion } from "../../../QuestionEditor/QuestionEditor";
+import { IQuestion } from "../../useQuestion";
 
 export type TBookmarkedQuestionID = IQuestion["id"];
 
@@ -23,7 +23,7 @@ export interface IBookmarkedQuestions {
 
 interface IBookmarkQuestionComponent
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
-  questionID: TBookmarkedQuestionID;
+  questionID: TBookmarkedQuestionID | undefined;
   disabled?: boolean;
 }
 
@@ -89,6 +89,13 @@ export const BookmarkQuestion = ({ questionID, disabled, ...props }: IBookmarkQu
 
   //Add or remove the question id in the bookmark
   const onBookmarkClick = () => {
+    // Exist function if no questionID is given
+    if (!questionID) {
+      // TODO maybe add toast
+      console.warn("questionID is undefined!");
+      return;
+    }
+
     if (!bookmarked) {
       addQuestionToBookmark(questionID);
     } else {
@@ -103,7 +110,7 @@ export const BookmarkQuestion = ({ questionID, disabled, ...props }: IBookmarkQu
 
     //If the bookmark array exists for this module and the array includes the id,
     //set the state to saved else the question is not saved
-    if (bookmarkedQuestionsInItem !== null && bookmarkedQuestionsInItem?.includes(questionID)) {
+    if (bookmarkedQuestionsInItem !== null && questionID && bookmarkedQuestionsInItem?.includes(questionID)) {
       setBookmarked(true);
     } else {
       setBookmarked(false);

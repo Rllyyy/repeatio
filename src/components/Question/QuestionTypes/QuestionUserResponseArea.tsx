@@ -5,7 +5,8 @@ import { GapText, IGapText } from "./GapText/GapText";
 import { GapTextDropdown, IGapTextDropdown } from "./GapTextDropdown/GapTextDropdown";
 import { ExtendedMatch, IExtendedMatch } from "./ExtendedMatch/ExtendedMatch";
 
-import { IQuestion } from "../../QuestionEditor/QuestionEditor";
+// Interfaces
+import { IQuestion } from "../useQuestion";
 import { IForwardRefFunctions } from "./types";
 
 interface IQuestionUserResponseAreaProps {

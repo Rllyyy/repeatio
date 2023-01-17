@@ -1,6 +1,6 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import { Question } from "../Question.js";
+import { Question } from "../Question";
 import { ModuleContext } from "../../module/moduleContext";
 import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
 import { createMemoryHistory } from "history";
@@ -134,7 +134,7 @@ jest.mock("rehype-katex", () => (props) => {
 });
 
 //Override the default useSize hook
-jest.mock("../../../hooks/useSize.js", () => ({
+jest.mock("../../../hooks/useSize.ts", () => ({
   useSize: () => ({ x: 10, y: 15, width: 917, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),
 }));
 

@@ -69,6 +69,20 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
       [selectedValues]
     );
 
+    // Customize border color when user submits question
+    const customStyle = useCallback(
+      (index: number) => {
+        if (!formDisabled) return;
+
+        if (options.dropdowns?.[index]?.correct === selectedValues[index].value) {
+          return { borderColor: "green" };
+        } else {
+          return { borderColor: "red" };
+        }
+      },
+      [formDisabled, selectedValues, options.dropdowns]
+    );
+
     //Inset the select elements at the corresponding select wrapper index,
     //because ReactDOMServer.renderToString ignores onChange handlers
     useLayoutEffect(() => {
@@ -95,6 +109,7 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
             disabled={formDisabled}
             onChange={handleChange}
             value={selectedValues[index].value || ""}
+            style={customStyle(index)}
             data-testid={`select-${index}`}
           >
             <ReturnOptions dropdownItems={shuffledDropdownOptions[index]} />
@@ -102,7 +117,7 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
           document.getElementById(`select-wrapper-${index}`)
         );
       }
-    }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffledDropdownOptions]);
+    }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffledDropdownOptions, customStyle]);
 
     //Setup selected empty values
     useLayoutEffect(() => {
