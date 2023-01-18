@@ -27,7 +27,7 @@ import { FaMarkdown } from "react-icons/fa";
 interface IAnswerOptionsEditor {
   questionType: IQuestion["type"];
   answerValues: TAnswerOptions | undefined;
-  handleEditorChange: any;
+  handleEditorChange: (value: TAnswerOptions) => void;
   answerOptionsError: string;
   setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
   hasSubmitted: boolean;

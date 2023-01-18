@@ -13,11 +13,12 @@ import { objectWithoutProp } from "../../helpers";
 //Import Types
 import { IErrors } from "../../QuestionEditor";
 import { IMultipleChoice } from "../../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
+import { TAnswerOptions } from "../../../Question/useQuestion";
 
 interface IMultipleChoiceEditor {
   name?: string;
   answerValues: IMultipleChoice[];
-  handleEditorChange: (arg0: any) => any;
+  handleEditorChange: (value: TAnswerOptions) => void;
   lastSelected: string;
   setLastSelected: React.Dispatch<React.SetStateAction<string>>;
   answerOptionsError: string;

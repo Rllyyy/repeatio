@@ -67,18 +67,6 @@ export const QuestionEditor = ({
   );
 };
 
-/* export type TAnswerOptions = IMultipleChoice[] | IMultipleResponse[] | IGapTextWithTempText;
-
-//TODO change export to Question/Questions.tsx
-interface IEditQuestion {
-  id: string;
-  title: string;
-  points: string;
-  help: string;
-  type: "multiple-choice" | "multiple-response" | "gap-text" | "gap-text-dropdown" | "extended-match" | "";
-  answerOptions: TAnswerOptions | undefined;
-} */
-
 export interface IErrors {
   [x: string]: string;
 }
@@ -480,7 +468,17 @@ const EditorFormTextarea = ({
 };
 
 /* -------------------------------- INPUT for single line inputs -------------------------------- */
-const EditorFormInput = ({
+interface IEditorFormInput
+  extends Exclude<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "value"> {
+  labelText: string;
+  type: string;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: IErrors;
+  setErrors?: React.Dispatch<React.SetStateAction<IErrors>>;
+  hasSubmitted?: boolean;
+}
+
+const EditorFormInput: React.FC<IEditorFormInput> = ({
   labelText,
   type,
   value,
@@ -489,15 +487,6 @@ const EditorFormInput = ({
   setErrors,
   hasSubmitted,
   ...props
-}: {
-  labelText: string;
-  type: string;
-  value?: IQuestion["id"] | IQuestion["points"];
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  errors?: IErrors;
-  setErrors?: React.Dispatch<React.SetStateAction<IErrors>>;
-  hasSubmitted?: boolean;
-  [x: string]: any;
 }) => {
   const preventSubmit = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {

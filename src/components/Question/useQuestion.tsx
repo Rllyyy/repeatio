@@ -26,9 +26,9 @@ export type TAnswerOptions =
 
 export interface IQuestion {
   id: string;
-  title: string;
-  points: string | number | undefined | null;
-  help: string;
+  title?: string;
+  points?: string | number | undefined;
+  help?: string;
   type: "multiple-choice" | "multiple-response" | "gap-text" | "gap-text-dropdown" | "extended-match" | "";
   answerOptions: TAnswerOptions | undefined;
 }

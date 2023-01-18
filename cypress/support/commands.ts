@@ -50,11 +50,15 @@ declare global {
       //| Object | HTMLElement |Selection
       fixtureToLocalStorage(fileName: Fixtures): Chainable<Element>;
       mount: typeof mount;
-      setSelection: (subject?: any, query?: any, endQuery?: any) => Chainable<Element>;
+      setSelection: (
+        query: string | { anchorQuery: string; anchorOffset?: number; focusQuery?: string; focusOffset?: number },
+        endQuery?: string
+      ) => Chainable<HTMLElement>;
       selection: (subject?: any, fn?: Function) => any;
-      setCursor: (subject?: any, query?: any, atStart?: any) => Chainable<Element>;
-      setCursorBefore: (subject?: any, query?: any) => Chainable<Element>;
-      setCursorAfter: (subject?: any, query?: any) => Chainable<Element>;
+      //selection: ( fn?: Function) => Chainable<HTMLElement>;
+      setCursor: (query: string, atStart?: boolean) => Chainable<Element>;
+      setCursorBefore: (query: string) => Chainable<Element>;
+      setCursorAfter: (query: string) => Chainable<Element>;
     }
   }
 }
@@ -115,53 +119,88 @@ Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
  */
 
 // Low level command reused by `setSelection` and low level command `setCursor`
-Cypress.Commands.add("selection", { prevSubject: true }, (subject, fn) => {
-  cy.wrap(subject).trigger("mousedown", { force: true }).then(fn).trigger("mouseup", { force: true });
+Cypress.Commands.add(
+  "selection",
+  { prevSubject: true },
+  (subject: HTMLElement, fn: (element: JQuery<HTMLElement>) => void) => {
+    cy.wrap(subject).trigger("mousedown", { force: true }).then(fn).trigger("mouseup", { force: true });
 
-  cy.document().trigger("selectionchange");
-  return cy.wrap(subject);
-});
+    cy.document().trigger("selectionchange");
+    return cy.wrap(subject);
+  }
+);
 
-Cypress.Commands.add("setSelection", { prevSubject: true }, (subject, query, endQuery) => {
-  return cy.wrap(subject).selection(($el: any) => {
-    const el = $el[0];
-    if (isInputOrTextArea(el)) {
-      const text = $el.text();
-      const start = text.indexOf(query);
-      const end = endQuery ? text.indexOf(endQuery) + endQuery.length : start + query.length;
+Cypress.Commands.add(
+  "setSelection",
+  { prevSubject: true },
+  (
+    subject: HTMLElement,
+    query: string | { anchorQuery: string; anchorOffset?: number; focusQuery?: string; focusOffset?: number },
+    endQuery?: string
+  ) => {
+    return cy.wrap(subject).selection(($el: JQuery<HTMLElement>) => {
+      const el = $el[0];
+      if (isInputOrTextArea(el)) {
+        const text = $el.text();
 
-      $el[0].setSelectionRange(start, end);
-    } else if (typeof query === "string") {
-      const anchorNode = getTextNode(el, query);
-      const focusNode = endQuery ? getTextNode(el, endQuery) : anchorNode;
-      const anchorOffset = anchorNode?.wholeText.indexOf(query);
-      const focusOffset = endQuery
-        ? focusNode?.wholeText.indexOf(endQuery) + endQuery.length
-        : anchorOffset + query.length;
-      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-    } else if (typeof query === "object") {
-      const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
-      const anchorOffset = query.anchorOffset || 0;
-      const focusNode = query.focusQuery ? getTextNode(el.querySelector(query.focusQuery)) : anchorNode;
-      const focusOffset = query.focusOffset || 0;
-      setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
-    }
-  });
-});
+        let start;
+        if (typeof query === "string") {
+          start = text.indexOf(query) || 0;
+          // rest of the code for query as string
+        } else if (typeof query === "object") {
+          start = text.indexOf(query.anchorQuery) || 0;
+        } else {
+          start = 0;
+        }
+
+        let qLength: number;
+        if (typeof query === "string") {
+          qLength = query.length || 0;
+        } else if (typeof query === "object") {
+          qLength = query.anchorQuery?.length || 0;
+        } else {
+          qLength = 0;
+        }
+
+        //const start = text.indexOf(query);
+        const end = endQuery ? text.indexOf(endQuery) + endQuery.length : start + qLength;
+
+        ($el[0] as HTMLInputElement | HTMLTextAreaElement).setSelectionRange(start, end);
+      } else if (typeof query === "string") {
+        const anchorNode = getTextNode(el, query);
+        const focusNode = endQuery ? getTextNode(el, endQuery) : anchorNode;
+        const anchorOffset = anchorNode?.wholeText.indexOf(query);
+        const focusOffset = endQuery
+          ? (focusNode?.wholeText.indexOf(endQuery) || 0) + endQuery.length
+          : (anchorOffset || 0) + query.length;
+        const textNode = getTextNode(el, query);
+        if (textNode && focusNode) setBaseAndExtent(textNode!, anchorOffset || 0, focusNode, focusOffset);
+      } else if (typeof query === "object") {
+        const anchorNode = getTextNode(el.querySelector(query.anchorQuery));
+        const anchorOffset = query.anchorOffset || 0;
+        const focusNode = query.focusQuery ? getTextNode(el.querySelector(query.focusQuery)) : anchorNode;
+        const focusOffset = query.focusOffset || 0;
+
+        const textNode = getTextNode(el, query.anchorQuery);
+        if (textNode && focusNode) setBaseAndExtent(textNode!, anchorOffset || 0, focusNode, focusOffset);
+      }
+    });
+  }
+);
 
 // Low level command reused by `setCursorBefore` and `setCursorAfter`, equal to `setCursorAfter`
 //If this doesn't work try: https://github.com/netlify/netlify-cms/blob/a4b7481a99f58b9abe85ab5712d27593cde20096/cypress/support/commands.js
 Cypress.Commands.add("setCursor", { prevSubject: true }, (subject, query, atStart) => {
-  return cy.wrap(subject).selection(($el: any) => {
+  return cy.wrap(subject).selection(($el: JQuery<HTMLElement>) => {
     const el = $el[0];
 
     if (isInputOrTextArea(el)) {
       const text = $el.text();
       const position = text.indexOf(query) + (atStart ? 0 : query.length);
-      $el[0].setSelectionRange(position, position);
+      ($el[0] as HTMLInputElement | HTMLTextAreaElement).setSelectionRange(position, position);
     } else {
       const node = getTextNode(el, query);
-      const offset = node?.wholeText.indexOf(query) + (atStart ? 0 : query.length);
+      const offset = (node?.wholeText.indexOf(query) || 0) + (atStart ? 0 : query.length);
       const document = node?.ownerDocument;
       document?.getSelection()?.removeAllRanges();
       document?.getSelection()?.collapse(node!, offset);
@@ -171,37 +210,39 @@ Cypress.Commands.add("setCursor", { prevSubject: true }, (subject, query, atStar
   // further commands are picked up by whatever you're testing (this was required for Slate, for example).
 });
 
-Cypress.Commands.add("setCursorBefore", { prevSubject: true }, (subject, query) => {
+Cypress.Commands.add("setCursorBefore", { prevSubject: true }, (subject: HTMLElement, query: string) => {
   cy.wrap(subject).setCursor(query, true);
 });
 
-Cypress.Commands.add("setCursorAfter", { prevSubject: true }, (subject, query) => {
+Cypress.Commands.add("setCursorAfter", { prevSubject: true }, (subject: HTMLElement, query: string) => {
   cy.wrap(subject).setCursor(query);
 });
 
 // Helper functions
-function getTextNode(el?: any, match?: any) {
+function getTextNode(el?: Element | null, match?: string | null): Text | null {
+  if (!el) return null;
   const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
   if (!match) {
-    return walk.nextNode();
+    return walk.nextNode() as Text;
   }
 
-  let node: any;
+  let node: Node | null;
   while ((node = walk.nextNode())) {
-    if (node.wholeText.includes(match)) {
-      return node;
+    if (node.nodeType === Node.TEXT_NODE && (node as Text).wholeText.includes(match)) {
+      return node as Text;
     }
   }
+  return null;
 }
 
-function setBaseAndExtent(...args: any[]) {
+function setBaseAndExtent(...args: [Node, number, Node?, number?]) {
   const node = args[0];
   const document = node.ownerDocument;
-  const selection = document.getSelection();
-  selection.setBaseAndExtent(...args);
+  const selection = document?.getSelection();
+  if (selection) selection.setBaseAndExtent(args[0]!, args[1], args[2]!, args[3] ?? 0);
 }
 
-function isInputOrTextArea(el?: any) {
+function isInputOrTextArea(el: HTMLElement): el is HTMLInputElement | HTMLTextAreaElement {
   return (
     el instanceof HTMLInputElement ||
     el instanceof HTMLTextAreaElement ||

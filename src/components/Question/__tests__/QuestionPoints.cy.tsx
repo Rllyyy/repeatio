@@ -16,11 +16,6 @@ describe("Testing Question Points", () => {
     cy.contains("? Points").should("exist");
   });
 
-  it('should render "? Points" if the value is null', () => {
-    cy.mount(<QuestionPoints points={null} />);
-    cy.contains("? Points").should("exist");
-  });
-
   it("should show 0 Points if the input is 0", () => {
     cy.mount(<QuestionPoints points={0} />);
     cy.contains("0 Points").should("exist");

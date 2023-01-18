@@ -40,7 +40,7 @@ import { IParams } from "../../utils/types";
 import { IQuestion, TUseQuestion } from "./useQuestion";
 
 //Main Question Component
-const Question = () => {
+export const Question = () => {
   //Get data from hook
   const {
     question,
@@ -140,7 +140,7 @@ interface IQuestionBottom {
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
 }
 
-const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
+export const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
   //States
   const [showNav, setShowNav] = useState(false);
   const [collapsedActionsNav, setCollapsedActionsNav] = useState<boolean | null>(null);
@@ -214,8 +214,13 @@ const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   );
 });
 
+interface IQuestionTitle {
+  title: IQuestion["title"];
+}
 //Title of the question
-const QuestionTitle = ({ title }: { title: IQuestion["title"] }) => {
+const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
+  if (!title) return <></>;
+
   return (
     <ReactMarkdown
       className='question-title'
@@ -227,7 +232,7 @@ const QuestionTitle = ({ title }: { title: IQuestion["title"] }) => {
 };
 
 //Points of the question
-const QuestionPoints = ({ points }: { points: IQuestion["points"] }) => {
+export const QuestionPoints: React.FC<{ points: IQuestion["points"] }> = ({ points }) => {
   //Return the points value. If they are undefined return ?
   //If the value of point is equal to 1 return Point else return Points
   return (
@@ -237,8 +242,13 @@ const QuestionPoints = ({ points }: { points: IQuestion["points"] }) => {
   );
 };
 
+interface IQuestionTypeHelp {
+  help: IQuestion["help"];
+}
 //Help for the type of the question
-const QuestionTypeHelp = ({ help }: { help: IQuestion["help"] }) => {
+const QuestionTypeHelp: React.FC<IQuestionTypeHelp> = ({ help }) => {
+  if (!help) return <></>;
+
   return (
     <ReactMarkdown
       className='question-type-help'
@@ -347,4 +357,4 @@ const ShowQuestionNavButton: React.FC<IShowQuestionNavButton> = ({ showNav, setS
   );
 };
 
-export { Question, QuestionBottom, QuestionPoints };
+//export { Question, QuestionBottom, QuestionPoints };
