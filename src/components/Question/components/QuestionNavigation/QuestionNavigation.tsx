@@ -20,7 +20,7 @@ export const QuestionNavigation = () => {
     navigateToNextQuestion,
     navigateToLastQuestion,
     navigateToInputValue,
-    currentQuestionPageIndexPlaceholder,
+    progressPlaceholder,
   } = useQuestionNavigation();
 
   //JSX
@@ -69,12 +69,7 @@ export const QuestionNavigation = () => {
       </button>
       {/* To Input value */}
       {/* //TODO handle Change  */}
-      <input
-        type='number'
-        placeholder={currentQuestionPageIndexPlaceholder()}
-        min='1'
-        onKeyDown={navigateToInputValue}
-      />
+      <input type='number' placeholder={progressPlaceholder} min='1' onKeyDown={navigateToInputValue} />
       {/* To next Question */}
       <button
         data-testid='nav-next-question-button'
@@ -231,6 +226,6 @@ export const useQuestionNavigation = () => {
     navigateToNextQuestion,
     navigateToLastQuestion,
     navigateToInputValue,
-    currentQuestionPageIndexPlaceholder,
-  };
+    progressPlaceholder: currentQuestionPageIndexPlaceholder(),
+  } as const;
 };

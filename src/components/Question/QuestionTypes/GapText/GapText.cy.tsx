@@ -236,7 +236,7 @@ describe("GapText", () => {
 });
 
 //Setup Router to access context and useParams
-const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
+const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
       <main style={{ marginTop: 0 }}>

@@ -30,7 +30,7 @@ function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
         <Route path='/module/:moduleID/question/:questionID'>
           <div className='question-form'>
             <div className='question-actions-navigation-wrapper'>
-              <BookmarkQuestion questionID={`${questionID}`} disabled={false} />
+              <BookmarkQuestion moduleID={moduleID} questionID={`${questionID}`} disabled={false} />
             </div>
           </div>
         </Route>

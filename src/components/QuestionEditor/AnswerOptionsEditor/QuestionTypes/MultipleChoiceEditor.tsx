@@ -11,7 +11,7 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { objectWithoutProp } from "../../helpers";
 
 //Import Types
-import { IErrors } from "../../QuestionEditor";
+import { TErrors } from "../../QuestionEditor";
 import { IMultipleChoice } from "../../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { TAnswerOptions } from "../../../Question/useQuestion";
 
@@ -22,7 +22,7 @@ interface IMultipleChoiceEditor {
   lastSelected: string;
   setLastSelected: React.Dispatch<React.SetStateAction<string>>;
   answerOptionsError: string;
-  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
 }
 
 //Component

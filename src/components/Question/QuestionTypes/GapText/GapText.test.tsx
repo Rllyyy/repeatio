@@ -1,11 +1,11 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import { GapText } from "./GapText.js";
+import { GapText } from "./GapText";
 
 //provide options
 const options = {
   text: "[] two three. One [] three. One two [].",
-  correctGapValues: ["One", "two", "three"],
+  correctGapValues: [["One"], ["two"], ["three"]],
 };
 //mock options, setAnswerCorrect, setShowAnswer, formDisabled and ref
 const mockSetAnswerCorrect = jest.fn();
@@ -18,23 +18,27 @@ const MockGapText = () => {
 
 //React-markdown uses ES6 but jest uses ES5
 //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
-jest.mock("react-markdown", () => (props) => {
+interface IProps {
+  children: React.ReactNode;
+}
+
+jest.mock("react-markdown", () => (props: IProps) => {
   return <p className='react-markdown-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-raw", () => (props) => {
+jest.mock("rehype-raw", () => (props: IProps) => {
   return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-gfm", () => (props) => {
+jest.mock("remark-gfm", () => (props: IProps) => {
   return <p className='remark-gfm-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-math", () => (props) => {
+jest.mock("remark-math", () => (props: IProps) => {
   return <p className='remark-math-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-katex", () => (props) => {
+jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
@@ -70,14 +74,14 @@ describe("<GapText />)", () => {
     render(
       <GapText
         options={options}
-        setAnswerCorrect={mockSetAnswerCorrect}
-        setShowAnswer={mockSetShowAnswer}
+        {...(mockSetAnswerCorrect as any)}
+        {...(mockSetShowAnswer as any)}
         formDisabled={true}
-        ref={mockUseRef}
+        {...(mockUseRef as any)}
       />
     );
 
-    const inputElements = screen.getAllByRole("textbox");
+    const inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
 
     //Check disabled attribute only every input element
     const everyInputDisabled = inputElements.every((input) => input.disabled);
@@ -90,7 +94,7 @@ describe("<GapText />)", () => {
   //Expect all the inputs to be enabled when the form is enabled and change input class to "input-enabled"
   it("should enable all input when form is enabled", () => {
     render(<MockGapText />);
-    const inputElements = screen.getAllByRole("textbox");
+    const inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
 
     //Check disabled attribute only every input element
     const everyInputDisabled = inputElements.every((input) => input.disabled);

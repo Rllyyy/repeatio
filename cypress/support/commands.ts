@@ -54,8 +54,8 @@ declare global {
         query: string | { anchorQuery: string; anchorOffset?: number; focusQuery?: string; focusOffset?: number },
         endQuery?: string
       ) => Chainable<HTMLElement>;
-      selection: (subject?: any, fn?: Function) => any;
-      //selection: ( fn?: Function) => Chainable<HTMLElement>;
+      // Can't get this to work without subject and Chainable<JQuery<HTMLElement>>
+      selection: (subject?: any, fn?: (element: JQuery<HTMLElement>) => void) => any;
       setCursor: (query: string, atStart?: boolean) => Chainable<Element>;
       setCursorBefore: (query: string) => Chainable<Element>;
       setCursorAfter: (query: string) => Chainable<Element>;
@@ -190,7 +190,7 @@ Cypress.Commands.add(
 
 // Low level command reused by `setCursorBefore` and `setCursorAfter`, equal to `setCursorAfter`
 //If this doesn't work try: https://github.com/netlify/netlify-cms/blob/a4b7481a99f58b9abe85ab5712d27593cde20096/cypress/support/commands.js
-Cypress.Commands.add("setCursor", { prevSubject: true }, (subject, query, atStart) => {
+Cypress.Commands.add("setCursor", { prevSubject: "element" }, (subject, query, atStart) => {
   return cy.wrap(subject).selection(($el: JQuery<HTMLElement>) => {
     const el = $el[0];
 

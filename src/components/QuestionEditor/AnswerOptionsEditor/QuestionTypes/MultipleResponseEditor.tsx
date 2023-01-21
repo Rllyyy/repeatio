@@ -12,17 +12,17 @@ import { objectWithoutProp } from "../../helpers";
 
 //Import Interfaces
 import { IMultipleResponse } from "../../../Question/QuestionTypes/MultipleResponse/MultipleResponse";
-import { IErrors } from "../../QuestionEditor";
+import { TErrors } from "../../QuestionEditor";
 
 //interface
 interface IMultipleResponseEditor {
   name?: string;
   options: IMultipleResponse[];
-  handleEditorChange: (arg0: IMultipleResponse[]) => void;
+  handleEditorChange: (value: IMultipleResponse[]) => void;
   lastSelected: string;
   setLastSelected: React.Dispatch<React.SetStateAction<string>>;
   answerOptionsError: string;
-  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
 }
 
 //Component

@@ -40,7 +40,7 @@ import { IParams } from "../../utils/types";
 import { IQuestion, TUseQuestion } from "./useQuestion";
 
 //Main Question Component
-export const Question = () => {
+export const Question: React.FC<{}> = () => {
   //Get data from hook
   const {
     question,
@@ -67,6 +67,7 @@ export const Question = () => {
       />
       {/* -- Question Bottom includes checking/reset/actions(delete/edit/save) and the navigation --*/}
       <QuestionBottom
+        questionID={question?.id}
         showAnswer={showAnswer}
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
@@ -134,19 +135,25 @@ const QuestionData: React.FC<TQuestionData> = ({
 };
 
 //QuestionBottom contains the checking/resetting of a question as well as the actions (save, edit, delete) and the navigation
-interface IQuestionBottom {
+export interface IQuestionBottom {
+  questionID: IQuestion["id"] | undefined;
   showAnswer: TUseQuestion["showAnswer"];
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
 }
 
-export const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled, handleResetRetryQuestion }) => {
+export const QuestionBottom: React.FC<IQuestionBottom> = ({
+  questionID,
+  showAnswer,
+  disabled,
+  handleResetRetryQuestion,
+}) => {
   //States
   const [showNav, setShowNav] = useState(false);
   const [collapsedActionsNav, setCollapsedActionsNav] = useState<boolean | null>(null);
 
   //URL params
-  const params = useParams<IParams>();
+  const { moduleID } = useParams<IParams>();
 
   //Refs
   const questionBottomRef = useRef(null);
@@ -164,11 +171,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled
   }, [size?.width, size, setCollapsedActionsNav]);
 
   return (
-    <div
-      className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`}
-      ref={questionBottomRef}
-      data-testid='question-bottom'
-    >
+    <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>
       <div className='question-check-retry-wrapper'>
         {/* Check or Next*/}
         <CheckNextButton showAnswer={showAnswer} disabled={disabled} />
@@ -187,9 +190,9 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({ showAnswer, disabled
           className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
           data-testid='question-actions-navigation-wrapper'
         >
-          <DeleteQuestion questionID={params.questionID} disabled={disabled} />
-          <EditQuestion prevQuestionID={params.questionID} disabled={disabled} />
-          <BookmarkQuestion questionID={params.questionID} disabled={disabled} />
+          <DeleteQuestion questionID={questionID} disabled={disabled} />
+          <EditQuestion prevQuestionID={questionID} disabled={disabled} />
+          <BookmarkQuestion moduleID={moduleID} questionID={questionID} disabled={disabled} />
           <QuestionNavigation />
         </div>
       )}
@@ -356,5 +359,3 @@ const ShowQuestionNavButton: React.FC<IShowQuestionNavButton> = ({ showNav, setS
     </button>
   );
 };
-
-//export { Question, QuestionBottom, QuestionPoints };

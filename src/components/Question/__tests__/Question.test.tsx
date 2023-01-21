@@ -1,12 +1,14 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { Question } from "../Question";
-import { ModuleContext } from "../../module/moduleContext";
-import { Router, Route, Switch, MemoryRouter } from "react-router-dom";
+import { IModuleContext, ModuleContext } from "../../module/moduleContext";
+import { Router, Route, Switch, MemoryRouter, RouteComponentProps } from "react-router-dom";
 import { createMemoryHistory } from "history";
+import { IQuestion } from "../useQuestion";
+import { IModule } from "../../module/module";
 
 //Question test data
-const mockFilteredQuestions = [
+const mockFilteredQuestions: IModule["questions"] = [
   {
     id: "qID-1",
     title: "This is a question for the test suite",
@@ -61,11 +63,12 @@ const mockFilteredQuestions = [
 ];
 
 //Module test data
-const data = {
+const data: IModule = {
   id: "Test-1",
   name: "TestModule",
-  createdAt: "some UTC time",
-  description: "Some description",
+  type: "module",
+  lang: "lat",
+  compatibility: "0.4.0",
   questions: mockFilteredQuestions,
 };
 
@@ -73,16 +76,18 @@ const mockSetContextModuleID = jest.fn();
 
 /* Mocks */
 //Mock the question component with router to allow switching pages and the provider
-const MockQuestionWithRouter = ({ qID, practiceMode }) => {
+const MockQuestionWithRouter = ({ qID, practiceMode }: { qID: IQuestion["id"]; practiceMode: string }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${practiceMode}`]}>
       <Switch>
         <ModuleContext.Provider
-          value={{
-            filteredQuestions: mockFilteredQuestions,
-            moduleData: data,
-            setContextModuleID: mockSetContextModuleID,
-          }}
+          value={
+            {
+              filteredQuestions: mockFilteredQuestions as IModuleContext["filteredQuestions"],
+              moduleData: data as IModuleContext["moduleData"],
+              setContextModuleID: mockSetContextModuleID as IModuleContext["setContextModuleID"],
+            } as IModuleContext
+          }
         >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
@@ -91,16 +96,18 @@ const MockQuestionWithRouter = ({ qID, practiceMode }) => {
   );
 };
 
-const MockQuestionWithRouterAndHistory = ({ history }) => {
+const MockQuestionWithRouterAndHistory = ({ history }: { history: RouteComponentProps["history"] }) => {
   return (
     <Router history={history}>
       <Switch>
         <ModuleContext.Provider
-          value={{
-            filteredQuestions: mockFilteredQuestions,
-            moduleData: data,
-            setContextModuleID: mockSetContextModuleID,
-          }}
+          value={
+            {
+              filteredQuestions: mockFilteredQuestions as IModuleContext["filteredQuestions"],
+              moduleData: data as IModuleContext["moduleData"],
+              setContextModuleID: mockSetContextModuleID as IModuleContext["setContextModuleID"],
+            } as IModuleContext
+          }
         >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
         </ModuleContext.Provider>
@@ -113,23 +120,27 @@ const MockQuestionWithRouterAndHistory = ({ history }) => {
 //There are more options but this is the easiest one
 //https://github.com/remarkjs/react-markdown/issues/635#issuecomment-956158474
 //Returning the elements in a paragraph isn't actually that bad because react-markdown does the same
-jest.mock("react-markdown", () => (props) => {
+interface IProps {
+  children: React.ReactNode;
+}
+
+jest.mock("react-markdown", () => (props: IProps) => {
   return <p className='react-markdown-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-raw", () => (props) => {
+jest.mock("rehype-raw", () => (props: IProps) => {
   return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-gfm", () => (props) => {
+jest.mock("remark-gfm", () => (props: IProps) => {
   return <p className='remark-gfm-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-math", () => (props) => {
+jest.mock("remark-math", () => (props: IProps) => {
   return <p className='remark-math-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-katex", () => (props) => {
+jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
@@ -157,7 +168,7 @@ describe("<Question />", () => {
 
     //Expect questionID
     const questionIDElement = screen.getByTestId("question-id");
-    expect(questionIDElement.textContent.length).toBeGreaterThan(0);
+    expect(questionIDElement.textContent?.length).toBeGreaterThan(0);
     expect(questionIDElement).toHaveTextContent(/ID: /i);
 
     //Expect questionTitle
@@ -286,7 +297,7 @@ describe("<Question />", () => {
     );
 
     //Should remove the attribute Mui-disabled when retrying question
-    expect(screen.getByTestId("formControlLabel-1")).not.toHaveClass("Mui-disabled");
+    expect(screen.getByTestId("formControlLabel-option-1")).not.toHaveClass("Mui-disabled");
 
     //Interact with the question
     user.click(correctElementMarkdown);
@@ -294,7 +305,7 @@ describe("<Question />", () => {
     //Get all checkbox elements and check if they are checked
     const checkBoxElements = screen.getAllByTestId(/formControlLabel-checkbox-./);
     const checkedArray = checkBoxElements.map((item) => {
-      return item.firstChild.checked;
+      return (item.firstChild as HTMLInputElement).checked || false;
     });
     expect(checkedArray).toContain(true);
   });
@@ -431,7 +442,7 @@ describe("<Question />", () => {
 
     //Every element should be unchecked and the following array.every should return true
     //It would return false if one ore more elements is checked
-    const allUnchecked = answerElements.every((element) => element.firstChild.checked === false);
+    const allUnchecked = answerElements.every((element) => (element.firstChild as HTMLInputElement).checked === false);
 
     expect(allUnchecked).toBeTruthy();
   });
@@ -457,7 +468,7 @@ describe("<Question />", () => {
 
     //Every element should be unchecked and the following array.every should return true
     //It would return false if one ore more elements is checked
-    const allUnchecked = answerElements.every((element) => element.firstChild.checked === false);
+    const allUnchecked = answerElements.every((element) => (element.firstChild as HTMLInputElement).checked === false);
 
     expect(allUnchecked).toBeTruthy();
   });
@@ -476,7 +487,7 @@ describe("<Question />", () => {
     render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
 
     //Type into the input elements
-    let inputElements = screen.getAllByRole("textbox");
+    let inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
     user.type(inputElements[0], "One"); //"One" and "one" could both be correct
     user.type(inputElements[1], "two");
     user.type(inputElements[2], "three");
@@ -492,7 +503,7 @@ describe("<Question />", () => {
     render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
 
     //Type into the input elements
-    let inputElements = screen.getAllByRole("textbox");
+    let inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
     user.type(inputElements[0], "One"); //"One" and "one" could both be correct
     user.type(inputElements[1], "two");
     user.type(inputElements[2], "three");

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { IParams } from "../../utils/types";
 
 //Interfaces + Types
 import { IQuestion } from "../Question/useQuestion";
+import { IParams } from "../../utils/types";
 
 //The order of give functions is important
 export function validator({
@@ -61,7 +61,7 @@ export function objectWithoutProp<T extends object>({
 
 /**
  * Return error message if given value is empty
- * @param {string} value - test
+ * @param {string} value - The value
  * @param {string} [fieldName] - The name of the html element that is empty
  * @returns  an error message if the value is empty, or nothing if the value is not empty
  */
@@ -80,7 +80,7 @@ export function checkNotIdDuplicate({
 }: {
   prevQuestionID?: string;
   questions: IQuestion[];
-  questionID: string;
+  questionID: IQuestion["id"];
   params: IParams;
 }) {
   if (!questionID) return;

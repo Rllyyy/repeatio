@@ -9,9 +9,9 @@
 | Performance       | :zap:                                            | `:zap:`                                                    |
 | Fix Typos         | :pencil2:                                        | `:pencil2:`                                                |
 | Refactor Code     | :recycle:                                        | `:recycle:`                                                |
-| Move Code         | :truck:                                          | `:truck:`                                                  |
+| Move Code         | :truck:  :file_folder:                           | `:truck:`   `:file_folder:`                                |
 | Remove Code       | :wastebasket:                                    | `:wastebasket:`                                            |
-| Add Test          | :alembic: :mag:                                  | `:alembic:` `:mag:`                                        |
+| Tests             | :alembic: :mag: :test_tube:                      | `:alembic:` `:mag:` `:test_tube:`                          |
 | Hotfix            | :ambulance: :fire_engine:                        | `:ambulance:` `:fire_engine:`                              |
 | Desktop           | :computer: :desktop_computer:                    | `:computer:` `:desktop_computer:`                          |
 | Mobile            | :iphone:                                         | `:iphone:`                                                 |
@@ -27,7 +27,8 @@
 | Version tag       | :bookmark: :label:                               | `:bookmark:` `:label:`                                     |
 | Merge Branches    | :twisted_rightwards_arrows:                      | `:twisted_rightwards_arrows:`                              |
 | Deployments       | :rocket:                                         | `:rocket:`                                                 |
-| Licence           | :page_facing_up:                                 | `:page_facing_up:`                                         |
+| License           | :page_facing_up:                                 | `:page_facing_up:`                                         |
 | Config Files      | :gear:                                           | `:gear:`                                                   |
+| Translation Files | :speech_balloon: :earth_africa:                  | `:speech_balloon:` `:earth_africa:`                        |
 | Automation        | :robot:                                          | `:robot:`                                                  |
 | Memory Leak       | :droplet:                                        | `:droplet:`                                                |

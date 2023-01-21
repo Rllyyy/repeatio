@@ -1,6 +1,6 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
-import { MultipleChoice } from "./MultipleChoice.js";
+import { MultipleChoice } from "./MultipleChoice";
 
 const mockOptions = [
   {
@@ -31,23 +31,27 @@ const MockMultipleChoice = () => {
 
 //React-markdown uses ES6 but jest uses ES5
 //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
-jest.mock("react-markdown", () => (props) => {
+interface IProps {
+  children: React.ReactNode;
+}
+
+jest.mock("react-markdown", () => (props: IProps) => {
   return <p className='react-markdown-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-raw", () => (props) => {
+jest.mock("rehype-raw", () => (props: IProps) => {
   return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-gfm", () => (props) => {
+jest.mock("remark-gfm", () => (props: IProps) => {
   return <p className='remark-gfm-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-math", () => (props) => {
+jest.mock("remark-math", () => (props: IProps) => {
   return <p className='remark-math-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-katex", () => (props) => {
+jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
@@ -90,10 +94,10 @@ describe("<MultipleChoice />", () => {
     render(
       <MultipleChoice
         options={mockOptions}
-        setAnswerCorrect={mockSetAnswerCorrect}
-        setShowAnswer={mockSetShowAnswer}
+        {...(mockSetAnswerCorrect as any)}
+        {...(mockSetShowAnswer as any)}
         formDisabled={true}
-        ref={mockUseRef}
+        {...(mockUseRef as any)}
       />
     );
     const disabledSpan = screen.getByTestId("option-0").firstChild;

@@ -8,7 +8,7 @@ import { GapTextEditor } from "./QuestionTypes/GapTextEditor";
 
 //Interfaces/Types
 import { TAnswerOptions, IQuestion } from "../../Question/useQuestion";
-import { IErrors } from "../QuestionEditor";
+import { TErrors } from "../QuestionEditor";
 import { IGapTextWithTempText } from "./QuestionTypes/GapTextEditor";
 import { IMultipleChoice } from "../../Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { IMultipleResponse } from "../../Question/QuestionTypes/MultipleResponse/MultipleResponse";
@@ -28,8 +28,8 @@ interface IAnswerOptionsEditor {
   questionType: IQuestion["type"];
   answerValues: TAnswerOptions | undefined;
   handleEditorChange: (value: TAnswerOptions) => void;
-  answerOptionsError: string;
-  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+  answerOptionsError: TErrors["answerOptions"];
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
   hasSubmitted: boolean;
 }
 

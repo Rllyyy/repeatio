@@ -4,7 +4,7 @@ import { objectWithoutProp } from "../../helpers";
 import { isSafari } from "react-device-detect";
 
 //Types
-import { IErrors } from "../../QuestionEditor";
+import { TErrors } from "../../QuestionEditor";
 import { IGapText } from "../../../Question/QuestionTypes/GapText/GapText";
 
 export interface IGapTextWithTempText extends Partial<IGapText> {
@@ -16,7 +16,7 @@ interface IGapTextEditorComponent {
   tempText: string;
   handleEditorChange: ({ tempText }: { tempText: string }) => void;
   answerOptionsError: string;
-  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
 }
 
 export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorComponent>(
@@ -37,7 +37,7 @@ export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorCompo
     if (isSafari) {
       return (
         <p style={{ color: "rgb(231, 76, 60)", paddingBottom: "10px" }}>
-          YOur browser (safari) does not support features used for this question type! Use a different browser to add or
+          Your browser (safari) does not support features used for this question type! Use a different browser to add or
           edit this type of question.
         </p>
       );

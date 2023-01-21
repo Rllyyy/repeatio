@@ -5,7 +5,7 @@
 /* ----------------------------------- Imports -------------------------------------------- */
 //MaterialUI
 import { styled } from "@mui/material/styles";
-import Menu from "@mui/material/Menu";
+import Menu, { MenuProps } from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 //Icons
@@ -27,8 +27,8 @@ export const PopoverButton = ({ handleClick, target }: IPopoverButton) => {
 };
 
 /* ------------------------------- Popover Menu ------------------------------- */
-//Style Material UI Menu
-const StyledMenu = styled((props: any) => (
+//Style Material UI Menu (https://mui.com/material-ui/react-menu/#customization)
+const StyledMenu = styled((props: MenuProps) => (
   <Menu
     elevation={0}
     anchorOrigin={{

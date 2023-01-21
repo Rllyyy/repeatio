@@ -1,7 +1,7 @@
 import { screen, render } from "@testing-library/react";
 import user from "@testing-library/user-event";
 
-import { GapTextDropdown } from "./GapTextDropdown.js";
+import { GapTextDropdown } from "./GapTextDropdown";
 
 //MOCKS
 //Mock provided answerOptions
@@ -23,28 +23,32 @@ const options = {
 
 //React-markdown uses ES6 but jest uses ES5
 //returning the elements in a paragraph isn't actually that bad because react-markdown does the same
-jest.mock("react-markdown", () => (props) => {
+interface IProps {
+  children: React.ReactNode;
+}
+
+jest.mock("react-markdown", () => (props: IProps) => {
   return <p className='react-markdown-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-raw", () => (props) => {
+jest.mock("rehype-raw", () => (props: IProps) => {
   return <p className='rehype-raw-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-gfm", () => (props) => {
+jest.mock("remark-gfm", () => (props: IProps) => {
   return <p className='remark-gfm-mock'>{props.children}</p>;
 });
 
-jest.mock("remark-math", () => (props) => {
+jest.mock("remark-math", () => (props: IProps) => {
   return <p className='remark-math-mock'>{props.children}</p>;
 });
 
-jest.mock("rehype-katex", () => (props) => {
+jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
 //Mock Component
-const MockGapTextDropdown = ({ disabled }) => {
+const MockGapTextDropdown = ({ disabled }: { disabled: boolean }) => {
   return <GapTextDropdown options={options} formDisabled={disabled} ref={jest.fn()} />;
 };
 
@@ -65,8 +69,8 @@ describe("<GapTextDropdown />", () => {
   it("should handle change event if form isn't disabled", () => {
     render(<MockGapTextDropdown disabled={false} />);
 
-    const comboboxElement = screen.getByTestId("select-0");
-    const comboboxOption = screen.getByRole("option", { name: "Dropdown" });
+    const comboboxElement = screen.getByTestId("select-0") as HTMLSelectElement;
+    const comboboxOption = screen.getByRole("option", { name: "Dropdown" }) as HTMLOptionElement;
 
     user.selectOptions(comboboxElement, comboboxOption);
 
@@ -77,8 +81,8 @@ describe("<GapTextDropdown />", () => {
   it("should not allow change event if form is disabled", () => {
     render(<MockGapTextDropdown disabled={true} />);
 
-    const comboboxElement = screen.getByTestId("select-0");
-    const comboboxOption = screen.getByRole("option", { name: "Dropdown" });
+    const comboboxElement = screen.getByTestId("select-0") as HTMLSelectElement;
+    const comboboxOption = screen.getByRole("option", { name: "Dropdown" }) as HTMLOptionElement;
 
     user.selectOptions(comboboxElement, comboboxOption);
 

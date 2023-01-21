@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
 import packageJSON from "../../../../../package.json";
 
 //functions
@@ -9,8 +8,8 @@ import { parseJSON } from "../../../../utils/parseJSON";
 import { MdBookmarkAdd, MdBookmarkRemove } from "react-icons/md";
 
 //Types or Interfaces
-import { IParams } from "../../../../utils/types";
 import { IQuestion } from "../../useQuestion";
+import { IModule } from "../../../module/module";
 
 export type TBookmarkedQuestionID = IQuestion["id"];
 
@@ -23,14 +22,14 @@ export interface IBookmarkedQuestions {
 
 interface IBookmarkQuestionComponent
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+  moduleID: IModule["id"] | undefined;
   questionID: TBookmarkedQuestionID | undefined;
   disabled?: boolean;
 }
 
 //Component
-export const BookmarkQuestion = ({ questionID, disabled, ...props }: IBookmarkQuestionComponent) => {
+export const BookmarkQuestion = ({ questionID, moduleID, disabled, ...props }: IBookmarkQuestionComponent) => {
   const [bookmarked, setBookmarked] = useState(false);
-  const { moduleID } = useParams<IParams>(); //TODO change this
 
   //Add the Question ID to the bookmark array
   const addQuestionToBookmark = (id: TBookmarkedQuestionID) => {

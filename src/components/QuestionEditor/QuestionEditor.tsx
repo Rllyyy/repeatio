@@ -67,15 +67,13 @@ export const QuestionEditor = ({
   );
 };
 
-export interface IErrors {
-  [x: string]: string;
-}
+export type TErrors = Record<keyof IQuestion, string>;
 
 export const Form = ({
   prevQuestionID,
   handleModalClose,
 }: {
-  prevQuestionID?: string;
+  prevQuestionID?: IQuestion["id"];
   handleModalClose: () => void;
 }) => {
   //State
@@ -88,7 +86,7 @@ export const Form = ({
     answerOptions: undefined,
   });
 
-  const [errors, setErrors] = useState<IErrors>({});
+  const [errors, setErrors] = useState<TErrors>({} as TErrors);
   const hasSubmitted = useRef(false);
 
   //Params
@@ -214,7 +212,7 @@ export const Form = ({
 
     //Cancel submit if there are any new errors else continue
     if (Object.keys(onSubmitErrors).length > 0) {
-      setErrors(onSubmitErrors);
+      setErrors(onSubmitErrors as TErrors);
       return;
     }
 
@@ -473,8 +471,8 @@ interface IEditorFormInput
   labelText: string;
   type: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  errors?: IErrors;
-  setErrors?: React.Dispatch<React.SetStateAction<IErrors>>;
+  errors?: TErrors;
+  setErrors?: React.Dispatch<React.SetStateAction<TErrors>>;
   hasSubmitted?: boolean;
 }
 
@@ -513,8 +511,8 @@ const EditorFormInput: React.FC<IEditorFormInput> = ({
       //Remove the corresponding prop from the error object
       //Then combine the old errors (without the field) and the new field error
       //If there is no new field error, just return the old errors
-      setErrors((prev: IErrors) => ({
-        ...objectWithoutProp({ object: prev, deleteProp: e.target.name }),
+      setErrors((prev: TErrors) => ({
+        ...objectWithoutProp({ object: prev, deleteProp: e.target.name as keyof TErrors }),
         ...(fieldError ? { [e.target.name]: fieldError } : null),
       }));
     }
@@ -527,7 +525,7 @@ const EditorFormInput: React.FC<IEditorFormInput> = ({
         name={labelTextLowerCase}
         type={type}
         id={`modal-question-${labelTextLowerCase}-input`}
-        className={`${errors?.[labelTextLowerCase] ? "is-invalid" : "is-valid"}`}
+        className={`${errors?.[labelTextLowerCase as keyof TErrors] ? "is-invalid" : "is-valid"}`}
         value={value ?? ""}
         onChange={handleInputChange}
         onKeyDown={preventSubmit}
@@ -535,7 +533,9 @@ const EditorFormInput: React.FC<IEditorFormInput> = ({
         spellCheck='false'
         {...props}
       />
-      {errors?.[labelTextLowerCase] && <p className='modal-question-error'>{errors?.[labelTextLowerCase]}</p>}
+      {errors?.[labelTextLowerCase as keyof TErrors] && (
+        <p className='modal-question-error'>{errors?.[labelTextLowerCase as keyof TErrors]}</p>
+      )}
     </div>
   );
 };
@@ -550,9 +550,9 @@ const EditorFormSelect = ({
 }: {
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   value?: string;
-  typeErrors: IErrors[string];
+  typeErrors: TErrors["type"];
   hasSubmitted: boolean;
-  setErrors: React.Dispatch<React.SetStateAction<IErrors>>;
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
 }) => {
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     handleChange(e);
@@ -567,10 +567,10 @@ const EditorFormSelect = ({
       });
 
       //Remove select type and answerOptions errors from the errors state but keep other errors
-      setErrors((prev: IErrors) => ({
+      setErrors((prev: TErrors) => ({
         ...objectWithoutProp({
           object: prev,
-          deleteProp: [e.target.name, "answerOptions"],
+          deleteProp: [e.target.name as keyof TErrors, "answerOptions" as keyof TErrors],
         }),
         ...(fieldError ? { [e.target.name]: fieldError } : null),
       }));
