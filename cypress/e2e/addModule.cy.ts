@@ -16,6 +16,7 @@ describe("Test the addModule component", () => {
     cy.contains("Add Module").click();
   });
 
+  //! Might be duplicate of Home.cy.tsx
   //Test if display Import or Create a Module modal on Add Module click
   it("should display 'Import or create Module' Modal when clicking on 'Add Module'", () => {
     cy.contains("h1", "Create or import a Module").should("be.visible");

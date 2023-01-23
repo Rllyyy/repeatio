@@ -18,6 +18,41 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.contains("h1", "Add Question").should("be.visible");
   });
 
+  it("should show the modal on small desktop screens in view when clicking on Add", () => {
+    cy.viewport(800, 400);
+
+    cy.contains("h1", "Add Question").should("be.visible");
+    cy.get("label[for='modal-question-id-input']").should("be.visible");
+
+    cy.get("div.ReactModal__Content--after-open").invoke("height").should("eq", 360);
+  });
+
+  it("should fill the height of the parent on big screens", () => {
+    cy.viewport(800, 1200);
+
+    cy.contains("h1", "Add Question").should("be.visible");
+    cy.get("div.ReactModal__Content--after-open").invoke("height").should("eq", 1080);
+  });
+
+  it("should show the modal on mobile phones", () => {
+    cy.viewport(600, 500);
+
+    cy.contains("h1", "Add Question").should("be.visible");
+
+    // Assert the first label to be in view
+    cy.get("label[for='modal-question-id-input']").should("be.visible");
+
+    // Assert the height of the modal
+    cy.get("div.ReactModal__Content--after-open").invoke("height").should("eq", 432);
+  });
+
+  it("should close the modal if clicking on the close button of the modal", () => {
+    cy.get("button.modal-close-btn").click();
+
+    // Assert that be modal doesn't exist anymore
+    cy.get("div.ReactModal__Content--after-open").should("not.exist");
+  });
+
   it("should add new Question", () => {
     const newQuestion = {
       id: "qID-7",
