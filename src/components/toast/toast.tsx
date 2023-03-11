@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ToastContainer, Slide, toast, TypeOptions } from "react-toastify";
+import { ToastContainer, Slide, toast, TypeOptions, ToastContent } from "react-toastify";
 
 //css
 import "react-toastify/dist/ReactToastify.css";
@@ -49,7 +49,7 @@ export const CustomToastContainer = () => {
 type TLogToConsole = {
   type: TypeOptions | undefined;
   data: string | {};
-  content: React.ReactNode;
+  content: ToastContent<{}>;
 };
 
 //Log toast to console
