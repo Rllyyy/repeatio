@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 //Material UI
 import Radio from "@mui/material/Radio";
@@ -35,8 +35,6 @@ export const MultipleChoiceEditor = ({
   answerOptionsError,
   setErrors,
 }: IMultipleChoiceEditor) => {
-  const [radioGroupValue, setRadioGroupValue] = useState("");
-
   //Prevent the modal from closing when hitting escape while on the radio/input
   const preventLabelEscapeKeyExit = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -108,21 +106,13 @@ export const MultipleChoiceEditor = ({
     }
   }; */
 
-  //Find the correct multiple choice id
-  //Is used to keep the state of the (grand) parent editor and this in sync
-  useEffect(() => {
-    const choiceObj = answerValues?.find((item) => item.isCorrect === true);
-    setRadioGroupValue(choiceObj?.id || "");
-
-    return () => {
-      setRadioGroupValue("");
-    };
-  }, [answerValues]);
-
   //JSX
   return (
     <FormControl required>
-      <RadioGroup value={radioGroupValue} onChange={handleRadioGroupChange}>
+      <RadioGroup
+        value={answerValues?.find((item) => item.isCorrect === true)?.id || ""}
+        onChange={handleRadioGroupChange}
+      >
         {answerValues?.map((item) => {
           const { id, text } = item;
           return (
