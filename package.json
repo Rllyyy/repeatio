@@ -91,7 +91,7 @@
   },
   "scripts": {
     "start-react": "react-scripts start",
-    "build-react": "react-scripts build",
+    "build-react": "set \"INLINE_RUNTIME_CHUNK=false\" && react-scripts build",
     "test-react": "react-scripts test --env=jsdom",
     "eject-react": "react-scripts eject",
     "build": "yarn pre-build-electron && yarn build-react && electron-builder && yarn post-build-electron",
