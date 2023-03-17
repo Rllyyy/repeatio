@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, LinkProps } from "react-router-dom";
 import { memo } from "react";
 
 //css
@@ -35,14 +35,14 @@ export const Card = memo(({ type, disabled, title, description, icon, children, 
 /* ----------------------------------------- LINK -------------------------------------------- */
 //!This extend might be false
 interface ILinkElement extends React.RefAttributes<HTMLAnchorElement> {
-  linkTo: string;
+  linkTo: LinkProps["to"];
   linkAriaLabel: string;
   linkText: string;
 }
 
 //!URL might not work with special characters (äöß/#....)
 //Link Element Component
-export const LinkElement = ({ linkTo, linkAriaLabel, linkText, ...props }: ILinkElement) => {
+export const LinkElement: React.FC<ILinkElement> = ({ linkTo, linkAriaLabel, linkText, ...props }) => {
   return (
     <Link className='card-link' to={linkTo} role='button' aria-label={linkAriaLabel} {...props}>
       <span>{linkText}</span>

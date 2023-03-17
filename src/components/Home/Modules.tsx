@@ -50,7 +50,7 @@ export const Modules = () => {
           >
             <LinkElement
               key={`card-link-${id}`}
-              linkTo={`/module/${id}`}
+              linkTo={{ pathname: `/module/${id}`, state: { name } }}
               linkAriaLabel={`View ${name}`}
               linkText='View'
             />

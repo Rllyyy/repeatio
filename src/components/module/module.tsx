@@ -1,5 +1,5 @@
 import React, { useState, useContext, useCallback, useLayoutEffect, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { ModuleContext } from "./moduleContext";
 import packageJSON from "../../../package.json";
 
@@ -47,6 +47,11 @@ export interface IModule {
   questions: IQuestion[];
 }
 
+//TODO move this outside
+interface LocationState {
+  name: string | undefined;
+}
+
 //Component
 export const Module = () => {
   //useState
@@ -57,6 +62,9 @@ export const Module = () => {
 
   //context
   const { setFilteredQuestions, moduleData, setContextModuleID } = useContext<IModuleContext>(ModuleContext);
+
+  //Access state of link
+  const location = useLocation<LocationState>();
 
   //History
   let history = useHistory();
@@ -247,7 +255,7 @@ export const Module = () => {
   //JSX
   return (
     <div id={`module-${(module as IModule).id}`}>
-      <SiteHeading title={`${(module as IModule).name} (${(module as IModule).id})`} />
+      <SiteHeading title={`${location.state?.name || (module as IModule).name} (${moduleID})`} />
       <GridCards>
         {moduleCards.map((card) => {
           const { title, disabled, description, icon, bottom } = card;

@@ -90,7 +90,7 @@ export const UserModulesList = () => {
         {modules?.map(({ id, name }) => {
           return (
             <li key={`list-item-${id}`}>
-              <Link to={`/module/${id}`}>
+              <Link to={{ pathname: `/module/${id}`, state: { name } }}>
                 {name} ({id})
               </Link>
             </li>
