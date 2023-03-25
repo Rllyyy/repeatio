@@ -3,6 +3,7 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 import { toast } from "react-toastify";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
+import { parseJSON } from "../../../../utils/parseJSON";
 
 //Context
 import { IModuleContext, ModuleContext } from "../../../module/moduleContext";
@@ -15,6 +16,7 @@ import { BiTrash } from "react-icons/bi";
 //Interfaces/Types
 import { IParams } from "../../../../utils/types";
 import { IQuestion } from "../../useQuestion";
+import { IModule } from "../../../module/module";
 
 interface IDeleteQuestion
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
@@ -33,7 +35,7 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
   let history = useHistory();
 
   //Access Module
-  const { moduleData, setModuleData, filteredQuestions } = useContext<IModuleContext>(ModuleContext);
+  const { data, setData } = useContext<IModuleContext>(ModuleContext);
 
   //Delete Question from storage
   const handleDelete = () => {
@@ -44,59 +46,71 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
     }
 
     //Don't allow to edit the basic module
-    if (moduleData.id === "types_1") {
+    if (params.moduleID === "types_1") {
       toast.warn("Can't delete Questions of test module");
       return;
     }
 
+    //TODO allow this with history.push to module overview
     //Don't allow deletion on the last element in the module
-    if (moduleData.questions.length <= 1) {
-      //TODO fix this
+    if ((data.questionIds?.length || 0) <= 1) {
       toast.warn("Can't delete last question in module for now");
       return;
     }
 
     //Don't allow question editing when using mode random
-    if (new URLSearchParams(search).get("mode") === "random") {
+    if (new URLSearchParams(search).get("order") === "random") {
       //TODO fix this
       toast.warn("Don't delete questions in mode random for this time.");
       return;
     }
 
-    if (moduleData.questions.length !== filteredQuestions.length) {
-      toast.warn(
-        "Don't delete questions while viewing just saved questions. This causes too many bugs. I will try to fix this in the future. For now access this question not by using saved questions, but instead find the question with mode chronological or use the question overview to find this question."
-      );
+    // Remove question from localStorage
+    // Get module from localStorage
+    const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+
+    if (!module) {
+      toast.error("Couldn't find module!");
+      return;
     }
 
-    //TODO Refactor the code below when the ModuleContext gets refactored
-    const indexInModuleQuestions = moduleData.questions.findIndex((question: IQuestion) => question.id === questionID);
+    // Get index of question that should be deleted
+    const indexInModuleQuestions = module.questions.findIndex((question: IQuestion) => question.id === questionID);
 
     //If question isn't in moduleData don't modify the storage. In Prod this error should never be shown!
-    if (indexInModuleQuestions <= -1) {
+    if (!indexInModuleQuestions || indexInModuleQuestions <= -1) {
       toast.error("Couldn't find questionID!");
       return;
     }
 
     //Remove at given index one element
-    moduleData.questions.splice(indexInModuleQuestions, 1);
+    module.questions.splice(indexInModuleQuestions, 1);
 
-    //Update context
-    setModuleData({ ...moduleData, questions: moduleData.questions });
+    // Update localStorage for module
+    localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
+
+    // Update questionIds context
+    setData({ ...data, questionIds: data.questionIds?.filter((id) => id !== questionID) });
 
     //Navigate to new path with new id
-    const indexInFilteredQuestions = filteredQuestions.findIndex((question: IQuestion) => question.id === questionID);
+    const indexInContextQuestionsIds = data.questionIds?.findIndex((id) => id === questionID);
 
-    //Because the Push to new url
-    if (indexInFilteredQuestions >= 1) {
+    if (!indexInContextQuestionsIds) throw new Error("ID is not in data.questionsIds");
+
+    // Navigate to previous item in array if not at the beginning (0)
+    if (indexInContextQuestionsIds >= 1) {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[indexInFilteredQuestions - 1].id}`,
-        search: `?mode=${new URLSearchParams(search).get("mode") || "chronological"}`,
+        pathname: `/module/${params.moduleID}/question/${data.questionIds?.[indexInContextQuestionsIds - 1]}`,
+        search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
+          new URLSearchParams(search).get("order") || "chronological"
+        }`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[indexInFilteredQuestions + 1].id}`,
-        search: `?mode=${new URLSearchParams(search).get("mode") || "chronological"}`,
+        pathname: `/module/${params.moduleID}/question/${data.questionIds?.[indexInContextQuestionsIds + 1]}`,
+        search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
+          new URLSearchParams(search).get("order") || "chronological"
+        }`,
       });
     }
 

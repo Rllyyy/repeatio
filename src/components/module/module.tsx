@@ -1,13 +1,11 @@
-import React, { useState, useContext, useCallback, useLayoutEffect, useEffect } from "react";
+import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
-import { ModuleContext } from "./moduleContext";
 import packageJSON from "../../../package.json";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
 import { SiteHeading } from "../SiteHeading/SiteHeading";
 import { Card, LinkElement, ButtonElement } from "../Card/Card";
-import { Spinner } from "../Spinner/Spinner";
 import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
@@ -24,10 +22,10 @@ import { TbFileExport, TbFileImport } from "react-icons/tb";
 //functions
 import { shuffleArray } from "../../utils/shuffleArray";
 import { saveFile } from "../../utils/saveFile";
+import { parseJSON } from "../../utils/parseJSON";
 
 //Interfaces and types
 import { IParams } from "../../utils/types.js";
-import { IModuleContext } from "./moduleContext";
 import {
   getBookmarkedLocalStorageItem,
   getBookmarkedQuestionsFromModule,
@@ -54,17 +52,14 @@ interface LocationState {
 
 //Component
 export const Module = () => {
-  //useState
-  const [module, setModule] = useState<IModule | {}>({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
-  //context
-  const { setFilteredQuestions, moduleData, setContextModuleID } = useContext<IModuleContext>(ModuleContext);
-
   //Access state of link
   const location = useLocation<LocationState>();
+
+  //useState
+  //const [module, setModule] = useState<IModule | {}>({});
+  const [moduleName, setModuleName] = useState(location.state?.name);
+  const [error, setError] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   //History
   let history = useHistory();
@@ -72,44 +67,24 @@ export const Module = () => {
   //Params
   const { moduleID } = useParams<{ moduleID: string }>();
 
-  /* USEEFFECTS */
-  //Update the module state by using the data from the context
-  useLayoutEffect(() => {
-    //Context returned nothing because module wasn't found
-    if (moduleData === null) {
-      setError(true);
-      setLoading(false);
-      return;
+  /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the the home modules. */
+  useEffect(() => {
+    if (!location.state?.name) {
+      // fetch from localStorage
+      const moduleNameFromStorage = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.name;
+
+      // if there is a module found with the id, update the moduleName state else show error
+      if (moduleNameFromStorage) {
+        setModuleName(moduleNameFromStorage);
+      } else {
+        setError(true);
+      }
     }
 
-    if (Object.keys(moduleData)?.length === 0 || moduleData === undefined) {
-      setLoading(true);
-      setError(false);
-      return;
-    }
-
-    //Update module if module was found
-    setModule(moduleData);
-    setError(false);
-    setLoading(false);
-
     return () => {
-      setModule({});
-      setError(false);
-      setLoading(true);
+      setModuleName("");
     };
-  }, [moduleData]);
-
-  //Tell the context to update with the new module (id is in the url)
-  useLayoutEffect(() => {
-    setContextModuleID(moduleID);
-
-    return () => {
-      setModule({});
-      setError(false);
-      setLoading(true);
-    };
-  }, [moduleID, setContextModuleID]);
+  }, [moduleID, location.state?.name]);
 
   //TODO remove this with v0.5
   useEffect(() => {
@@ -133,34 +108,36 @@ export const Module = () => {
   }, [moduleID]);
 
   /*EVENTS*/
-  //Train with all questions in chronological order
+  //Train with all questions in chronological order starting at the first question
   const onChronologicalClick = () => {
-    setFilteredQuestions(moduleData.questions);
+    let questions = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.questions;
 
-    if (moduleData.questions !== undefined && moduleData.questions.length >= 1) {
+    // Navigate to first question if there are questions in the module else show warning
+    if (questions !== undefined && questions.length >= 1) {
       history.push({
-        pathname: `/module/${moduleID}/question/${(module as IModule).questions[0].id}`,
-        search: "?mode=chronological",
+        pathname: `/module/${moduleID}/question/${questions[0].id}`,
+        search: "?mode=practice&order=chronological",
       });
     } else {
       toast.warn("No questions found!");
-      return;
     }
   };
 
   //Train with all questions in random order
   const onRandomClick = () => {
-    //If the array isn't spread, it modifies the order of the original data
-    const shuffledQuestions = shuffleArray([...moduleData.questions]);
-    if (shuffledQuestions.length >= 1) {
-      setFilteredQuestions(shuffledQuestions);
+    const questions = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.questions;
+
+    if (questions && questions.length >= 1) {
+      //If the array isn't spread, it modifies the order of the original data
+      const shuffledQuestions = shuffleArray([...questions]);
+
+      //setFilteredQuestions(shuffledQuestions);
       history.push({
         pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
-        search: "?mode=random",
+        search: "?mode=practice&order=random",
       });
     } else {
       toast.warn("No questions found!");
-      return;
     }
   };
 
@@ -239,23 +216,17 @@ export const Module = () => {
     },
   ];
 
-  //Show loading while module isn't set
-  if (loading) {
-    return (
-      <div className='module-spinner' style={{ marginTop: "80px" }}>
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (error || Object.keys(module).length < 1) {
+  if (error) {
     return <ModuleNotFound />;
   }
 
+  // TODO: Add Suspense with react 18 <Spinner />
+  //
+
   //JSX
   return (
-    <div id={`module-${(module as IModule).id}`}>
-      <SiteHeading title={`${location.state?.name || (module as IModule).name} (${moduleID})`} />
+    <div id={moduleName}>
+      <SiteHeading title={`${moduleName} (${moduleID})`} />
       <GridCards>
         {moduleCards.map((card) => {
           const { title, disabled, description, icon, bottom } = card;
@@ -274,7 +245,7 @@ export const Module = () => {
           );
         })}
       </GridCards>
-      {showModal && <QuestionEditor handleModalClose={handleModalClose} />}
+      {showModal && <QuestionEditor handleModalClose={handleModalClose} mode={"create"} />}
     </div>
   );
 };
@@ -288,9 +259,6 @@ const BookmarkedQuestionsBottom = () => {
 
   //Params
   const { moduleID } = useParams<IParams>();
-
-  //Context
-  const { setFilteredQuestions, moduleData } = useContext<IModuleContext>(ModuleContext);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {
@@ -375,6 +343,9 @@ const BookmarkedQuestionsBottom = () => {
     let rejectedIDs: IBookmarkedQuestions["questions"] = [];
     let newIDs: IBookmarkedQuestions["questions"] = [];
 
+    //Get module from localStorage
+    const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`));
+
     //Get old saved questions from localStorage or provide empty array
     const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
 
@@ -384,7 +355,7 @@ const BookmarkedQuestionsBottom = () => {
     //Add only ids that are in the module (as question ids) and only if not already in localStorage
     importedBookmarkedFile?.questions?.forEach((importedID) => {
       //Return if id of the imported saved questions is not in the module
-      if (moduleData.questions?.findIndex((question: IQuestion) => question.id === importedID) === -1) {
+      if (module?.questions?.findIndex((question: IQuestion) => question.id === importedID) === -1) {
         rejectedIDs?.push(importedID);
         return false;
       }
@@ -437,8 +408,6 @@ const BookmarkedQuestionsBottom = () => {
 
   //Train with only the saved Questions
   const onBookmarkedQuestionsClick = () => {
-    //TODO for electron get from filesystem
-
     //Get the bookmarked ids from the localStorage item
     const bookmarkedQuestionsIDs = getBookmarkedQuestionsFromModule(moduleID);
 
@@ -450,24 +419,10 @@ const BookmarkedQuestionsBottom = () => {
       return;
     }
 
-    //For each element in the bookmarked array return the question object
-    //kinda expensive calculation (array in array) :/
-    let bookmarkedQuestions: IQuestion[] = [];
-    bookmarkedQuestionsIDs.forEach((item) => {
-      const question = moduleData.questions.find((question: IQuestion) => question.id === item);
-      //push question object to array if question is found
-      if (question !== undefined) {
-        bookmarkedQuestions.push(question);
-      }
-    });
-
-    //Update the context
-    setFilteredQuestions(bookmarkedQuestions);
-
     //Navigate to question component
     history.push({
-      pathname: `/module/${moduleID}/question/${bookmarkedQuestions[0].id}`,
-      search: "?mode=chronological",
+      pathname: `/module/${moduleID}/question/${bookmarkedQuestionsIDs[0]}`,
+      search: "?mode=bookmarked&order=chronological",
     });
   };
 

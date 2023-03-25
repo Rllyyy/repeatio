@@ -51,6 +51,7 @@ export const Question: React.FC<{}> = () => {
     answerCorrect,
     questionDataRef,
     questionAnswerRef,
+    fetchQuestion,
   } = useQuestion();
 
   //JSX
@@ -71,23 +72,16 @@ export const Question: React.FC<{}> = () => {
         showAnswer={showAnswer}
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
+        fetchQuestion={fetchQuestion}
       />
     </form>
   );
 };
 
-// TODO maybe use Pick instead
 type TQuestionData = Pick<
   TUseQuestion,
   "question" | "loading" | "questionAnswerRef" | "questionDataRef" | "showAnswer" | "answerCorrect"
 >;
-/*   question: IQuestion | undefined;
-  loading: boolean;
-  showAnswer: boolean;
-  answerCorrect: boolean;
-  questionDataRef: React.RefObject<HTMLDivElement>;
-  questionAnswerRef: React.RefObject<IForwardRefFunctions>;
-} */
 
 //Question Data contains all the question info (title, points, type, help, answerOptions)
 const QuestionData: React.FC<TQuestionData> = ({
@@ -140,6 +134,7 @@ export interface IQuestionBottom {
   showAnswer: TUseQuestion["showAnswer"];
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
+  fetchQuestion: TUseQuestion["fetchQuestion"];
 }
 
 export const QuestionBottom: React.FC<IQuestionBottom> = ({
@@ -147,6 +142,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
   showAnswer,
   disabled,
   handleResetRetryQuestion,
+  fetchQuestion,
 }) => {
   //States
   const [showNav, setShowNav] = useState(false);
@@ -170,6 +166,10 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
     }
   }, [size?.width, size, setCollapsedActionsNav]);
 
+  if (!questionID) {
+    return <></>;
+  }
+
   return (
     <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>
       <div className='question-check-retry-wrapper'>
@@ -191,7 +191,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
           data-testid='question-actions-navigation-wrapper'
         >
           <DeleteQuestion questionID={questionID} disabled={disabled} />
-          <EditQuestion prevQuestionID={questionID} disabled={disabled} />
+          <EditQuestion prevQuestionID={questionID} disabled={disabled} fetchQuestion={fetchQuestion} />
           <BookmarkQuestion moduleID={moduleID} questionID={questionID} disabled={disabled} />
           <QuestionNavigation />
         </div>
@@ -203,7 +203,9 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
 //ID and Progress of the current question
 const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   //Context
-  const { filteredQuestions } = useContext(ModuleContext); //TODO remove this
+  const {
+    data: { questionIds },
+  } = useContext(ModuleContext); //TODO remove this
 
   return (
     <div className='question-id-progress-wrapper'>
@@ -211,7 +213,7 @@ const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
         ID: {qID}
       </p>
       <p className='question-progress'>
-        {filteredQuestions?.findIndex((item) => item.id === qID) + 1}/{filteredQuestions?.length || "?"} Questions
+        {(questionIds?.findIndex((item) => item === qID) ?? 0) + 1}/{questionIds?.length || "?"} Questions
       </p>
     </div>
   );

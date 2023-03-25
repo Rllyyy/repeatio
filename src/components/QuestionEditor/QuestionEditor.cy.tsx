@@ -24,7 +24,7 @@ const MockFormWithRouter = () => {
   return (
     <Router history={history}>
       <ModuleProvider>
-        <Form handleModalClose={handleModalCloseSpy} />
+        <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
         <CustomToastContainer />
       </ModuleProvider>
     </Router>

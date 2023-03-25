@@ -52,10 +52,10 @@ ReactDOM.render(
           <Route exact path='/settings' component={SettingsPage} />
           <Route exact path='/legal-notice' component={LegalNoticePage} />
           <Route exact path='/privacy' component={PrivacyPage} />
+          <Route exact path='/module/:moduleID' component={ModulePage} />
+          <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
           <ModuleProvider>
-            <Route exact path='/module/:moduleID' component={ModulePage} />
             <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
-            <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
           </ModuleProvider>
         </Switch>
       </main>

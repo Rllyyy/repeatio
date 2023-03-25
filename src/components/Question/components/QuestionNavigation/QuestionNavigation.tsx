@@ -117,7 +117,9 @@ export const QuestionNavigation = () => {
 
 export const useQuestionNavigation = () => {
   //context
-  const { filteredQuestions } = useContext(ModuleContext);
+  const {
+    data: { questionIds },
+  } = useContext(ModuleContext);
 
   //params
   const params = useParams<IParams>();
@@ -128,19 +130,20 @@ export const useQuestionNavigation = () => {
   //Location (Search url=?...)
   const { search } = useLocation();
 
-  const practiceMode = useRef(new URLSearchParams(search).get("mode") || "chronological"); //Fallback to chronological if urlSearchParams is undefined
+  const mode = useRef(new URLSearchParams(search).get("mode") || "practice"); //Fallback to practice if urlSearchParams is undefined
+  const order = useRef(new URLSearchParams(search).get("order") || "chronological"); //Fallback to chronological order if urlSearchParams is undefined
 
   //Navigation
   //Go to first question in module
   const navigateToFirstQuestion = () => {
-    const firstIDInQuestionArray = filteredQuestions[0].id;
+    const firstIDInQuestionArray = questionIds?.[0];
 
     //Only push to history if not already at the first question
     //TODO notify the user that the already is at the beginning
     if (params.questionID !== firstIDInQuestionArray) {
       history.push({
         pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
-        search: `?mode=${practiceMode.current}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     }
   };
@@ -148,18 +151,18 @@ export const useQuestionNavigation = () => {
   //Go to the previous question
   const navigateToPreviousQuestion = () => {
     //get Current index
-    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
 
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
-    if (currentIndex - 1 >= 0) {
+    if (currentIndex && currentIndex - 1 >= 0) {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex - 1].id}`,
-        search: `?mode=${practiceMode.current}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex - 1]}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[filteredQuestions.length - 1].id}`,
-        search: `?mode=${practiceMode.current}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[questionIds.length - 1]}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     }
   };
@@ -177,11 +180,13 @@ export const useQuestionNavigation = () => {
   //Return the placeholder value for the input
   const currentQuestionPageIndexPlaceholder = () => {
     //find the current index
-    const index = filteredQuestions?.findIndex((question) => question.id === params.questionID);
+    const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
+
+    if (typeof currentIndex === "undefined") return;
 
     //Return the index and add 1 so indexes aren't zero based if question can be found
-    if (index >= 0) {
-      return (index + 1).toString();
+    if (currentIndex >= 0) {
+      return (currentIndex + 1).toString();
     } else {
       return undefined;
     }
@@ -190,32 +195,34 @@ export const useQuestionNavigation = () => {
   //Go to the next question
   const navigateToNextQuestion = () => {
     //get Current index
-    const currentIndex = filteredQuestions.findIndex((questionItem) => questionItem.id === params.questionID);
+    const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
+
+    if (typeof currentIndex === "undefined") return;
 
     //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
-    if (currentIndex + 1 < filteredQuestions.length) {
+    if (currentIndex + 1 < (questionIds?.length ?? 0)) {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[currentIndex + 1].id}`,
-        search: `?mode=${practiceMode.current}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex + 1]}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${filteredQuestions[0].id}`,
-        search: `?mode=${practiceMode.current}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[0]}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     }
   };
 
   //Go to last question
   const navigateToLastQuestion = () => {
-    const lastIDInQuestionArray = filteredQuestions[filteredQuestions.length - 1].id;
+    const lastIDInQuestionArray = questionIds?.[questionIds.length - 1];
 
     //Only push to history if not already at the last point
     //TODO notify the user that the end was reached
     if (params.questionID !== lastIDInQuestionArray) {
       history.push({
         pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
-        search: `?mode=${practiceMode.current}`,
+        search: `?mode=${mode.current}&order=${order.current}`,
       });
     }
   };

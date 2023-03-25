@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
+import { parseJSON } from "../../utils/parseJSON";
+import { shuffleArray } from "../../utils/shuffleArray";
 
 //Context
 import { ModuleContext } from "../module/moduleContext";
@@ -14,6 +16,9 @@ import { IParams } from "../../utils/types";
 import { IForwardRefFunctions } from "./QuestionTypes/types";
 import { IExtendedMatch } from "./QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/GapTextEditor";
+import { IModule } from "../module/module";
+import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
+import { toast } from "react-toastify";
 
 export type TAnswerOptions =
   | IMultipleChoice[]
@@ -43,7 +48,10 @@ export const useQuestion = () => {
   const [answerCorrect, setAnswerCorrect] = useState(false);
 
   //Context
-  const { filteredQuestions, setContextModuleID } = useContext(ModuleContext);
+  const { data, setData } = useContext(ModuleContext);
+
+  //URL parameters
+  const { search } = useLocation();
 
   //Refs
   const questionDataRef = useRef<HTMLDivElement>(null);
@@ -51,6 +59,9 @@ export const useQuestion = () => {
 
   //params
   const params = useParams<IParams>();
+
+  //History
+  let history = useHistory();
 
   //Custom hooks
   const { navigateToNextQuestion } = useQuestionNavigation();
@@ -84,60 +95,119 @@ export const useQuestion = () => {
     setShowAnswer(false);
   }, [showAnswer, setShowAnswer, questionDataRef]);
 
+  const fetchQuestion = useCallback(() => {
+    //Find the correct question in the moduleData context
+    const moduleJson = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+
+    const question = moduleJson?.questions.find((question) => question.id === params.questionID);
+
+    setQuestion(question);
+  }, [params.moduleID, params.questionID]);
+
   /* UseEffects */
   //Set the question state by finding the correct question with the url parameters
   useEffect(() => {
     if (params.questionID === undefined) {
       return;
     }
+
     //Guard to refetch context (could for example happen on F5)
-    if (filteredQuestions?.length <= 0 && params.moduleID) {
-      setContextModuleID(params.moduleID);
+    //TODO here
+    // Also if data.mode !== new URLSearchParams(search).get("mode")
+    // or data.order !== new URLSearchParams(search).get("order")
+    if ((data?.questionIds?.length ?? 0) <= 0 && params.moduleID) {
+      const mode = new URLSearchParams(search).get("mode");
+      const order = new URLSearchParams(search).get("order");
+
+      if (order !== "chronological" && order !== "random") {
+        console.error(`${order} is not a valid argument for order! Redirecting to chronological.`);
+        history.push({
+          pathname: `/module/${params.moduleID}/question/${params.questionID}`,
+          search: `?mode=${mode}&order=chronological`,
+        });
+      }
+
+      switch (mode) {
+        case "practice":
+          const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+
+          let ids = module?.questions.map((question) => question.id);
+
+          if (ids) {
+            // Randomize the array but keep the first element the same
+            if (order === "random") {
+              // get index of current id
+              const currentIndex = ids.indexOf(params.questionID);
+
+              // Remove the id from the array
+              ids.splice(currentIndex, 1);
+
+              // Shuffle the array
+              ids = shuffleArray(ids);
+
+              // Add the current question id in front of the array so it equals the currently viewed question
+              ids.unshift(params.questionID);
+            }
+
+            setData({ ...data, questionIds: ids, order: order as "chronological" | "random" });
+          } else {
+            toast.error("Module doesn't exist");
+          }
+          break;
+        case "bookmarked":
+          // TODO only add to bookmarkedIds if the id exists in BookmarkQuestions
+          let bookmarkedIds = parseJSON<IBookmarkedQuestions>(
+            localStorage.getItem(`repeatio-marked-${params.moduleID}`)
+          )?.questions;
+
+          //TODO randomize data
+
+          if (bookmarkedIds) {
+            if (order === "random") {
+              const currentIndex = bookmarkedIds.indexOf(params.questionID);
+
+              if (currentIndex <= -1) {
+                toast.error("The current question is not bookmarked!");
+                return;
+              }
+
+              // Remove the id from the array
+              bookmarkedIds.splice(currentIndex, 1);
+
+              // Shuffle the array
+              bookmarkedIds = shuffleArray(bookmarkedIds);
+
+              // Add the current question id in front of the array so it equals the currently viewed question
+              bookmarkedIds.unshift(params.questionID);
+            }
+
+            setData({ ...data, questionIds: bookmarkedIds, order: order as "chronological" | "random" });
+          } else {
+            console.warn("Found 0 bookmarked questions");
+          }
+
+          break;
+        default:
+          console.error(`${mode} is not a valid argument for mode! Redirecting to practice.`);
+
+          history.push({
+            pathname: `/module/${params.moduleID}/question/${params.questionID}`,
+            search: `?mode=practice&order=${order}`,
+          });
+
+          break;
+      }
       return;
     }
 
-    //Find the correct question in the moduleData context
-    const returnQuestion = filteredQuestions?.find((questionItem) => questionItem.id === params.questionID);
-
-    setQuestion(returnQuestion);
+    fetchQuestion();
     setLoading(false);
 
     return () => {
       setQuestion({} as IQuestion);
       setLoading(true);
     };
-  }, [params.questionID, params.moduleID, setContextModuleID, filteredQuestions]);
-
-  //On question unmount, set show answer to false
-  //TODO would be great if the useQuestionNavigation would handle this :/
-  useEffect(() => {
-    return () => {
-      setShowAnswer(false);
-    };
-  }, [question]);
-
-  //Refetch the question if the user edits a questions
-  useEffect(() => {
-    //Find question with the id from the url
-    const refetchQuestion = () => {
-      const question = filteredQuestions.find((questionItem) => questionItem.id === params.questionID);
-      setQuestion(question);
-
-      if (question) {
-      }
-    };
-
-    //Add event listener. If you want to trigger this use:
-    //window.dispatchEvent(new Event("storage"));
-    window.addEventListener("storage", refetchQuestion);
-
-    //Cleanup
-    return () => {
-      window.removeEventListener("storage", refetchQuestion);
-      setQuestion({} as IQuestion);
-      setLoading(true);
-    };
-  }, [params.questionID, filteredQuestions]);
+  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion]);
 
   return {
     question,
@@ -149,5 +219,6 @@ export const useQuestion = () => {
     answerCorrect,
     questionDataRef,
     questionAnswerRef,
+    fetchQuestion,
   } as const;
 };
