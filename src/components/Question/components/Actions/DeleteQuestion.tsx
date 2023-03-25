@@ -58,13 +58,6 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
       return;
     }
 
-    //Don't allow question editing when using mode random
-    if (new URLSearchParams(search).get("order") === "random") {
-      //TODO fix this
-      toast.warn("Don't delete questions in mode random for this time.");
-      return;
-    }
-
     // Remove question from localStorage
     // Get module from localStorage
     const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
@@ -78,7 +71,7 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
     const indexInModuleQuestions = module.questions.findIndex((question: IQuestion) => question.id === questionID);
 
     //If question isn't in moduleData don't modify the storage. In Prod this error should never be shown!
-    if (!indexInModuleQuestions || indexInModuleQuestions <= -1) {
+    if (typeof indexInModuleQuestions === "undefined" || indexInModuleQuestions <= -1) {
       toast.error("Couldn't find questionID!");
       return;
     }
@@ -89,16 +82,13 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
     // Update localStorage for module
     localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
 
-    // Update questionIds context
-    setData({ ...data, questionIds: data.questionIds?.filter((id) => id !== questionID) });
-
-    //Navigate to new path with new id
+    // Navigate to new path with new id
     const indexInContextQuestionsIds = data.questionIds?.findIndex((id) => id === questionID);
 
-    if (!indexInContextQuestionsIds) throw new Error("ID is not in data.questionsIds");
-
-    // Navigate to previous item in array if not at the beginning (0)
-    if (indexInContextQuestionsIds >= 1) {
+    if (typeof indexInContextQuestionsIds === "undefined") {
+      console.error("ID is not in data.questionIds");
+    } else if (indexInContextQuestionsIds && indexInContextQuestionsIds >= 1) {
+      // Navigate to previous item in array if not at the beginning (0)
       history.push({
         pathname: `/module/${params.moduleID}/question/${data.questionIds?.[indexInContextQuestionsIds - 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
@@ -113,6 +103,9 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
         }`,
       });
     }
+
+    // Update questionIds context
+    setData({ ...data, questionIds: data.questionIds?.filter((id) => id !== questionID) });
 
     //Remove id from saved questions in localStorage
     //Get whole bookmarked item from localStorage

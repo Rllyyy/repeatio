@@ -8,7 +8,7 @@ export interface IModuleContext {
   setData: React.Dispatch<React.SetStateAction<TData>>;
 }
 
-type TData = {
+export type TData = {
   mode?: "practice" | "bookmarked"; // | "selected" | "exam"
   order?: "chronological" | "random";
   questionIds?: IQuestion["id"][];

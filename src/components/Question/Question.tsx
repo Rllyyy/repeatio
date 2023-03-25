@@ -166,10 +166,6 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
     }
   }, [size?.width, size, setCollapsedActionsNav]);
 
-  if (!questionID) {
-    return <></>;
-  }
-
   return (
     <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>
       <div className='question-check-retry-wrapper'>

@@ -10,7 +10,7 @@ import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
 import { IQuestion, TUseQuestion } from "../../useQuestion";
 
 interface IEditQuestion {
-  prevQuestionID: IQuestion["id"];
+  prevQuestionID: IQuestion["id"] | undefined;
   disabled: boolean;
   fetchQuestion: TUseQuestion["fetchQuestion"];
 }
@@ -22,12 +22,13 @@ export const EditQuestion = ({ prevQuestionID, disabled, fetchQuestion }: IEditQ
   const handleModalClose = () => {
     setShowModal(false);
   };
+
   return (
     <>
       <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
-      {showModal && (
+      {prevQuestionID && showModal && (
         <QuestionEditor
           mode='edit'
           handleModalClose={handleModalClose}
