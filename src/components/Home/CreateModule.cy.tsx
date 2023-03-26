@@ -173,25 +173,6 @@ describe("Creating a module", () => {
     cy.get("select#create-module-language-select").should("not.have.class", "is-invalid");
   });
 
-  //Error when using reserved keywords (module/types_1)
-  it('should show error if provided id for module is a reserved keyword ("module"/"types_1")', () => {
-    cy.mount(<MockCreateModuleComponent />);
-
-    //Check against word "module"
-    cy.get("input#create-module-id-input").type("module");
-    cy.get("input#create-module-name-input").type("Module created with cypress", { delay: 2 });
-    cy.get("select#create-module-language-select").select("English");
-    cy.contains("button", "Create").click();
-
-    cy.contains(`The word "module" is a reserved keyword and can't be used inside an ID!`).should("be.visible");
-    cy.get("input#create-module-id-input").should("have.class", "is-invalid");
-
-    //Check against word "types_1" as that value is used for the repeatio examples
-    cy.get("input#create-module-id-input").clear().type("types_1");
-    cy.contains(`The word "types_1" is a reserved keyword!`).should("be.visible");
-    cy.get("input#create-module-id-input").should("have.class", "is-invalid");
-  });
-
   //Error if using space inside id input
   it("should show error if using space in id", () => {
     cy.mount(<MockCreateModuleComponent />);

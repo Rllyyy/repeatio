@@ -13,7 +13,7 @@ describe("Test deletion of module", () => {
     });
   });
 
-  //Test download of public folder file (cypress saves it to cypress/downloads)
+  //TODO delete this
   it("should delete module that is located in localStorage", () => {
     //Add item to localStorage and check existence
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
@@ -35,15 +35,6 @@ describe("Test deletion of module", () => {
 
     //Module should no longer exist/be visible in list of modules
     cy.contains("Cypress Fixture Module (cypress_1)").should("not.exist");
-  });
-
-  it("should prevent deletion of example module", () => {
-    //Click delete module button
-    cy.get("article[data-cy='module-types_1']").find("button.popover-button").click();
-    cy.get("ul.MuiList-root").contains("Delete").click();
-
-    cy.get(".Toastify").contains("Can't delete example module!");
-    cy.get("@consoleWarn").should("be.calledWithMatch", /\[.*\] Can't delete example module\!/);
   });
 
   it("should toast error if to be deleted file can't be found in localStorage ", () => {

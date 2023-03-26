@@ -98,7 +98,7 @@ describe("MultipleChoice Component", () => {
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
         <ModuleProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />

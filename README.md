@@ -193,7 +193,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-1?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-1?mode=practice&order=chronological)_**
 
 </details>
 
@@ -251,7 +251,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-2?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-2?mode=practice&order=chronological)_**
 
 </details>
 
@@ -292,7 +292,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-3?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-3?mode=practice&order=chronological)_**
 
 </details>
 
@@ -343,7 +343,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-4?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-4?mode=practice&order=chronological)_**
 
 </details>
 
@@ -406,7 +406,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
   }
   ```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-5?mode=chronological)_**
+  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-5?mode=practice&order=chronological)_**
 
 </details>
 

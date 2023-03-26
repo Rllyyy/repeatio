@@ -25,7 +25,7 @@ declare const expect: Chai.ExpectStatic;
 
 function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <ModuleProvider>
         <Route path='/module/:moduleID/question/:questionID'>
           <div className='question-form'>
@@ -42,7 +42,7 @@ function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main>
         <ModuleProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />

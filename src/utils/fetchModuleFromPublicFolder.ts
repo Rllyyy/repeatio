@@ -1,7 +1,5 @@
 import { IModule } from "../components/module/module";
 
-//TODO replace everywhere where toast could have been shown
-
 //Fetch the module from the public folder
 export async function fetchModuleFromPublicFolder(): Promise<IModule | undefined> {
   try {
@@ -16,8 +14,7 @@ export async function fetchModuleFromPublicFolder(): Promise<IModule | undefined
     }
   } catch (error) {
     if (error instanceof Error) {
-      //return { error: error.message };
-      throw error;
+      console.error(error.message);
     }
   }
 }

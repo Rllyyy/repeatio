@@ -1,15 +1,18 @@
 /// <reference types="cypress" />
 
-describe("Test the module that is provided by the public folder", () => {
-  beforeEach(() => {
-    cy.visit("/");
-  });
+import { IModule } from "../../src/components/module/module";
+import { parseJSON } from "../../src/utils/parseJSON";
+import { TSettings } from "../../src/utils/types";
 
+describe("Test the module that is provided by the public folder", () => {
   it("should display module", () => {
+    cy.visit("/");
     cy.contains("Question Types (types_1)").should("be.visible");
   });
 
   it("should answer all questions in public module", () => {
+    cy.visit("/");
+
     cy.contains("View").click();
 
     cy.contains("Question Types (types_1)").should("be.visible");
@@ -68,6 +71,22 @@ describe("Test the module that is provided by the public folder", () => {
 
     //Check if back at beginning
     cy.contains("ID: qID-1");
+  });
+
+  it("should show question if directly navigating to question from an external source", () => {
+    // This is for example the case if the user visits the website from the docs and he has never been to the homepage
+    cy.visit("/module/types_1/question/qID-1?mode=practice&order=chronological");
+
+    // Asset that the question renders, that the module was added and that the settings were updated
+    cy.contains("ID: qID-1")
+      .should("exist")
+      .and(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-types_1"));
+        expect(module).not.to.be.null;
+
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        expect(settings?.addedExampleModule).to.equal(true);
+      });
   });
 });
 

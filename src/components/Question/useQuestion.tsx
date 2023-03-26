@@ -3,6 +3,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 import { parseJSON } from "../../utils/parseJSON";
 import { shuffleArray } from "../../utils/shuffleArray";
+import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "../Home/helpers";
 
 //Context
 import { ModuleContext } from "../module/moduleContext";
@@ -12,7 +13,7 @@ import { IMultipleChoice } from "./QuestionTypes/MultipleChoice/MultipleChoice";
 import { IMultipleResponse } from "./QuestionTypes/MultipleResponse/MultipleResponse";
 import { IGapText } from "./QuestionTypes/GapText/GapText";
 import { IGapTextDropdown } from "./QuestionTypes/GapTextDropdown/GapTextDropdown";
-import { IParams } from "../../utils/types";
+import { IParams, TSettings } from "../../utils/types";
 import { IForwardRefFunctions } from "./QuestionTypes/types";
 import { IExtendedMatch } from "./QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/GapTextEditor";
@@ -95,6 +96,16 @@ export const useQuestion = () => {
     setShowAnswer(false);
   }, [showAnswer, setShowAnswer, questionDataRef]);
 
+  /* Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render) */
+  const setExampleModule = useCallback(async () => {
+    // Get settings from localStorage
+    const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+    if (!isExampleModuleAdded(settings)) {
+      await addExampleModuleToLocalStorage(settings);
+    }
+  }, []);
+
+  /* Fetch Question from localStorage */
   const fetchQuestion = useCallback(() => {
     //Find the correct question in the moduleData context
     const moduleJson = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
@@ -104,23 +115,24 @@ export const useQuestion = () => {
     setQuestion(question);
   }, [params.moduleID, params.questionID]);
 
-  /* UseEffects */
-  //Set the question state by finding the correct question with the url parameters
-  useEffect(() => {
+  /* Set context, question and set Module example if needed */
+  const fetchAndSetQuestions = useCallback(async () => {
     if (params.questionID === undefined) {
       return;
     }
 
-    //Guard to refetch context (could for example happen on F5)
-    //TODO here
-    // Also if data.mode !== new URLSearchParams(search).get("mode")
-    // or data.order !== new URLSearchParams(search).get("order")
+    /* setExampleModule if it hasn't been added before */
+    if (params.moduleID === "types_1") {
+      await setExampleModule();
+    }
+
+    /* Set context if it is empty */
     if ((data?.questionIds?.length ?? 0) <= 0 && params.moduleID) {
       const mode = new URLSearchParams(search).get("mode");
       const order = new URLSearchParams(search).get("order");
 
       if (order !== "chronological" && order !== "random") {
-        console.error(`${order} is not a valid argument for order! Redirecting to chronological.`);
+        console.warn(`${order} is not a valid argument for order! Redirecting to chronological.`);
         history.push({
           pathname: `/module/${params.moduleID}/question/${params.questionID}`,
           search: `?mode=${mode}&order=chronological`,
@@ -160,17 +172,15 @@ export const useQuestion = () => {
             localStorage.getItem(`repeatio-marked-${params.moduleID}`)
           )?.questions;
 
-          //TODO randomize data
-
           if (bookmarkedIds) {
+            const currentIndex = bookmarkedIds.indexOf(params.questionID);
+
+            if (currentIndex <= -1) {
+              toast.error("The current question is not bookmarked!");
+              return;
+            }
+
             if (order === "random") {
-              const currentIndex = bookmarkedIds.indexOf(params.questionID);
-
-              if (currentIndex <= -1) {
-                toast.error("The current question is not bookmarked!");
-                return;
-              }
-
               // Remove the id from the array
               bookmarkedIds.splice(currentIndex, 1);
 
@@ -188,7 +198,7 @@ export const useQuestion = () => {
 
           break;
         default:
-          console.error(`${mode} is not a valid argument for mode! Redirecting to practice.`);
+          console.warn(`${mode} is not a valid argument for mode! Redirecting to practice.`);
 
           history.push({
             pathname: `/module/${params.moduleID}/question/${params.questionID}`,
@@ -202,12 +212,17 @@ export const useQuestion = () => {
 
     fetchQuestion();
     setLoading(false);
+  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion, setExampleModule]);
+
+  /* UseEffects */
+  useEffect(() => {
+    fetchAndSetQuestions();
 
     return () => {
       setQuestion({} as IQuestion);
       setLoading(true);
     };
-  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion]);
+  }, [params.questionID, fetchAndSetQuestions]);
 
   return {
     question,

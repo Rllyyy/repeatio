@@ -1,7 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
 import isElectron from "is-electron";
 import { toast } from "react-toastify";
-import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
@@ -17,9 +16,11 @@ import { BiTrash } from "react-icons/bi";
 //Functions
 import { saveFile } from "../../utils/saveFile";
 import { parseJSON } from "../../utils/parseJSON";
+import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "./helpers";
 
 //Interfaces and Types
 import { IModule } from "../module/module";
+import { TSettings } from "../../utils/types";
 
 //Component
 export const Modules = () => {
@@ -74,7 +75,15 @@ const useAllModules = () => {
   //Get the modules from the localStorage and set the module state
   //Updates every time localeStorage changes
   const modulesFromBrowserStorage = useCallback(async () => {
-    //Setup variables for the module and possible errors
+    // Get settings from localStorage
+    const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+
+    // Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render)
+    if (!isExampleModuleAdded(settings)) {
+      await addExampleModuleToLocalStorage(settings);
+    }
+
+    //Setup variables for the module
     let localStorageModules: IModule[] = [];
 
     Object.entries(localStorage).forEach((key) => {
@@ -94,18 +103,8 @@ const useAllModules = () => {
       }
     });
 
-    //get the data from the public folder (types_1)
-    const dataFromPublicFolder = await fetchModuleFromPublicFolder();
-
-    //When able to fetch the data from the public folder, combine them else just show localStorage.
-    //This is useful for when the user is offline
-    if (dataFromPublicFolder !== undefined) {
-      setModules([...localStorageModules, dataFromPublicFolder]);
-    } else {
-      setModules(localStorageModules);
-    }
-
     //Update states
+    setModules(localStorageModules);
     setLoading(false);
   }, []);
 
@@ -168,13 +167,6 @@ const useHomePopover = () => {
     //Get id of module by custom attribute
     const moduleID = anchorEl?.getAttribute("data-target");
 
-    //Prevent deletion of example module as that is saved in the public folder
-    if (moduleID === "types_1") {
-      toast.warn("Can't delete example module!");
-      handlePopoverClose();
-      return;
-    }
-
     //Prevent deletion if using electron
     if (isElectron()) {
       toast.warn("Can't delete modules from electron!");
@@ -207,15 +199,7 @@ const useHomePopover = () => {
 
     //Get id of the module from the button
     const moduleID = anchorEl?.getAttribute("data-target");
-    let file;
-
-    if (moduleID !== "types_1") {
-      //Get module item from localStorage
-      file = localStorage.getItem(`repeatio-module-${moduleID}`);
-    } else {
-      const publicModule = await fetchModuleFromPublicFolder();
-      file = JSON.stringify(publicModule, null, "\t");
-    }
+    const file = localStorage.getItem(`repeatio-module-${moduleID}`);
 
     if (file) {
       await saveFile({ file: file, name: `repeatio-module-${moduleID}` });

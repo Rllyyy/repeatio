@@ -197,11 +197,11 @@ describe("Update question using mode random", () => {
     cy.get("div.ReactModal__Overlay").scrollIntoView();
   });
 
-  it("should show warning if trying to update question", () => {
+  it("should update a question using mode random", () => {
+    // Update points to 50  (by adding 0 to the end of the input which already had 5 asa value)
+    cy.get("input[name='points']").type("0");
     cy.contains("button", "Update").click();
-    cy.contains(
-      "Can't edit this questions while using mode random! Navigate to this question using the question overview."
-    ).should("exist");
+    cy.contains("50 Points").should("exist");
   });
 });
 

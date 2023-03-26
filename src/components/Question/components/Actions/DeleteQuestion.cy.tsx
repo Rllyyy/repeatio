@@ -27,8 +27,8 @@ declare var describe: Mocha.SuiteFunction;
 declare const expect: Chai.ExpectStatic;
 
 interface IRenderWithRouter extends IParams {
-  mode: Required<TData["mode"]>;
-  order: Required<TData["order"]>;
+  mode: NonNullable<TData["mode"]>;
+  order: NonNullable<TData["order"]>;
 }
 
 // Setup Router to access context and useParams

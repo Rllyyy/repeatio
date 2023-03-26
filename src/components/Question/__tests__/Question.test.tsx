@@ -1,7 +1,7 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { Question } from "../Question";
-import { IModuleContext, ModuleContext } from "../../module/moduleContext";
+import { IModuleContext, ModuleContext, TData } from "../../module/moduleContext";
 import { Router, Route, Switch, MemoryRouter, RouteComponentProps } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import { IQuestion } from "../useQuestion";
@@ -72,20 +72,25 @@ const data: IModule = {
   questions: mockFilteredQuestions,
 };
 
-const mockSetContextModuleID = jest.fn();
+const mockSetData = jest.fn();
 
 /* Mocks */
 //Mock the question component with router to allow switching pages and the provider
-const MockQuestionWithRouter = ({ qID, practiceMode }: { qID: IQuestion["id"]; practiceMode: string }) => {
+interface IMockQuestionWithRouter {
+  qID: IQuestion["id"];
+  mode: NonNullable<TData["mode"]>;
+  order: NonNullable<TData["order"]>;
+}
+
+const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ qID, mode, order }) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${practiceMode}`]}>
+    <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${mode}&order=${order}`]}>
       <Switch>
         <ModuleContext.Provider
           value={
             {
-              filteredQuestions: mockFilteredQuestions as IModuleContext["filteredQuestions"],
-              moduleData: data as IModuleContext["moduleData"],
-              setContextModuleID: mockSetContextModuleID as IModuleContext["setContextModuleID"],
+              data: { questionIds: data.questions.map((question) => question.id) },
+              setData: mockSetData,
             } as IModuleContext
           }
         >
@@ -103,9 +108,8 @@ const MockQuestionWithRouterAndHistory = ({ history }: { history: RouteComponent
         <ModuleContext.Provider
           value={
             {
-              filteredQuestions: mockFilteredQuestions as IModuleContext["filteredQuestions"],
-              moduleData: data as IModuleContext["moduleData"],
-              setContextModuleID: mockSetContextModuleID as IModuleContext["setContextModuleID"],
+              data: { questionIds: data.questions.map((question) => question.id) },
+              setData: mockSetData,
             } as IModuleContext
           }
         >
@@ -164,7 +168,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //Expect questionID
     const questionIDElement = screen.getByTestId("question-id");
@@ -185,7 +189,7 @@ describe("<Question />", () => {
   });
 
   it("should render the question with the id of qID-2 when given the correct params", () => {
-    render(<MockQuestionWithRouter qID='qID-2' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-2' mode='practice' order='chronological' />);
 
     const idElement = screen.getByText("ID: qID-2");
     expect(idElement).toBeInTheDocument();
@@ -199,7 +203,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     let checkOptionElement = screen.getByTestId("question-check");
     user.click(checkOptionElement);
@@ -214,7 +218,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     const questionCorrectionElement = screen.queryByTestId("question-correction");
 
@@ -236,7 +240,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     const checkButtonElement = screen.getByTestId("question-check");
     user.click(checkButtonElement);
@@ -255,7 +259,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     const correctElement = screen.getByText(
       "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam."
@@ -279,7 +283,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-2' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-2' mode='practice' order='chronological' />);
 
     const checkButtonElement = screen.getByTestId("question-check");
     user.click(checkButtonElement);
@@ -317,7 +321,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //Check Question
     const checkQuestionButton = screen.getByTestId("question-check");
@@ -337,7 +341,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     //render element
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='random' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //Check Question
     const checkQuestionButton = screen.getByTestId("question-check");
@@ -355,7 +359,7 @@ describe("<Question />", () => {
   //Expect the first element of the data array to render after last element is reached
   it("should render the first question after clicking next on the last question (go to first position of array)", () => {
     const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
-    render(<MockQuestionWithRouter qID={idOfLastElementInTestArray} practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID={idOfLastElementInTestArray} mode='practice' order='chronological' />);
 
     let idElement = screen.getByText(`ID: ${idOfLastElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
@@ -377,7 +381,7 @@ describe("<Question />", () => {
   //Expect the last element of the data array to render after previous button is clicked on first element
   it("should render the last question after clicking previous on the first question (go to last position in array)", () => {
     const idOfFirstElementInTestArray = data.questions[0].id;
-    render(<MockQuestionWithRouter qID={idOfFirstElementInTestArray} practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID={idOfFirstElementInTestArray} mode='practice' order='chronological' />);
 
     let idElement = screen.getByText(`ID: ${idOfFirstElementInTestArray}`);
     expect(idElement).toBeInTheDocument();
@@ -392,7 +396,7 @@ describe("<Question />", () => {
 
   //Expect question reveal no to be visible
   it("should not render question correction element when clicking on next question button", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //Click check button to reveal question navigation
     const buttonElement = screen.getByTestId("question-check");
@@ -411,7 +415,7 @@ describe("<Question />", () => {
   });
 
   it("should not render question correction element when clicking on next button in question navigation", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //Click check button to reveal question navigation
     const checkQuestionButton = screen.getByTestId("question-check");
@@ -427,7 +431,7 @@ describe("<Question />", () => {
 
   //Expect highlight selection to go away when going to next question
   it("should deselect selection when going to next question but a answer was selected (clicked)", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //select an element
     const selectedElement = screen.getByText("Lorem ipsum dolor sit amet consectetur adipisicing.");
@@ -449,7 +453,7 @@ describe("<Question />", () => {
 
   //Expect highlight selection to go away when going to next question
   it("should deselect selection when going to next question after submitting answer and clicking next", () => {
-    render(<MockQuestionWithRouter qID='qID-1' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-1' mode='practice' order='chronological' />);
 
     //select an element
     const selectedElement = screen.getByText("Lorem ipsum dolor sit amet consectetur adipisicing.");
@@ -475,7 +479,7 @@ describe("<Question />", () => {
 
   //Expect to render gap text question
   it("should render gap text question", () => {
-    render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
 
     expect(screen.getByTestId("question-id")).toHaveTextContent("ID: qID-3");
     expect(screen.getByText("Fill in the blanks.")).toBeInTheDocument();
@@ -484,7 +488,7 @@ describe("<Question />", () => {
 
   //Expect the gap inputs to clear when clicking the reset button (before form submit)
   it("should reset the inputs in gap text to empty when clicking the reset button", () => {
-    render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
 
     //Type into the input elements
     let inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
@@ -500,7 +504,7 @@ describe("<Question />", () => {
 
   //Expect the gap inputs to clear when clicking the reset button (after form submit)
   it("should reset the inputs in gap text to empty when clicking the reset button after form submit", () => {
-    render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
 
     //Type into the input elements
     let inputElements = screen.getAllByRole("textbox") as HTMLInputElement[];
@@ -519,7 +523,7 @@ describe("<Question />", () => {
 
   //Expect to trim the gap text input to be trimmed
   it("should trim the input values when checking the answer", () => {
-    render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
 
     //Type into the input elements
     let inputElements = screen.getAllByRole("textbox");
@@ -536,7 +540,7 @@ describe("<Question />", () => {
 
   //Expect gap text to accept different correct values
   it("should render question correct when providing two different values to gap text which both could be correct", () => {
-    render(<MockQuestionWithRouter qID='qID-3' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
 
     //Type into the input elements (Don't want to setup a data-testid, so we grap the element by the index)
     let inputElements = screen.getAllByRole("textbox");
@@ -569,14 +573,14 @@ describe("<Question />", () => {
   });
 
   it("should render QuestionNotFound Component if the provided ID isn't found", () => {
-    render(<MockQuestionWithRouter qID='id-not-found' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='id-not-found' mode='practice' order='chronological' />);
 
     const questionNotFoundTitle = screen.getByText("Question not found!");
     expect(questionNotFoundTitle).toBeInTheDocument();
   });
 
   it("should disable buttons when Question isn't found", () => {
-    render(<MockQuestionWithRouter qID='id-not-found' practiceMode='chronological' />);
+    render(<MockQuestionWithRouter qID='id-not-found' mode='practice' order='chronological' />);
 
     const questionNotFoundTitle = screen.getByText("Question not found!");
     expect(questionNotFoundTitle).toBeInTheDocument();
@@ -593,7 +597,7 @@ describe("<Question />", () => {
     const history = createMemoryHistory();
     history.push({
       pathname: `/module/${data.id}/question/${data.questions[0].id}`,
-      search: "?mode=chronological",
+      search: "?mode=practice&order=chronological",
     });
 
     //render Component with history prop
@@ -623,7 +627,7 @@ describe("<Question />", () => {
     const history = createMemoryHistory();
     history.push({
       pathname: `/module/${data.id}/question/${data.questions[1].id}`,
-      search: "?mode=chronological",
+      search: "?mode=practice&order=chronological",
     });
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
@@ -644,7 +648,7 @@ describe("<Question />", () => {
     const history = createMemoryHistory();
     history.push({
       pathname: `/module/${data.id}/question/${data.questions[0].id}`,
-      search: "?mode=chronological",
+      search: "?mode=practice&order=chronological",
     });
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
@@ -663,7 +667,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     const history = createMemoryHistory();
-    history.push(`/module/${data.id}/question/${data.questions[1].id}`); //data.questions[1].id === "qID-2"
+    history.push(`/module/${data.id}/question/${data.questions[1].id}?mode=practice&order=chronological`); //data.questions[1].id === "qID-2"
 
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
@@ -682,7 +686,7 @@ describe("<Question />", () => {
     window.HTMLElement.prototype.scrollTo = jest.fn();
 
     const history = createMemoryHistory();
-    history.push(`/module/${data.id}/question/${data.questions[0].id}`);
+    history.push(`/module/${data.id}/question/${data.questions[0].id}?mode=practice&order=chronological`);
     render(<MockQuestionWithRouterAndHistory history={history} />);
 
     //Click the to last Question Button

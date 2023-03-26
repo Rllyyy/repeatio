@@ -10,12 +10,13 @@ import {
 describe("Test usage of bookmarked Questions in module overview", () => {
   //Add fixture to localStorage and navigate to module url
   beforeEach(() => {
-    cy.visit("/module/types_1");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1");
   });
 
   it("should display questions that are marked in the localStorage", () => {
     //Setup localStorage
-    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
 
     //Click on start
     cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
@@ -47,7 +48,8 @@ describe("Test export of bookmarked Questions", () => {
 
   //navigate to module url
   beforeEach(() => {
-    cy.visit("/module/types_1", {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1", {
       onBeforeLoad(win) {
         cy.spy(win.console, "log").as("consoleLog");
         cy.stub(win.console, "error").as("consoleError");
@@ -59,16 +61,16 @@ describe("Test export of bookmarked Questions", () => {
 
   it("should download marked questions from localStorage", () => {
     //Add fixture to localStorage
-    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
     cy.contains("li", "Export").click();
 
-    const downloadedFilename = path.join(downloadsFolder, "repeatio-marked-types_1.json");
+    const downloadedFilename = path.join(downloadsFolder, "repeatio-marked-cypress_1.json");
 
     //Compare the downloaded file with the original file in the localStorage (which comes from a fixture)
     cy.readFile(downloadedFilename).then((downloadedContent) => {
-      cy.fixture("repeatio-marked-types_1.json").then((fixtureContent) => {
+      cy.fixture("repeatio-marked-cypress_1.json").then((fixtureContent) => {
         expect(downloadedContent).to.deep.equal(fixtureContent);
       });
     });
@@ -80,12 +82,12 @@ describe("Test export of bookmarked Questions", () => {
 
     //Test toast and console.error
     cy.get(".Toastify").contains(
-      `Failed to export the bookmarked questions for "types_1" because there aren't any bookmarked questions!`
+      `Failed to export the bookmarked questions for "cypress_1" because there aren't any bookmarked questions!`
     );
 
     cy.get("@consoleError").should(
       "be.calledWithMatch",
-      /\[.*\] Failed to export the bookmarked questions for "types_1" because there aren't any bookmarked questions\!/
+      /\[.*\] Failed to export the bookmarked questions for "cypress_1" because there aren't any bookmarked questions\!/
     );
   });
 });
@@ -95,23 +97,24 @@ describe("Test export of bookmarked Questions", () => {
 describe("Test import of bookmarked Questions", () => {
   //Add fixture to localStorage and navigate to module url
   beforeEach(() => {
-    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
-    cy.visit("/module/types_1");
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1");
   });
 
   it("should import bookmarked Questions", () => {
     //Remove localStorage that was added by beforeEach hook
-    cy.clearLocalStorage("repeatio-marked-types_1");
+    cy.clearLocalStorage("repeatio-marked-cypress_1");
 
     //Find popover button (3 dots)
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 
-    cy.fixture("repeatio-marked-types_1.json").then((fileContent) => {
+    cy.fixture("repeatio-marked-cypress_1.json").then((fileContent) => {
       cy.get("input[type=file]")
-        .selectFile({ contents: fileContent, fileName: "repeatio-marked-types_1.json" }, { force: true })
+        .selectFile({ contents: fileContent, fileName: "repeatio-marked-cypress_1.json" }, { force: true })
         .should(() => {
-          const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-          expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+          const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
+          expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
           expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
           expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
         });
@@ -126,13 +129,13 @@ describe("Test import of bookmarked Questions", () => {
 
     //Build new file
     //Note that "qID-1" is already in the localStorage and "id-does-not-exist" is not present as a question id. These values should therefore be ignored
-    const file = buildBookmarkFile("types_1", ["qID-1", "id-does-not-exist", "qID-4"]);
+    const file = buildBookmarkFile("cypress_1", ["qID-1", "id-does-not-exist", "qID-4"]);
 
     cy.get("input[type=file]")
       .selectFile(file, { force: true })
       .should(() => {
-        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
+        expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
         expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3", "qID-4"]);
       });
 
@@ -150,12 +153,12 @@ describe("Test import of bookmarked Questions", () => {
   it("should add imported items to the localStorage if there are more items in the import than the original storage", () => {
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 
-    const file = buildBookmarkFile("types_1", ["qID-2", "qID-4", "qID-5", "qID-6"]);
+    const file = buildBookmarkFile("cypress_1", ["qID-2", "qID-4", "qID-5", "qID-6"]);
 
     cy.get("input[type=file]")
       .selectFile(file, { force: true })
       .should(() => {
-        const bookmarkedLocalStorageItem = getBookmarkedQuestionsFromModule("types_1");
+        const bookmarkedLocalStorageItem = getBookmarkedQuestionsFromModule("cypress_1");
         expect(bookmarkedLocalStorageItem).to.deep.equal(["qID-1", "qID-3", "qID-2", "qID-4", "qID-5", "qID-6"]);
       });
   });
@@ -164,13 +167,13 @@ describe("Test import of bookmarked Questions", () => {
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 
     //Build file to add
-    const file = buildBookmarkFile("types_1", []);
+    const file = buildBookmarkFile("cypress_1", []);
 
     cy.get("input[type=file]")
       .selectFile(file, { force: true })
       .should(() => {
-        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
-        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
+        expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
         expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
       });
   });
@@ -180,14 +183,14 @@ describe("Test import of bookmarked Questions", () => {
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 
-    const file = buildBookmarkFile("types_1", ["qID-2", "qID-4", "qID-5"]);
+    const file = buildBookmarkFile("cypress_1", ["qID-2", "qID-4", "qID-5"]);
 
     cy.get("input[type=file]")
       .selectFile(file, { force: true })
       .should(() => {
-        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
+        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
 
-        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
         expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-2", "qID-4", "qID-5"]);
       });
   });
@@ -196,14 +199,14 @@ describe("Test import of bookmarked Questions", () => {
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
     //Notice these values are only duplicates (but in different order that the fixture)
 
-    const file = buildBookmarkFile("types_1", ["qID-3", "qID-1"]);
+    const file = buildBookmarkFile("cypress_1", ["qID-3", "qID-1"]);
 
     cy.get("input[type=file]")
       .selectFile(file, { force: true })
       .should(() => {
-        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("types_1");
+        const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
 
-        expect(bookmarkedLocalStorageItem?.id).to.equal("types_1");
+        expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
         expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
       });
   });

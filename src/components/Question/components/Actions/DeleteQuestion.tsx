@@ -45,12 +45,6 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
       return;
     }
 
-    //Don't allow to edit the basic module
-    if (params.moduleID === "types_1") {
-      toast.warn("Can't delete Questions of test module");
-      return;
-    }
-
     //TODO allow this with history.push to module overview
     //Don't allow deletion on the last element in the module
     if ((data.questionIds?.length || 0) <= 1) {
