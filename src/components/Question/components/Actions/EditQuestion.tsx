@@ -10,13 +10,13 @@ import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
 import { IQuestion, TUseQuestion } from "../../useQuestion";
 
 interface IEditQuestion {
-  prevQuestionID: IQuestion["id"] | undefined;
+  prevQuestion: IQuestion | undefined;
   disabled: boolean;
   fetchQuestion: TUseQuestion["fetchQuestion"];
 }
 
 // Component
-export const EditQuestion = ({ prevQuestionID, disabled, fetchQuestion }: IEditQuestion) => {
+export const EditQuestion = ({ prevQuestion, disabled, fetchQuestion }: IEditQuestion) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleModalClose = () => {
@@ -28,11 +28,11 @@ export const EditQuestion = ({ prevQuestionID, disabled, fetchQuestion }: IEditQ
       <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
-      {prevQuestionID && showModal && (
+      {prevQuestion && showModal && (
         <QuestionEditor
           mode='edit'
           handleModalClose={handleModalClose}
-          prevQuestionID={prevQuestionID}
+          prevQuestion={prevQuestion}
           fetchQuestion={fetchQuestion}
         />
       )}

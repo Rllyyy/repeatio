@@ -1,13 +1,15 @@
 /// <reference types="cypress" />
 
 import { Form } from "./QuestionEditor";
-import { Router } from "react-router-dom";
+import { MemoryRouter, Route, Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import { ModuleProvider } from "../module/moduleContext";
+import { ModuleProvider, TData } from "../module/moduleContext";
 import { CustomToastContainer } from "../toast/toast";
 
 //CSS
 import "../../index.css";
+import { Question } from "../Question/Question";
+import { IParams } from "../../utils/types";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
@@ -28,6 +30,23 @@ const MockFormWithRouter = () => {
         <CustomToastContainer />
       </ModuleProvider>
     </Router>
+  );
+};
+
+interface IMockQuestionWithRouter extends Required<IParams> {
+  order: NonNullable<TData["order"]>;
+  mode: NonNullable<TData["mode"]>;
+}
+const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, questionID, mode, order }) => {
+  return (
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
+      <main style={{ marginTop: 0 }}>
+        <ModuleProvider>
+          <Route path='/module/:moduleID/question/:questionID' component={Question} />
+        </ModuleProvider>
+      </main>
+      <CustomToastContainer />
+    </MemoryRouter>
   );
 };
 
@@ -138,6 +157,72 @@ describe("QuestionEditor.cy.js", () => {
   });
 });
 
+describe("Check order when editing a existing question", () => {
+  it("should have the same order for multiple-choice elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".question-multiple-choice .formControlLabel-typography>p").each(($item) => {
+      originalOrder.push($item.text());
+    });
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+
+    // Get order in EditQuestion Component
+    let editorOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".editor-content.multiple-choice .editor-label-textarea[required]")
+      .each(($item) => {
+        editorOrder.push($item.text());
+      })
+      .should(() => {
+        expect(editorOrder).to.deep.equal(originalOrder);
+        expect(editorOrder.length).to.equal(4);
+      });
+  });
+
+  it("should have the same order for multiple-response elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-2' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".question-multiple-response .formControlLabel-typography>p").each(($item) => {
+      originalOrder.push($item.text());
+    });
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+
+    // Get order in EditQuestion Component
+    let editorOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".editor-content.multiple-response .editor-label-textarea[required]")
+      .each(($item) => {
+        editorOrder.push($item.text());
+      })
+      .should(() => {
+        expect(editorOrder).to.deep.equal(originalOrder);
+        expect(editorOrder.length).to.equal(6);
+      });
+  });
+});
+
 /* --------------------------------- Answer options editor ------------------------------------- */
 describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
   beforeEach(() => {
@@ -171,7 +256,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("textarea[required]").should("have.length", 0);
     });
 
-    it("should remove specif item from AnswerOptions (multiple-choice)", () => {
+    it("should remove specific item from AnswerOptions (multiple-choice)", () => {
       cy.get("select[name='type']").select("multiple-choice");
 
       cy.get("button#editor-add-item").click().click();

@@ -1,5 +1,4 @@
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
-import { parseJSON } from "../../utils/parseJSON";
 import { TSettings } from "../../utils/types";
 import { IFile } from "./ImportModule";
 

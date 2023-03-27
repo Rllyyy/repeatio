@@ -68,7 +68,7 @@ export const Question: React.FC<{}> = () => {
       />
       {/* -- Question Bottom includes checking/reset/actions(delete/edit/save) and the navigation --*/}
       <QuestionBottom
-        questionID={question?.id}
+        question={question}
         showAnswer={showAnswer}
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
@@ -130,7 +130,7 @@ const QuestionData: React.FC<TQuestionData> = ({
 
 //QuestionBottom contains the checking/resetting of a question as well as the actions (save, edit, delete) and the navigation
 export interface IQuestionBottom {
-  questionID: IQuestion["id"] | undefined;
+  question: IQuestion | undefined;
   showAnswer: TUseQuestion["showAnswer"];
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
@@ -138,7 +138,7 @@ export interface IQuestionBottom {
 }
 
 export const QuestionBottom: React.FC<IQuestionBottom> = ({
-  questionID,
+  question,
   showAnswer,
   disabled,
   handleResetRetryQuestion,
@@ -186,9 +186,9 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
           className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
           data-testid='question-actions-navigation-wrapper'
         >
-          <DeleteQuestion questionID={questionID} disabled={disabled} />
-          <EditQuestion prevQuestionID={questionID} disabled={disabled} fetchQuestion={fetchQuestion} />
-          <BookmarkQuestion moduleID={moduleID} questionID={questionID} disabled={disabled} />
+          <DeleteQuestion questionID={question?.id} disabled={disabled} />
+          <EditQuestion prevQuestion={question} disabled={disabled} fetchQuestion={fetchQuestion} />
+          <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
           <QuestionNavigation />
         </div>
       )}
@@ -201,7 +201,10 @@ const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   //Context
   const {
     data: { questionIds },
-  } = useContext(ModuleContext); //TODO remove this
+  } = useContext(ModuleContext);
+
+  // Get current index
+  const currentIndex = questionIds?.findIndex((item) => item === qID);
 
   return (
     <div className='question-id-progress-wrapper'>
@@ -209,7 +212,9 @@ const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
         ID: {qID}
       </p>
       <p className='question-progress'>
-        {(questionIds?.findIndex((item) => item === qID) ?? 0) + 1}/{questionIds?.length || "?"} Questions
+        {/* Display "index + 1 / Questions.length Questions"*/}
+        {typeof currentIndex !== "undefined" && currentIndex >= 0 && currentIndex + 1}/{questionIds?.length || "?"}{" "}
+        Questions
       </p>
     </div>
   );
