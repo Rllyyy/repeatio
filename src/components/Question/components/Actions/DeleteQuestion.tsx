@@ -15,16 +15,17 @@ import { BiTrash } from "react-icons/bi";
 
 //Interfaces/Types
 import { IParams } from "../../../../utils/types";
-import { IQuestion } from "../../useQuestion";
+import { IQuestion, TUseQuestion } from "../../useQuestion";
 import { IModule } from "../../../module/module";
 
 interface IDeleteQuestion
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   questionID: IQuestion["id"] | undefined;
   disabled: boolean;
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 }
 
-export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuestion) => {
+export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }: IDeleteQuestion) => {
   //params
   const params = useParams<IParams>();
 
@@ -78,6 +79,9 @@ export const DeleteQuestion = ({ questionID, disabled, ...props }: IDeleteQuesti
 
     // Navigate to new path with new id
     const indexInContextQuestionsIds = data.questionIds?.findIndex((id) => id === questionID);
+
+    // Hide show answer
+    setShowAnswer(false);
 
     if (typeof indexInContextQuestionsIds === "undefined") {
       console.error("ID is not in data.questionIds");

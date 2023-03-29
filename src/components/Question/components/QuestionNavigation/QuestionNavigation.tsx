@@ -1,10 +1,13 @@
 import React, { useRef, useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { IParams } from "../../../../utils/types";
 
 //Context
 import { ModuleContext } from "../../../module/moduleContext";
+
+//Interfaces
+import { IParams } from "../../../../utils/types";
+import { TUseQuestion } from "../../useQuestion";
 
 //Navigation svg from https://tablericons.com
 
@@ -12,7 +15,11 @@ import { ModuleContext } from "../../../module/moduleContext";
 //- Consider moving all Buttons into Components
 //- Remove to first and to last question
 
-export const QuestionNavigation = () => {
+type TQuestionNavigation = {
+  setShowAnswer: TUseQuestion["setShowAnswer"];
+};
+
+export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswer }) => {
   //Access custom hook navigation functions
   const {
     navigateToFirstQuestion,
@@ -30,7 +37,10 @@ export const QuestionNavigation = () => {
       <button
         data-testid='first-question-button'
         aria-label='Navigate to first Question'
-        onClick={navigateToFirstQuestion}
+        onClick={() => {
+          navigateToFirstQuestion();
+          setShowAnswer(false);
+        }}
         type='button'
       >
         <svg
@@ -51,7 +61,10 @@ export const QuestionNavigation = () => {
       <button
         data-testid='previous-question-button'
         aria-label='Navigate to previous Question'
-        onClick={navigateToPreviousQuestion}
+        onClick={() => {
+          navigateToPreviousQuestion();
+          setShowAnswer(false);
+        }}
         type='button'
       >
         <svg
@@ -75,7 +88,10 @@ export const QuestionNavigation = () => {
         data-testid='nav-next-question-button'
         aria-label='Navigate to next Question'
         type='button'
-        onClick={navigateToNextQuestion}
+        onClick={() => {
+          navigateToNextQuestion();
+          setShowAnswer(false);
+        }}
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -95,7 +111,10 @@ export const QuestionNavigation = () => {
         data-testid='last-question-button'
         aria-label='Navigate to last Question'
         type='button'
-        onClick={navigateToLastQuestion}
+        onClick={() => {
+          navigateToLastQuestion();
+          setShowAnswer(false);
+        }}
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'

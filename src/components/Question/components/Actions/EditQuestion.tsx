@@ -13,10 +13,11 @@ interface IEditQuestion {
   prevQuestion: IQuestion | undefined;
   disabled: boolean;
   fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 }
 
 // Component
-export const EditQuestion = ({ prevQuestion, disabled, fetchQuestion }: IEditQuestion) => {
+export const EditQuestion = ({ prevQuestion, disabled, fetchQuestion, setShowAnswer }: IEditQuestion) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleModalClose = () => {
@@ -34,6 +35,7 @@ export const EditQuestion = ({ prevQuestion, disabled, fetchQuestion }: IEditQue
           handleModalClose={handleModalClose}
           prevQuestion={prevQuestion}
           fetchQuestion={fetchQuestion}
+          setShowAnswer={setShowAnswer}
         />
       )}
     </>

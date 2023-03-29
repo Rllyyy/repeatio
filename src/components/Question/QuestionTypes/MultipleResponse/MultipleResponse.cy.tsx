@@ -364,6 +364,37 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
       cy.get(".question-correction").contains("li", "This is another correct multiple response value").should("exist");
     });
 
+    it("should clear the question correction after question submit if the user navigates to the next question using the QuestionNavigation (button[aria-label='Navigate to next Question']) instead of navigating by submitting the question again ", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='multiple_response' questionID='mr-1' />);
+
+      // Submit the question
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Click show navigation button that just exists on small displays
+      cy.get("body").then((body) => {
+        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+          cy.get("button[aria-label='Show Navigation']").click();
+        }
+      });
+
+      // Navigate to new site
+      cy.get("button[aria-label='Navigate to next Question']").click();
+
+      // Assert that none of the elements are disabled
+      cy.get(".question-multiple-response").find("input.Mui-disabled").should("have.length", 0);
+
+      // Assert that the question correction went away
+      cy.get("section.question-correction").should("not.exist");
+
+      // Check correct answer
+      cy.get("section.question-user-response").contains("Correct").click();
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Check correction
+      cy.contains("Yes, that's correct!").should("exist");
+      cy.get("ul.correction-multipleResponse-list").contains("Correct").should("exist");
+    });
+
     it("should outline correct answer in green after submit if user selection is correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='multiple_response' questionID='mr-1' />);
 

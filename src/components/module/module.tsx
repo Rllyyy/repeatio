@@ -419,11 +419,27 @@ const BookmarkedQuestionsBottom = () => {
       return;
     }
 
-    //Navigate to question component
-    history.push({
-      pathname: `/module/${moduleID}/question/${bookmarkedQuestionsIDs[0]}`,
-      search: "?mode=bookmarked&order=chronological",
-    });
+    // Get an array of all question IDs from the module in local storage
+    const allIds = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions.reduce(
+      (acc: string[], question) => {
+        acc.push(question.id);
+        return acc;
+      },
+      []
+    );
+
+    // Find the first valid ID in bookmarkedQuestionsIDs that exists in allIds
+    const validId = bookmarkedQuestionsIDs.find((id) => allIds?.includes(id));
+
+    if (validId) {
+      //Navigate to question component
+      history.push({
+        pathname: `/module/${moduleID}/question/${validId}`,
+        search: "?mode=bookmarked&order=chronological",
+      });
+    } else {
+      toast.error("Bookmarked Questions only include invalid ids! Please contact the developer on GitHub!");
+    }
   };
 
   return (

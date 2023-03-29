@@ -443,6 +443,38 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       cy.get(".question-correction").contains("fixture").should("exist");
     });
 
+    it("should should clear the question correction after question submit if the user navigates to the next question using the QuestionNavigation (button[aria-label='Navigate to next Question']) instead of navigating by submitting the question again", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+      cy.get("select").first().select(0);
+
+      // Submit the question
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Click show navigation button that just exists on small displays
+      cy.get("body").then((body) => {
+        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+          cy.get("button[aria-label='Show Navigation']").click();
+        }
+      });
+
+      // Navigate to new site
+      cy.get("button[aria-label='Navigate to next Question']").click();
+
+      // Select in new question should be empty and enabled
+      cy.get("select").first().should("have.value", "").and("not.be.disabled");
+
+      // Assert that the question correction went away
+      cy.get("section.question-correction").should("not.exist");
+
+      cy.get("select#select-0").select("second");
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Check correction
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
     it("should work after moving from a question with one input to multiple inputs", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-2' />);
 

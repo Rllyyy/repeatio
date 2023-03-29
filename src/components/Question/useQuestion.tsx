@@ -96,15 +96,6 @@ export const useQuestion = () => {
     setShowAnswer(false);
   }, [showAnswer, setShowAnswer, questionDataRef]);
 
-  /* Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render) */
-  const setExampleModule = useCallback(async () => {
-    // Get settings from localStorage
-    const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
-    if (!isExampleModuleAdded(settings)) {
-      await addExampleModuleToLocalStorage(settings);
-    }
-  }, []);
-
   /* Fetch Question from localStorage */
   const fetchQuestion = useCallback(() => {
     //Find the correct question in the moduleData context
@@ -122,8 +113,14 @@ export const useQuestion = () => {
     }
 
     /* setExampleModule if it hasn't been added before */
-    if (params.moduleID === "types_1") {
-      await setExampleModule();
+    if (params.moduleID === "types_1" && (data?.questionIds?.length ?? 0) === 0) {
+      // Get settings from localStorage
+      const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+
+      /* Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render) */
+      if (!isExampleModuleAdded(settings)) {
+        await addExampleModuleToLocalStorage(settings);
+      }
     }
 
     /* Set context if it is empty */
@@ -175,23 +172,57 @@ export const useQuestion = () => {
           if (bookmarkedIds) {
             const currentIndex = bookmarkedIds.indexOf(params.questionID);
 
+            // Should only happen if the user navigates with the url to ?mode=bookmarked
             if (currentIndex <= -1) {
               toast.error("The current question is not bookmarked!");
               return;
             }
 
-            if (order === "random") {
+            // Get an array of all question IDs from the module in local storage
+            const moduleQuestionIds = parseJSON<IModule>(
+              localStorage.getItem(`repeatio-module-${params.moduleID}`)
+            )?.questions.reduce((acc: string[], question) => {
+              acc.push(question.id);
+              return acc;
+            }, []);
+
+            if (!moduleQuestionIds) return;
+            // Find all valid and invalid IDs in bookmarkedQuestionsIDs and log a warning for each invalid one
+            let { validIds, invalidIds } = bookmarkedIds.reduce(
+              (
+                acc: { validIds: IBookmarkedQuestions["questions"]; invalidIds: IBookmarkedQuestions["questions"] },
+                id
+              ) => {
+                if (moduleQuestionIds?.includes(id)) {
+                  acc.validIds?.push(id);
+                } else {
+                  acc.invalidIds?.push(id);
+                }
+                return acc;
+              },
+              { validIds: [], invalidIds: [] }
+            );
+
+            if (order === "random" && validIds) {
               // Remove the id from the array
-              bookmarkedIds.splice(currentIndex, 1);
+              validIds.splice(currentIndex, 1);
 
               // Shuffle the array
-              bookmarkedIds = shuffleArray(bookmarkedIds);
+              validIds = shuffleArray(validIds);
 
               // Add the current question id in front of the array so it equals the currently viewed question
-              bookmarkedIds.unshift(params.questionID);
+              validIds.unshift(params.questionID);
             }
 
-            setData({ ...data, questionIds: bookmarkedIds, order: order as "chronological" | "random" });
+            // Update the context if there are any valid ids
+            if (validIds && validIds.length >= 1) {
+              setData({ ...data, questionIds: validIds, order: order as "chronological" | "random" });
+            }
+
+            // Show warning that includes every id that wasn't found
+            if (invalidIds) {
+              console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
+            }
           } else {
             console.warn("Found 0 bookmarked questions");
           }
@@ -212,7 +243,7 @@ export const useQuestion = () => {
 
     fetchQuestion();
     setLoading(false);
-  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion, setExampleModule]);
+  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion]);
 
   /* UseEffects */
   useEffect(() => {

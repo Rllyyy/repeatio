@@ -52,6 +52,7 @@ export const Question: React.FC<{}> = () => {
     questionDataRef,
     questionAnswerRef,
     fetchQuestion,
+    setShowAnswer,
   } = useQuestion();
 
   //JSX
@@ -73,6 +74,7 @@ export const Question: React.FC<{}> = () => {
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
         fetchQuestion={fetchQuestion}
+        setShowAnswer={setShowAnswer}
       />
     </form>
   );
@@ -135,6 +137,7 @@ export interface IQuestionBottom {
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
   fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 }
 
 export const QuestionBottom: React.FC<IQuestionBottom> = ({
@@ -143,6 +146,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
   disabled,
   handleResetRetryQuestion,
   fetchQuestion,
+  setShowAnswer,
 }) => {
   //States
   const [showNav, setShowNav] = useState(false);
@@ -186,10 +190,15 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
           className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
           data-testid='question-actions-navigation-wrapper'
         >
-          <DeleteQuestion questionID={question?.id} disabled={disabled} />
-          <EditQuestion prevQuestion={question} disabled={disabled} fetchQuestion={fetchQuestion} />
+          <DeleteQuestion questionID={question?.id} disabled={disabled} setShowAnswer={setShowAnswer} />
+          <EditQuestion
+            prevQuestion={question}
+            disabled={disabled}
+            fetchQuestion={fetchQuestion}
+            setShowAnswer={setShowAnswer}
+          />
           <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
-          <QuestionNavigation />
+          <QuestionNavigation setShowAnswer={setShowAnswer} />
         </div>
       )}
     </div>

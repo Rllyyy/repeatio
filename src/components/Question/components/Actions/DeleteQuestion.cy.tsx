@@ -123,7 +123,7 @@ describe("Delete a Question", () => {
       .click()
       .should(() => {
         /* Check that only one question was deleted from the localStorage */
-        const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${"cypress_1"}`));
+        const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-cypress_1`));
         expect(module?.questions.length).to.equal(5);
       });
 
@@ -255,6 +255,58 @@ describe("Delete a Question", () => {
         const localStorageItem = getBookmarkedLocalStorageItem("cypress_1");
         expect(localStorageItem).to.equal(null);
       });
+  });
+
+  it("should deselect the current selection if deleting a question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.mount(
+      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />
+    );
+
+    // Select and submit question
+    cy.get("input[value='option-0']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Delete Question
+    cy.get("button[aria-label='Delete Question']").click();
+
+    // Assert that the radio button is not selected and is enabled
+    cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
+  });
+
+  it.only("should hide the question correction after deleting a question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.mount(
+      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />
+    );
+
+    // Select and submit question
+    cy.get("input[value='option-0']").click();
+
+    // Check answer to trigger correction to show up
+    cy.get("button[aria-label='Check Question']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Delete Question
+    cy.get("button[aria-label='Delete Question']").click();
+
+    // Assert that the correction is no longer visible
+    cy.get("section.question-correction").should("not.exist");
+
+    // Assert that the radio button is not selected and is enabled
+    cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
   });
 });
 

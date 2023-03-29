@@ -52,6 +52,7 @@ type EditQuestionMode = {
   handleModalClose: () => void;
   prevQuestion: IQuestion;
   fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 };
 
 type CreateQuestionMode = { mode: "create"; handleModalClose: () => void };
@@ -74,6 +75,7 @@ export const QuestionEditor: React.FC<TEditorModes> = (props) => {
           fetchQuestion={props.fetchQuestion}
           prevQuestion={props.prevQuestion}
           handleModalClose={props.handleModalClose}
+          setShowAnswer={props.setShowAnswer}
         />
       )}
     </CustomModal>
@@ -304,6 +306,11 @@ export const Form: React.FC<TEditorModes> = (props) => {
           );
         }
       }
+    }
+
+    if (props.mode === "edit") {
+      // Deselect current question
+      props.setShowAnswer(false);
     }
 
     hasSubmitted.current = false;
