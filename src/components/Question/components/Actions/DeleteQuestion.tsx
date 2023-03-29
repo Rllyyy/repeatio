@@ -6,7 +6,7 @@ import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 import { parseJSON } from "../../../../utils/parseJSON";
 
 //Context
-import { IModuleContext, ModuleContext } from "../../../module/moduleContext";
+import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questionIdsContext";
 
 //TODO add moduleID as Component param not useParams
 
@@ -36,7 +36,7 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
   let history = useHistory();
 
   //Access Module
-  const { data, setData } = useContext<IModuleContext>(ModuleContext);
+  const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   //Delete Question from storage
   const handleDelete = () => {
@@ -48,7 +48,7 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
 
     //TODO allow this with history.push to module overview
     //Don't allow deletion on the last element in the module
-    if ((data.questionIds?.length || 0) <= 1) {
+    if ((questionIds?.length || 0) <= 1) {
       toast.warn("Can't delete last question in module for now");
       return;
     }
@@ -78,7 +78,7 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
     localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
 
     // Navigate to new path with new id
-    const indexInContextQuestionsIds = data.questionIds?.findIndex((id) => id === questionID);
+    const indexInContextQuestionsIds = questionIds?.findIndex((id) => id === questionID);
 
     // Hide show answer
     setShowAnswer(false);
@@ -88,14 +88,14 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
     } else if (indexInContextQuestionsIds && indexInContextQuestionsIds >= 1) {
       // Navigate to previous item in array if not at the beginning (0)
       history.push({
-        pathname: `/module/${params.moduleID}/question/${data.questionIds?.[indexInContextQuestionsIds - 1]}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds - 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
           new URLSearchParams(search).get("order") || "chronological"
         }`,
       });
     } else {
       history.push({
-        pathname: `/module/${params.moduleID}/question/${data.questionIds?.[indexInContextQuestionsIds + 1]}`,
+        pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds + 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
           new URLSearchParams(search).get("order") || "chronological"
         }`,
@@ -103,7 +103,7 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
     }
 
     // Update questionIds context
-    setData({ ...data, questionIds: data.questionIds?.filter((id) => id !== questionID) });
+    setQuestionIds([...(questionIds ?? []).filter((id) => id !== questionID)]);
 
     //Remove id from saved questions in localStorage
     //Get whole bookmarked item from localStorage

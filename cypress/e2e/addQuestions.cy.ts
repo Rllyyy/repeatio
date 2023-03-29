@@ -247,7 +247,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This is a simple [test]");
     cy.get("button[type='submit']").click();
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("test");
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
@@ -257,7 +257,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("[This] is a [complex] [test]", { force: true });
     cy.get("button[type='submit']").click();
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").first().type("This");
     cy.get("section.question-user-response").find("input").eq(1).type("complex");
     cy.get("section.question-user-response").find("input").last().type("test");
@@ -269,7 +269,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text supports [multiple; more than one] correct values");
     cy.get("button[type='submit']").click();
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("more than one");
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
@@ -301,7 +301,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text is [split] into{enter}two[lines]");
     cy.get("button[type='submit']").click();
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("div.question-gap-text").invoke("height").should("be.greaterThan", 45);
     cy.get("section.question-user-response").find("input").should("have.length", 2);
   });
@@ -313,7 +313,7 @@ describe("Adding a question of type gap-text", () => {
     );
     cy.get("button[type='submit']").click();
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("table").should("exist").and("be.visible");
   });
 
@@ -335,7 +335,7 @@ describe("Adding a question of type gap-text", () => {
         expect((addedQuestion?.answerOptions as IGapText).correctGapValues).to.deep.eq([["This"], ["gap", "hole"]]);
       });
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.contains("a", "link").should("exist");
     cy.contains("a", "another link").should("exist");
     cy.get("section.question-user-response").find("input").first().type("This");
@@ -369,7 +369,7 @@ describe("Adding a question of type gap-text", () => {
         expect((addedQuestion?.answerOptions as IGapText).correctGapValues).to.deep.eq([["gap", "hole"]]);
       });
 
-    cy.visit("/module/empty-questions/question/test-id");
+    cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("img").invoke("height").should("equal", 256);
     cy.get("section.question-user-response").find("input").should("have.length", 1);
   });

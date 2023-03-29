@@ -3,7 +3,7 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
 
 //Context
-import { IModuleContext, ModuleContext } from "../module/moduleContext";
+import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
 
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
@@ -114,7 +114,7 @@ export const Form: React.FC<TEditorModes> = (props) => {
   const { search } = useLocation();
 
   //Context
-  const { data, setData } = useContext<IModuleContext>(ModuleContext);
+  const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   //Change the value of the question object at the target.name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -261,17 +261,17 @@ export const Form: React.FC<TEditorModes> = (props) => {
 
         // Update the context with the changed id
         // Get index of the id in the context
-        const previousIndexInContext = data.questionIds?.findIndex((id) => id === props.prevQuestion.id);
+        const previousIndexInContext = questionIds?.findIndex((id) => id === props.prevQuestion.id);
 
         if (typeof previousIndexInContext === "undefined") {
           throw new Error("Couldn't find id in context");
         }
 
         // Replace the old id with the new id
-        data.questionIds?.splice(previousIndexInContext, 1, output.id);
+        questionIds?.splice(previousIndexInContext, 1, output.id);
 
         // Set the context
-        setData({ ...data });
+        setQuestionIds([...questionIds]);
 
         //Navigate to new path with new id
         history.push({

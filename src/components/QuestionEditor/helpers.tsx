@@ -97,7 +97,14 @@ export function checkNotIdDuplicate({
     return (
       <>
         <span>A question with this id already exists! </span>
-        <Link to={`/module/${params.moduleID}/question/${questionID}`}>View: {questionID}</Link>
+        <Link
+          to={{
+            pathname: `/module/${params.moduleID}/question/${questionID}`,
+            search: "?mode=practice&order=chronological",
+          }}
+        >
+          View: {questionID}
+        </Link>
         <span>
           {" "}
           (<i>Caution:</i> Entered data will be lost when visiting this link!)

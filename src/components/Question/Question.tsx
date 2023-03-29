@@ -23,7 +23,7 @@ import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
 
 //Context
-import { ModuleContext } from "../module/moduleContext";
+import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
 
 //Hooks
 import { useQuestion } from "./useQuestion";
@@ -208,9 +208,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
 //ID and Progress of the current question
 const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   //Context
-  const {
-    data: { questionIds },
-  } = useContext(ModuleContext);
+  const { questionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   // Get current index
   const currentIndex = questionIds?.findIndex((item) => item === qID);

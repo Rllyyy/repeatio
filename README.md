@@ -4,12 +4,11 @@ _Learn, repeat and memorize tasks with repeatio._
 
 ## [Start Learning](https://repeatio.netlify.app)
 
-## :construction: Current limitations (v0.3) :construction:
+## :construction: Current limitations (v0.4) :construction:
 
 > **Warning**  
 > Not all browser and devices are supported!  
 > Currently not all UI elements are working (e.g. module progress)!  
-> Editing and deleting questions only works when using the default practice mode (not random/saved)!  
 > Only use Electron if you know how to edit .json files. The website should work just fine for most users.  
 
 ## Browser Support
@@ -98,18 +97,12 @@ The order of the questions is random but each question will only be shown once.
 
 <img src="./.github/Docs/assets/images/practice-random.png" height="180px" />
 
-> **Warning**  
-> Don't delete or edit questions when using this mode!
-
 ### Bookmarked
 
 To practice with the questions you bookmarked navigate to the module and click the `Start >` button inside `Bookmarked Questions`.  
 The questions are in the order that they were saved in. **[Read](#bookmarked-questions)** how to bookmark a question.
 
 <img src="./.github/Docs/assets/images/train-bookmarked-questions.png" alt="Train Bookmarked Questions" height="180px"/>
-
-> **Warning**  
-> Don't delete or edit questions when using this mode!
 
 ## Adding and editing Questions
 
@@ -129,9 +122,6 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
 > **Note**  
 > On mobile you may have to first extend the bottom of the navigation
-
-> **Warning**  
-> Editing questions while using the mode random or saved Question is currently not supported!
 
 ### Question Editor
 

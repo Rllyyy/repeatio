@@ -6,7 +6,7 @@ import { shuffleArray } from "../../utils/shuffleArray";
 import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "../Home/helpers";
 
 //Context
-import { ModuleContext } from "../module/moduleContext";
+import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
 
 // Interfaces
 import { IMultipleChoice } from "./QuestionTypes/MultipleChoice/MultipleChoice";
@@ -49,7 +49,7 @@ export const useQuestion = () => {
   const [answerCorrect, setAnswerCorrect] = useState(false);
 
   //Context
-  const { data, setData } = useContext(ModuleContext);
+  const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   //URL parameters
   const { search } = useLocation();
@@ -113,7 +113,7 @@ export const useQuestion = () => {
     }
 
     /* setExampleModule if it hasn't been added before */
-    if (params.moduleID === "types_1" && (data?.questionIds?.length ?? 0) === 0) {
+    if (params.moduleID === "types_1" && (questionIds?.length ?? 0) === 0) {
       // Get settings from localStorage
       const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
 
@@ -124,7 +124,7 @@ export const useQuestion = () => {
     }
 
     /* Set context if it is empty */
-    if ((data?.questionIds?.length ?? 0) <= 0 && params.moduleID) {
+    if ((questionIds?.length ?? 0) <= 0 && params.moduleID) {
       const mode = new URLSearchParams(search).get("mode");
       const order = new URLSearchParams(search).get("order");
 
@@ -158,7 +158,7 @@ export const useQuestion = () => {
               ids.unshift(params.questionID);
             }
 
-            setData({ ...data, questionIds: ids, order: order as "chronological" | "random" });
+            setQuestionIds([...ids]);
           } else {
             toast.error("Module doesn't exist");
           }
@@ -216,7 +216,7 @@ export const useQuestion = () => {
 
             // Update the context if there are any valid ids
             if (validIds && validIds.length >= 1) {
-              setData({ ...data, questionIds: validIds, order: order as "chronological" | "random" });
+              setQuestionIds([...validIds]);
             }
 
             // Show warning that includes every id that wasn't found
@@ -235,15 +235,13 @@ export const useQuestion = () => {
             pathname: `/module/${params.moduleID}/question/${params.questionID}`,
             search: `?mode=practice&order=${order}`,
           });
-
           break;
       }
-      return;
     }
 
     fetchQuestion();
     setLoading(false);
-  }, [params.questionID, params.moduleID, data, search, setData, history, fetchQuestion]);
+  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, history, fetchQuestion]);
 
   /* UseEffects */
   useEffect(() => {

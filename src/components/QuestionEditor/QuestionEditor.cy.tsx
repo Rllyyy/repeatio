@@ -3,13 +3,13 @@
 import { Form } from "./QuestionEditor";
 import { MemoryRouter, Route, Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import { ModuleProvider, TData } from "../module/moduleContext";
+import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
 
 //CSS
 import "../../index.css";
 import { Question } from "../Question/Question";
-import { IParams } from "../../utils/types";
+import { IParams, ISearchParams } from "../../utils/types";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
@@ -25,25 +25,25 @@ const MockFormWithRouter = () => {
   const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
   return (
     <Router history={history}>
-      <ModuleProvider>
+      <QuestionIdsProvider>
         <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
         <CustomToastContainer />
-      </ModuleProvider>
+      </QuestionIdsProvider>
     </Router>
   );
 };
 
 interface IMockQuestionWithRouter extends Required<IParams> {
-  order: NonNullable<TData["order"]>;
-  mode: NonNullable<TData["mode"]>;
+  order: NonNullable<ISearchParams["order"]>;
+  mode: NonNullable<ISearchParams["mode"]>;
 }
 const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, questionID, mode, order }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main style={{ marginTop: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
       <CustomToastContainer />
     </MemoryRouter>

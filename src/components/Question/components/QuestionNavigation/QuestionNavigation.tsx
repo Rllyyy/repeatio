@@ -3,7 +3,7 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //Context
-import { ModuleContext } from "../../../module/moduleContext";
+import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questionIdsContext";
 
 //Interfaces
 import { IParams } from "../../../../utils/types";
@@ -136,9 +136,7 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswe
 
 export const useQuestionNavigation = () => {
   //context
-  const {
-    data: { questionIds },
-  } = useContext(ModuleContext);
+  const { questionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   //params
   const params = useParams<IParams>();

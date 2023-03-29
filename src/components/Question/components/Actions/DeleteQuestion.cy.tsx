@@ -2,7 +2,7 @@
 
 // Components
 import { Question } from "../../Question";
-import { ModuleProvider, TData } from "../../../module/moduleContext";
+import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { CustomToastContainer } from "../../../toast/toast";
 
 // Functions
@@ -18,7 +18,7 @@ import "../../../../index.css";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 
 //Interfaces
-import { IParams } from "../../../../utils/types";
+import { IParams, ISearchParams } from "../../../../utils/types";
 import { IModule } from "../../../module/module";
 
 //Mocha for typescript
@@ -27,8 +27,8 @@ declare var describe: Mocha.SuiteFunction;
 declare const expect: Chai.ExpectStatic;
 
 interface IRenderWithRouter extends IParams {
-  mode: NonNullable<TData["mode"]>;
-  order: NonNullable<TData["order"]>;
+  mode: NonNullable<ISearchParams["mode"]>;
+  order: NonNullable<ISearchParams["order"]>;
 }
 
 // Setup Router to access context and useParams
@@ -36,9 +36,9 @@ const RenderWithRouter: React.FC<IRenderWithRouter> = ({ moduleID, questionID, m
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
       <CustomToastContainer />
     </MemoryRouter>
@@ -280,7 +280,7 @@ describe("Delete a Question", () => {
     cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
   });
 
-  it.only("should hide the question correction after deleting a question", () => {
+  it("should hide the question correction after deleting a question", () => {
     cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
     cy.mount(
       <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />

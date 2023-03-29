@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { MemoryRouter, Route } from "react-router-dom";
-import { ModuleProvider } from "../../../module/moduleContext";
+import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { Question } from "../../Question";
 import { GapTextDropdown } from "./GapTextDropdown";
 
@@ -170,9 +170,9 @@ const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) =
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
     </MemoryRouter>
   );

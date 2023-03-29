@@ -1,11 +1,12 @@
 import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { Question } from "../Question";
-import { IModuleContext, ModuleContext, TData } from "../../module/moduleContext";
+import { IQuestionIdsContext, QuestionIdsContext } from "../../module/questionIdsContext";
 import { Router, Route, Switch, MemoryRouter, RouteComponentProps } from "react-router-dom";
 import { createMemoryHistory } from "history";
 import { IQuestion } from "../useQuestion";
 import { IModule } from "../../module/module";
+import { ISearchParams } from "../../../utils/types";
 
 //Question test data
 const mockFilteredQuestions: IModule["questions"] = [
@@ -72,30 +73,30 @@ const data: IModule = {
   questions: mockFilteredQuestions,
 };
 
-const mockSetData = jest.fn();
+const mockSetQuestionIds = jest.fn();
 
 /* Mocks */
 //Mock the question component with router to allow switching pages and the provider
 interface IMockQuestionWithRouter {
   qID: IQuestion["id"];
-  mode: NonNullable<TData["mode"]>;
-  order: NonNullable<TData["order"]>;
+  mode: NonNullable<ISearchParams["mode"]>;
+  order: NonNullable<ISearchParams["order"]>;
 }
 
 const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ qID, mode, order }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${mode}&order=${order}`]}>
       <Switch>
-        <ModuleContext.Provider
+        <QuestionIdsContext.Provider
           value={
             {
-              data: { questionIds: data.questions.map((question) => question.id) },
-              setData: mockSetData,
-            } as IModuleContext
+              questionIds: data.questions.map((question) => question.id),
+              setQuestionIds: mockSetQuestionIds,
+            } as IQuestionIdsContext
           }
         >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleContext.Provider>
+        </QuestionIdsContext.Provider>
       </Switch>
     </MemoryRouter>
   );
@@ -105,16 +106,16 @@ const MockQuestionWithRouterAndHistory = ({ history }: { history: RouteComponent
   return (
     <Router history={history}>
       <Switch>
-        <ModuleContext.Provider
+        <QuestionIdsContext.Provider
           value={
             {
-              data: { questionIds: data.questions.map((question) => question.id) },
-              setData: mockSetData,
-            } as IModuleContext
+              questionIds: data.questions.map((question) => question.id),
+              setQuestionIds: mockSetQuestionIds,
+            } as IQuestionIdsContext
           }
         >
           <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleContext.Provider>
+        </QuestionIdsContext.Provider>
       </Switch>
     </Router>
   );
