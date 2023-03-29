@@ -1,16 +1,15 @@
-import React, { useState, useContext, useRef, useLayoutEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import isElectron from "is-electron";
-import { toast } from "react-toastify";
-import { isSafari } from "react-device-detect";
 
 //Context
-import { IModuleContext, ModuleContext } from "../module/moduleContext";
+import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
 
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { AnswerOptionsEditor } from "./AnswerOptionsEditor/AnswerOptionsEditor";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
+import { toast } from "react-toastify";
 
 //CSS
 import "./QuestionEditor.css";
@@ -23,12 +22,9 @@ import {
   checkForbiddenUrlChars,
   checkContainsSpaces,
   validator,
+  setPreviousQuestion,
 } from "./helpers";
-import {
-  removeGapContent,
-  extractCorrectGapValues,
-  getGapTextTempText,
-} from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
+import { removeGapContent, extractCorrectGapValues } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 
 //Interfaces
 import { IParams } from "../../utils/types.js";
@@ -36,8 +32,10 @@ import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/Bo
 import { IMultipleChoice } from "../Question/QuestionTypes/MultipleChoice/MultipleChoice";
 import { IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IMultipleResponse } from "../Question/QuestionTypes/MultipleResponse/MultipleResponse";
-import { IQuestion } from "../Question/useQuestion";
+import { IQuestion, TUseQuestion } from "../Question/useQuestion";
 import { TAnswerOptions } from "../Question/useQuestion";
+import { parseJSON } from "../../utils/parseJSON";
+import { IModule } from "../module/module";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
@@ -48,45 +46,62 @@ For some reason firefox android does not support HTML5 validation.
 
 //Component
 //TODO in React@v18 use useID hook for label/input elements
-export const QuestionEditor = ({
-  handleModalClose,
-  prevQuestionID,
-}: {
+
+type EditQuestionMode = {
+  mode: "edit";
   handleModalClose: () => void;
-  prevQuestionID?: string;
-}) => {
+  prevQuestion: IQuestion;
+  fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
+};
+
+type CreateQuestionMode = { mode: "create"; handleModalClose: () => void };
+
+type TEditorModes = EditQuestionMode | CreateQuestionMode;
+
+export const QuestionEditor: React.FC<TEditorModes> = (props) => {
   //JSX
   return (
     <CustomModal
-      handleModalClose={handleModalClose}
-      title={prevQuestionID ? "Edit Question" : "Add Question"}
+      handleModalClose={props.handleModalClose}
+      title={props.mode === "edit" ? "Edit Question" : "Add Question"}
       desktopModalHeight='90vh'
     >
-      <Form prevQuestionID={prevQuestionID} handleModalClose={handleModalClose} />
+      {props.mode === "create" ? (
+        <Form mode='create' handleModalClose={props.handleModalClose} />
+      ) : (
+        <Form
+          mode='edit'
+          fetchQuestion={props.fetchQuestion}
+          prevQuestion={props.prevQuestion}
+          handleModalClose={props.handleModalClose}
+          setShowAnswer={props.setShowAnswer}
+        />
+      )}
     </CustomModal>
   );
 };
 
 export type TErrors = Record<keyof IQuestion, string>;
 
-export const Form = ({
-  prevQuestionID,
-  handleModalClose,
-}: {
-  prevQuestionID?: IQuestion["id"];
-  handleModalClose: () => void;
-}) => {
-  //State
-  const [question, setQuestion] = useState<IQuestion>({
-    id: "",
-    title: "",
-    points: "",
-    help: "",
-    type: "",
-    answerOptions: undefined,
-  });
+const newEmptyQuestion = {
+  id: "",
+  title: "",
+  points: "",
+  help: "",
+  type: "" as const,
+  answerOptions: undefined,
+};
+
+export const Form: React.FC<TEditorModes> = (props) => {
+  //State - If creating a new question, provide a predefined empty object else use and modify the previous question
+  const [question, setQuestion] = useState<IQuestion>(
+    props.mode === "create" ? newEmptyQuestion : () => setPreviousQuestion(props.prevQuestion)
+  );
 
   const [errors, setErrors] = useState<TErrors>({} as TErrors);
+
+  // Refs
   const hasSubmitted = useRef(false);
 
   //Params
@@ -99,40 +114,7 @@ export const Form = ({
   const { search } = useLocation();
 
   //Context
-  const { moduleData, setModuleData } = useContext<IModuleContext>(ModuleContext);
-
-  //Fetch Data from Context
-  useLayoutEffect(() => {
-    //TODO fetch from name param not context
-
-    if (prevQuestionID) {
-      //Find question if the user is editing a question (this is the case if prevQuestionID is passed)
-      let questionFromContext = moduleData.questions.find((question: IQuestion) => question.id === prevQuestionID);
-
-      //Combine the text and correctGapValues of gap-text to a variable that is used for the input
-      //Prevent Safari because lookbehind support: https://bugs.webkit.org/show_bug.cgi?id=174931
-      //TODO check if safari ever supports this feature
-      if (questionFromContext?.type === "gap-text" && !isSafari) {
-        questionFromContext = {
-          ...questionFromContext,
-          answerOptions: {
-            tempText: getGapTextTempText((questionFromContext as IQuestion).answerOptions as IGapTextWithTempText),
-          },
-        };
-      }
-
-      if (questionFromContext === undefined) return;
-
-      //!Somehow it keeps the order of the answer options from the question
-      //If this isn't the case anymore when using the storage, pass the question
-      setQuestion({ ...questionFromContext } as IQuestion);
-    }
-
-    return () => {
-      setQuestion({} as IQuestion);
-      hasSubmitted.current = false;
-    };
-  }, [prevQuestionID, moduleData?.questions]);
+  const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
   //Change the value of the question object at the target.name
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -158,7 +140,7 @@ export const Form = ({
 
     if (isElectron()) {
       toast.warn("Can't edit question in electron for this time. Use your browser instead!");
-      handleModalClose();
+      props.handleModalClose();
       return;
     }
 
@@ -178,14 +160,6 @@ export const Form = ({
     hasSubmitted.current = true;
     let onSubmitErrors = {};
 
-    //Prevent adding to types module as it is originally saved in the public folder
-    //Adding a question would create a module in the localStorage with the same id.
-    if (moduleData?.id === "types_1") {
-      toast.warn("Editing this module (Question Types) is not allowed!");
-      handleModalClose();
-      return;
-    }
-
     //Error in ID
     const idError = validator({
       functions: [
@@ -193,8 +167,8 @@ export const Form = ({
         checkForbiddenUrlChars,
         () =>
           checkNotIdDuplicate({
-            prevQuestionID: prevQuestionID,
-            questions: moduleData?.questions,
+            prevQuestionID: props.mode === "edit" ? props.prevQuestion.id : undefined,
+            questions: parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`))?.questions || [],
             questionID: question.id,
             params: params,
           }),
@@ -240,45 +214,77 @@ export const Form = ({
     }
 
     //Adding or updating a question
-    if (!prevQuestionID) {
-      //If the user is adding a question (not given prevQuestion), push the new question to the end of the array
-      moduleData?.questions?.push(output as IQuestion);
-      setModuleData({ ...moduleData, questions: moduleData?.questions });
+    if (props.mode === "create") {
+      //If the user is adding a question (not given prevQuestion), push the new question to the end of the localStorage
+      let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+      module?.questions.push(output as IQuestion);
+
+      localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module));
     } else {
       //Handle updating a question
+      let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+
+      if (!module) {
+        throw new Error("Couldn't find module");
+      }
 
       //Try finding the index of the question
-      const index = moduleData?.questions?.findIndex((question: IQuestion) => question.id === output.id);
+      const index = module.questions?.findIndex((question) => question.id === output.id);
 
       //If the user changes the id (index <= -1), the question gets inserted at that position
       if (index > -1) {
-        moduleData.questions.splice(index, 1, output as IQuestion);
-        setModuleData({ ...moduleData, questions: moduleData.questions });
-        window.dispatchEvent(new Event("storage"));
+        // User did not change id on edit
+
+        // Replace the question in localStorage with the edited question
+        module.questions.splice(index, 1, output as IQuestion);
+
+        localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
+
+        // Refetch the question after it was updated
+        props.fetchQuestion();
       } else {
+        // User edited the id of the question
         //Find index of the old id by the provided question id
-        const index = moduleData.questions.findIndex((question: IQuestion) => question.id === prevQuestionID);
+        const previousIdIndexInLocalStorage = module.questions.findIndex(
+          (question) => question.id === props.prevQuestion.id
+        );
 
         //If question isn't in moduleData don't modify the storage. In Prod this should never be shown!
-        if (index <= -1) {
+        if (previousIdIndexInLocalStorage <= -1) {
           toast.error("Couldn't find questionID!");
           return;
         }
 
         //Insert and update context
-        moduleData.questions.splice(index, 1, output as IQuestion);
-        setModuleData({ ...moduleData, questions: moduleData.questions });
+        module.questions.splice(previousIdIndexInLocalStorage, 1, output as IQuestion);
+        localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
+
+        // Update the context with the changed id
+        // Get index of the id in the context
+        const previousIndexInContext = questionIds?.findIndex((id) => id === props.prevQuestion.id);
+
+        if (typeof previousIndexInContext === "undefined") {
+          throw new Error("Couldn't find id in context");
+        }
+
+        // Replace the old id with the new id
+        questionIds?.splice(previousIndexInContext, 1, output.id);
+
+        // Set the context
+        setQuestionIds([...questionIds]);
 
         //Navigate to new path with new id
         history.push({
           pathname: `/module/${params.moduleID}/question/${output.id}`,
-          search: `?mode=${new URLSearchParams(search).get("mode") || "chronological"}`,
+          search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
+            new URLSearchParams(search).get("order") || "chronological"
+          }`,
         });
       }
     }
 
     //Update saved questions json object in localStorage if question is edited and the id changed
-    if (prevQuestionID && prevQuestionID !== question.id) {
+    if (props.mode === "edit" && props.prevQuestion.id !== question.id) {
       //Get whole bookmarked item from localStorage
       const localStorageBookmarkedItem = getBookmarkedLocalStorageItem(params.moduleID);
 
@@ -286,7 +292,7 @@ export const Form = ({
       const savedIDs = localStorageBookmarkedItem?.questions;
 
       //Check if question exists in bookmarked array
-      const index = savedIDs?.indexOf(prevQuestionID);
+      const index = savedIDs?.indexOf(props.prevQuestion.id);
 
       //Replaces the previous id with the new id if the id existed in the previous bookmarked questions
       if (index !== undefined && index > -1) {
@@ -302,8 +308,13 @@ export const Form = ({
       }
     }
 
+    if (props.mode === "edit") {
+      // Deselect current question
+      props.setShowAnswer(false);
+    }
+
     hasSubmitted.current = false;
-    handleModalClose();
+    props.handleModalClose();
   };
 
   return (
@@ -361,9 +372,9 @@ export const Form = ({
           className={`update-add-question`}
           aria-disabled={Object.keys(errors).length > 0 ? true : false}
         >
-          {prevQuestionID ? "Update" : "Add"}
+          {props.mode === "edit" ? "Update" : "Add"}
         </button>
-        <button type='button' className='cancel' onClick={handleModalClose}>
+        <button type='button' className='cancel' onClick={props.handleModalClose}>
           Cancel
         </button>
       </div>

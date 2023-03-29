@@ -1,13 +1,15 @@
 /// <reference types="cypress" />
 
 import { Form } from "./QuestionEditor";
-import { Router } from "react-router-dom";
+import { MemoryRouter, Route, Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
-import { ModuleProvider } from "../module/moduleContext";
+import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
 
 //CSS
 import "../../index.css";
+import { Question } from "../Question/Question";
+import { IParams, ISearchParams } from "../../utils/types";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
@@ -23,11 +25,28 @@ const MockFormWithRouter = () => {
   const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
   return (
     <Router history={history}>
-      <ModuleProvider>
-        <Form handleModalClose={handleModalCloseSpy} />
+      <QuestionIdsProvider>
+        <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
         <CustomToastContainer />
-      </ModuleProvider>
+      </QuestionIdsProvider>
     </Router>
+  );
+};
+
+interface IMockQuestionWithRouter extends Required<IParams> {
+  order: NonNullable<ISearchParams["order"]>;
+  mode: NonNullable<ISearchParams["mode"]>;
+}
+const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, questionID, mode, order }) => {
+  return (
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
+      <main style={{ marginTop: 0 }}>
+        <QuestionIdsProvider>
+          <Route path='/module/:moduleID/question/:questionID' component={Question} />
+        </QuestionIdsProvider>
+      </main>
+      <CustomToastContainer />
+    </MemoryRouter>
   );
 };
 
@@ -137,6 +156,168 @@ describe("QuestionEditor.cy.js", () => {
     cy.contains(`The id contains non allowed characters ("#")!`).should("not.exist");
   });
 });
+/* --------------------------------------- Check order --------------------------------------- */
+describe("Check order when editing a existing question", () => {
+  it("should have the same order for multiple-choice elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".question-multiple-choice .formControlLabel-typography>p").each(($item) => {
+      originalOrder.push($item.text());
+    });
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+
+    // Get order in EditQuestion Component
+    let editorOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".editor-content.multiple-choice .editor-label-textarea[required]")
+      .each(($item) => {
+        editorOrder.push($item.text());
+      })
+      .should(() => {
+        expect(editorOrder).to.deep.equal(originalOrder);
+        expect(editorOrder.length).to.equal(4);
+      });
+  });
+
+  it("should have the same order for multiple-response elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-2' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".question-multiple-response .formControlLabel-typography>p").each(($item) => {
+      originalOrder.push($item.text());
+    });
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+
+    // Get order in EditQuestion Component
+    let editorOrder: string[] = [];
+    // Get the order of the questions
+    cy.get(".editor-content.multiple-response .editor-label-textarea[required]")
+      .each(($item) => {
+        editorOrder.push($item.text());
+      })
+      .should(() => {
+        expect(editorOrder).to.deep.equal(originalOrder);
+        expect(editorOrder.length).to.equal(6);
+      });
+  });
+});
+
+describe("Test editing question and evaluate immediate change in question", () => {
+  it("should update the question id if editing the id in the editor (order=chronological)", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click edit button
+    cy.get("button[aria-label='Edit Question']").click();
+
+    cy.get("input[name='id']").type("0");
+
+    cy.contains("button", "Update").click();
+
+    cy.contains("qID-10").should("exist");
+
+    // navigate to next question and back
+    cy.get("button[aria-label='Navigate to next Question']").click();
+    cy.contains("qID-2").should("exist");
+    cy.get("button[aria-label='Navigate to previous Question']").click();
+    cy.contains("qID-10").should("exist");
+  });
+
+  it("should update the question id if editing the id in the editor (order=random)", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='random' />);
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click edit button
+    cy.get("button[aria-label='Edit Question']").click();
+
+    cy.get("input[name='id']").type("0");
+
+    cy.contains("button", "Update").click();
+
+    cy.contains("qID-10").should("exist");
+
+    // navigate to next question and back
+    cy.get("button[aria-label='Navigate to next Question']").click();
+    cy.contains("qID-10").should("not.exist");
+    cy.get("button[aria-label='Navigate to previous Question']").click();
+    cy.contains("qID-10").should("exist");
+  });
+
+  it("should reset showAnswer if editing a question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    // Submit question to trigger showAnswer
+    cy.get("button[aria-label='Check Question']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click edit button
+    cy.get("button[aria-label='Edit Question']").click();
+
+    // Change correct answer (although this is incorrect)
+    cy.get(".editor-content").find("input[value=option-2]").click();
+
+    // Submit form to update question
+    cy.contains("button", "Update").click();
+
+    // Assert that the Question correction is no longer visible
+    cy.get("section.question-correction").should("not.exist");
+
+    // Click new "correct" value
+    cy.contains("No option can be correct").click();
+
+    // Submit Answer
+    cy.get("button[aria-label='Check Question']").click();
+
+    // Check correction
+    cy.contains("Yes, that's correct!").should("exist");
+    cy.get("ul.correction-multipleChoice-list").contains("No option can be correct").should("exist");
+  });
+});
 
 /* --------------------------------- Answer options editor ------------------------------------- */
 describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
@@ -171,7 +352,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("textarea[required]").should("have.length", 0);
     });
 
-    it("should remove specif item from AnswerOptions (multiple-choice)", () => {
+    it("should remove specific item from AnswerOptions (multiple-choice)", () => {
       cy.get("select[name='type']").select("multiple-choice");
 
       cy.get("button#editor-add-item").click().click();

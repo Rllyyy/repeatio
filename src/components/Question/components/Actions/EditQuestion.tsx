@@ -7,26 +7,37 @@ import { RiFileEditLine } from "react-icons/ri";
 import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
 
 // Interfaces
-import { IQuestion } from "../../useQuestion";
+import { IQuestion, TUseQuestion } from "../../useQuestion";
 
-interface EditQuestionI {
-  prevQuestionID: IQuestion["id"] | undefined;
+interface IEditQuestion {
+  prevQuestion: IQuestion | undefined;
   disabled: boolean;
+  fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 }
 
 // Component
-export const EditQuestion = ({ prevQuestionID, disabled }: EditQuestionI) => {
+export const EditQuestion = ({ prevQuestion, disabled, fetchQuestion, setShowAnswer }: IEditQuestion) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleModalClose = () => {
     setShowModal(false);
   };
+
   return (
     <>
       <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
-      {showModal && <QuestionEditor handleModalClose={handleModalClose} prevQuestionID={prevQuestionID} />}
+      {prevQuestion && showModal && (
+        <QuestionEditor
+          mode='edit'
+          handleModalClose={handleModalClose}
+          prevQuestion={prevQuestion}
+          fetchQuestion={fetchQuestion}
+          setShowAnswer={setShowAnswer}
+        />
+      )}
     </>
   );
 };

@@ -3,7 +3,7 @@
 // Components
 import { Question } from "../../Question";
 import { BookmarkQuestion } from "./BookmarkQuestion";
-import { ModuleProvider } from "../../../module/moduleContext";
+import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { CustomToastContainer } from "../../../toast/toast";
 
 // Router
@@ -25,8 +25,8 @@ declare const expect: Chai.ExpectStatic;
 
 function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
-      <ModuleProvider>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
+      <QuestionIdsProvider>
         <Route path='/module/:moduleID/question/:questionID'>
           <div className='question-form'>
             <div className='question-actions-navigation-wrapper'>
@@ -34,7 +34,7 @@ function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
             </div>
           </div>
         </Route>
-      </ModuleProvider>
+      </QuestionIdsProvider>
     </MemoryRouter>
   );
 }
@@ -42,11 +42,11 @@ function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
       <CustomToastContainer />
     </MemoryRouter>

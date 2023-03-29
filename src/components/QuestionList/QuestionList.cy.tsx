@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { QuestionList } from "./QuestionList";
-import { ModuleProvider } from "../module/moduleContext";
+import { QuestionIdsProvider } from "../module/questionIdsContext";
 
 // Router
 import { Route, MemoryRouter } from "react-router-dom";
@@ -19,9 +19,9 @@ function QuestionListWithRouter({ moduleID }: Required<Pick<IParams, "moduleID">
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/all-questions`]}>
       <main style={{ marginTop: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/all-questions' component={QuestionList} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
     </MemoryRouter>
   );

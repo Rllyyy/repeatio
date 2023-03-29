@@ -29,7 +29,7 @@ import { Footer } from "./components/Footer/Footer";
 import { CustomToastContainer } from "./components/toast/toast";
 
 //Context
-import { ModuleProvider } from "./components/module/moduleContext";
+import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";
@@ -52,11 +52,11 @@ ReactDOM.render(
           <Route exact path='/settings' component={SettingsPage} />
           <Route exact path='/legal-notice' component={LegalNoticePage} />
           <Route exact path='/privacy' component={PrivacyPage} />
-          <ModuleProvider>
-            <Route exact path='/module/:moduleID' component={ModulePage} />
+          <Route exact path='/module/:moduleID' component={ModulePage} />
+          <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
+          <QuestionIdsProvider>
             <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
-            <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
-          </ModuleProvider>
+          </QuestionIdsProvider>
         </Switch>
       </main>
       <Footer />

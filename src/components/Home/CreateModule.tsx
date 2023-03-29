@@ -43,38 +43,24 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
   //Runs only after first submit and after that on every onChange
   //The ID:
   // - 1. should not include word module
-  // - 2. should not equal types_1
-  // - 3. should not include any space character
-  // - 4. should match url requirements
-  // - 5. should not already exist (be unique)
+  // - 2. should not include any space character
+  // - 3. should match url requirements
+  // - 4. should not already exist (be unique)
   const validateID = (value: string) => {
     //1. Check if id includes the word module as it is a reserved keyword (to split the )
     if (value.includes("module")) {
       return `The word "module" is a reserved keyword and can't be used inside an ID!`;
     }
 
-    //2. Check if id is reserved "types_1" (represents example ids)
-    if (value === "types_1") {
-      return `The word "${value}" is a reserved keyword!`;
-    }
-
-    //3. Filter out space character
+    //2. Filter out space character
     const spaceRegex = / /g;
     const spaces = value.match(spaceRegex)?.join("");
 
     if (spaces && spaces?.length > 0) {
       return `The ID has to be one word! Use hyphens ("-") to concat the word (${value.replace(/ /g, "-")})`;
-      /*
-      return (
-        <>
-          <>The ID has to be one word!</>
-          <br /> Use hyphens ("-") to concat the word ({value.replace(/ /g, "-")})
-        </>
-      );
-      */
     }
 
-    //4. Check for only allowed (url) characters
+    //3. Check for only allowed (url) characters
     //Filter out everything that is not: a-z, A-Z, 0-9, ä-Ü
     const regex = /[^a-zA-Z0-9-ß_~.\u0080-\uFFFF]/g;
     const notAllowedChars = value
@@ -86,7 +72,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
       return `The id contains non allowed characters (${notAllowedChars})`;
     }
 
-    //5. Check if module id is duplicate
+    //4. Check if module id is duplicate
     if (moduleAlreadyInStorage(value)) {
       return `ID of module ("${value}") already exists!`;
     }

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { MemoryRouter, Route } from "react-router-dom";
-import { ModuleProvider } from "../../../module/moduleContext";
+import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { Question } from "../../Question";
 import { GapText } from "./GapText";
 
@@ -238,11 +238,11 @@ describe("GapText", () => {
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
     </MemoryRouter>
   );
@@ -496,6 +496,41 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-2").type("1").should("have.value", "1");
 
       cy.get("button[type='submit']").click();
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
+    it("should clear the question correction on submit and navigating with Question Navigation (button[aria-label='Navigate to next Question']) instead of submitting the question again", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+
+      // Type into the input
+      cy.get("input#input-0").type("first", { delay: 2 });
+
+      // Submit the question
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Click show navigation button that just exists on small displays
+      cy.get("body").then((body) => {
+        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+          cy.get("button[aria-label='Show Navigation']").click();
+        }
+      });
+
+      // Navigate to new site
+      cy.get("button[aria-label='Navigate to next Question']").click();
+
+      // Assert that the input has empty value after navigation and is enabled
+      cy.get("input#input-0").should("have.value", "").and("not.be.disabled");
+
+      // Assert that the question correction went away
+      cy.get("section.question-correction").should("not.exist");
+
+      // Type correct answer
+      cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      // Check correction
       cy.contains("Yes, that's correct!").should("exist");
     });
 

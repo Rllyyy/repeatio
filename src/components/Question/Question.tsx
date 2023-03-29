@@ -23,7 +23,7 @@ import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
 
 //Context
-import { ModuleContext } from "../module/moduleContext";
+import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
 
 //Hooks
 import { useQuestion } from "./useQuestion";
@@ -51,6 +51,8 @@ export const Question: React.FC<{}> = () => {
     answerCorrect,
     questionDataRef,
     questionAnswerRef,
+    fetchQuestion,
+    setShowAnswer,
   } = useQuestion();
 
   //JSX
@@ -67,27 +69,21 @@ export const Question: React.FC<{}> = () => {
       />
       {/* -- Question Bottom includes checking/reset/actions(delete/edit/save) and the navigation --*/}
       <QuestionBottom
-        questionID={question?.id}
+        question={question}
         showAnswer={showAnswer}
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
+        fetchQuestion={fetchQuestion}
+        setShowAnswer={setShowAnswer}
       />
     </form>
   );
 };
 
-// TODO maybe use Pick instead
 type TQuestionData = Pick<
   TUseQuestion,
   "question" | "loading" | "questionAnswerRef" | "questionDataRef" | "showAnswer" | "answerCorrect"
 >;
-/*   question: IQuestion | undefined;
-  loading: boolean;
-  showAnswer: boolean;
-  answerCorrect: boolean;
-  questionDataRef: React.RefObject<HTMLDivElement>;
-  questionAnswerRef: React.RefObject<IForwardRefFunctions>;
-} */
 
 //Question Data contains all the question info (title, points, type, help, answerOptions)
 const QuestionData: React.FC<TQuestionData> = ({
@@ -136,17 +132,21 @@ const QuestionData: React.FC<TQuestionData> = ({
 
 //QuestionBottom contains the checking/resetting of a question as well as the actions (save, edit, delete) and the navigation
 export interface IQuestionBottom {
-  questionID: IQuestion["id"] | undefined;
+  question: IQuestion | undefined;
   showAnswer: TUseQuestion["showAnswer"];
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
+  fetchQuestion: TUseQuestion["fetchQuestion"];
+  setShowAnswer: TUseQuestion["setShowAnswer"];
 }
 
 export const QuestionBottom: React.FC<IQuestionBottom> = ({
-  questionID,
+  question,
   showAnswer,
   disabled,
   handleResetRetryQuestion,
+  fetchQuestion,
+  setShowAnswer,
 }) => {
   //States
   const [showNav, setShowNav] = useState(false);
@@ -190,10 +190,15 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
           className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
           data-testid='question-actions-navigation-wrapper'
         >
-          <DeleteQuestion questionID={questionID} disabled={disabled} />
-          <EditQuestion prevQuestionID={questionID} disabled={disabled} />
-          <BookmarkQuestion moduleID={moduleID} questionID={questionID} disabled={disabled} />
-          <QuestionNavigation />
+          <DeleteQuestion questionID={question?.id} disabled={disabled} setShowAnswer={setShowAnswer} />
+          <EditQuestion
+            prevQuestion={question}
+            disabled={disabled}
+            fetchQuestion={fetchQuestion}
+            setShowAnswer={setShowAnswer}
+          />
+          <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
+          <QuestionNavigation setShowAnswer={setShowAnswer} />
         </div>
       )}
     </div>
@@ -203,7 +208,10 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
 //ID and Progress of the current question
 const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
   //Context
-  const { filteredQuestions } = useContext(ModuleContext); //TODO remove this
+  const { questionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
+
+  // Get current index
+  const currentIndex = questionIds?.findIndex((item) => item === qID);
 
   return (
     <div className='question-id-progress-wrapper'>
@@ -211,7 +219,9 @@ const QuestionIdProgress = memo(({ qID }: { qID: IQuestion["id"] }) => {
         ID: {qID}
       </p>
       <p className='question-progress'>
-        {filteredQuestions?.findIndex((item) => item.id === qID) + 1}/{filteredQuestions?.length || "?"} Questions
+        {/* Display "index + 1 / Questions.length Questions"*/}
+        {typeof currentIndex !== "undefined" && currentIndex >= 0 && currentIndex + 1}/{questionIds?.length || "?"}{" "}
+        Questions
       </p>
     </div>
   );

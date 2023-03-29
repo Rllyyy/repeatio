@@ -1,7 +1,7 @@
 import { IQuestionBottom, Question, QuestionBottom } from "../Question";
 import { MemoryRouter, Route } from "react-router-dom";
 import { IParams } from "../../../utils/types";
-import { ModuleProvider } from "../../module/moduleContext";
+import { QuestionIdsProvider } from "../../module/questionIdsContext";
 
 import "../../../index.css";
 
@@ -16,9 +16,9 @@ const RenderComponentWithRouter = ({ component, moduleID, questionID }: IRenderC
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
       <main style={{ marginTop: 0, padding: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={component} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
     </MemoryRouter>
   );

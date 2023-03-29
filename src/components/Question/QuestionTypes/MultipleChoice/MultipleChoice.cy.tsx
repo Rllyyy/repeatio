@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { MemoryRouter, Route } from "react-router-dom";
-import { ModuleProvider } from "../../../module/moduleContext";
+import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { Question } from "../../Question";
 import { MultipleChoice } from "./MultipleChoice";
 
@@ -98,11 +98,11 @@ describe("MultipleChoice Component", () => {
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) => {
   return (
-    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}`]}>
+    <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
-        <ModuleProvider>
+        <QuestionIdsProvider>
           <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </ModuleProvider>
+        </QuestionIdsProvider>
       </main>
     </MemoryRouter>
   );
@@ -352,6 +352,37 @@ describe("Multiple Choice component inside Question component", () => {
       cy.get(".question-correction")
         .find("ul > li > p")
         .should("have.text", "This is the correct multiple choice value");
+    });
+
+    it("should clear the question correction after question submit if the user navigates to the next question using the QuestionNavigation (button[aria-label='Navigate to next Question']) instead of submitting the question again", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='multiple_choice' questionID='mc-1' />);
+
+      // Submit the question
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Click show navigation button that just exists on small displays
+      cy.get("body").then((body) => {
+        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+          cy.get("button[aria-label='Show Navigation']").click();
+        }
+      });
+
+      // Navigate to new site
+      cy.get("button[aria-label='Navigate to next Question']").click();
+
+      // Assert that none of the elements are disabled
+      cy.get(".question-multiple-choice").find("input.Mui-disabled").should("have.length", 0);
+
+      // Assert that the question correction went away
+      cy.get("section.question-correction").should("not.exist");
+
+      // Check correct answer
+      cy.get("section.question-user-response").contains("Correct").click();
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Check correction
+      cy.contains("Yes, that's correct!").should("exist");
+      cy.get("ul.correction-multipleChoice-list").contains("Correct").should("exist");
     });
 
     it("should outline correct answer in green after submit if user selection is correct", () => {

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { getGapTextTempText, IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
+import { isSafari } from "react-device-detect";
 
 //Interfaces + Types
 import { IQuestion } from "../Question/useQuestion";
@@ -95,7 +97,14 @@ export function checkNotIdDuplicate({
     return (
       <>
         <span>A question with this id already exists! </span>
-        <Link to={`/module/${params.moduleID}/question/${questionID}`}>View: {questionID}</Link>
+        <Link
+          to={{
+            pathname: `/module/${params.moduleID}/question/${questionID}`,
+            search: "?mode=practice&order=chronological",
+          }}
+        >
+          View: {questionID}
+        </Link>
         <span>
           {" "}
           (<i>Caution:</i> Entered data will be lost when visiting this link!)
@@ -130,4 +139,23 @@ export function checkContainsSpaces({ value, fieldName }: { value: string; field
       "-"
     )}).`;
   }
+}
+
+/**
+ * Return the question and modifies the answer options for gap-text
+ * @param question
+ */
+export function setPreviousQuestion(question: IQuestion) {
+  //Combine the text and correctGapValues of gap-text to a variable that is used for the input
+  //Prevent Safari because lookbehind support: https://bugs.webkit.org/show_bug.cgi?id=174931
+  //TODO check if safari ever supports this feature
+  if (question?.type === "gap-text" && !isSafari) {
+    question = {
+      ...question,
+      answerOptions: {
+        tempText: getGapTextTempText(question.answerOptions as IGapTextWithTempText),
+      },
+    };
+  }
+  return question;
 }

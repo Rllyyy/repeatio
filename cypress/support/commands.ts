@@ -38,6 +38,7 @@ type Fixtures =
   | "repeatio-module-empty-questions.json"
   | "repeatio-module-cypress_1.json"
   | "repeatio-marked-types_1.json"
+  | "repeatio-marked-cypress_1.json"
   | (string & {});
 
 declare global {

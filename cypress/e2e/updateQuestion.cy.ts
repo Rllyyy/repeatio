@@ -197,11 +197,11 @@ describe("Update question using mode random", () => {
     cy.get("div.ReactModal__Overlay").scrollIntoView();
   });
 
-  it("should show warning if trying to update question", () => {
+  it("should update a question using mode random", () => {
+    // Update points to 50  (by adding 0 to the end of the input which already had 5 asa value)
+    cy.get("input[name='points']").type("0");
     cy.contains("button", "Update").click();
-    cy.contains(
-      "Can't edit this questions while using mode random! Navigate to this question using the question overview."
-    ).should("exist");
+    cy.contains("50 Points").should("exist");
   });
 });
 
@@ -213,7 +213,7 @@ describe("Updating a question of type gap-text", () => {
     });
 
     it("should show correct value when editing the question and update value", () => {
-      cy.visit("/module/gap_text/question/gt-1");
+      cy.visit("/module/gap_text/question/gt-1?mode=practice&order=chronological");
       cy.get("button[aria-label='Edit Question']").click();
       cy.get("textarea#editor-gap-text-textarea")
         .should("have.text", "This is the [first] question")
@@ -239,7 +239,7 @@ describe("Updating a question of type gap-text", () => {
     });
 
     it("should show correct textarea value if gap text contains multiple gaps and multiple correct values", () => {
-      cy.visit("/module/gap_text/question/gt-3");
+      cy.visit("/module/gap_text/question/gt-3?mode=practice&order=chronological");
       cy.get("button[aria-label='Edit Question']").click();
 
       cy.get("textarea#editor-gap-text-textarea")
@@ -267,7 +267,7 @@ describe("Updating a question of type gap-text", () => {
     });
 
     it("should remove gap from gap-text", () => {
-      cy.visit("/module/gap_text/question/gt-3");
+      cy.visit("/module/gap_text/question/gt-3?mode=practice&order=chronological");
       cy.get("button[aria-label='Edit Question'").click();
 
       cy.get("textarea#editor-gap-text-textarea").setSelection("[contains]").type("{del}").type("{del}");
@@ -287,7 +287,7 @@ describe("Updating a question of type gap-text", () => {
     });
 
     it("should load and update the correct gap-text to edit", () => {
-      cy.visit("/module/gap_text/question/gt-2");
+      cy.visit("/module/gap_text/question/gt-2?mode=practice&order=chronological");
 
       cy.get("button[aria-label='Navigate to next Question'").click();
       cy.get("button[aria-label='Edit Question'").click();

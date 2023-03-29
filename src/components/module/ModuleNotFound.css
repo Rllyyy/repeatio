@@ -7,13 +7,13 @@
   flex-direction: column;
 }
 
-.module-not-found>*:not(h1) {
+.module-not-found > *:not(h1) {
   margin-bottom: 1.5rem;
 }
 
-.module-not-found>h1 {
+.module-not-found > h1 {
   font-size: calc(600% + 10vw);
-  color: rgba(40, 42, 57, 0.12);
+  color: rgba(40, 42, 57, 0.2);
   line-height: 1.1;
   font-weight: 800;
   user-select: none;
@@ -46,7 +46,7 @@
   font-weight: 600;
   line-height: 1;
 
-  transition: box-shadow .2s;
+  transition: box-shadow 0.2s;
 }
 
 .module-not-found .navigation-links a:focus-visible,
@@ -110,7 +110,7 @@
 }
 
 @media screen and (max-width: 650px) {
-  .module-not-found>*:not(h1) {
+  .module-not-found > *:not(h1) {
     margin-bottom: 1rem;
   }
 
