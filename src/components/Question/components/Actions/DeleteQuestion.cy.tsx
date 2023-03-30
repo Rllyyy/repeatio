@@ -280,7 +280,7 @@ describe("Delete a Question", () => {
     cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
   });
 
-  it("should hide the question correction after deleting a question", () => {
+  it("should hide the question correction after deleting a question and enable the inputs", () => {
     cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
     cy.mount(
       <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />
@@ -305,8 +305,31 @@ describe("Delete a Question", () => {
     // Assert that the correction is no longer visible
     cy.get("section.question-correction").should("not.exist");
 
+    // Assert that all radio inputs are enabled
+    cy.get("input[type='radio']").first().should("not.be.disabled");
+
     // Assert that the radio button is not selected and is enabled
     cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
+  });
+
+  it("should scroll back to top of question if deleting a question", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Scroll to the end the question
+    cy.get("label.MuiFormControlLabel-root").last().scrollIntoView();
+
+    // Delete Question
+    cy.get("button[aria-label='Delete Question']").click();
+
+    cy.contains("ID: qID-2").should("be.visible");
   });
 });
 

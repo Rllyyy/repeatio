@@ -52,7 +52,7 @@ export const Question: React.FC<{}> = () => {
     questionDataRef,
     questionAnswerRef,
     fetchQuestion,
-    setShowAnswer,
+    handleResetQuestionComponent,
   } = useQuestion();
 
   //JSX
@@ -74,7 +74,7 @@ export const Question: React.FC<{}> = () => {
         disabled={loading || !question}
         handleResetRetryQuestion={handleResetRetryQuestion}
         fetchQuestion={fetchQuestion}
-        setShowAnswer={setShowAnswer}
+        handleResetQuestionComponent={handleResetQuestionComponent}
       />
     </form>
   );
@@ -94,14 +94,6 @@ const QuestionData: React.FC<TQuestionData> = ({
   showAnswer,
   answerCorrect,
 }) => {
-  // Scroll to top
-  //TODO would be great if this was handle by the question navigation
-  useLayoutEffect(() => {
-    if (!loading && question) {
-      questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
-    }
-  }, [loading, question, questionDataRef]);
-
   //Return empty div if component is loading (so ui doesn't jump)
   if (loading) {
     return <div></div>;
@@ -137,7 +129,7 @@ export interface IQuestionBottom {
   disabled: boolean;
   handleResetRetryQuestion: TUseQuestion["handleResetRetryQuestion"];
   fetchQuestion: TUseQuestion["fetchQuestion"];
-  setShowAnswer: TUseQuestion["setShowAnswer"];
+  handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
 }
 
 export const QuestionBottom: React.FC<IQuestionBottom> = ({
@@ -146,7 +138,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
   disabled,
   handleResetRetryQuestion,
   fetchQuestion,
-  setShowAnswer,
+  handleResetQuestionComponent,
 }) => {
   //States
   const [showNav, setShowNav] = useState(false);
@@ -190,15 +182,19 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
           className={`question-actions-navigation-wrapper ${collapsedActionsNav ? "collapsed" : ""}`}
           data-testid='question-actions-navigation-wrapper'
         >
-          <DeleteQuestion questionID={question?.id} disabled={disabled} setShowAnswer={setShowAnswer} />
+          <DeleteQuestion
+            questionID={question?.id}
+            disabled={disabled}
+            handleResetQuestionComponent={handleResetQuestionComponent}
+          />
           <EditQuestion
             prevQuestion={question}
             disabled={disabled}
             fetchQuestion={fetchQuestion}
-            setShowAnswer={setShowAnswer}
+            handleResetQuestionComponent={handleResetQuestionComponent}
           />
           <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
-          <QuestionNavigation setShowAnswer={setShowAnswer} />
+          <QuestionNavigation handleResetQuestionComponent={handleResetQuestionComponent} />
         </div>
       )}
     </div>

@@ -68,6 +68,20 @@ export const useQuestion = () => {
   const { navigateToNextQuestion } = useQuestionNavigation();
 
   /* EVENT HANDLERS */
+  /**
+   * Scrolls to top, resets the input values and hides the correction
+   */
+  const handleResetQuestionComponent = () => {
+    // Scroll back to top
+    questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
+
+    // Clear the changes the user made to the question
+    questionAnswerRef.current?.resetSelection();
+
+    // Hide the answer correction
+    setShowAnswer(false);
+  };
+
   //Prevent default form submission (reload)
   //TODO Move these into custom hook when I figured out how to update ref value inside hook
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,20 +93,18 @@ export const useQuestion = () => {
       setAnswerCorrect(questionAnswerRef.current?.checkAnswer() || false);
       setShowAnswer(true);
     } else {
-      questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
-
+      handleResetQuestionComponent();
       navigateToNextQuestion();
-      setShowAnswer(false);
     }
   };
 
   const handleResetRetryQuestion = useCallback(() => {
     if (showAnswer) {
       questionAnswerRef.current?.resetAndShuffleOptions();
+      questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
     } else {
       questionAnswerRef.current?.resetSelection();
     }
-    questionDataRef.current?.scrollTo({ top: 0, behavior: "auto" });
     setShowAnswer(false);
   }, [showAnswer, setShowAnswer, questionDataRef]);
 
@@ -264,5 +276,6 @@ export const useQuestion = () => {
     questionDataRef,
     questionAnswerRef,
     fetchQuestion,
+    handleResetQuestionComponent,
   } as const;
 };

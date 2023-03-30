@@ -16,10 +16,10 @@ import { TUseQuestion } from "../../useQuestion";
 //- Remove to first and to last question
 
 type TQuestionNavigation = {
-  setShowAnswer: TUseQuestion["setShowAnswer"];
+  handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
 };
 
-export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswer }) => {
+export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ handleResetQuestionComponent }) => {
   //Access custom hook navigation functions
   const {
     navigateToFirstQuestion,
@@ -39,7 +39,7 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswe
         aria-label='Navigate to first Question'
         onClick={() => {
           navigateToFirstQuestion();
-          setShowAnswer(false);
+          handleResetQuestionComponent();
         }}
         type='button'
       >
@@ -63,7 +63,7 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswe
         aria-label='Navigate to previous Question'
         onClick={() => {
           navigateToPreviousQuestion();
-          setShowAnswer(false);
+          handleResetQuestionComponent();
         }}
         type='button'
       >
@@ -90,7 +90,7 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswe
         type='button'
         onClick={() => {
           navigateToNextQuestion();
-          setShowAnswer(false);
+          handleResetQuestionComponent();
         }}
       >
         <svg
@@ -113,7 +113,7 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ setShowAnswe
         type='button'
         onClick={() => {
           navigateToLastQuestion();
-          setShowAnswer(false);
+          handleResetQuestionComponent();
         }}
       >
         <svg

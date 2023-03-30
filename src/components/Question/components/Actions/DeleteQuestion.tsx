@@ -22,10 +22,10 @@ interface IDeleteQuestion
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   questionID: IQuestion["id"] | undefined;
   disabled: boolean;
-  setShowAnswer: TUseQuestion["setShowAnswer"];
+  handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
 }
 
-export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }: IDeleteQuestion) => {
+export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionComponent, ...props }: IDeleteQuestion) => {
   //params
   const params = useParams<IParams>();
 
@@ -80,8 +80,8 @@ export const DeleteQuestion = ({ questionID, disabled, setShowAnswer, ...props }
     // Navigate to new path with new id
     const indexInContextQuestionsIds = questionIds?.findIndex((id) => id === questionID);
 
-    // Hide show answer
-    setShowAnswer(false);
+    // Reset the question component to reset user selection, hide question correction and scroll to top
+    handleResetQuestionComponent();
 
     if (typeof indexInContextQuestionsIds === "undefined") {
       console.error("ID is not in data.questionIds");
