@@ -12,7 +12,14 @@ describe("Test usage of bookmarked Questions in module overview", () => {
   //Add fixture to localStorage and navigate to module url
   beforeEach(() => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
-    cy.visit("/module/cypress_1");
+    cy.visit("/module/cypress_1", {
+      onBeforeLoad(win) {
+        cy.spy(win.console, "log").as("consoleLog");
+        cy.stub(win.console, "error").as("consoleError");
+        cy.stub(win.console, "warn").as("consoleWarn");
+        cy.stub(win.console, "info").as("consoleInfo");
+      },
+    });
   });
 
   it("should changed the url to mode bookmarked on navigation", () => {
@@ -39,7 +46,7 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     cy.contains("li", "Export").should("be.visible").and("not.be.disabled");
   });
 
-  it("should error if there are no bookmarked questions defined", () => {
+  it("should show warning  if there are no bookmarked questions defined", () => {
     cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
     cy.contains("Found 0 bookmarked questions for this module!");
   });
@@ -87,9 +94,13 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     // Start practicing with bookmarked questions
     cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
 
+    // Assert url changed to first valid id
     cy.url().should("include", "module/cypress_1/question/qID-1?mode=bookmarked&order=chronological");
 
-    // Get url
+    // Assert that console logged invalid ids
+    cy.get("@consoleWarn").should("be.calledWithMatch", "Couldn't find the following ids: invalid-id, also-invalid");
+
+    cy.contains("1/1 Questions").should("exist");
   });
 });
 

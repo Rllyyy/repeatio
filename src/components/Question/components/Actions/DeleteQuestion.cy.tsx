@@ -122,7 +122,7 @@ describe("Delete a Question", () => {
     cy.get("button[aria-label='Delete Question']")
       .click()
       .should(() => {
-        /* Check that only one question was deleted from the localStorage */
+        //Check that only one question was deleted from the localStorage
         const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-cypress_1`));
         expect(module?.questions.length).to.equal(5);
       });

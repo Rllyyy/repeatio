@@ -232,7 +232,7 @@ export const useQuestion = () => {
             }
 
             // Show warning that includes every id that wasn't found
-            if (invalidIds) {
+            if (invalidIds && invalidIds?.length >= 1) {
               console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
             }
           } else {

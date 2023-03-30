@@ -46,13 +46,6 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
       return;
     }
 
-    //TODO allow this with history.push to module overview
-    //Don't allow deletion on the last element in the module
-    if ((questionIds?.length || 0) <= 1) {
-      toast.warn("Can't delete last question in module for now");
-      return;
-    }
-
     // Remove question from localStorage
     // Get module from localStorage
     const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
@@ -85,7 +78,7 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
 
     if (typeof indexInContextQuestionsIds === "undefined") {
       console.error("ID is not in data.questionIds");
-    } else if (indexInContextQuestionsIds && indexInContextQuestionsIds >= 1) {
+    } else if (indexInContextQuestionsIds >= 1 && questionIds.length >= 2) {
       // Navigate to previous item in array if not at the beginning (0)
       history.push({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds - 1]}`,
@@ -93,12 +86,18 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
           new URLSearchParams(search).get("order") || "chronological"
         }`,
       });
-    } else {
+    } else if (indexInContextQuestionsIds === 0 && questionIds.length >= 2) {
       history.push({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds + 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
           new URLSearchParams(search).get("order") || "chronological"
         }`,
+      });
+    } else {
+      /* Push to Module overview if there are no questions left in the current context */
+      /* //TODO: in the future this could point to ".../all-questions" but there should be a message like "0 Questions"*/
+      history.push({
+        pathname: `/module/${params.moduleID}`,
       });
     }
 

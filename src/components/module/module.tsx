@@ -420,7 +420,7 @@ const BookmarkedQuestionsBottom = () => {
     }
 
     // Get an array of all question IDs from the module in local storage
-    const allIds = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions.reduce(
+    const allIds = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.questions.reduce(
       (acc: string[], question) => {
         acc.push(question.id);
         return acc;
