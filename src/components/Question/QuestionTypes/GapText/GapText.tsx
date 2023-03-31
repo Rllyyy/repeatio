@@ -18,6 +18,8 @@ import { AnswerCorrection } from "./AnswerCorrection";
 
 // Interfaces/Types
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
+import DOMPurify from "dompurify";
+import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
 
 // Define Interfaces
 export interface IGapText {
@@ -200,13 +202,15 @@ function textWithBlanks(text: string): string {
   const joinedElements = mappedArray.join("");
 
   //Remove jsx specific html syntax
-  const exportHTMl = joinedElements
+  const exportHTML = joinedElements
     .replaceAll("&lt;", "<")
     .replaceAll("&gt;", ">")
     .replaceAll("&quot;", '"')
     .replaceAll('data-reactroot=""', "");
 
-  //Export to dangerouslySetInnerHTML
-  //TODO: Sanitize the html with https://github.com/cure53/DOMPurify
-  return exportHTMl;
+  // Sanitize the result
+  return DOMPurify.sanitize(exportHTML, {
+    FORBID_TAGS: forbiddenTags,
+    FORBID_ATTR: forbiddenAttributes,
+  });
 }

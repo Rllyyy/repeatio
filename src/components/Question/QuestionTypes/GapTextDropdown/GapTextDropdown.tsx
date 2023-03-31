@@ -1,6 +1,8 @@
 import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect, useMemo } from "react";
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
+import DOMPurify from "dompurify";
+import { forbiddenTags, forbiddenAttributes } from "../blockedTagsAttributes";
 
 // React markdown related imports
 import ReactMarkdown from "react-markdown";
@@ -21,7 +23,6 @@ import { ReturnOptions } from "./ReturnOptions";
 import { shuffleArray } from "../../../../utils/shuffleArray";
 
 // Import Interfaces
-import {} from "../QuestionUserResponseArea";
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
 
 // Interfaces
@@ -230,13 +231,15 @@ export function textWithBlanks(
   const joinedElements = mappedArray.join("");
 
   //Remove jsx specific html syntax
-  const exportHTMl = joinedElements
+  const exportHTML = joinedElements
     .replaceAll("&lt;", "<")
     .replaceAll("&gt;", ">")
     .replaceAll("&quot;", '"')
     .replaceAll('data-reactroot=""', "");
 
-  //Export to dangerouslySetInnerHTML
-  //TODO: Sanitize the html with https://github.com/cure53/DOMPurify
-  return exportHTMl;
+  // Sanitize the result
+  return DOMPurify.sanitize(exportHTML, {
+    FORBID_TAGS: forbiddenTags,
+    FORBID_ATTR: forbiddenAttributes,
+  });
 }
