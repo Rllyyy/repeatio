@@ -1,0 +1,82 @@
+{
+  "id": "gap_text_dropdown",
+  "name": "Test gap text with dropdown question type",
+  "type": "module",
+  "lang": "en",
+  "compatibility": "0.4.0",
+  "questions": [
+    {
+      "id": "gtd-1",
+      "title": "This is the title of the first question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This [] question comes from the [].",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "Gap Text with Dropdown",
+              "Multiple Choice",
+              "Gap Text"
+            ],
+            "correct": "Gap Text with Dropdown"
+          },
+          {
+            "id": "select-1",
+            "options": [
+              "fixture",
+              "server",
+              "internet"
+            ],
+            "correct": "fixture"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gtd-2",
+      "title": "This is the title of the second question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This is the [] question",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "first",
+              "second",
+              "third"
+            ],
+            "correct": "second"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gtd-3",
+      "title": "This is the title of the third question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This dropdown has [] options",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9",
+              "10"
+            ],
+            "correct": "10"
+          }
+        ]
+      }
+    }
+  ]
+}

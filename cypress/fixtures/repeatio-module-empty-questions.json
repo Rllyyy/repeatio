@@ -1,0 +1,8 @@
+{
+  "id": "empty-questions",
+  "name": "Empty Questions",
+  "type": "module",
+  "lang": "en",
+  "compatibility": "0.4.0",
+  "questions": []
+}

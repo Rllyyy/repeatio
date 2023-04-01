@@ -38,7 +38,6 @@ footer a:focus-visible {
   outline-offset: 3px;
 }
 
-
 @media screen and (pointer: fine) and (hover: hover) {
   footer a:hover {
     color: var(--custom-border-color-lighter);
@@ -54,7 +53,7 @@ footer a:focus-visible {
   }
 }
 
-@media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
+@media (min--moz-device-pixel-ratio: 0) and (max-width: 650px) {
   footer {
     padding-bottom: 50px;
   }

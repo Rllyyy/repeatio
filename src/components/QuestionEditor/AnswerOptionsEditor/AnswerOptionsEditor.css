@@ -100,9 +100,14 @@
   outline: 2px solid var(--custom-prime-color);
 }
 
-.editor .editor-content {
+.editor .editor-content:not(.gap-text) {
   padding: 10px;
   min-height: 170px;
+}
+
+.editor .editor-content.gap-text {
+  /* TextAreaAutosize has some weird margin at the bottom */
+  padding: 10px 10px 0 10px;
 }
 
 .editor .editor-message {
@@ -125,8 +130,34 @@ This is the only way if found to have it still animated but disable the out anim
   background-color: transparent;
 }
 
+.editor .markdown-support {
+  text-align: right;
+  padding: 3px 8px;
+  border-top: 1px solid var(--custom-border-color-lighter);
+
+  line-height: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.editor > .markdown-support > span {
+  color: var(--custom-border-color-darker);
+  padding-right: 0.5rem;
+}
+
+.editor .markdown-support svg {
+  height: 1.4rem;
+  width: 1.4rem;
+  color: var(--custom-border-color-darker);
+}
+
 @media screen and (hover: hover) and (pointer: fine) {
   .editor .editor-toolbar.enabled button:hover {
-    background-color: rgba(0, 0, 0, .08)
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  .editor .markdown-support svg:hover {
+    color: var(--custom-prime-color);
   }
 }

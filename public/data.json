@@ -1,8 +1,9 @@
 {
   "id": "types_1",
   "name": "Question Types",
+  "type": "module",
   "lang": "en",
-  "compatibility": "0.3.0",
+  "compatibility": "0.4.0",
   "questions": [
     {
       "id": "qID-1",
@@ -35,7 +36,7 @@
     },
     {
       "id": "qID-2",
-      "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
+      "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option.\nPlease note that _**all**_ correct options must be selected, otherwise there will be no points awarded.\n How many options can be correct?",
       "points": 5,
       "type": "multiple-response",
       "help": "Please choose the correct answer(s).",
@@ -74,19 +75,19 @@
     },
     {
       "id": "qID-3",
-      "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
+      "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.\nPlease note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.\nIf different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
       "points": 5,
       "type": "gap-text",
       "help": "Fill in the blanks.",
       "answerOptions": {
-        "text": "A gap text question can have multiple []. A [] separates the correct words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
+        "text": "A gap text question can have multiple []. A semicolon separates the [] words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
         "correctGapValues": [
           [
             "gaps"
           ],
           [
-            "semicolon",
-            ";"
+            "correct",
+            "right"
           ],
           [
             "not"
@@ -128,7 +129,7 @@
     },
     {
       "id": "qID-5",
-      "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
+      "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br />Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
       "points": 5,
       "type": "extended-match",
       "help": "Connect the dots.",

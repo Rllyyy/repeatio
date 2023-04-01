@@ -11,7 +11,6 @@
   align-items: center;
   justify-content: center;
 
-
   font-size: 18px;
   min-height: 5rem;
   margin-bottom: 10px;
@@ -27,7 +26,7 @@
 }
 
 .question-table .index,
-.question-table .button-to-question,
+.question-table .link-to-question,
 .question-table .id {
   justify-self: center;
 }
@@ -72,29 +71,21 @@
   border-radius: 5px;
 }
 
-.question-table .button-to-question {
+.question-table .link-to-question {
   height: 100%;
   width: 60px;
-  cursor: pointer;
-
-  /* Reset default button values*/
-  border: none;
-  appearance: none;
-  outline: none;
-  background-color: transparent;
-
-  border-radius: 5px;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.question-table .button-to-question:focus-visible {
-  /* outline: 2px solid var(--custom-prime-color); */
-  /* outline-offset: -10px; */
+.question-table .link-to-question:focus-visible {
+  border-radius: 5px;
+  outline: transparent;
   box-shadow: inset 0px 0px 0px 3px var(--custom-prime-color);
 }
 
-
-.question-table .button-to-question svg {
+.question-table .link-to-question svg {
   height: 35px;
   width: 35px;
   color: rgb(18, 24, 40);
@@ -102,7 +93,7 @@
 
 /* Media Query for devices that can hover (desktop, not phones) */
 @media (pointer: fine) {
-  .question-table .button-to-question:hover svg {
+  .question-table .link-to-question:hover svg {
     color: var(--custom-prime-color);
   }
 }
@@ -139,7 +130,7 @@
     width: 1.3rem;
   }
 
-  .question-table .button-to-question {
+  .question-table .link-to-question {
     width: 40px;
   }
 }

@@ -6,8 +6,9 @@ This file documents the structure of a module inside the localStorage. If you ar
 {
   "id": "MOD01",
   "name": "Module Name",
+  "type": "module",
   "lang": "en",
-  "compatibility": "0.3.0",
+  "compatibility": "0.4.0",
   "questions": [
     {
       "id": "MOD01-1",

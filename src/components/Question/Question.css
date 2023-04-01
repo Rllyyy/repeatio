@@ -1,7 +1,7 @@
 .question-form {
   position: relative;
   /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
-  height: calc(100vh - 40px);
+  height: calc(100dvh - 40px);
   width: 100%;
   background-color: white;
   border-radius: 5px;
@@ -14,12 +14,17 @@
 
 /* Markdown specific */
 .question-form p {
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 
 /* Markdown lists */
 .question-form ul,
 .question-form ol {
+  white-space: normal;
+}
+
+/* Markdown tables */
+.question-form table {
   white-space: normal;
 }
 
@@ -49,15 +54,9 @@
 }
 
 /* Markdown images */
-.question-form .question-title img {
-  display: block;
-  font-size: 1rem;
+.question-form img {
   margin: 2px 0;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
-  max-width: 550px;
-  max-height: 300px;
+  max-width: 100%;
 }
 
 /* All buttons */
@@ -82,7 +81,7 @@
   align-items: center;
 }
 
-.question-id-progress-wrapper>.question-id {
+.question-id-progress-wrapper > .question-id {
   font-size: 0.9rem;
   font-weight: 450;
   line-height: 1;
@@ -92,7 +91,7 @@
   border-radius: 5px;
 }
 
-.question-id-progress-wrapper>.question-progress {
+.question-id-progress-wrapper > .question-progress {
   margin-left: 10px;
   text-align: right;
   font-size: 1.2rem;
@@ -112,12 +111,6 @@
   font-weight: 450;
 }
 
-/* Targets the markdown (image) in the title */
-.question-form .question-title img {
-  max-width: 700px;
-  max-height: 500px;
-}
-
 /* Style the question points */
 .question-points {
   font-size: 1.1rem;
@@ -130,17 +123,6 @@
   margin: 2px 0 5px 0;
   font-style: italic;
   color: var(--custom-secondary-color);
-}
-
-/* Targets the markdown (image) in the question type help */
-.question-type-help img {
-  margin: 2px 0 20px 0;
-  display: block;
-  object-fit: contain;
-  object-position: left center;
-  width: 100%;
-  max-width: 700px;
-  max-height: 500px;
 }
 
 /* Targets the question-correction section*/
@@ -197,13 +179,13 @@
   height: 39px;
 }
 
-.question-check-retry-wrapper>button:focus-visible {
+.question-check-retry-wrapper > button:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 3px;
 }
 
-.question-check-retry-wrapper>.question-check-next,
-.question-check-retry-wrapper>.question-retry {
+.question-check-retry-wrapper > .question-check-next,
+.question-check-retry-wrapper > .question-retry {
   width: 100%;
   max-width: 160px;
 
@@ -213,7 +195,7 @@
   border-radius: 5px;
 }
 
-.question-check-retry-wrapper>.question-check-next {
+.question-check-retry-wrapper > .question-check-next {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -225,17 +207,17 @@
   border: 1px solid var(--custom-prime-color);
 }
 
-.question-check-retry-wrapper>.question-check-next:disabled {
+.question-check-retry-wrapper > .question-check-next:disabled {
   border-color: var(--custom-border-color-light);
   background-color: var(--custom-border-color-light);
 }
 
-.question-check-retry-wrapper>.question-retry {
+.question-check-retry-wrapper > .question-retry {
   border: 1px solid var(--custom-border-color);
   background-color: transparent;
 }
 
-.question-check-retry-wrapper>.question-retry:disabled {
+.question-check-retry-wrapper > .question-retry:disabled {
   border-color: var(--custom-border-color-light);
 }
 
@@ -265,17 +247,16 @@
   color: var(--custom-border-color);
 }
 
-
 .question-check-retry-wrapper .question-retry:active:not(:disabled) {
   background-color: var(--custom-tertiary-color);
   border-color: var(--custom-border-color-dark);
 }
 
-.question-check-retry-wrapper>.question-check-next>.check-icon {
+.question-check-retry-wrapper > .question-check-next > .check-icon {
   stroke-width: 0.4;
 }
 
-.question-check-retry-wrapper>.question-check-next:active:not(:disabled) {
+.question-check-retry-wrapper > .question-check-next:active:not(:disabled) {
   background-color: var(--custom-prime-color-dark);
   border-color: var(--custom-prime-color-dark);
 }
@@ -296,20 +277,20 @@
   background-color: transparent;
 }
 
-.show-question-nav>.show-question-nav-icon {
+.show-question-nav > .show-question-nav-icon {
   width: 100%;
   height: 100%;
 
-  stroke-width: .7;
+  stroke-width: 0.7;
 
   pointer-events: none;
 }
 
-.show-question-nav>.up {
+.show-question-nav > .up {
   transform: rotate(180deg);
 }
 
-.show-question-nav>.down {
+.show-question-nav > .down {
   transform: rotate(0deg);
 }
 
@@ -347,7 +328,7 @@
   width: 34px;
 }
 
-.question-actions-navigation-wrapper button>svg {
+.question-actions-navigation-wrapper button > svg {
   height: 100%;
   width: 100%;
 
@@ -355,18 +336,17 @@
   color: var(--custom-secondary-color);
 }
 
-.question-actions-navigation-wrapper button:disabled>svg {
+.question-actions-navigation-wrapper button:disabled > svg {
   stroke: var(--custom-border-color);
   color: var(--custom-border-color);
 }
-
 
 .navigation-before {
   fill: var(--custom-secondary-color);
   transform: rotate(180deg);
 }
 
-.question-navigation>input {
+.question-navigation > input {
   margin: 0 5px;
   padding: 5px;
   max-width: 70px;
@@ -375,7 +355,7 @@
   outline: none;
 }
 
-.question-navigation>input:active {
+.question-navigation > input:active {
   border-color: var(--custom-prime-color);
 }
 
@@ -383,7 +363,7 @@
   fill: var(--custom-secondary-color);
 }
 
-.question-navigation>button:active svg {
+.question-navigation > button:active svg {
   color: var(--custom-prime-color);
   stroke: var(--custom-prime-color);
   fill: var(--custom-prime-color);
@@ -420,20 +400,16 @@
 }
 
 /* Media query for phones */
-/* Second query is for development on desktop */
-@media only screen and (pointer: coarse),
-only screen and (pointer: fine) and (max-width: 650px) {
+@media only screen and (max-width: 650px) {
   .question-form {
-    height: calc(100vh - 120px);
-    /*The viewport of mobile devices includes the address bar. Because why not. */
-    margin-bottom: 0;
+    height: calc(100dvh - 70px); /* Height of the header + padding of main - 3px to look beetter */
   }
 
   .question-data {
     padding: 10px 2px 10px 12px;
   }
 
-  .question-id-progress-wrapper>.question-progress {
+  .question-id-progress-wrapper > .question-progress {
     font-size: 1.1rem;
   }
 
@@ -460,20 +436,13 @@ only screen and (pointer: fine) and (max-width: 650px) {
     width: 36px;
   }
 
-  .question-navigation>button {
+  .question-navigation > button {
     width: 38px;
   }
 }
 
-/* For desktop very small */
-@media only screen and (pointer: fine) and (max-width: 650px) {
-  .question-form {
-    height: calc(100vh - 70px);
-  }
-}
-
 /* On mobile firefox the scrollbar is part of the html viewport. In other browsers it is not */
-@media(min--moz-device-pixel-ratio:0) and (max-width: 650px) {
+@media (min--moz-device-pixel-ratio: 0) and (max-width: 650px) {
   .question-data {
     padding: 10px 12px 10px 12px;
   }

@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es2019",
+    "lib": [
+      "es2022",
+      "dom",
+      "dom.iterable"
+    ],
+    "types": [
+      "cypress",
+      "node"
+    ],
+    "jsx": "react",
+    "paths": {
+      "@cypress/react": [
+        "../lib"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts"
+  ]
+}

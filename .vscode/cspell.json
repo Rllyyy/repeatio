@@ -12,6 +12,7 @@
     "binom",
     "Bmatrix",
     "Cloze",
+    "codepaths",
     "Dropzone",
     "Exif",
     "firefox",
@@ -37,10 +38,12 @@
     "Styleable",
     "testid",
     "toastify",
+    "tsbuildinfo",
     "tsmerge",
     "unicode",
     "USEEFFECTS",
-    "vmatrix"
+    "vmatrix",
+    "wicg"
   ],
   // flagWords - list of words to be always considered incorrect
   // This is useful for offensive words and common spelling errors.
