@@ -779,7 +779,7 @@ $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
   </tr>
 </table>
 
-**[Here](/.github/Docs/LaTeX.md)** is a detailed guide.
+**[Here](./.github/Docs/LaTeX.md)** is a detailed guide.
 
 </details>
 
