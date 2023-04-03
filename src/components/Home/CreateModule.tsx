@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import isElectron from "is-electron";
 import packageJson from "../../../package.json";
 
 //functions
@@ -83,14 +82,6 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
 
   //Update the localStorage on form submit
   const formSubmit = (data: IModule) => {
-    //prevent using electron for this time
-    //TODO add ability to use electron
-    if (isElectron()) {
-      toast.warn("Can't create modules in electron for this time");
-      handleModalClose();
-      return;
-    }
-
     //Update localeStorage and tell the window that a new storage event occurred
     localStorage.setItem(`repeatio-module-${data.id}`, JSON.stringify(data, null, "\t"));
     window.dispatchEvent(new Event("storage"));

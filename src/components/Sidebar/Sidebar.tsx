@@ -29,7 +29,7 @@ export const Sidebar = () => {
 //Hamburger Component
 const Hamburger = ({ setExpandSidebar, expandSidebar }: TExpandSidebar) => {
   return (
-    <button className='hamburger' onClick={() => setExpandSidebar(!expandSidebar)}>
+    <button className='hamburger' onClick={() => setExpandSidebar(!expandSidebar)} type='button'>
       <FiMenu className='hamburger-icon category-icon' />
       <p className={`${expandSidebar ? "sidebar-button-expanded" : ""}`}>repeatio</p>
     </button>

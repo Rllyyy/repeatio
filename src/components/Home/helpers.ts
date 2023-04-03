@@ -1,5 +1,8 @@
+import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
+import { fetchModuleFromFileSystem } from "../../utils/fetchModuleFromFileSystem";
 import { TSettings } from "../../utils/types";
+import { IModule } from "../module/module";
 import { IFile } from "./ImportModule";
 
 export function moduleAlreadyInStorage(value: string) {
@@ -40,7 +43,13 @@ export function isExampleModuleAdded(settings: TSettings | null | undefined): bo
  */
 export async function addExampleModuleToLocalStorage(settings: TSettings | null | undefined) {
   // Fetch the example module data from the public folder
-  const exampleModuleData = await fetchModuleFromPublicFolder();
+  let exampleModuleData: IModule | undefined;
+
+  if (isElectron()) {
+    exampleModuleData = await fetchModuleFromFileSystem();
+  } else {
+    exampleModuleData = await fetchModuleFromPublicFolder();
+  }
 
   // Check if the example module data was retrieved successfully
   if (exampleModuleData) {

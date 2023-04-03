@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo } from "react";
 import { useDropzone, FileRejection, DropzoneOptions, FileError } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import isElectron from "is-electron";
 import { moduleAlreadyInStorage, getFileTypeAndID } from "./helpers";
 import { Tooltip } from "@mui/material";
 
@@ -127,14 +126,6 @@ export const ImportModule = ({ handleModalClose }: IImportModule) => {
   //Update the localStorage on submit
   const handleImportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    //prevent using electron for this time
-    //TODO add ability to use electron
-    if (isElectron()) {
-      toast.warn("Can't import modules in electron for this time!");
-      handleModalClose();
-      return;
-    }
 
     if (files.length < 1) {
       toast.warn("Please select a file!");

@@ -53,12 +53,14 @@ Menu.setApplicationMenu(false);
 app.on("ready", createWindow);
 
 //Add react dev devtools
-//TODO check if user is dev
+//This may result in a manifest v3 error
 //https://github.com/MarshallOfSound/electron-devtools-installer
 app.whenReady().then(() => {
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log("An error occurred: ", err));
+  if (isDev) {
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log("An error occurred: ", err));
+  }
 });
 
 // Quit when all windows are closed.
@@ -78,101 +80,16 @@ app.on("activate", function () {
 
 /* Inter Process Communication between the main process (this file) and the renderer */
 ipcMain.on("toMain", async (event, args) => {
-  //args is an array of first a get method and second a parameter
-  const firstArg = args[0];
-  let data;
-  switch (firstArg) {
-    case "getModules":
-      const repeatioModuleFolder = path.join(app.getPath("documents"), "repeatio/modules");
+  /* If app is packed by electron, use the build folder, instead use the public folder */
+  const filePath = app.isPackaged ? path.join(process.resourcesPath, "build/data.json") : "public/data.json";
 
-      //Check if repeatio folder exists
-      if (!fs.existsSync(repeatioModuleFolder)) {
-        //Create empty directory
-        //TODO check if user wants a different directory so it doesn't get create every time
-        fs.mkdirSync(repeatioModuleFolder, { recursive: true });
-      }
-
-      /* 
-      1. For all folders in modules
-      2. Check if folder is directory
-      3. Read file
-      4. Push all to array
-      */
-
-      data = [];
-      const folders = await getModuleFolders();
-
-      //https://stackoverflow.com/a/51738717/14602331
-      //Crossing my fingers that this actually runs async because the gods of so said async is better here.
-      //Use map instead of forEach to run async because
-      await Promise.all(
-        folders.map(async (folder) => {
-          //Check if folder really is a folder
-          let isFolder = false;
-          try {
-            isFolder = await checkIfFolder(folder);
-          } catch (error) {
-            console.log(error);
-          }
-
-          //Get module info from json file
-          if (isFolder) {
-            try {
-              const info = await getModuleInfo(folder);
-              data.push(info);
-            } catch (error) {
-              console.log(error);
-            }
-          }
-        })
-      );
-
-      //Send the data back to the render process
-      win.webContents.send("fromMain", data);
-      break;
-    case "getModule":
-      const moduleID = args[1];
-      data = await getModuleInfo(moduleID);
-      win.webContents.send("fromMain", data);
-      break;
-    default:
-      throw new Error("No matching ipcMain type");
-      break;
+  try {
+    // Read file from build folder
+    const moduleInfo = await fs.promises.readFile(filePath, "utf-8");
+    // Send back module data
+    win.webContents.send("fromMain", JSON.parse(moduleInfo));
+  } catch (error) {
+    // Send back error
+    win.webContents.send("fromMain", error);
   }
 });
-
-/* Functions */
-
-//Return the all files and folders that are located in the modules folder (../Documents/repeatio/modules)
-async function getModuleFolders() {
-  const allModulesFolder = path.join(app.getPath("documents"), "repeatio/modules");
-  try {
-    const modules = await fs.promises.readdir(allModulesFolder);
-    return modules;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//Return if file really is a folder
-async function checkIfFolder(folder) {
-  const moduleFolder = path.join(app.getPath("documents"), "repeatio/modules", folder);
-  try {
-    const fileInfo = await fs.promises.lstat(moduleFolder);
-    const isItDirectory = fileInfo.isDirectory();
-    return isItDirectory;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-//Return module info
-async function getModuleInfo(folder) {
-  const file = path.join(app.getPath("documents"), "repeatio/modules", folder, "data.json");
-  try {
-    const moduleInfo = await fs.promises.readFile(file, "utf-8");
-    return JSON.parse(moduleInfo);
-  } catch (error) {
-    console.log(error);
-  }
-}

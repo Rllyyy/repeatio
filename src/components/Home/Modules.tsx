@@ -1,5 +1,4 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
-import isElectron from "is-electron";
 import { toast } from "react-toastify";
 
 //Components
@@ -113,28 +112,17 @@ const useAllModules = () => {
     modulesFromBrowserStorage();
   }, [modulesFromBrowserStorage]);
 
-  //Fetch data for all modules by reading all repeatio files in documents folder / locale storage (in browser)
+  //Fetch data for all modules by reading locale storage
   useEffect(() => {
-    if (isElectron()) {
-      // Send a message to the main process
-      (window as any).api.request("toMain", ["getModules"]);
-
-      // Called when message received from main process
-      (window as any).api.response("fromMain", (data: IModule[]) => {
-        setModules(data);
-        setLoading(false);
-      });
-    } else {
-      //Get modules from localStorage and add storage onChange handler
-      modulesFromBrowserStorage();
-      window.addEventListener("storage", onStorageChange);
-    }
+    // Fetch the modules and add event listener
+    modulesFromBrowserStorage();
+    window.addEventListener("storage", onStorageChange);
 
     //Reset the modules and remove the handler when the component unmounts
     return () => {
       setModules([]);
       setLoading(true);
-      if (!isElectron()) window.removeEventListener("storage", onStorageChange);
+      window.removeEventListener("storage", onStorageChange);
     };
   }, [modulesFromBrowserStorage, onStorageChange]);
 
@@ -167,13 +155,6 @@ const useHomePopover = () => {
     //Get id of module by custom attribute
     const moduleID = anchorEl?.getAttribute("data-target");
 
-    //Prevent deletion if using electron
-    if (isElectron()) {
-      toast.warn("Can't delete modules from electron!");
-      handlePopoverClose();
-      return;
-    }
-
     //Check if item is in localStorage
     const itemInStorage = Object.keys(localStorage).includes(`repeatio-module-${moduleID}`);
 
@@ -190,13 +171,6 @@ const useHomePopover = () => {
 
   //Handle the export of module
   const handleExport = async () => {
-    //Return if using electron
-    if (isElectron()) {
-      toast.warning("This action is not supported in Electron!");
-      handlePopoverClose();
-      return;
-    }
-
     //Get id of the module from the button
     const moduleID = anchorEl?.getAttribute("data-target");
     const file = localStorage.getItem(`repeatio-module-${moduleID}`);

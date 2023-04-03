@@ -1,7 +1,7 @@
 .sidebar {
-  position: sticky;
-  position: -webkit-sticky;
   position: -moz-sticky;
+  position: -webkit-sticky;
+  position: sticky;
 
   top: 0;
   bottom: 0;
@@ -9,8 +9,6 @@
 
   grid-column: 1;
   grid-row: 1/2;
-
-
 
   /* left: 0; */
 
@@ -31,7 +29,7 @@
   padding: 10px 10px 2px 10px;
   user-select: none;
   z-index: 100;
-  transition: max-width .3s ease-in-out;
+  transition: max-width 0.3s ease-in-out;
 }
 
 .sidebar-expanded {
@@ -46,8 +44,8 @@
 }
 
 /* Target the child element of the nav */
-.sidebar>.category-items a,
-.sidebar>.hamburger {
+.sidebar > .category-items a,
+.sidebar > .hamburger {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -74,8 +72,8 @@
   border: none;
 }
 
-.sidebar a>.category-title,
-.sidebar .hamburger>p {
+.sidebar a > .category-title,
+.sidebar .hamburger > p {
   font-size: 17px;
   font-weight: 400;
 
@@ -83,7 +81,7 @@
   color: rgb(187, 192, 199);
 
   white-space: nowrap;
-  letter-spacing: .6px;
+  letter-spacing: 0.6px;
 }
 
 .sidebar .category-items .currentView {
@@ -102,11 +100,10 @@
 
 /* Css for devices with that can hover */
 @media only screen and (pointer: fine) {
-
   .sidebar .category-items a:hover p,
   .sidebar .category-items a:hover svg,
-  .sidebar>.hamburger:hover p,
-  .sidebar>.hamburger:hover svg {
+  .sidebar > .hamburger:hover p,
+  .sidebar > .hamburger:hover svg {
     color: var(--custom-tertiary-color);
   }
 }
@@ -134,7 +131,7 @@
     margin-bottom: 30%;
   }
 
-  .sidebar-expanded>.category-items {
+  .sidebar-expanded > .category-items {
     display: flex;
     justify-content: center;
     row-gap: 10px;
@@ -155,7 +152,7 @@
     padding: 0;
   }
 
-  .sidebar>.category-items a {
+  .sidebar > .category-items a {
     display: none;
 
     justify-content: center;
@@ -166,7 +163,7 @@
     display: none;
   }
 
-  .sidebar>.category-items>a>.category-title {
+  .sidebar > .category-items > a > .category-title {
     font-size: 1.3rem;
     padding: 0;
   }
@@ -176,7 +173,7 @@
     max-height: 100vh;
   }
 
-  .sidebar-expanded>.category-items a {
+  .sidebar-expanded > .category-items a {
     display: flex;
   }
 
@@ -186,8 +183,8 @@
 
   .sidebar .category-items a:active p,
   .sidebar .category-items a:active svg,
-  .sidebar>.hamburger:active p,
-  .sidebar>.hamburger:active svg {
+  .sidebar > .hamburger:active p,
+  .sidebar > .hamburger:active svg {
     color: var(--custom-tertiary-color);
   }
 }

@@ -23,7 +23,7 @@ export const AddModule = () => {
   //JSX
   return (
     <>
-      <button className='add-module-btn' onClick={() => setShowModal(true)}>
+      <button className='add-module-btn' onClick={() => setShowModal(true)} type='button'>
         <p>Add Module</p>
       </button>
       {showModal && (

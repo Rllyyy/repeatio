@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import isElectron from "is-electron";
 import { toast } from "react-toastify";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 import { parseJSON } from "../../../../utils/parseJSON";
@@ -40,12 +39,6 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
 
   //Delete Question from storage
   const handleDelete = () => {
-    //Don't allow deletion for now when using electron
-    if (isElectron()) {
-      toast.warn("Can't delete Question in electron at this point in time. Please use the website instead");
-      return;
-    }
-
     // Remove question from localStorage
     // Get module from localStorage
     const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));

@@ -1,6 +1,7 @@
 .question-form {
   position: relative;
   /*40px represents the padding (top+bottom) of the main component defined in index.css, so the user doesn't need scroll and the navigation is always at the bottom*/
+  height: calc(100vh - 40px); /* Fallback value */
   height: calc(100dvh - 40px);
   width: 100%;
   background-color: white;
@@ -402,6 +403,7 @@
 /* Media query for phones */
 @media only screen and (max-width: 650px) {
   .question-form {
+    height: calc(100vh - 70px);
     height: calc(100dvh - 70px); /* Height of the header + padding of main - 3px to look beetter */
   }
 

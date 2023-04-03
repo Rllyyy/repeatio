@@ -63,6 +63,9 @@
     "directories": {
       "buildResources": "assets"
     },
+    "extraResources": [
+      "build/data.json"
+    ],
     "win": {
       "target": [
         "nsis"
@@ -74,7 +77,8 @@
       "uninstallDisplayName": "repeatio-uninstaller",
       "license": "LICENSE",
       "deleteAppDataOnUninstall": true,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": false,
+      "allowElevation": true
     },
     "mac": {
       "target": "tar.gz"

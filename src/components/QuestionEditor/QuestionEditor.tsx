@@ -1,6 +1,5 @@
 import React, { useState, useContext, useRef } from "react";
 import { useParams, useHistory, useLocation } from "react-router-dom";
-import isElectron from "is-electron";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -137,12 +136,6 @@ export const Form: React.FC<TEditorModes> = (props) => {
 
     //Return if there are any errors
     if (Object.keys(errors).length > 0) return;
-
-    if (isElectron()) {
-      toast.warn("Can't edit question in electron for this time. Use your browser instead!");
-      props.handleModalClose();
-      return;
-    }
 
     //Don't allow question editing when using mode random
     if (new URLSearchParams(search).get("mode") === "random") {

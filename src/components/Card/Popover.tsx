@@ -20,7 +20,14 @@ interface IPopoverButton {
 //Component
 export const PopoverButton = ({ handleClick, target }: IPopoverButton) => {
   return (
-    <button className='popover-button' onClick={handleClick} data-target={target}>
+    <button
+      className='popover-button'
+      onClick={handleClick}
+      data-target={target}
+      title='Options'
+      aria-label='Open Popover'
+      type='button'
+    >
       <HiDotsVertical />
     </button>
   );
@@ -55,9 +62,6 @@ const StyledMenu = styled((props: MenuProps) => (
     "& .MuiMenuItem-root": {
       color: "inherit",
       cursor: "pointer",
-      "@media screen and (min-width: 600px)": {
-        minHeight: "auto !important",
-      },
       "&:hover": {
         "@media screen and (pointer: fine) and (hover: hover)": {
           backgroundColor: "rgb(240, 240, 245)",

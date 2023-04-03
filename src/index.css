@@ -253,9 +253,11 @@ input[data-autocompleted] {
 }
 
 /* Firefox Scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgb(194, 194, 194) rgba(2, 34, 46, 0);
+@media screen and (min--moz-device-pixel-ratio: 0) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(194, 194, 194) rgba(2, 34, 46, 0);
+  }
 }
 
 @media only screen and (hover: hover) and (pointer: fine) {
