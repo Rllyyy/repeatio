@@ -45,18 +45,30 @@ export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorCompo
 
     //Return textarea
     return (
-      <TextareaAutosize
-        ref={ref}
-        spellCheck='false'
-        id='editor-gap-text-textarea'
-        autoComplete='false'
-        minRows={5}
-        style={{ border: "none", padding: 0, borderRadius: 0, outline: "none" }}
-        placeholder='Add a gap by surrounding the correct match with square brackets like [this]. Separate multiple correct answers by a semicolon like this: This is [easy; hard]'
-        value={tempText}
-        required
-        onChange={handleChange}
-      />
+      <>
+        <TextareaAutosize
+          ref={ref}
+          spellCheck='false'
+          id='editor-gap-text-textarea'
+          autoComplete='false'
+          minRows={5}
+          style={{ border: "none", padding: 0, borderRadius: 0, outline: "none" }}
+          placeholder='Add a gap by surrounding the correct match with square brackets like [this]. Separate multiple correct answers by a semicolon like this: This is [easy; hard]'
+          value={tempText}
+          required
+          onChange={handleChange}
+        />
+        <p
+          style={{
+            borderTop: "1px solid var(--custom-border-color-lighter)",
+            color: "gray",
+            fontSize: "16px",
+            padding: "6px 0",
+          }}
+        >
+          Create a new gap by clicking the add button above or wrap a word in square brackets like this: [correct; true]
+        </p>
+      </>
     );
   }
 );
