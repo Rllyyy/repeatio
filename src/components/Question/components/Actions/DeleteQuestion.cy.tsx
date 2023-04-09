@@ -105,7 +105,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -138,7 +138,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -171,7 +171,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -204,7 +204,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -234,7 +234,7 @@ describe("Delete a Question", () => {
     //Setup localStorage
     const localStorageItem = {
       id: "cypress_1",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       type: "marked",
       questions: ["qID-1"],
     };

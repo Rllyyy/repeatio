@@ -61,7 +61,7 @@ describe("Creating a module", () => {
         expect(localStorageItem?.name).to.equal("Module created with cypress");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.4.0");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
         expect(localStorageItem?.questions).to.have.length(0);
       });
 
@@ -222,7 +222,7 @@ describe("Creating a module", () => {
         expect(localStorageItem?.name).to.equal("Module created with cypress");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.4.0");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
         expect(localStorageItem?.questions).to.have.length(0);
       });
   });

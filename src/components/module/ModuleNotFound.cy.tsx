@@ -35,7 +35,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "Z Module",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -50,7 +50,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "B Module",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 

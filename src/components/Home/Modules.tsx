@@ -1,5 +1,6 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
+import { AnimatePresence } from "framer-motion";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
@@ -28,8 +29,8 @@ export const Modules = () => {
 
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
+  //TODO remove ts-ignore at AnimatePresence when upgrading to react 18
 
-  //const MemoedIcon = useMemo(() => <ProgressPie progress={55} />, []);
   if (loading) {
     return <Spinner />;
   }
@@ -37,27 +38,34 @@ export const Modules = () => {
   //Return grid of modules and "add module" card when the component has loaded
   return (
     <GridCards>
-      {modules?.map((module) => {
-        const { id, name, questions } = module;
-        return (
-          <Card
-            key={id}
-            data-cy={`module-${id}`}
-            type='module'
-            title={`${name} (${id})`}
-            description={`${questions?.length} Questions`}
-            icon={<ProgressPie progress={55} />}
-          >
-            <LinkElement
-              key={`card-link-${id}`}
-              linkTo={{ pathname: `/module/${id}`, state: { name } }}
-              linkAriaLabel={`View ${name}`}
-              linkText='View'
-            />
-            <PopoverButton handleClick={handlePopoverButtonClick} target={id} />
-          </Card>
-        );
-      })}
+      {/* @ts-ignore */}
+      <AnimatePresence initial={false}>
+        {modules?.map((module) => {
+          const { id, name, questions } = module;
+          return (
+            <Card
+              key={id}
+              data-cy={`module-${id}`}
+              type='module'
+              title={`${name} (${id})`}
+              description={`${questions?.length} Questions`}
+              icon={<ProgressPie progress={55} />}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+            >
+              <LinkElement
+                key={`card-link-${id}`}
+                linkTo={{ pathname: `/module/${id}`, state: { name } }}
+                linkAriaLabel={`View ${name}`}
+                linkText='View'
+              />
+              <PopoverButton handleClick={handlePopoverButtonClick} target={id} />
+            </Card>
+          );
+        })}
+      </AnimatePresence>
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
         <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />

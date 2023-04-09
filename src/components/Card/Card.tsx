@@ -1,5 +1,6 @@
 import { Link, LinkProps } from "react-router-dom";
-import { memo } from "react";
+import { memo, ReactNode } from "react";
+import { motion, MotionProps } from "framer-motion";
 
 //css
 import "./Card.css";
@@ -8,18 +9,19 @@ import "./Card.css";
 import { IoIosArrowForward } from "react-icons/io";
 
 /* ----------------------------------------- CARD -------------------------------------------- */
-interface ICard extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> {
+interface ICard extends MotionProps {
   type: "module-card" | "module";
   disabled?: boolean;
   title: string;
   description?: string;
   icon: JSX.Element;
+  children: ReactNode;
 }
 
 //Card Component
 export const Card = memo(({ type, disabled, title, description, icon, children, ...props }: ICard) => {
   return (
-    <article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
+    <motion.article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
       <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
         <h2 className='card-title'>{title}</h2>
         <p className='card-description'>{description}</p>
@@ -28,7 +30,7 @@ export const Card = memo(({ type, disabled, title, description, icon, children, 
         {icon}
       </div>
       <div className='card-bottom'>{children}</div>
-    </article>
+    </motion.article>
   );
 });
 

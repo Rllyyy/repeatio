@@ -167,7 +167,7 @@ describe("Updating a question using the Question editor", () => {
     const newBookmarkLocalStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-1", "qID-6"],
     };
 

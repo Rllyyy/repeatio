@@ -84,7 +84,7 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     const bookmarkedFile = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["invalid-id", "qID-1", "also-invalid"],
     };
 
@@ -344,7 +344,7 @@ describe("Transform from Bookmark to v0.4 Test", () => {
 
       expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
       expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
-      expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.4.0");
+      expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.5.0");
       expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
     });
   });
@@ -360,7 +360,7 @@ export function buildBookmarkFile(moduleID: "cypress_1" | (string & {}), questio
   const fileContent = {
     id: moduleID,
     type: "marked",
-    compatibility: "0.4.0",
+    compatibility: "0.5.0",
     questions: questions,
   };
 

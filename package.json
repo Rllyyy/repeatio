@@ -1,6 +1,6 @@
 {
   "name": "repeatio",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Learn, repeat and memorize tasks with repeatio.",
   "author": "Niklas Fischer",
   "private": true,
@@ -30,6 +30,7 @@
     "electron-devtools-installer": "^3.2.0",
     "electron-is-dev": "^2.0.0",
     "file-saver": "^2.0.5",
+    "framer-motion": "6.2.4",
     "is-electron": "^2.2.2",
     "lodash": "^4.17.21",
     "react": "^17.0.2",

@@ -74,7 +74,7 @@ describe("Bookmark a Question", () => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.eq("types_1");
         expect(bookmarkedItem?.type).to.equal("marked");
-        expect(bookmarkedItem?.compatibility).to.eq("0.4.0");
+        expect(bookmarkedItem?.compatibility).to.eq("0.5.0");
         expect(bookmarkedItem?.questions).to.include("qID-1");
       });
   });
@@ -96,7 +96,7 @@ describe("Bookmark a Question", () => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.equal("types_1");
         expect(bookmarkedItem?.type).to.equal("marked");
-        expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
+        expect(bookmarkedItem?.compatibility).to.equal("0.5.0");
         expect(bookmarkedItem?.questions).to.deep.equal(["qID-1", "qID-3", "qID-2"]);
       });
 
@@ -120,7 +120,7 @@ describe("Bookmark a Question", () => {
         const bookmarkedItem = getBookmarkedLocalStorageItem("types_1");
         expect(bookmarkedItem?.id).to.equal("types_1");
         expect(bookmarkedItem?.type).to.equal("marked");
-        expect(bookmarkedItem?.compatibility).to.equal("0.4.0");
+        expect(bookmarkedItem?.compatibility).to.equal("0.5.0");
         expect(bookmarkedItem?.questions).not.to.include("qID-1");
       });
 
@@ -148,7 +148,7 @@ describe("Bookmark a Question", () => {
     //Setup localStorage with one item (qID-1)
     localStorage.setItem(
       "repeatio-marked-types_1",
-      JSON.stringify({ id: "types_1", compatibility: "0.4.0", questions: ["qID-1"] })
+      JSON.stringify({ id: "types_1", compatibility: "0.5.0", questions: ["qID-1"] })
     );
 
     //Render just the button, uncomment the below to see the question component (but takes 5x time longer)

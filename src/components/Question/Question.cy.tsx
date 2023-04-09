@@ -41,7 +41,7 @@ describe("Question Component", () => {
       name: "Cypress Fixture Module",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [
         {
           id: "qID-1",
