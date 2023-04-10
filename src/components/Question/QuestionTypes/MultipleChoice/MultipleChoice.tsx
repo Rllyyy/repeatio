@@ -22,6 +22,7 @@ import "./MultipleChoice.css";
 
 // Import functions
 import { shuffleArray } from "../../../../utils/shuffleArray";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Import interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
@@ -98,6 +99,8 @@ export const MultipleChoice = forwardRef<IForwardRefFunctions, MultipleChoiceCom
                 return (
                   <li className='correction-multipleChoice-list-item' key={item.id}>
                     <ReactMarkdown
+                      linkTarget='_blank'
+                      transformLinkUri={normalizeLinkUri}
                       children={item.text}
                       rehypePlugins={[rehypeRaw, rehypeKatex]}
                       remarkPlugins={[remarkGfm, remarkMath]}
@@ -156,6 +159,8 @@ export const MultipleChoice = forwardRef<IForwardRefFunctions, MultipleChoiceCom
                         children={option.text}
                         rehypePlugins={[rehypeRaw, rehypeKatex]}
                         remarkPlugins={[remarkGfm, remarkMath]}
+                        linkTarget='_blank'
+                        transformLinkUri={normalizeLinkUri}
                       />
                     </Typography>
                   }

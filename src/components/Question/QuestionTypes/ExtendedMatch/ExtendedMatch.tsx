@@ -27,6 +27,7 @@ import "./ExtendedMatch.css";
 //Import functions
 import { isEqual } from "lodash";
 import { shuffleArray } from "../../../../utils/shuffleArray";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
@@ -317,9 +318,11 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
+                  children={text}
+                  linkTarget='_blank'
+                  transformLinkUri={normalizeLinkUri}
                   rehypePlugins={[rehypeRaw, rehypeKatex]}
                   remarkPlugins={[remarkGfm, remarkMath]}
-                  children={text}
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
@@ -342,9 +345,11 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
+                  children={text}
+                  linkTarget='_blank'
+                  transformLinkUri={normalizeLinkUri}
                   rehypePlugins={[rehypeRaw, rehypeKatex]}
                   remarkPlugins={[remarkGfm, remarkMath]}
-                  children={text}
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${

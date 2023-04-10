@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect, useContext, memo, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 
+//Functions
+import { normalizeLinkUri } from "../../utils/normalizeLinkUri";
+
 //Markdown related
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -227,15 +230,17 @@ interface IQuestionTitle {
   title: IQuestion["title"];
 }
 //Title of the question
-const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
+export const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
   if (!title) return <></>;
 
   return (
     <ReactMarkdown
       className='question-title'
+      children={title}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
       rehypePlugins={[rehypeRaw, rehypeKatex]}
       remarkPlugins={[remarkMath, remarkGfm]}
-      children={title}
     />
   );
 };
@@ -261,9 +266,11 @@ const QuestionTypeHelp: React.FC<IQuestionTypeHelp> = ({ help }) => {
   return (
     <ReactMarkdown
       className='question-type-help'
+      children={help}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
       rehypePlugins={[rehypeRaw, rehypeKatex]}
       remarkPlugins={[remarkMath, remarkGfm]}
-      children={help}
     />
   );
 };

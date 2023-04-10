@@ -1,6 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 import DOMPurify from "dompurify";
 import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 //React Markdown
 import ReactMarkdown from "react-markdown";
@@ -27,7 +28,13 @@ export const AnswerCorrection = ({
     //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
     //remarkGfm draws markdown tables
     const htmlString = ReactDOMServer.renderToString(
-      <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
+      <ReactMarkdown
+        children={text}
+        linkTarget='_blank'
+        transformLinkUri={normalizeLinkUri}
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+      />
     );
 
     //Split the html notes where the input should be inserted

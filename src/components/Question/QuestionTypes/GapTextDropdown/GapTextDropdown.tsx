@@ -21,6 +21,7 @@ import { ReturnOptions } from "./ReturnOptions";
 
 // Functions
 import { shuffleArray } from "../../../../utils/shuffleArray";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Import Interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
@@ -202,7 +203,13 @@ export function textWithBlanks(
   //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
   //remarkGfm draws markdown tables
   const htmlString = ReactDOMServer.renderToString(
-    <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
+    <ReactMarkdown
+      children={text}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      remarkPlugins={[remarkGfm, remarkMath]}
+    />
   );
 
   //Split the html notes where the input should be inserted

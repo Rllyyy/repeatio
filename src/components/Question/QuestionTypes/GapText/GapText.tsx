@@ -1,6 +1,9 @@
 import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect, useMemo } from "react";
 import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
+import DOMPurify from "dompurify";
+import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // React markdown related imports
 import ReactMarkdown from "react-markdown";
@@ -18,8 +21,6 @@ import { AnswerCorrection } from "./AnswerCorrection";
 
 // Interfaces/Types
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
-import DOMPurify from "dompurify";
-import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
 
 // Define Interfaces
 export interface IGapText {
@@ -177,7 +178,13 @@ function textWithBlanks(text: string): string {
   //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
   //remarkGfm draws markdown tables
   const htmlString = ReactDOMServer.renderToString(
-    <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
+    <ReactMarkdown
+      children={text}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      remarkPlugins={[remarkGfm, remarkMath]}
+    />
   );
 
   //Split the html notes where the input should be inserted

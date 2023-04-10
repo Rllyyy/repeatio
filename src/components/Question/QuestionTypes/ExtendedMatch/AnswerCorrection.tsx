@@ -1,5 +1,5 @@
-////@ts-nocheck
 import { useState, useEffect, useRef, createRef, RefObject } from "react";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 //Markdown
 import ReactMarkdown from "react-markdown";
@@ -75,6 +75,8 @@ export const AnswerCorrection = ({
               <ReactMarkdown
                 className='ext-match-element-text'
                 children={text}
+                linkTarget='_blank'
+                transformLinkUri={normalizeLinkUri}
                 rehypePlugins={[rehypeRaw, rehypeKatex]}
                 remarkPlugins={[remarkGfm, remarkMath]}
               />
@@ -96,6 +98,8 @@ export const AnswerCorrection = ({
               <ReactMarkdown
                 className='ext-match-element-text'
                 children={text}
+                linkTarget='_blank'
+                transformLinkUri={normalizeLinkUri}
                 rehypePlugins={[rehypeRaw, rehypeKatex]}
                 remarkPlugins={[remarkMath]}
               />
