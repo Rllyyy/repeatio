@@ -16,15 +16,24 @@ import { BiTrash } from "react-icons/bi";
 //Functions
 import { saveFile } from "../../utils/saveFile";
 import { parseJSON } from "../../utils/parseJSON";
-import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "./helpers";
+import {
+  addExampleModuleToLocalStorage,
+  getLocalStorageModules,
+  isExampleModuleAdded,
+  sortLocalStorageModules,
+} from "./helpers";
 
 //Interfaces and Types
 import { IModule } from "../module/module";
 import { TSettings } from "../../utils/types";
+import { TModuleSortOption } from "./ModuleSortButton";
 
+interface IModules {
+  sort: TModuleSortOption;
+}
 //Component
-export const Modules = () => {
-  const { modules, loading } = useAllModules();
+export const Modules: React.FC<IModules> = ({ sort }) => {
+  const { modules, loading } = useAllModules(sort);
   const { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose } = useHomePopover();
 
   //Display loading spinner while component loads
@@ -75,7 +84,7 @@ export const Modules = () => {
 };
 
 // Return the whole localStorage
-const useAllModules = () => {
+const useAllModules = (sort: TModuleSortOption) => {
   const [loading, setLoading] = useState(true);
   const [modules, setModules] = useState<IModule[]>([]);
 
@@ -91,29 +100,14 @@ const useAllModules = () => {
     }
 
     //Setup variables for the module
-    let localStorageModules: IModule[] = [];
+    const localStorageModules: IModule[] = getLocalStorageModules();
 
-    Object.entries(localStorage).forEach((key) => {
-      if (key[0].startsWith("repeatio-module")) {
-        //Get item, transform to object, on error add to moduleErrors array
-        try {
-          const module = localStorage.getItem(key[0]);
-          const moduleJSON = parseJSON<IModule>(module);
-          if (moduleJSON !== undefined && moduleJSON !== null) {
-            localStorageModules.push(moduleJSON);
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            toast.warn(`${key[0]}: ${error.message}`);
-          }
-        }
-      }
-    });
+    const sortedLocalStorageModules = sortLocalStorageModules(localStorageModules, sort);
 
     //Update states
-    setModules(localStorageModules);
+    setModules(sortedLocalStorageModules);
     setLoading(false);
-  }, []);
+  }, [sort]);
 
   //Refetch the modules if the localeStorage changes
   const onStorageChange = useCallback(() => {

@@ -9,18 +9,21 @@
 
   line-height: 1;
   text-align: center;
+  white-space: nowrap;
 
   background-color: var(--custom-prime-color);
   color: whitesmoke;
   cursor: pointer;
 
-  margin-left: 5px;
-  padding: 10px 0;
-
-  width: 100%;
-  max-width: 118px;
+  padding: 10px 6px;
 
   border-radius: 5px;
+}
+
+.add-module-btn:focus-visible {
+  outline: 2px solid var(--custom-prime-color-dark);
+  outline-offset: 4px;
+  background-color: var(--custom-prime-color-dark);
 }
 
 .add-module-btn p {
@@ -53,12 +56,6 @@
   border-radius: 5px;
   cursor: pointer;
 }
-
-/* .import-create-module h2 {
-  text-align: start;
-  width: 100%;
-  margin-bottom: 0.5rem;
-} */
 
 .import-module {
   display: flex;

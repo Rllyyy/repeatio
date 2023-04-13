@@ -24,6 +24,147 @@ const MockModulesWithRouter = () => {
 };
 
 describe("Modules (Home) component", () => {
+  it("should default select the sort by name (ascending)", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("Name (ascending)").should("exist").and("be.selected");
+  });
+
+  it("should change the selected sort on click", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("ID (ascending)").click();
+
+    cy.contains("button", "Sort").click();
+    cy.contains("ID (ascending)").should("be.selected");
+  });
+
+  it("should default sort the modules by name ascending", () => {
+    // Add Modules to localStorage
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text_dropdown.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+    // get order of all items
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", [
+        "module-cypress_1",
+        "module-types_1",
+        "module-gap_text_dropdown",
+        "module-gap_text",
+        "module-multiple_choice",
+        "module-multiple_response",
+      ]);
+  });
+
+  it("should show the modules in reverse order of name on sort Name (descending) click", () => {
+    // Add Modules to localStorage
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text_dropdown.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("Name (descending)").click();
+
+    // get order of all items
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", [
+        "module-multiple_response",
+        "module-multiple_choice",
+        "module-gap_text",
+        "module-gap_text_dropdown",
+        "module-types_1",
+        "module-cypress_1",
+      ]); //
+  });
+
+  it("should sort the modules by id ascending on select click", () => {
+    // Add Modules to localStorage
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text_dropdown.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("ID (ascending)").click();
+
+    //cy.wait(200);
+
+    // get order of all items
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", [
+        "module-cypress_1",
+        "module-gap_text",
+        "module-gap_text_dropdown",
+        "module-multiple_choice",
+        "module-multiple_response",
+        "module-types_1",
+      ]);
+  });
+
+  it("should sort the modules by id descending on select click", () => {
+    // Add Modules to localStorage
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text_dropdown.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("ID (descending)").click();
+
+    // get order of all items
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", [
+        "module-types_1",
+        "module-multiple_response",
+        "module-multiple_choice",
+        "module-gap_text_dropdown",
+        "module-gap_text",
+        "module-cypress_1",
+      ]);
+  });
+
+  it("should sort a added module ", () => {
+    cy.viewport(800, 700);
+
+    // Add Modules to localStorage
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Add Module").click();
+    cy.contains("label", "Create Module").click();
+
+    cy.get("input[name='id']").type("Y");
+    cy.get("input[name='name']").type("Y");
+
+    cy.get("select[name=lang]").select("en");
+    cy.contains("button", "Create").click();
+
+    // Assert that the new module was added to the end
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", ["module-cypress_1", "module-types_1", "module-Y"]);
+  });
+
   it("should show modal if clicking on the 'Add Module' button", () => {
     cy.viewport(500, 500);
     cy.mount(<MockModulesWithRouter />);

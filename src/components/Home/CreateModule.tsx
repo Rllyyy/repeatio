@@ -136,7 +136,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
         <select
           id='create-module-language-select'
           {...register("lang", {
-            required: "Select a language for the module..",
+            required: "Select a language for the module.",
           })}
           className={`${errors.lang ? "is-invalid" : ""}`}
         >
