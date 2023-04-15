@@ -262,6 +262,7 @@ export const useQuestion = () => {
     return () => {
       setQuestion({} as IQuestion);
       setLoading(true);
+      setShowAnswer(false);
     };
   }, [params.questionID, fetchAndSetQuestions]);
 
