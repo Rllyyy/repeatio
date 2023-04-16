@@ -152,11 +152,9 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
           const { id, value } = selected;
           //find corresponding correct item
           const provided = options.dropdowns?.find((dropdown) => dropdown.id === id);
-          if (value === provided?.correct) {
-            return true;
-          } else {
-            return false;
-          }
+
+          // Return true if the value matches correct value
+          return value === provided?.correct;
         });
       },
 

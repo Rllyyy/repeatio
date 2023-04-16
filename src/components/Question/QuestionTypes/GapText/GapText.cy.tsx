@@ -433,6 +433,15 @@ describe("Gap Text component inside Question component", () => {
       cy.contains("Yes, that's correct!");
     });
 
+    it("should show the answer as correct if there is no gap", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-11' />);
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Assert that the answer is correct
+      cy.get("section.question-correction.answer-correct").should("exist");
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
     it("should show question correction after submit even if answer was correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
 

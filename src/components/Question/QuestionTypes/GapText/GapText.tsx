@@ -145,7 +145,7 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         return (
           options.correctGapValues?.every((gapArray: string[], index: number) =>
             gapArray?.includes(trimmedInputValues[index])
-          ) || false
+          ) ?? true
         );
       },
 

@@ -163,6 +163,16 @@
           ]
         ]
       }
+    },
+    {
+      "id": "gt-11",
+      "title": "This is the title of the eleventh question with no correct gaps",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This text has no gap"
+      }
     }
   ]
 }

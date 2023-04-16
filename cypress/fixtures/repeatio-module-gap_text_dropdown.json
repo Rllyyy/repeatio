@@ -77,6 +77,14 @@
           }
         ]
       }
+    },
+    {
+      "id": "gtd-4",
+      "title": "This is the title of the forth question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This dropdown has options"
+      }
     }
   ]
 }
