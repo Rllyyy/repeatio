@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
-import packageJSON from "../../../package.json";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
@@ -85,27 +84,6 @@ export const Module = () => {
       setModuleName("");
     };
   }, [moduleID, location.state?.name]);
-
-  //TODO remove this with v0.5
-  useEffect(() => {
-    const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
-
-    if (Array.isArray(bookmarkedLocalStorageItem) && !bookmarkedLocalStorageItem?.compatibility) {
-      localStorage.setItem(
-        `repeatio-marked-${moduleID}`,
-        JSON.stringify({
-          id: moduleID,
-          type: "marked",
-          compatibility: packageJSON.version,
-          questions: bookmarkedLocalStorageItem,
-        })
-      );
-    }
-
-    return () => {
-      //second
-    };
-  }, [moduleID]);
 
   /*EVENTS*/
   //Train with all questions in chronological order starting at the first question

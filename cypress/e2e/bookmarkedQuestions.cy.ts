@@ -326,30 +326,6 @@ describe("Test deletion of bookmarked Questions", () => {
   });
 });
 
-/* ----------------------------------------- v0.4 Transform ------------------------------------ */
-//TODO remove this when developing v0.5
-describe("Transform from Bookmark to v0.4 Test", () => {
-  it("should replace v0.3 bookmark file structure with new v0.4 in localStorage onMount", () => {
-    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
-    localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(["qID-1", "qID-3"]));
-
-    // Assert that the old bookmarked item was added to the localStorage
-    cy.get("body").should(() => {
-      const bookmarkedItemsOldFileStructure = parseJSON<string[]>(localStorage.getItem("repeatio-marked-cypress_1"));
-      expect(bookmarkedItemsOldFileStructure).to.deep.equal(["qID-1", "qID-3"]);
-    });
-
-    cy.visit("module/cypress_1").should(() => {
-      const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
-
-      expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
-      expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
-      expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.5.0");
-      expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
-    });
-  });
-});
-
 /* --------------------------------------------- HELPERS ---------------------------------------- */
 /**
  * Build and return a bookmark JSON file
