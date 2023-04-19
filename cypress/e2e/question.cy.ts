@@ -145,6 +145,86 @@ describe("Question", () => {
         cy.wrap($inputTextItem).should("be.enabled").and("not.have.value");
       });
   });
+
+  /* Navigation */
+  it("should update the url when clicking the next button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Check Question']").click();
+    cy.get("button[aria-label='Next Question'").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-2?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-2").should("exist");
+  });
+
+  it("should navigate to previous question url when clicking the previous question button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-2?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Navigate to previous Question']").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-1").should("exist");
+  });
+
+  it("should navigate to first question when clicking the to first question button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-4?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Navigate to first Question']").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-1").should("exist");
+  });
+
+  it("should navigate to last question when clicking the to last question button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-2?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Navigate to last Question']").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-6?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-6").should("exist");
+  });
+
+  it("should navigate to the last question if clicking previous on first question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Navigate to previous Question']").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-6?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-6").should("exist");
+  });
+
+  it("should navigate to the first question if clicking next on last question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-6?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    // Assert that the url changed
+    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    // Assert that the new question loaded
+    cy.contains("ID: qID-1").should("exist");
+  });
 });
 
 describe("Question edit", () => {

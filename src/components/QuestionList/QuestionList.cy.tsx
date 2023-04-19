@@ -3,7 +3,7 @@ import { QuestionList } from "./QuestionList";
 import { QuestionIdsProvider } from "../module/questionIdsContext";
 
 // Router
-import { Route, MemoryRouter } from "react-router-dom";
+import { Route, MemoryRouter, Routes } from "react-router-dom";
 
 import "../../index.css";
 
@@ -19,9 +19,16 @@ function QuestionListWithRouter({ moduleID }: Required<Pick<IParams, "moduleID">
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/all-questions`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/all-questions' component={QuestionList} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/all-questions'
+            element={
+              <QuestionIdsProvider>
+                <QuestionList />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
     </MemoryRouter>
   );

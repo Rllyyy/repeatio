@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
-import { useHistory, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
@@ -52,23 +52,23 @@ interface LocationState {
 //Component
 export const Module = () => {
   //Access state of link
-  const location = useLocation<LocationState>();
+  const location = useLocation();
+  const locationState = location.state as LocationState;
 
   //useState
-  //const [module, setModule] = useState<IModule | {}>({});
-  const [moduleName, setModuleName] = useState(location.state?.name);
+  const [moduleName, setModuleName] = useState(locationState?.name);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  //History
-  let history = useHistory();
+  //Navigate (previously history)
+  let navigate = useNavigate();
 
   //Params
   const { moduleID } = useParams<{ moduleID: string }>();
 
   /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the the home modules. */
   useEffect(() => {
-    if (!location.state?.name) {
+    if (!locationState?.name) {
       // fetch from localStorage
       const moduleNameFromStorage = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.name;
 
@@ -83,7 +83,7 @@ export const Module = () => {
     return () => {
       setModuleName("");
     };
-  }, [moduleID, location.state?.name]);
+  }, [moduleID, locationState?.name]);
 
   /*EVENTS*/
   //Train with all questions in chronological order starting at the first question
@@ -92,7 +92,7 @@ export const Module = () => {
 
     // Navigate to first question if there are questions in the module else show warning
     if (questions !== undefined && questions.length >= 1) {
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${questions[0].id}`,
         search: "?mode=practice&order=chronological",
       });
@@ -110,7 +110,7 @@ export const Module = () => {
       const shuffledQuestions = shuffleArray([...questions]);
 
       //setFilteredQuestions(shuffledQuestions);
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
         search: "?mode=practice&order=random",
       });
@@ -232,8 +232,8 @@ export const Module = () => {
 const BookmarkedQuestionsBottom = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  //History
-  let history = useHistory();
+  //Navigate (previously history)
+  let navigate = useNavigate();
 
   //Params
   const { moduleID } = useParams<IParams>();
@@ -411,7 +411,7 @@ const BookmarkedQuestionsBottom = () => {
 
     if (validId) {
       //Navigate to question component
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${validId}`,
         search: "?mode=bookmarked&order=chronological",
       });

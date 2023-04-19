@@ -38,13 +38,14 @@ export const Card = memo(({ type, disabled, title, description, icon, children, 
 //!This extend might be false
 interface ILinkElement extends React.RefAttributes<HTMLAnchorElement> {
   linkTo: LinkProps["to"];
+  linkState?: LinkProps["state"];
   linkAriaLabel: string;
   linkText: string;
 }
 
 //!URL might not work with special characters (äöß/#....)
 //Link Element Component
-export const LinkElement: React.FC<ILinkElement> = ({ linkTo, linkAriaLabel, linkText, ...props }) => {
+export const LinkElement: React.FC<ILinkElement> = ({ linkTo, linkAriaLabel, linkText, linkState, ...props }) => {
   return (
     <Link className='card-link' to={linkTo} role='button' aria-label={linkAriaLabel} {...props}>
       <span>{linkText}</span>

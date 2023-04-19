@@ -3,7 +3,7 @@
 import { MultipleResponse } from "./MultipleResponse";
 import { Question } from "../../Question";
 
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 
 import "../../../../index.css";
@@ -109,9 +109,16 @@ const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) =
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
     </MemoryRouter>
   );

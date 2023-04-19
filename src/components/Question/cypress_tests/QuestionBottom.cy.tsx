@@ -1,5 +1,5 @@
-import { IQuestionBottom, Question, QuestionBottom } from "../Question";
-import { MemoryRouter, Route } from "react-router-dom";
+import { Question, QuestionBottom } from "../Question";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { IParams, ISearchParams } from "../../../utils/types";
 import { QuestionIdsProvider } from "../../module/questionIdsContext";
 
@@ -9,19 +9,24 @@ import { CustomToastContainer } from "../../toast/toast";
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 
-interface IRenderComponentWithRouter extends Required<IParams> {
-  component: React.FC<IQuestionBottom>;
+interface IRenderComponentWithRouter {
+  component: JSX.Element;
   order: NonNullable<ISearchParams["order"]>;
   mode: NonNullable<ISearchParams["mode"]>;
+  moduleID: Required<IParams["moduleID"]>;
+  questionID: Required<IParams["questionID"]>;
 }
 
 const RenderComponentWithRouter = ({ component, moduleID, questionID, mode, order }: IRenderComponentWithRouter) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main style={{ marginTop: 0, padding: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={component} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={<QuestionIdsProvider>{component}</QuestionIdsProvider>}
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>
@@ -37,7 +42,16 @@ describe("Question Bottom Component", () => {
   it("should render QuestionBottom component", () => {
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -54,7 +68,7 @@ describe("Question Bottom Component", () => {
 
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         moduleID='invalid'
         questionID='invalid'
         order='chronological'
@@ -71,7 +85,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(800, 720);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -90,7 +113,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(900, 720);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -109,7 +141,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(900, 720);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -129,7 +170,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(500, 500);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -144,7 +194,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(900, 720);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -158,7 +217,16 @@ describe("Question Bottom Component", () => {
     cy.viewport(500, 500);
     cy.mount(
       <RenderComponentWithRouter
-        component={QuestionBottom}
+        component={
+          <QuestionBottom
+            disabled={false}
+            handleResetQuestionComponent={() => {}}
+            fetchQuestion={() => {}}
+            handleResetRetryQuestion={() => {}}
+            question={undefined}
+            showAnswer={false}
+          />
+        }
         moduleID='cypress_1'
         questionID='qID-1'
         order='chronological'
@@ -182,7 +250,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'
@@ -211,7 +279,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'
@@ -234,7 +302,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'
@@ -266,7 +334,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'
@@ -287,7 +355,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'
@@ -312,7 +380,7 @@ describe("Question Bottom Component", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
-        component={Question}
+        component={<Question />}
         mode='practice'
         moduleID='cypress_1'
         order='chronological'

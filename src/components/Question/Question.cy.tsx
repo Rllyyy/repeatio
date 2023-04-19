@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { IParams, ISearchParams } from "../../utils/types";
 import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
@@ -24,9 +24,16 @@ const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, q
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>

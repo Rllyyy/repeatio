@@ -1,4 +1,4 @@
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { IParams } from "../../../../utils/types";
 
 //css
@@ -7,20 +7,20 @@ import "./QuestionNotFound.css";
 //Component
 export const QuestionNotFound = () => {
   const params = useParams<IParams>();
-  let history = useHistory();
+  let navigate = useNavigate();
 
   //Go back in history
   const handleNavigateToPreviousUrl = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   //
   const handleNavigateToModuleHome = () => {
-    history.push(`/module/${params.moduleID}`);
+    navigate(`/module/${params.moduleID}`);
   };
 
   const handleNavigateToViewAllQuestions = () => {
-    history.push(`/module/${params.moduleID}/all-questions`);
+    navigate(`/module/${params.moduleID}/all-questions`);
   };
 
   return (

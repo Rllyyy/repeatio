@@ -1,7 +1,7 @@
 //Import React
 import { StrictMode } from "react";
 import ReactDOM from "react-dom";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Router } from "./components/Router/Router";
 
 //Import Css
@@ -43,21 +43,26 @@ ReactDOM.render(
       <Sidebar />
       <ScrollToTop />
       <main>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/tutorials' component={TutorialsPage} />
-          <Route exact path='/contribute' component={ContributePage} />
-          <Route exact path='/thanks' component={ThanksPage} />
-          <Route exact path='/news' component={NewsPage} />
-          <Route exact path='/settings' component={SettingsPage} />
-          <Route exact path='/legal-notice' component={LegalNoticePage} />
-          <Route exact path='/privacy' component={PrivacyPage} />
-          <Route exact path='/module/:moduleID' component={ModulePage} />
-          <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
-          <QuestionIdsProvider>
-            <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
-          </QuestionIdsProvider>
-        </Switch>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/tutorials' element={<TutorialsPage />} />
+          <Route path='/contribute' element={<ContributePage />} />
+          <Route path='/thanks' element={<ThanksPage />} />
+          <Route path='/news' element={<NewsPage />} />
+          <Route path='/settings' element={<SettingsPage />} />
+          <Route path='/legal-notice' element={<LegalNoticePage />} />
+          <Route path='/privacy' element={<PrivacyPage />} />
+          <Route path='/module/:moduleID' element={<ModulePage />} />
+          <Route path='/module/:moduleID/all-questions' element={<AllQuestionsPage />} />
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <QuestionPage />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <Footer />
       <CustomToastContainer />

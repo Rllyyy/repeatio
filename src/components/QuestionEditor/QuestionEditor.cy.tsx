@@ -1,8 +1,7 @@
 /// <reference types="cypress" />
 
 import { Form } from "./QuestionEditor";
-import { MemoryRouter, Route, Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
 
@@ -18,18 +17,22 @@ declare const expect: Chai.ExpectStatic;
 
 //Mock Component with Router and Context
 const MockFormWithRouter = () => {
-  const history = createMemoryHistory();
-  const route = "/module/test";
-  history.push(route);
-
   const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+
   return (
-    <Router history={history}>
-      <QuestionIdsProvider>
-        <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
-        <CustomToastContainer />
-      </QuestionIdsProvider>
-    </Router>
+    <MemoryRouter initialEntries={["/module/test"]}>
+      <Routes>
+        <Route
+          path='/module/test'
+          element={
+            <QuestionIdsProvider>
+              <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
+            </QuestionIdsProvider>
+          }
+        />
+      </Routes>
+      <CustomToastContainer />
+    </MemoryRouter>
   );
 };
 
@@ -41,9 +44,16 @@ const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, q
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>

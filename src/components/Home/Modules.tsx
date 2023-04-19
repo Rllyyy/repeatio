@@ -66,7 +66,8 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
             >
               <LinkElement
                 key={`card-link-${id}`}
-                linkTo={{ pathname: `/module/${id}`, state: { name } }}
+                linkTo={`/module/${id}`}
+                linkState={{ name }}
                 linkAriaLabel={`View ${name}`}
                 linkText='View'
               />

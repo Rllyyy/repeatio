@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -106,8 +106,8 @@ export const Form: React.FC<TEditorModes> = (props) => {
   //Params
   const params = useParams<IParams>();
 
-  //History
-  let history = useHistory();
+  //navigate (previously history)
+  let navigate = useNavigate();
 
   //Location
   const { search } = useLocation();
@@ -267,7 +267,7 @@ export const Form: React.FC<TEditorModes> = (props) => {
         setQuestionIds([...questionIds]);
 
         //Navigate to new path with new id
-        history.push({
+        navigate({
           pathname: `/module/${params.moduleID}/question/${output.id}`,
           search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
             new URLSearchParams(search).get("order") || "chronological"

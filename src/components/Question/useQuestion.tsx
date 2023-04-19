@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 import { parseJSON } from "../../utils/parseJSON";
 import { shuffleArray } from "../../utils/shuffleArray";
@@ -61,8 +61,8 @@ export const useQuestion = () => {
   //params
   const params = useParams<IParams>();
 
-  //History
-  let history = useHistory();
+  //Navigate
+  let navigate = useNavigate();
 
   //Custom hooks
   const { navigateToNextQuestion } = useQuestionNavigation();
@@ -142,7 +142,7 @@ export const useQuestion = () => {
 
       if (order !== "chronological" && order !== "random") {
         console.warn(`${order} is not a valid argument for order! Redirecting to chronological.`);
-        history.push({
+        navigate({
           pathname: `/module/${params.moduleID}/question/${params.questionID}`,
           search: `?mode=${mode}&order=chronological`,
         });
@@ -243,7 +243,7 @@ export const useQuestion = () => {
         default:
           console.warn(`${mode} is not a valid argument for mode! Redirecting to practice.`);
 
-          history.push({
+          navigate({
             pathname: `/module/${params.moduleID}/question/${params.questionID}`,
             search: `?mode=practice&order=${order}`,
           });
@@ -253,7 +253,7 @@ export const useQuestion = () => {
 
     fetchQuestion();
     setLoading(false);
-  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, history, fetchQuestion]);
+  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, navigate, fetchQuestion]);
 
   /* UseEffects */
   useEffect(() => {

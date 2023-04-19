@@ -7,7 +7,7 @@ import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { CustomToastContainer } from "../../../toast/toast";
 
 // Router
-import { Route, MemoryRouter } from "react-router-dom";
+import { Route, MemoryRouter, Routes } from "react-router-dom";
 
 // css
 import "../../../../index.css";
@@ -26,15 +26,20 @@ declare const expect: Chai.ExpectStatic;
 function RenderBookmarkButtonWithRouter({ moduleID, questionID }: IParams) {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
-      <QuestionIdsProvider>
-        <Route path='/module/:moduleID/question/:questionID'>
-          <div className='question-form'>
-            <div className='question-actions-navigation-wrapper'>
-              <BookmarkQuestion moduleID={moduleID} questionID={`${questionID}`} disabled={false} />
-            </div>
-          </div>
-        </Route>
-      </QuestionIdsProvider>
+      <Routes>
+        <Route
+          path='/module/:moduleID/question/:questionID'
+          element={
+            <QuestionIdsProvider>
+              <div className='question-form'>
+                <div className='question-actions-navigation-wrapper'>
+                  <BookmarkQuestion moduleID={moduleID} questionID={`${questionID}`} disabled={false} />
+                </div>
+              </div>
+            </QuestionIdsProvider>
+          }
+        ></Route>
+      </Routes>
     </MemoryRouter>
   );
 }
@@ -44,9 +49,16 @@ const RenderQuestionWithRouter = ({ moduleID, questionID }: IParams) => {
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>

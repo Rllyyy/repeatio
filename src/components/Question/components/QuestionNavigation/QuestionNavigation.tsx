@@ -1,5 +1,5 @@
 import React, { useRef, useContext } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //Context
@@ -141,8 +141,8 @@ export const useQuestionNavigation = () => {
   //params
   const params = useParams<IParams>();
 
-  //History
-  let history = useHistory();
+  //navigate
+  let navigate = useNavigate();
 
   //Location (Search url=?...)
   const { search } = useLocation();
@@ -158,7 +158,7 @@ export const useQuestionNavigation = () => {
     //Only push to history if not already at the first question
     //TODO notify the user that the already is at the beginning
     if (params.questionID !== firstIDInQuestionArray) {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });
@@ -172,12 +172,12 @@ export const useQuestionNavigation = () => {
 
     //Go to next object (url/id) in array if the array length would not be exceded else go to the beginning
     if (currentIndex && currentIndex - 1 >= 0) {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex - 1]}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });
     } else {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[questionIds.length - 1]}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });
@@ -218,12 +218,12 @@ export const useQuestionNavigation = () => {
 
     //Go to next object (url/id) in array if the array length would not be exceeded else go to the beginning
     if (currentIndex + 1 < (questionIds?.length ?? 0)) {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex + 1]}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });
     } else {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[0]}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });
@@ -237,7 +237,7 @@ export const useQuestionNavigation = () => {
     //Only push to history if not already at the last point
     //TODO notify the user that the end was reached
     if (params.questionID !== lastIDInQuestionArray) {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
         search: `?mode=${mode.current}&order=${order.current}`,
       });

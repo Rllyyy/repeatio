@@ -1,8 +1,7 @@
 /// <reference types="cypress" />
 
 import { UserModulesList } from "./ModuleNotFound";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import "../../index.css";
 
@@ -11,16 +10,19 @@ declare var describe: Mocha.SuiteFunction;
 
 //Setup Component with Router
 const MockUserModulesListWithRouter = () => {
-  const history = createMemoryHistory();
-  const route = "/module/test";
-  history.push(route);
-
   return (
-    <Router history={history}>
-      <div className='module-not-found'>
-        <UserModulesList />
-      </div>
-    </Router>
+    <MemoryRouter initialEntries={[`/module/test`]}>
+      <Routes>
+        <Route
+          path='/module/:moduleID'
+          element={
+            <div className='module-not-found'>
+              <UserModulesList />
+            </div>
+          }
+        />
+      </Routes>
+    </MemoryRouter>
   );
 };
 

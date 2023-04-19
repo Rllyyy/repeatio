@@ -1,6 +1,6 @@
 import Home from "../../pages/index";
 import "../../index.css";
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { parseJSON } from "../../utils/parseJSON";
 import { CustomToastContainer } from "../toast/toast";
 
@@ -16,7 +16,9 @@ const MockModulesWithRouter = () => {
   return (
     <MemoryRouter>
       <main style={{ minHeight: "100vh", marginTop: 0 }}>
-        <Route exact path='/' component={Home} />
+        <Routes>
+          <Route path='/' element={<Home />} />
+        </Routes>
         <CustomToastContainer />
       </main>
     </MemoryRouter>
