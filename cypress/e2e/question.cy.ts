@@ -8,7 +8,12 @@ describe("Question", () => {
     cy.visit("/module/cypress_1");
 
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
+
+    // Assert that the first question rendered
     cy.contains("ID: qID-1").should("exist");
+
+    // Assert the correct state of the shuffle button (unchecked)
+    cy.get("button[aria-label='Enable shuffle'").should("exist").and("have.attr", "aria-checked", "false");
 
     // Assert that the url correctly updated
     cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
@@ -19,7 +24,12 @@ describe("Question", () => {
     cy.visit("/module/cypress_1");
 
     cy.get("article[data-cy='Practice']").contains("button", "Random").click();
+
+    // Assert that a question rendered
     cy.get(".question-id").should("exist");
+
+    // Assert the correct state of the shuffle button (unchecked)
+    cy.get("button[aria-label='Disable shuffle'").should("exist").and("have.attr", "aria-checked", "true");
 
     // Assert that the url correctly updated
     cy.url().should("include", "?mode=practice&order=random");
@@ -63,6 +73,16 @@ describe("Question", () => {
 
     // Assert that the url correctly updated
     cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+  });
+
+  it("should keep new params after redirect and navigation ", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-1?mode=invalidValue&order=incorrectValue");
+
+    cy.get("button[aria-label='Navigate to next Question'").click();
+
+    // Assert that the url correctly updated
+    cy.url().should("include", "/module/cypress_1/question/qID-2?mode=practice&order=chronological");
   });
 
   it("should hide the question correction for multiple choice questions if navigating back using the browser", () => {
@@ -262,6 +282,24 @@ describe("Question deletion", () => {
 
     // Assert that the module overview is displayed
     cy.contains("h1", "Cypress Fixture Module (cypress_1)").should("exist");
+  });
+});
+
+describe("Shuffle Questions", { scrollBehavior: false }, () => {
+  it("should change the url to include random on shuffle click", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-1?mode=practice&order=chronological");
+
+    cy.get("button[aria-label='Enable shuffle'").click();
+    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=random");
+  });
+
+  it("should change the url to include chronological on shuffle disable click", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.visit("/module/cypress_1/question/qID-1?mode=practice&order=random");
+
+    cy.get("button[aria-label='Disable shuffle'").click();
+    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
   });
 });
 

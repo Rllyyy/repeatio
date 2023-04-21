@@ -5,7 +5,6 @@ import {
   getBookmarkedQuestionsFromModule,
   IBookmarkedQuestions,
 } from "../../src/components/Question/components/Actions/BookmarkQuestion";
-import { parseJSON } from "../../src/utils/parseJSON";
 
 /* ------------------------------------Bookmark in Module Overview ------------------------------ */
 describe("Test usage of bookmarked Questions in module overview", () => {
@@ -101,6 +100,40 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     cy.get("@consoleWarn").should("be.calledWithMatch", "Couldn't find the following ids: invalid-id, also-invalid");
 
     cy.contains("1/1 Questions").should("exist");
+  });
+
+  it("should redirect to module if all bookmarked questions get unsaved and the practice mode changes", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Start practicing with bookmarked questions
+    cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
+
+    // Remove the bookmarked questions
+    cy.get("button[aria-label='Unsave Question']").click();
+    cy.get("button[aria-label='Navigate to next Question']").click();
+    cy.get("button[aria-label='Unsave Question']").click();
+
+    // Click shuffle button
+    cy.get("button[aria-label='Enable shuffle'").click();
+
+    // Assert the correct redirect to the module overview
+    cy.url().should("match", /.*module\/cypress_1(?![\w\/])/);
+  });
+
+  it("should redirect to a bookmarked question if the question gets unsaved and the user clicks the shuffle button", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Start practicing with bookmarked questions
+    cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
+
+    cy.get("button[aria-label='Unsave Question']").click();
+
+    cy.get("button[aria-label='Enable shuffle'").click();
+
+    cy.contains("ID: qID-3").should("exist");
+    cy.url().should("include", "/module/cypress_1/question/qID-3?mode=bookmarked&order=random");
   });
 });
 

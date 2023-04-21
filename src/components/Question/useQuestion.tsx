@@ -113,9 +113,9 @@ export const useQuestion = () => {
     //Find the correct question in the moduleData context
     const moduleJson = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
 
-    const question = moduleJson?.questions.find((question) => question.id === params.questionID);
+    const questionFromStorage = moduleJson?.questions.find((question) => question.id === params.questionID);
 
-    setQuestion(question);
+    setQuestion(questionFromStorage);
   }, [params.moduleID, params.questionID]);
 
   /* Set context, question and set Module example if needed */
@@ -176,7 +176,6 @@ export const useQuestion = () => {
           }
           break;
         case "bookmarked":
-          // TODO only add to bookmarkedIds if the id exists in BookmarkQuestions
           let bookmarkedIds = parseJSON<IBookmarkedQuestions>(
             localStorage.getItem(`repeatio-marked-${params.moduleID}`)
           )?.questions;
@@ -186,8 +185,25 @@ export const useQuestion = () => {
 
             // Should only happen if the user navigates with the url to ?mode=bookmarked
             if (currentIndex <= -1) {
-              toast.error("The current question is not bookmarked!");
-              return;
+              if (bookmarkedIds.length >= 1 && !!bookmarkedIds[0]) {
+                navigate(
+                  {
+                    pathname: `/module/${params.moduleID}/question/${bookmarkedIds[0]}`,
+                    search: `?mode=bookmarked&order=${order}`,
+                  },
+                  { replace: true }
+                );
+
+                toast.warn(
+                  "The previous question is no longer bookmarked! Redirected to first question in bookmarked questions."
+                );
+                return;
+              } else {
+                //navigate home
+                navigate(`/module/${params.moduleID}`);
+                toast.warn("Question is no longer bookmarked");
+                return;
+              }
             }
 
             // Get an array of all question IDs from the module in local storage
@@ -236,7 +252,8 @@ export const useQuestion = () => {
               console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
             }
           } else {
-            console.warn("Found 0 bookmarked questions");
+            toast.warn("Found 0 bookmarked questions");
+            navigate(`/module/${params.moduleID}`);
           }
 
           break;

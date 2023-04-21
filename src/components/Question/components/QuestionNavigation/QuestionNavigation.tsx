@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from "react";
+import React, { useContext } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -147,8 +147,8 @@ export const useQuestionNavigation = () => {
   //Location (Search url=?...)
   const { search } = useLocation();
 
-  const mode = useRef(new URLSearchParams(search).get("mode") || "practice"); //Fallback to practice if urlSearchParams is undefined
-  const order = useRef(new URLSearchParams(search).get("order") || "chronological"); //Fallback to chronological order if urlSearchParams is undefined
+  const mode = new URLSearchParams(search).get("mode") || "practice"; //Fallback to practice if urlSearchParams is undefined
+  const order = new URLSearchParams(search).get("order") || "chronological"; //Fallback to chronological order if urlSearchParams is undefined
 
   //Navigation
   //Go to first question in module
@@ -160,7 +160,7 @@ export const useQuestionNavigation = () => {
     if (params.questionID !== firstIDInQuestionArray) {
       navigate({
         pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     }
   };
@@ -174,12 +174,12 @@ export const useQuestionNavigation = () => {
     if (currentIndex && currentIndex - 1 >= 0) {
       navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex - 1]}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     } else {
       navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[questionIds.length - 1]}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     }
   };
@@ -220,12 +220,12 @@ export const useQuestionNavigation = () => {
     if (currentIndex + 1 < (questionIds?.length ?? 0)) {
       navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[currentIndex + 1]}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     } else {
       navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[0]}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     }
   };
@@ -239,7 +239,7 @@ export const useQuestionNavigation = () => {
     if (params.questionID !== lastIDInQuestionArray) {
       navigate({
         pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
-        search: `?mode=${mode.current}&order=${order.current}`,
+        search: `?mode=${mode}&order=${order}`,
       });
     }
   };

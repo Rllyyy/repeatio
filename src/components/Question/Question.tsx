@@ -24,6 +24,7 @@ import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavi
 import { DeleteQuestion } from "./components/Actions/DeleteQuestion";
 import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
+import { ShuffleQuestionsButton } from "./components/Actions/ShuffleQuestions";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -197,6 +198,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
             handleResetQuestionComponent={handleResetQuestionComponent}
           />
           <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
+          <ShuffleQuestionsButton moduleID={moduleID} questionID={question?.id} disabled={disabled} />
           <QuestionNavigation handleResetQuestionComponent={handleResetQuestionComponent} />
         </div>
       )}
