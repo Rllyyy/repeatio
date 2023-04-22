@@ -259,7 +259,7 @@ describe("Modules (Home) component", () => {
     cy.get("article.card").should("have.length", 3); //The third module is the example module that gets automatically added on first ever visit
 
     // Assert that the correct amount of questions get counted
-    cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "11 Questions").should("exist");
+    cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "12 Questions").should("exist");
   });
 
   it("should remove a module from the overview if it gets deleted", () => {

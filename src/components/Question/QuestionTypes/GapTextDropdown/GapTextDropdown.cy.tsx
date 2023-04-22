@@ -42,6 +42,32 @@ describe("GapTextDropdown Component", () => {
     cy.contains("This Question is of type").should("exist");
   });
 
+  it("should render text and select in the same line", () => {
+    const options = {
+      text: "This is a []",
+      dropdowns: [
+        {
+          id: "select-0",
+          options: ["Gap", "Square", "Circle"],
+          correct: "Gap",
+        },
+      ],
+    };
+
+    cy.mount(<GapTextDropdown options={options} formDisabled={false} />);
+
+    // Assert that there is just one line
+    cy.get(".question-gap-text-with-dropdown").invoke("height").should("be.lessThan", 45);
+  });
+
+  it("should keep the value of the previous select if selecting a new select", () => {
+    cy.mount(<GapTextDropdown options={defaultMockOptions} formDisabled={false} />);
+
+    cy.get("select#select-0").select("Gap");
+    cy.get("select#select-1").select("Gap Text With Dropdown");
+    cy.get("select#select-0").should("have.value", "Gap");
+  });
+
   it("should render if there is just a gap", () => {
     const options = {
       text: "[]",
@@ -114,6 +140,11 @@ describe("GapTextDropdown Component", () => {
 
     // Assert that 8 option elements are found
     cy.get("option").should("have.length", 8);
+  });
+
+  it("should update the select value onChange", () => {
+    cy.mount(<GapTextDropdown options={defaultMockOptions} formDisabled={false} />);
+    cy.get("select#select-0").select("Gap").should("have.value", "Gap");
   });
 
   it("should handle changeEvent on select element", () => {
@@ -375,6 +406,27 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.contains("Yes, that's correct!").should("exist");
   });
 
+  it("should reset the border to gray after submit if navigating with the question navigation ", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
+
+    // select a value
+    cy.get("select#select-0").select("Gap Text");
+
+    // Submit question
+    cy.get("button[type='submit']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    cy.get("select#select-0").should("have.css", "border", "1px solid rgb(180, 180, 180)");
+  });
+
   context("Question correction on submit", () => {
     it("should show that the answer is correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
@@ -603,6 +655,49 @@ describe("Gap Text with Dropdown component inside Question component", () => {
 
       // Assert that the answer is incorrect
       cy.contains("No, that's false!").should("exist");
+    });
+  });
+
+  context("Markdown and HTML elements", () => {
+    it("should render line break", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-5' />);
+      cy.get(".question-gap-text-with-dropdown").invoke("height").should("be.greaterThan", 60);
+    });
+
+    it("should render list", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-6' />);
+
+      // Assert that the list has three items
+      cy.get(".question-user-response ul").find("li").should("have.length", 3);
+
+      // Assert that the one select rendered as a child a list element
+      cy.get(".question-user-response li").find("select").should("exist");
+
+      // Assert that the correct height
+      cy.get(".question-gap-text-with-dropdown").invoke("height").should("be.lessThan", 180);
+
+      // Assert that the content after the list is a paragraph again
+      cy.contains("p", "Content after the list").should("exist");
+    });
+
+    it("should render table", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-7' />);
+
+      // Assert that the list has three items
+      cy.get(".question-user-response").find("table").should("exist").and("be.visible");
+
+      // Assert that the one select rendered as a child a list element
+      cy.get(".question-user-response td").find("select").should("exist");
+
+      cy.get(".question-gap-text-with-dropdown").invoke("height").should("be.lessThan", 130);
+
+      cy.contains("p", "Content after the table").should("exist");
+
+      // Submit Question
+      cy.get("button[type='submit']").click();
+
+      cy.get(".question-correction").find("table").should("exist").and("be.visible");
+      cy.get(".question-correction").invoke("height").should("be.lessThan", 180);
     });
   });
 });

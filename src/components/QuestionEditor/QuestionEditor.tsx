@@ -29,7 +29,6 @@ import { removeGapContent, extractCorrectGapValues } from "./AnswerOptionsEditor
 import { IParams } from "../../utils/types.js";
 import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/BookmarkQuestion";
 import { IMultipleChoice } from "../Question/QuestionTypes/MultipleChoice/MultipleChoice";
-import { IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IMultipleResponse } from "../Question/QuestionTypes/MultipleResponse/MultipleResponse";
 import { IQuestion, TUseQuestion } from "../Question/useQuestion";
 import { TAnswerOptions } from "../Question/useQuestion";
@@ -412,14 +411,6 @@ function getAnswerOptionsError({
     !(answerOptions as IMultipleResponse[])?.some((option) => option.isCorrect)
   ) {
     return "Check at least one item!";
-  }
-
-  if (
-    type === "gap-text" &&
-    "tempText" in (answerOptions as IGapTextWithTempText) &&
-    (answerOptions as IGapTextWithTempText).tempText?.startsWith("|")
-  ) {
-    return "Can't start with this key! If want to render a table wrap the markdown for the table in <div style='white-space: normal'>(line break) Markdown (line break)</div>.";
   }
 }
 

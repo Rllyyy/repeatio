@@ -898,17 +898,6 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.contains("p", "Add at least one item!");
     });
 
-    it("should show error if input for gap-text starts with '|' and clear error onChange", () => {
-      cy.get("input[name='id']").type("new-id");
-      cy.get("select[name='type']").select("gap-text");
-      cy.get("textarea#editor-gap-text-textarea").type("|");
-      cy.contains("button", "Add").click();
-      cy.contains("Can't start with this key!").should("exist");
-
-      cy.get("textarea#editor-gap-text-textarea").type("new text");
-      cy.contains("Can't start with this key!").should("not.exist");
-    });
-
     it("should show errors for different form elements at the same time", () => {
       cy.get("input[name='id']").type("id-with-#");
       cy.get("select[name='type']").select("multiple-choice");

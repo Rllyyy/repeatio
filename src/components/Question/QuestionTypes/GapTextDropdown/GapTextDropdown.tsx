@@ -1,5 +1,4 @@
 import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect, useMemo } from "react";
-import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
 import DOMPurify from "dompurify";
 import { forbiddenTags, forbiddenAttributes } from "../blockedTagsAttributes";
@@ -17,7 +16,6 @@ import "./GapTextDropdown.css";
 
 // Components
 import { AnswerCorrection } from "./AnswerCorrection";
-import { ReturnOptions } from "./ReturnOptions";
 
 // Functions
 import { shuffleArray } from "../../../../utils/shuffleArray";
@@ -54,72 +52,91 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
     const [selectedValues, setSelectedValues] = useState<ISelectedValue[]>([]);
     const [shuffledDropdownOptions, setShuffledDropdownOptions] = useState<IDropdownElement["options"][]>([]);
 
-    const memoedText = useMemo(() => textWithBlanks(options.text, "question"), [options.text]);
+    const memoedText = useMemo(
+      () => textWithBlanks(options.text, shuffledDropdownOptions),
+      [options.text, shuffledDropdownOptions]
+    );
 
     //Update the selected input
     const handleChange = useCallback(
-      (e: React.ChangeEvent<HTMLSelectElement>) => {
+      (e: unknown) => {
         const newSelectValue = selectedValues.map((selectedValue) => {
-          if (selectedValue.id === e.target.id) {
-            return { ...selectedValue, value: e.target.value };
+          if (selectedValue.id === (e as React.ChangeEvent<HTMLSelectElement>).target.id) {
+            return { ...selectedValue, value: (e as React.ChangeEvent<HTMLSelectElement>).target.value };
           } else {
             return selectedValue;
           }
         });
-        setSelectedValues([...newSelectValue]);
+        setSelectedValues(newSelectValue);
       },
       [selectedValues]
-    );
-
-    // Customize border color when user submits question
-    const customStyle = useCallback(
-      (index: number) => {
-        if (!formDisabled) return;
-
-        if (options.dropdowns?.[index]?.correct === selectedValues[index].value) {
-          return { borderColor: "green" };
-        } else {
-          return { borderColor: "red" };
-        }
-      },
-      [formDisabled, selectedValues, options.dropdowns]
     );
 
     //Inset the select elements at the corresponding select wrapper index,
     //because ReactDOMServer.renderToString ignores onChange handlers
     useLayoutEffect(() => {
       //Has to be selected with query because ReactDOMServer.renderToString ignores refs
-      const selectWrapperLength = document.querySelectorAll(".question-gap-text-with-dropdown .select-wrapper").length;
+      const selectLength = document.querySelectorAll(".question-gap-text-with-dropdown .select").length;
 
       //Guards
       if (
         selectedValues === undefined ||
-        selectWrapperLength === 0 ||
+        selectLength === 0 ||
         selectedValues.length <= 0 ||
-        selectWrapperLength !== selectedValues.length
+        selectLength !== selectedValues.length
       ) {
         return;
       }
 
       //Append a child to the wrapper x amount of times
-      for (let index = 0; index < selectWrapperLength; index++) {
-        //! IDS!!
-        render(
-          <select
-            key={`select-${index}`}
-            id={`select-${index}`}
-            disabled={formDisabled}
-            onChange={handleChange}
-            value={selectedValues[index].value || ""}
-            style={customStyle(index)}
-            data-testid={`select-${index}`}
-          >
-            <ReturnOptions dropdownItems={shuffledDropdownOptions[index]} />
-          </select>,
-          document.getElementById(`select-wrapper-${index}`)
-        );
+      for (let index = 0; index < selectLength; index++) {
+        const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+
+        if (!select) return;
+
+        // setup the value
+        select.setAttribute("value", selectedValues[index].value || "");
+
+        // attach handle Change function
+        select.addEventListener("change", handleChange);
+
+        if (formDisabled) {
+          select.disabled = true;
+
+          if (options.dropdowns?.[index]?.correct === selectedValues[index].value) {
+            select.style.borderColor = "green";
+          } else {
+            select.style.borderColor = "red";
+          }
+        } else {
+          select.disabled = false;
+        }
       }
-    }, [selectedValues, formDisabled, handleChange, options.dropdowns, shuffledDropdownOptions, customStyle]);
+
+      return () => {
+        const selectLength = document.querySelectorAll(".question-gap-text-with-dropdown select").length;
+
+        //Guards
+        if (
+          selectedValues === undefined ||
+          selectLength === 0 ||
+          selectedValues.length <= 0 ||
+          selectLength !== selectedValues.length
+        ) {
+          return;
+        }
+
+        // Add event listeners to each gap
+        for (let index = 0; index < selectLength; index++) {
+          const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+
+          if (!select) return;
+
+          // Remove event listeners
+          select.removeEventListener("change", handleChange);
+        }
+      };
+    }, [selectedValues, formDisabled, handleChange, options.dropdowns]);
 
     //Setup selected empty values
     useLayoutEffect(() => {
@@ -170,6 +187,19 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
           return { ...item, value: "" };
         });
         setSelectedValues([...emptySelected]);
+
+        const elements = document.getElementsByClassName("select").length;
+
+        for (let index = 0; index < elements; index++) {
+          const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+
+          if (!select) return;
+
+          select.value = "";
+
+          // Remove the style from the html to reset to the border color that is set by css
+          select.removeAttribute("style");
+        }
       },
 
       //Reset selection and reshuffle the dropdown options
@@ -184,19 +214,13 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
     //JSX
     return (
       <>
-        <p className='question-gap-text-with-dropdown' dangerouslySetInnerHTML={{ __html: memoedText }} />
+        <div className='question-gap-text-with-dropdown' dangerouslySetInnerHTML={{ __html: memoedText }} />
       </>
     );
   }
 );
 
-export function textWithBlanks(text: string, type: "question"): string;
-export function textWithBlanks(text: string, type: "correction", dropdowns: IGapTextDropdown["dropdowns"]): string;
-export function textWithBlanks(
-  text: string,
-  type: "question" | "correction",
-  dropdowns?: IGapTextDropdown["dropdowns"]
-): string {
+function textWithBlanks(text: string, shuffledDropdowns: string[][]): string {
   //Render the json string in markdown and return html nodes
   //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
   //remarkGfm draws markdown tables
@@ -210,40 +234,31 @@ export function textWithBlanks(
     />
   );
 
-  //Split the html notes where the input should be inserted
+  //Split the html notes where the select should be inserted
   const htmlStringSplit = htmlString.split("[]");
 
   //Insert the input marker between the array elements but not at the end
-  const mappedArray = htmlStringSplit.map((line, index) => {
-    if (index < htmlStringSplit.length - 1) {
-      return ReactDOMServer.renderToString(
-        <>
-          <p>{line}</p>
-          {/* ReactDOMServer.renderToString ignores event handlers so this is a marker for where to insert the input at the useLayoutEffect. This is not needed for the correction. */}
-          {type === "question" ? (
-            <div className={"select-wrapper"} id={`select-wrapper-${index}`}></div>
-          ) : (
-            <p className='correct-dropdown-value'>{dropdowns?.[index].correct}</p>
-          )}
-        </>
-      );
-    } else {
-      return ReactDOMServer.renderToString(<p>{line}</p>);
-    }
-  });
+  const htmlWithSelects = htmlStringSplit
+    .map((line, index) => {
+      if (index < htmlStringSplit.length - 1) {
+        return line.concat(
+          `<select class='select' id='select-${index}' key='select-${index}'>
+            <option value=''></option>
+            ${shuffledDropdowns[index]?.map((text) => {
+              return `<option value='${text}'>${text}</option>`;
+            })}
+          </select>`
+        );
 
-  //Combine the array to one string again
-  const joinedElements = mappedArray.join("");
-
-  //Remove jsx specific html syntax
-  const exportHTML = joinedElements
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&quot;", '"')
-    .replaceAll('data-reactroot=""', "");
+        /* ReactDOMServer.renderToString ignores event handlers so this is a marker for where to insert the input at the useLayoutEffect. This is not needed for the correction. */
+      } else {
+        return line;
+      }
+    })
+    .join("");
 
   // Sanitize the result
-  return DOMPurify.sanitize(exportHTML, {
+  return DOMPurify.sanitize(htmlWithSelects, {
     FORBID_TAGS: forbiddenTags,
     FORBID_ATTR: forbiddenAttributes,
   });

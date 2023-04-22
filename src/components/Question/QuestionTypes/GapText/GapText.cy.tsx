@@ -26,6 +26,31 @@ describe("GapText", () => {
     cy.contains("strong", "three").should("exist");
   });
 
+  it("should render text and gap in the same line", () => {
+    const options = {
+      text: "This should be one []",
+      correctGapValues: [["line"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+    cy.get(".question-gap-text").invoke("height").should("be.lessThan", 60);
+  });
+
+  it("should keep the value of the previous gaps if writing into a new gap", () => {
+    const options = {
+      text: "[] two **three**. One [] three. One two []",
+      correctGapValues: [["One"], ["two"], ["three"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input#input-0").type("One");
+    cy.get("input#input-1").type("Two");
+
+    // Assert that the value on the input is still present
+    cy.get("input#input-0").should("have.value", "One");
+  });
+
   it("should render multiple gaps and display input", () => {
     const options = {
       text: "[][][]",
@@ -58,7 +83,7 @@ describe("GapText", () => {
 
     cy.mount(<GapText options={options} formDisabled={false} />);
     cy.get("body").tab().focused().type("One").should("have.value", "One");
-    cy.get("input[value='One']").tab().focused().type("two").should("have.value", "two");
+    cy.get("input#input-0").tab().focused().type("two").should("have.value", "two");
   });
 
   it("should not show error if there is no text and no correctGapValues", () => {
@@ -384,6 +409,26 @@ describe("Gap Text component inside Question component", () => {
     cy.contains("Yes, that's correct!").should("exist");
   });
 
+  it("should reset the border to gray after submit if navigating by 'navigation skip'", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+    // Type into the input
+    cy.get("input#input-0").type("false", { delay: 2 });
+
+    // Submit question
+    cy.get("button[type='submit']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    cy.get("input#input-0").should("have.css", "border", "1px solid rgb(180, 180, 180)");
+  });
+
   context("Question correction on submit", () => {
     it("should show that the answer is correct if the answer is correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
@@ -484,6 +529,17 @@ describe("Gap Text component inside Question component", () => {
 
       // Check correction
       cy.contains("No, that's false!").should("exist");
+    });
+
+    it("should trim the values and show the answer as correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      cy.get("input#input-0").type(" third"); // Add a blank space at the beginning
+      cy.get("input#input-1").type("contains "); // Add a space at the end
+      cy.get("input#input-2").type("1 "); // Choose the second correct value
+
+      // Submit question
+      cy.get("button[type='submit']").click();
     });
 
     it("should show question correction after submit if answer was incorrect", () => {
@@ -658,6 +714,12 @@ describe("Gap Text component inside Question component", () => {
   });
 
   context("Markdown and HTML elements", () => {
+    it("should render line break", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-12' />);
+      // Assert that the line break worked
+      cy.get(".question-gap-text").invoke("height").should("be.greaterThan", 60);
+    });
+
     it("should render list", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-5' />);
 
@@ -698,8 +760,8 @@ describe("Gap Text component inside Question component", () => {
 
       // Assert that the table is in view and the values get rendered
       cy.get("table").should("exist").and("be.visible");
-      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 180);
-      cy.get("td .input-wrapper").find("input").type("work").should("have.value", "work");
+      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 130);
+      cy.get("td").find("input").type("work").should("have.value", "work");
       cy.contains("em", "italic");
 
       // Submit Question

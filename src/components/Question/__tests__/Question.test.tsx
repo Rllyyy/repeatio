@@ -523,23 +523,6 @@ describe("<Question />", () => {
     expect(inputElements.every((input) => input.value === "")).toBeTruthy();
   });
 
-  //Expect to trim the gap text input to be trimmed
-  it("should trim the input values when checking the answer", () => {
-    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
-
-    //Type into the input elements
-    let inputElements = screen.getAllByRole("textbox");
-    user.type(inputElements[0], "One"); //"One" and "one" could both be correct
-    user.type(inputElements[1], "two ");
-    user.type(inputElements[2], " three");
-
-    //Click check button
-    user.click(screen.getByTestId("question-check"));
-
-    //Expect the answer to be correct (although it has trailing and leading whitespace)
-    expect(screen.getByTestId("question-correction")).toHaveClass("answer-correct");
-  });
-
   //Expect gap text to accept different correct values
   it("should render question correct when providing two different values to gap text which both could be correct", () => {
     render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);

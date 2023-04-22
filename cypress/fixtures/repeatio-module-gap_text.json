@@ -121,7 +121,7 @@
     },
     {
       "id": "gt-8",
-      "title": "This is the title of the seventh question with table",
+      "title": "This is the title of the eight question with table",
       "points": 5,
       "type": "gap-text",
       "help": "Fill in the blanks.",
@@ -172,6 +172,21 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This text has no gap"
+      }
+    },
+    {
+      "id": "gt-12",
+      "title": "This is the title of the twelve question with no correct gaps",
+      "points": 5,
+      "type": "gap-text",
+      "help": "Fill in the blanks.",
+      "answerOptions": {
+        "text": "This text has a gap in the\n[]",
+        "correctGapValues": [
+          [
+            "line"
+          ]
+        ]
       }
     }
   ]

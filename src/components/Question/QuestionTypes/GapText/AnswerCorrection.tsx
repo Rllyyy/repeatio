@@ -11,10 +11,6 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-const concatValues = (values?: Array<string>) => {
-  return values?.join("; ");
-};
-
 //Component
 export const AnswerCorrection = ({
   text,
@@ -41,31 +37,19 @@ export const AnswerCorrection = ({
     const htmlStringSplit = htmlString.split("[]");
 
     //Insert the input marker between the array elements but not at the end
-    const mappedArray = htmlStringSplit.map((line, index) => {
-      if (index < htmlStringSplit.length - 1) {
-        const concatenatedValues = concatValues(correctGapValues?.[index]);
-        return ReactDOMServer.renderToString(
-          <>
-            <p>{line}</p>
-            <p className='correct-gap-value'>{concatenatedValues}</p>
-          </>
-        );
-      } else {
-        return ReactDOMServer.renderToString(<p>{line}</p>);
-      }
-    });
-    //Combine the array to one string again
-    const joinedElements = mappedArray.join("");
-
-    //Remove jsx specific html syntax
-    const exportHTML = joinedElements
-      .replaceAll("&lt;", "<")
-      .replaceAll("&gt;", ">")
-      .replaceAll("&quot;", '"')
-      .replaceAll('data-reactroot=""', "");
+    const htmlWithCorrection = htmlStringSplit
+      .map((line, index) => {
+        if (index < htmlStringSplit.length - 1) {
+          const concatenatedValues = concatValues(correctGapValues?.[index]);
+          return line.concat(`<span class='correct-gap-value'>${concatenatedValues}</span>`);
+        } else {
+          return line;
+        }
+      })
+      .join("");
 
     // Sanitize the result
-    return DOMPurify.sanitize(exportHTML, {
+    return DOMPurify.sanitize(htmlWithCorrection, {
       FORBID_TAGS: forbiddenTags,
       FORBID_ATTR: forbiddenAttributes,
     });
@@ -73,3 +57,8 @@ export const AnswerCorrection = ({
   //JSX
   return <div className='correction-gap-text' dangerouslySetInnerHTML={{ __html: textWithBlanks() }} />;
 };
+
+// Concat the values with a semicolon, fallback to empty string if no value given
+function concatValues(values?: Array<string>) {
+  return values?.join("; ") || " ";
+}

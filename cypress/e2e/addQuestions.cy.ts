@@ -343,8 +343,8 @@ describe("Adding a question of type gap-text", () => {
 
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
-    cy.get("p.correct-gap-value").first().should("have.text", "This");
-    cy.get("p.correct-gap-value").last().should("have.text", "gap; hole");
+    cy.get("span.correct-gap-value").first().should("have.text", "This");
+    cy.get("span.correct-gap-value").last().should("have.text", "gap; hole");
     cy.get(".question-correction").contains("a", "link").should("exist");
     cy.get(".question-correction").contains("a", "another link").should("exist");
   });

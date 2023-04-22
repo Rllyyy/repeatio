@@ -28,7 +28,6 @@
 .question-gap-text input,
 .correction-gap-text input {
   white-space: pre-wrap;
-  display: inline;
 }
 
 .question-gap-text table input,

@@ -69,7 +69,8 @@ describe("<GapTextDropdown />", () => {
   it("should handle change event if form isn't disabled", () => {
     render(<MockGapTextDropdown disabled={false} />);
 
-    const comboboxElement = screen.getByTestId("select-0") as HTMLSelectElement;
+    //const comboboxElement = screen.getByTestId("select-0") as HTMLSelectElement;
+    const comboboxElement = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
     const comboboxOption = screen.getByRole("option", { name: "Dropdown" }) as HTMLOptionElement;
 
     user.selectOptions(comboboxElement, comboboxOption);
@@ -81,7 +82,7 @@ describe("<GapTextDropdown />", () => {
   it("should not allow change event if form is disabled", () => {
     render(<MockGapTextDropdown disabled={true} />);
 
-    const comboboxElement = screen.getByTestId("select-0") as HTMLSelectElement;
+    const comboboxElement = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
     const comboboxOption = screen.getByRole("option", { name: "Dropdown" }) as HTMLOptionElement;
 
     user.selectOptions(comboboxElement, comboboxOption);
