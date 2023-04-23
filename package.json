@@ -6,7 +6,6 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
-    "@babel/runtime": "7.18.3",
     "@electron/remote": "^2.0.9",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
