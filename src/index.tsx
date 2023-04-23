@@ -34,9 +34,6 @@ import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";
 
-//Web vitals
-import reportWebVitals from "./reportWebVitals";
-
 ReactDOM.render(
   <StrictMode>
     <Router>
@@ -70,8 +67,3 @@ ReactDOM.render(
   </StrictMode>,
   document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

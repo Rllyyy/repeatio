@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 //To enable tabbing in cypress: https://github.com/kuceb/cypress-plugin-tab
-import "cypress-plugin-tab";
+import "cypress-real-events";
 
 // React 16, 17
 import { mount } from "cypress/react";

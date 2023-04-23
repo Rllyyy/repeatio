@@ -82,8 +82,11 @@ describe("GapText", () => {
     };
 
     cy.mount(<GapText options={options} formDisabled={false} />);
-    cy.get("body").tab().focused().type("One").should("have.value", "One");
-    cy.get("input#input-0").tab().focused().type("two").should("have.value", "two");
+
+    cy.get("input#input-0").type("One").realPress("Tab").realType("two", { delay: 1 });
+
+    // Assert that the input has the correct value
+    cy.get("input#input-1").should("have.value", "two");
   });
 
   it("should not show error if there is no text and no correctGapValues", () => {

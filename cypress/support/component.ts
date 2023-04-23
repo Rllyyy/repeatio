@@ -1,5 +1,5 @@
 // ***********************************************************
-// This example support/component.js is processed and
+// This example support/component.ts is processed and
 // loaded automatically before your test files.
 //
 // This is a great place to put global configuration and
@@ -13,15 +13,23 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// Define global process
+// https://github.com/cypress-io/cypress/issues/21434
+global.process = global.process || {};
+global.process.env = global.process.env || {};
+
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from 'cypress/react'
+import { mount } from "cypress/react";
 
-Cypress.Commands.add('mount', mount)
+// Augment the Cypress namespace to include type definitions for
+// your custom command.
+
+Cypress.Commands.add("mount", mount);
 
 // Example use:
 // cy.mount(<MyComponent />)
