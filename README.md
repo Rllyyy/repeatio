@@ -948,10 +948,7 @@ yarn build
 **Serve build locally:**
 
 ```bash
-serve -s build
+yarn serve
 ```
-
-> **Note**  
-> You may need to install serve with npx.
 
 </details>
