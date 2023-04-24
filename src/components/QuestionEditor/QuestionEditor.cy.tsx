@@ -104,11 +104,17 @@ describe("QuestionEditor.cy.js", () => {
   });
 
   it("should support tabbing content", () => {
-    cy.get("body").tab().focused().should("have.attr", "name", "id");
-    cy.get("input[name='id']").tab().focused().should("have.attr", "name", "title");
-    cy.get("textarea[name='title']").tab().focused().should("have.attr", "name", "points");
-    cy.get("input[name='points']").tab().focused().should("have.attr", "name", "help");
-    cy.get("textarea[name='help']").tab().focused().should("have.attr", "name", "type");
+    cy.get("label[for='modal-question-id-input']").click().realPress("Tab");
+    cy.focused().should("have.attr", "name", "title");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "points");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "help");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "type");
   });
 
   it("should show 'Please select a Question Type' if no type is selected and clear it after type is selected", () => {

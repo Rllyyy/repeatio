@@ -1,7 +1,8 @@
 const { defineConfig } = require("cypress");
 const { rmdir, existsSync } = require("fs");
+import viteConfig from "./vite.config";
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       on("task", {
@@ -28,8 +29,11 @@ module.exports = defineConfig({
 
   component: {
     devServer: {
-      framework: "create-react-app",
-      bundler: "webpack",
+      framework: "react",
+      bundler: "vite",
+      viteConfig: {
+        ...viteConfig,
+      },
     },
   },
 });
