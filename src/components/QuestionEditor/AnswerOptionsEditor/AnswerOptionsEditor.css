@@ -106,8 +106,8 @@
 }
 
 .editor .editor-content.gap-text {
-  /* TextAreaAutosize has some weird margin at the bottom */
   padding: 10px 10px 0 10px;
+  box-sizing: border-box;
 }
 
 .editor .editor-message {

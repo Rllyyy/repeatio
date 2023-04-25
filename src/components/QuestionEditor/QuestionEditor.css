@@ -5,11 +5,11 @@
   padding: 20px 25px 20px 25px;
 }
 
-.question-editor-form>div:not(:last-child) {
+.question-editor-form > div:not(:last-child) {
   margin-bottom: 20px;
 }
 
-.question-editor-form>div>label {
+.question-editor-form > div > label {
   font-size: 18px;
   font-weight: 500;
   display: inline-block;
@@ -17,9 +17,9 @@
   margin-bottom: 2px;
 }
 
-.question-editor-form>div>input,
-.question-editor-form div>select,
-.question-editor-form div>textarea {
+.question-editor-form > div > input,
+.question-editor-form div > select,
+.question-editor-form div > textarea {
   font: inherit;
   font-size: 18px;
   width: 100%;
@@ -33,22 +33,22 @@
   border-radius: 5px;
 }
 
-.question-editor-form>div>input,
-.question-editor-form div>select {
+.question-editor-form > div > input,
+.question-editor-form div > select {
   display: inline-block;
 }
 
-.question-editor-form div>textarea {
+.question-editor-form div > textarea {
   resize: none;
 }
 
-.question-editor-form>div>.question-editor-form div>select {
+.question-editor-form > div > .question-editor-form div > select {
   cursor: pointer;
 }
 
-.question-editor-form>div>input:focus-visible,
-.question-editor-form>div>#modal-question-type-select:focus-visible,
-.question-editor-form div>textarea:focus-visible {
+.question-editor-form > div > input:focus-visible,
+.question-editor-form > div > #modal-question-type-select:focus-visible,
+.question-editor-form div > textarea:focus-visible {
   outline: 2px solid var(--custom-prime-color);
 }
 
@@ -93,9 +93,9 @@
 }
 
 .question-editor-form .modal-question-error,
-.question-editor-form .modal-question-error>span,
+.question-editor-form .modal-question-error > span,
 .question-editor-form .modal-question-error * {
-  margin-top: .4em;
+  margin-top: 0.4em;
   color: rgb(231, 76, 60);
   /* TODO make font size dynamic */
   font-size: 16px;
@@ -144,7 +144,7 @@
 
 /* Media Query for smaller screens */
 @media only screen and (max-width: 650px) {
-  .question-editor-form>div>label {
+  .question-editor-form > div > label {
     font-size: 20px;
   }
 

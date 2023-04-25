@@ -124,6 +124,18 @@ describe("QuestionEditor.cy.js", () => {
     cy.contains("Please select a Question Type").should("not.exist");
   });
 
+  it("should grow the textarea", { scrollBehavior: false, viewportHeight: 500, viewportWidth: 480 }, () => {
+    cy.get("textarea[name='title']")
+      .type("The title for this question should wrap to the next line", { delay: 1 })
+      .invoke("outerHeight")
+      .should("be.greaterThan", 60);
+
+    cy.get("textarea[name='help']")
+      .type("The help for this question should wrap to the next line", { delay: 1 })
+      .invoke("outerHeight")
+      .should("be.greaterThan", 60);
+  });
+
   it("should show 'Please select a Question Type' after if was changed back to empty value", () => {
     cy.get("select[name='type']").select("multiple-choice");
     cy.get("select[name='type']").select("");
@@ -440,6 +452,26 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("label[data-testid='option-1']").should("exist");
     });
 
+    it("should grow the multiple-choice textarea", { viewportHeight: 500, viewportWidth: 470 }, () => {
+      cy.get("select[name='type']").select("multiple-choice");
+
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("This multiple choice textarea should wrap", { delay: 1 })
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+    });
+
+    it("should not submit the form if pressing enter on the textarea and instead grow the textarea", () => {
+      cy.get("select[name='type']").select("multiple-choice");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("{enter}")
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+      cy.get("@handleModalCloseSpy").should("not.have.been.called");
+    });
+
     it("should show no errors if removing multiple answerOptions before submit (multiple-choice)", () => {
       cy.get("select[name='type']").select("multiple-choice");
 
@@ -562,6 +594,25 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("label[data-testid='formControlLabel-option-1']").should("exist");
     });
 
+    it("should grow and wrap the multiple-response textarea", { viewportHeight: 500, viewportWidth: 485 }, () => {
+      cy.get("select[name='type']").select("multiple-response");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("This multiple response textarea should wrap", { delay: 1 })
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+    });
+
+    it("should not submit the form if pressing enter on the textarea and instead grow the textarea", () => {
+      cy.get("select[name='type']").select("multiple-response");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("{enter}")
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+      cy.get("@handleModalCloseSpy").should("not.have.been.called");
+    });
+
     it("should show no errors if removing multiple answerOptions before submit (multiple-response)", () => {
       cy.get("select[name='type']").select("multiple-response");
 
@@ -575,6 +626,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
     beforeEach(() => {
       cy.get("select[name='type']").select("gap-text");
     });
+
     it("should update the textarea with a given value", () => {
       cy.get("#editor-gap-text-textarea").type("This is a [test]").should("have.value", "This is a [test]");
     });
@@ -610,6 +662,15 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
     it("should add gap to textarea value if the user adds a gap with the button to an empty textarea", () => {
       cy.get("button#editor-add-item").click();
       cy.get("#editor-gap-text-textarea").should("have.value", "[value] ");
+    });
+
+    it("should grow the gap-text textarea", { viewportHeight: 500, viewportWidth: 500 }, () => {
+      cy.get("textarea#editor-gap-text-textarea")
+        .type("{enter}{enter}{enter}The value for this textarea for this question should wrap", {
+          delay: 1,
+        })
+        .invoke("height")
+        .should("be.greaterThan", 130);
     });
 
     it("should clear textarea value when switching to other question type and reset back", () => {

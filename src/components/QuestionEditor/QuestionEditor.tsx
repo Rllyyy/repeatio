@@ -7,7 +7,7 @@ import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsCo
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { AnswerOptionsEditor } from "./AnswerOptionsEditor/AnswerOptionsEditor";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
+import TextareaAutoSize from "react-textarea-autosize";
 import { toast } from "react-toastify";
 
 //CSS
@@ -449,7 +449,7 @@ const EditorFormTextarea = ({
   return (
     <div className={`modal-question-${labelTextLowerCase}`}>
       <label htmlFor={`modal-question-${labelTextLowerCase}-textarea`}>{labelText}</label>
-      <TextareaAutosize
+      <TextareaAutoSize
         name={labelTextLowerCase}
         id={`modal-question-${labelTextLowerCase}-textarea`}
         value={value || ""}

@@ -1,4 +1,4 @@
-import { TextareaAutosize } from "@mui/material";
+import TextareaAutoSize from "react-textarea-autosize";
 import { forwardRef } from "react";
 import { objectWithoutProp } from "../../helpers";
 import { isSafari } from "react-device-detect";
@@ -46,7 +46,7 @@ export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorCompo
     //Return textarea
     return (
       <>
-        <TextareaAutosize
+        <TextareaAutoSize
           ref={ref}
           spellCheck='false'
           id='editor-gap-text-textarea'

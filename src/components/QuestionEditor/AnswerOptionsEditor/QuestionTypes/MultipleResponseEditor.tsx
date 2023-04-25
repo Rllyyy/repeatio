@@ -1,11 +1,11 @@
 import React from "react";
+import TextAreaAutoSize from "react-textarea-autosize";
 
 //Material UI
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControl from "@mui/material/FormControl";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //Functions
 import { objectWithoutProp } from "../../helpers";
@@ -127,7 +127,7 @@ export const MultipleResponseEditor = ({
                 />
               }
               label={
-                <TextareaAutosize
+                <TextAreaAutoSize
                   spellCheck='false'
                   autoComplete='false'
                   className='editor-label-textarea'
