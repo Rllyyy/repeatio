@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, PropsWithChildren } from "react";
 import Modal from "react-modal";
 
 import { IoClose } from "react-icons/io5";
@@ -28,16 +28,22 @@ type Height =
 
 interface ICustomModal {
   handleModalClose: () => void;
+  showModal: boolean;
   title: string;
   //Pass any valid css height
   desktopModalHeight: Height;
-  children: JSX.Element;
 }
 
-export const CustomModal = ({ handleModalClose, title, desktopModalHeight, children }: ICustomModal) => {
+export const CustomModal: React.FC<PropsWithChildren<ICustomModal>> = ({
+  handleModalClose,
+  showModal,
+  title,
+  desktopModalHeight,
+  children,
+}) => {
   const [mobileLayout, setMobileLayout] = useState(false);
 
-  Modal.setAppElement("main");
+  Modal.setAppElement(document.getElementsByTagName("main")[0]);
 
   //TODO replace this in the future with css container query
   useEffect(() => {
@@ -58,7 +64,7 @@ export const CustomModal = ({ handleModalClose, title, desktopModalHeight, child
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={showModal}
       parentSelector={() => document.getElementsByTagName("main")[0]}
       onRequestClose={handleModalClose}
       className={desktopModalHeight === "fit-content" ? "fit-content" : "max-modal"}

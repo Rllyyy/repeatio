@@ -223,7 +223,7 @@ export const Module = () => {
           );
         })}
       </GridCards>
-      {showModal && <QuestionEditor handleModalClose={handleModalClose} mode={"create"} />}
+      <QuestionEditor handleModalClose={handleModalClose} mode={"create"} showModal={showModal} />
     </div>
   );
 };

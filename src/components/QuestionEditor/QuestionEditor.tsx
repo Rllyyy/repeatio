@@ -43,17 +43,17 @@ For some reason firefox android does not support HTML5 validation.
 */
 
 //Component
-//TODO in React@v18 use useID hook for label/input elements
 
 type EditQuestionMode = {
   mode: "edit";
   handleModalClose: () => void;
+  showModal: boolean;
   prevQuestion: IQuestion;
   fetchQuestion: TUseQuestion["fetchQuestion"];
   handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
 };
 
-type CreateQuestionMode = { mode: "create"; handleModalClose: () => void };
+type CreateQuestionMode = { mode: "create"; handleModalClose: () => void; showModal: boolean };
 
 type TEditorModes = EditQuestionMode | CreateQuestionMode;
 
@@ -64,6 +64,7 @@ export const QuestionEditor: React.FC<TEditorModes> = (props) => {
       handleModalClose={props.handleModalClose}
       title={props.mode === "edit" ? "Edit Question" : "Add Question"}
       desktopModalHeight='90vh'
+      showModal={props.showModal}
     >
       {props.mode === "create" ? (
         <Form mode='create' handleModalClose={props.handleModalClose} />
@@ -91,7 +92,11 @@ const newEmptyQuestion = {
   answerOptions: undefined,
 };
 
-export const Form: React.FC<TEditorModes> = (props) => {
+type EditForm = Omit<EditQuestionMode, "showModal">;
+
+type CreateForm = Omit<CreateQuestionMode, "showModal">;
+
+export const Form: React.FC<EditForm | CreateForm> = (props) => {
   //State - If creating a new question, provide a predefined empty object else use and modify the previous question
   const [question, setQuestion] = useState<IQuestion>(
     props.mode === "create" ? newEmptyQuestion : () => setPreviousQuestion(props.prevQuestion)

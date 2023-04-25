@@ -3,7 +3,7 @@ interface ISiteHeading {
   children?: React.ReactNode;
 }
 
-export const SiteHeading = ({ title, children }: ISiteHeading) => {
+export const SiteHeading: React.FC<ISiteHeading> = ({ title, children }) => {
   return (
     <div className='site-heading' style={{ display: "flex", alignItems: "start" }}>
       <h1
