@@ -51,26 +51,26 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
   /* Functions */
   //Update the input where the input index is equal to the inputValues index
   const updateInput = useCallback(
-    (e: unknown) => {
+    (e: Event) => {
       const newInputValue = inputValues.map((value, index) => {
         // Update the value of the array if the index of the id is equal to the index to the inputValues array element
-        if (index === parseInt((e as React.ChangeEvent<HTMLInputElement>).target.getAttribute("id")!.split("-")[1])) {
-          return (e as React.ChangeEvent<HTMLInputElement>).target.value;
+        if (index === parseInt((e.target as HTMLInputElement)?.getAttribute("id")!.split("-")[1])) {
+          return (e.target as HTMLInputElement).value;
         } else {
           return value;
         }
       });
 
       // Update the state
-      setInputValues(newInputValue);
+      setInputValues([...newInputValue]);
     },
     [inputValues]
   );
 
   //Prevent the form submission when entering "Enter" on an input element
-  const onKeyDownPreventSubmit = useCallback((e: unknown) => {
-    if ((e as React.KeyboardEvent<HTMLInputElement>).key === "Enter") {
-      (e as React.KeyboardEvent<HTMLInputElement>).preventDefault();
+  const onKeyDownPreventSubmit = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
   }, []);
 
@@ -84,7 +84,6 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
     };
   }, [options.correctGapValues]);
 
-  //!Add try catch
   //Attack events to the inputs
   useLayoutEffect(() => {
     // Get the number of of gaps
@@ -103,26 +102,11 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       input.setAttribute("value", inputValues[index] || "");
 
       // attach handleChange function
+      // One could change this to eventListener "input", but don't forget to also remove this event in the return function!
       input.addEventListener("change", updateInput);
 
       // attach function to prevent form submission on enter click
       input.addEventListener("keydown", onKeyDownPreventSubmit);
-
-      // Logic if form is disabled/enabled
-      if (formDisabled) {
-        // disable the input
-        input.disabled = true;
-
-        //  Add green or red border if the form was submitted (and is therefor disabled)
-        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
-          input.style.borderColor = "green";
-        } else {
-          input.style.borderColor = "red";
-        }
-      } else {
-        // enable the input
-        input.disabled = false;
-      }
     }
 
     return () => {
@@ -145,7 +129,38 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         input.removeEventListener("keydown", onKeyDownPreventSubmit);
       }
     };
-  }, [inputValues, options, formDisabled, updateInput, options.correctGapValues, onKeyDownPreventSubmit]);
+  }, [inputValues, options, updateInput, options.correctGapValues, onKeyDownPreventSubmit]);
+
+  useLayoutEffect(() => {
+    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+    for (let index = 0; index < inputElements.length; index++) {
+      // Logic if form is disabled/enabled
+      if (formDisabled) {
+        // disable the input
+        inputElements[index].disabled = true;
+
+        //  Add green or red border if the form was submitted (and is therefor disabled)
+        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
+          inputElements[index].style.borderColor = "green";
+        } else {
+          inputElements[index].style.borderColor = "red";
+        }
+      } else {
+        // enable the input
+        inputElements[index].disabled = false;
+      }
+    }
+
+    return () => {
+      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+      for (let index = 0; index < inputElements.length; index++) {
+        inputElements[index].removeAttribute("style");
+        inputElements[index].disabled = true;
+      }
+    };
+  }, [formDisabled]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
@@ -155,6 +170,7 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       checkAnswer() {
         //Strip the input values of any whitespace at the beginning or end and update the state (which will be updated after the function has completely finished)
         const trimmedInputValues = inputValues.map((value) => value.trim());
+
         setInputValues(trimmedInputValues);
 
         //Check if every gap correlates with the correct value from the gap array and return true/false to question form
@@ -223,7 +239,7 @@ function textWithBlanks(text: string): string {
     .map((line, index) => {
       if (index < htmlStringSplit.length - 1) {
         return line.concat(
-          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false'  />`
+          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false' />`
         );
       } else {
         return line;

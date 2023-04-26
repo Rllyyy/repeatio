@@ -76,7 +76,7 @@ describe("Test importing a new module", () => {
 
     //Should close modal
     cy.contains("h1", "Create or import a Module").should("not.exist");
-    cy.get(".ReactModalPortal").should("not.exist");
+    cy.get(".ReactModal__Overlay--after-open").should("not.exist");
   });
 
   //Test if the toast for successful imports works

@@ -59,10 +59,10 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
 
     //Update the selected input
     const handleChange = useCallback(
-      (e: unknown) => {
+      (e: Event) => {
         const newSelectValue = selectedValues.map((selectedValue) => {
-          if (selectedValue.id === (e as React.ChangeEvent<HTMLSelectElement>).target.id) {
-            return { ...selectedValue, value: (e as React.ChangeEvent<HTMLSelectElement>).target.value };
+          if (selectedValue.id === (e.target as HTMLOptionElement)?.id) {
+            return { ...selectedValue, value: (e.target as HTMLOptionElement)?.value };
           } else {
             return selectedValue;
           }

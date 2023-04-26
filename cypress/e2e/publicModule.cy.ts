@@ -39,6 +39,7 @@ describe("Test the module that is provided by the public folder", () => {
     cy.get("#input-0").type("gaps");
     cy.get("#input-1").type("correct");
     cy.get("#input-2").type("not");
+    cy.get("body").click();
     cy.get("button[aria-label='Check Question']").click();
     cy.contains("Yes, that's correct!");
     cy.get("button[aria-label='Next Question']").click();
