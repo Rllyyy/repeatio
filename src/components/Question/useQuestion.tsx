@@ -20,6 +20,7 @@ import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/Ques
 import { IModule } from "../module/module";
 import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
 import { toast } from "react-toastify";
+import { flushSync } from "react-dom";
 
 export type TAnswerOptions =
   | IMultipleChoice[]
@@ -268,8 +269,10 @@ export const useQuestion = () => {
       }
     }
 
-    fetchQuestion();
-    setLoading(false);
+    if (questionIds?.length > 0) {
+      fetchQuestion();
+      setLoading(false);
+    }
   }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, navigate, fetchQuestion]);
 
   /* UseEffects */
