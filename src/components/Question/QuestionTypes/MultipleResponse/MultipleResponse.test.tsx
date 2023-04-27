@@ -17,8 +17,6 @@ const options = [
   },
 ];
 
-const mockSetAnswerCorrect = jest.fn();
-const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn(); //Might not be allowed for a ref but for now the ref isn't being tested
 
 //React-markdown and rehype-raw use ES6 but jest uses ES5

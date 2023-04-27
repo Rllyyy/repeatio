@@ -47,7 +47,7 @@ const ProgressProvider: React.FC<TProgressProvider> = ({ valueStart, valueEnd, c
     return () => {
       setValue(valueStart);
     };
-  }, [valueEnd]);
+  }, [valueStart, valueEnd]);
 
   return children(value);
 };

@@ -1,5 +1,5 @@
 import { Link, LinkProps } from "react-router-dom";
-import { memo, PropsWithChildren, ReactNode, FC } from "react";
+import { memo, PropsWithChildren, FC } from "react";
 import { motion, MotionProps } from "framer-motion";
 
 //css

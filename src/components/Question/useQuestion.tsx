@@ -20,7 +20,6 @@ import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/Ques
 import { IModule } from "../module/module";
 import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
 import { toast } from "react-toastify";
-import { flushSync } from "react-dom";
 
 export type TAnswerOptions =
   | IMultipleChoice[]
