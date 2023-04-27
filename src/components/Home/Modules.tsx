@@ -38,7 +38,6 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
 
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
-  //TODO remove ts-ignore at AnimatePresence when upgrading to react 18
 
   if (loading) {
     return <Spinner />;
@@ -47,7 +46,6 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
   //Return grid of modules and "add module" card when the component has loaded
   return (
     <GridCards>
-      {/* @ts-ignore */}
       <AnimatePresence initial={false}>
         {modules?.map((module) => {
           const { id, name, questions } = module;

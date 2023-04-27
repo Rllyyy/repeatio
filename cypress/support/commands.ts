@@ -27,8 +27,8 @@
 //To enable tabbing in cypress: https://github.com/dmtrKovalenko/cypress-real-events
 import "cypress-real-events";
 
-// React 16, 17
-import { mount } from "cypress/react";
+// React 18
+import { mount } from "cypress/react18";
 
 type Fixtures =
   | "repeatio-module-gap_text.json"

@@ -26,15 +26,14 @@ export const AddModule = () => {
       <button className='add-module-btn' onClick={() => setShowModal(true)} type='button'>
         <p>Add Module</p>
       </button>
-      {showModal && (
-        <CustomModal
-          handleModalClose={handleModalClose}
-          title='Create or import a Module'
-          desktopModalHeight='fit-content'
-        >
-          <ComponentChooser handleModalClose={handleModalClose} />
-        </CustomModal>
-      )}
+      <CustomModal
+        handleModalClose={handleModalClose}
+        showModal={showModal}
+        title='Create or import a Module'
+        desktopModalHeight='fit-content'
+      >
+        <ComponentChooser handleModalClose={handleModalClose} />
+      </CustomModal>
     </>
   );
 };

@@ -51,26 +51,26 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
   /* Functions */
   //Update the input where the input index is equal to the inputValues index
   const updateInput = useCallback(
-    (e: unknown) => {
+    (e: Event) => {
       const newInputValue = inputValues.map((value, index) => {
         // Update the value of the array if the index of the id is equal to the index to the inputValues array element
-        if (index === parseInt((e as React.ChangeEvent<HTMLInputElement>).target.getAttribute("id")!.split("-")[1])) {
-          return (e as React.ChangeEvent<HTMLInputElement>).target.value;
+        if (index === parseInt((e.target as HTMLInputElement)?.getAttribute("id")!.split("-")[1])) {
+          return (e.target as HTMLInputElement).value;
         } else {
           return value;
         }
       });
 
       // Update the state
-      setInputValues(newInputValue);
+      setInputValues([...newInputValue]);
     },
     [inputValues]
   );
 
   //Prevent the form submission when entering "Enter" on an input element
-  const onKeyDownPreventSubmit = useCallback((e: unknown) => {
-    if ((e as React.KeyboardEvent<HTMLInputElement>).key === "Enter") {
-      (e as React.KeyboardEvent<HTMLInputElement>).preventDefault();
+  const onKeyDownPreventSubmit = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
   }, []);
 
@@ -84,18 +84,17 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
     };
   }, [options.correctGapValues]);
 
-  //!Add try catch
   //Attack events to the inputs
   useLayoutEffect(() => {
     // Get the number of of gaps
-    const inputElementsLength = document.getElementsByClassName("gap").length;
+    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
 
     // Return from function if there are no elements found
-    if (inputElementsLength === undefined || inputElementsLength === 0) return;
+    if (inputElements === undefined || inputElements.length === 0) return;
 
     // Loop through
-    for (let index = 0; index < inputElementsLength; index++) {
-      const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+    for (let index = 0; index < inputElements.length; index++) {
+      const input = inputElements[index];
 
       if (!input) return;
 
@@ -103,12 +102,12 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       input.setAttribute("value", inputValues[index] || "");
 
       // attach handleChange function
+      // One could change this to eventListener "input", but don't forget to also remove this event in the return function!
       input.addEventListener("change", updateInput);
 
       // attach function to prevent form submission on enter click
       input.addEventListener("keydown", onKeyDownPreventSubmit);
 
-      // Logic if form is disabled/enabled
       if (formDisabled) {
         // disable the input
         input.disabled = true;
@@ -127,25 +126,27 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
 
     return () => {
       // Get the number of of gaps
-      const inputElementLength = document.getElementsByClassName("gap").length;
+      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
 
       // Guards if there are no elements
-      if (inputElementLength === undefined || inputElementLength === 0) {
+      if (inputElements === undefined || inputElements.length === 0) {
         return;
       }
 
-      // Add event listeners to each gap
-      for (let index = 0; index < inputElementLength; index++) {
-        const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+      // Remove event listeners from each gap
+      for (let index = 0; index < inputElements.length; index++) {
+        const input = inputElements[index];
 
         if (!input) return;
 
         // Remove event listeners
         input.removeEventListener("change", updateInput);
         input.removeEventListener("keydown", onKeyDownPreventSubmit);
+        input.removeAttribute("style");
+        input.disabled = false;
       }
     };
-  }, [inputValues, options, formDisabled, updateInput, options.correctGapValues, onKeyDownPreventSubmit]);
+  }, [inputValues, updateInput, options.correctGapValues, onKeyDownPreventSubmit, formDisabled]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
@@ -155,6 +156,7 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       checkAnswer() {
         //Strip the input values of any whitespace at the beginning or end and update the state (which will be updated after the function has completely finished)
         const trimmedInputValues = inputValues.map((value) => value.trim());
+
         setInputValues(trimmedInputValues);
 
         //Check if every gap correlates with the correct value from the gap array and return true/false to question form
@@ -175,9 +177,10 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         //return empty string for every input value in the array
         setInputValues(Array(inputValues.length).fill(""));
 
-        const elements = document.getElementsByClassName("gap").length;
-        for (let index = 0; index < elements; index++) {
-          const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+        const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+        for (let index = 0; index < inputElements.length; index++) {
+          const input = inputElements[index];
 
           if (!input) return;
 
@@ -223,7 +226,7 @@ function textWithBlanks(text: string): string {
     .map((line, index) => {
       if (index < htmlStringSplit.length - 1) {
         return line.concat(
-          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false'  />`
+          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false' />`
         );
       } else {
         return line;

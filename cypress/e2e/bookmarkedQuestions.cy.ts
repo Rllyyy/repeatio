@@ -280,7 +280,7 @@ describe("Test import of bookmarked Questions", () => {
   });
 
   it("should add items to the localStorage if there are no old items in the localStorage before", () => {
-    cy.clearLocalStorage();
+    cy.clearLocalStorage("repeatio-marked-cypress_1");
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 

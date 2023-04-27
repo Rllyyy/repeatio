@@ -233,6 +233,7 @@ describe("Updating a question of type gap-text", () => {
         });
 
       cy.get("section.question-user-response").find("input").type("updated");
+      cy.get("body").click();
       cy.get("button[type='submit']").click();
       cy.contains("p", "Yes, that's correct!").should("exist");
       cy.contains("This is the updated question").should("exist");

@@ -1,7 +1,8 @@
 import "./GridCards.css";
 import { motion } from "framer-motion";
+import { PropsWithChildren } from "react";
 
-export const GridCards = ({ children }: { children: React.ReactNode }) => {
+export const GridCards: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <motion.div layout className='grid-cards'>
       {children}

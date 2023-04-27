@@ -44,8 +44,9 @@ export const EditQuestion = ({
       <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
         <RiFileEditLine />
       </button>
-      {prevQuestion && showModal && (
+      {prevQuestion && (
         <QuestionEditor
+          showModal={showModal}
           mode='edit'
           handleModalClose={handleModalClose}
           prevQuestion={prevQuestion}

@@ -1,5 +1,5 @@
 import { Link, LinkProps } from "react-router-dom";
-import { memo, ReactNode } from "react";
+import { memo, PropsWithChildren, ReactNode, FC } from "react";
 import { motion, MotionProps } from "framer-motion";
 
 //css
@@ -15,24 +15,25 @@ interface ICard extends MotionProps {
   title: string;
   description?: string;
   icon: JSX.Element;
-  children: ReactNode;
 }
 
 //Card Component
-export const Card = memo(({ type, disabled, title, description, icon, children, ...props }: ICard) => {
-  return (
-    <motion.article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
-      <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
-        <h2 className='card-title'>{title}</h2>
-        <p className='card-description'>{description}</p>
-      </div>
-      <div className='svg-wrapper' style={type === "module-card" ? { padding: "12px", marginTop: "-12px" } : {}}>
-        {icon}
-      </div>
-      <div className='card-bottom'>{children}</div>
-    </motion.article>
-  );
-});
+export const Card: FC<PropsWithChildren<ICard>> = memo(
+  ({ type, disabled, title, description, icon, children, ...props }) => {
+    return (
+      <motion.article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
+        <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
+          <h2 className='card-title'>{title}</h2>
+          <p className='card-description'>{description}</p>
+        </div>
+        <div className='svg-wrapper' style={type === "module-card" ? { padding: "12px", marginTop: "-12px" } : {}}>
+          {icon}
+        </div>
+        <div className='card-bottom'>{children}</div>
+      </motion.article>
+    );
+  }
+);
 
 /* ----------------------------------------- LINK -------------------------------------------- */
 //!This extend might be false

@@ -249,6 +249,10 @@ describe("Adding a question of type gap-text", () => {
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("test");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
@@ -261,6 +265,10 @@ describe("Adding a question of type gap-text", () => {
     cy.get("section.question-user-response").find("input").first().type("This");
     cy.get("section.question-user-response").find("input").eq(1).type("complex");
     cy.get("section.question-user-response").find("input").last().type("test");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
@@ -271,12 +279,19 @@ describe("Adding a question of type gap-text", () => {
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("more than one");
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
     cy.contains("This text supports multiple; more than one correct values").should("exist");
 
     cy.get("button[aria-label='Retry Question']").click();
     cy.get("section.question-user-response").find("input").type("multiple");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
@@ -340,6 +355,9 @@ describe("Adding a question of type gap-text", () => {
     cy.contains("a", "another link").should("exist");
     cy.get("section.question-user-response").find("input").first().type("This");
     cy.get("section.question-user-response").find("input").last().type("gap");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
 
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");

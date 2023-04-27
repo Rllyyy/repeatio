@@ -322,6 +322,11 @@ describe("Gap Text component inside Question component", () => {
 
     //Check to type again
     cy.get("input#input-0").type("first").should("have.value", "first");
+
+    // Click on the body to update the value
+    cy.get("body").click();
+
+    // Submit the question
     cy.get("button[type='submit']").click();
 
     cy.contains("Yes, that's correct!");
@@ -405,6 +410,9 @@ describe("Gap Text component inside Question component", () => {
     // Check correct answer
     cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
 
+    // Click on the body to update the value
+    cy.get("body").click();
+
     // Submit question
     cy.get("button[type='submit']").click();
 
@@ -438,8 +446,13 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("third");
+
       cy.get("input#input-1").type("contains");
+
       cy.get("input#input-2").type("one");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -456,6 +469,9 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-0").type("third");
       cy.get("input#input-1").type("contains");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -469,6 +485,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct values using "1"
       cy.get("input#input-0").type("1");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -480,6 +499,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct values using "one"
       cy.get("input#input-0").type("one");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -502,6 +524,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("first");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -527,6 +552,9 @@ describe("Gap Text component inside Question component", () => {
       // Type incorrect value
       cy.get("input#input-0").type("false");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit question
       cy.get("button[type='submit']").click();
 
@@ -541,8 +569,20 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-1").type("contains "); // Add a space at the end
       cy.get("input#input-2").type("1 "); // Choose the second correct value
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
+      // Click on the body to update the value
+      cy.get("body").click();
+
       // Submit question
       cy.get("button[type='submit']").click();
+
+      cy.contains("Yes, that's correct!").should("exist");
+
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+      cy.get("input#input-1").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(0, 128, 0)");
     });
 
     it("should show question correction after submit if answer was incorrect", () => {
@@ -550,6 +590,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("last");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -564,11 +607,17 @@ describe("Gap Text component inside Question component", () => {
 
       cy.get("input#input-0").type("second");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       cy.get("button[type='submit']").click().click();
 
       cy.get("input#input-0").type("third").should("have.value", "third");
       cy.get("input#input-1").type("contains", { delay: 2 }).should("have.value", "contains");
       cy.get("input#input-2").type("1").should("have.value", "1");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       cy.get("button[type='submit']").click();
       cy.contains("Yes, that's correct!").should("exist");
@@ -579,6 +628,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type into the input
       cy.get("input#input-0").type("first", { delay: 2 });
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit the question
       cy.get("button[aria-label='Check Question']").click();
@@ -602,6 +654,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct answer
       cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.contains("This is the title of the second question").click();
+
       // Submit question
       cy.get("button[type='submit']").click();
 
@@ -616,6 +671,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct input
       cy.get("input#input-0").type("first");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -628,6 +686,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type incorrect answer
       cy.get("input#input-0").type("last");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // submit Question
       cy.get("button[type='submit']").click();
@@ -657,7 +718,10 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-1").type("multiple");
 
       // Type incorrect value
-      cy.get("input#input-2").type("false");
+      cy.get("input#input-2").type("one");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // submit Question
       cy.get("button[type='submit']").click();
@@ -665,7 +729,7 @@ describe("Gap Text component inside Question component", () => {
       // Assert that the the border changes to green or red on the input elements
       cy.get("input#input-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
       cy.get("input#input-1").should("have.css", "border", "1px solid rgb(255, 0, 0)");
-      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(0, 128, 0)");
 
       // Assert that the given answer is incorrect
       cy.contains("No, that's false!").should("exist");
@@ -677,6 +741,9 @@ describe("Gap Text component inside Question component", () => {
       // Type incorrect input
       cy.get("input#input-0").type("false");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -685,6 +752,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("first");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit question
       cy.get("button[type='submit']").click();
@@ -699,6 +769,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct input
       cy.get("input#input-0").type("first");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -707,6 +780,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type incorrect input
       cy.get("input#input-0").type("incorrect");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit question
       cy.get("button[type='submit']").click();
@@ -751,6 +827,9 @@ describe("Gap Text component inside Question component", () => {
       cy.contains("Text below table").should("be.visible");
       cy.contains("strong", "table").should("exist");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -766,6 +845,9 @@ describe("Gap Text component inside Question component", () => {
       cy.get(".question-gap-text").invoke("height").should("be.lessThan", 130);
       cy.get("td").find("input").type("work").should("have.value", "work");
       cy.contains("em", "italic");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.contains("This is the title of the eight question with table").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();

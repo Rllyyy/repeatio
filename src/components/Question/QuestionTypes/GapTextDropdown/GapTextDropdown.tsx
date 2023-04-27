@@ -59,10 +59,10 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
 
     //Update the selected input
     const handleChange = useCallback(
-      (e: unknown) => {
+      (e: Event) => {
         const newSelectValue = selectedValues.map((selectedValue) => {
-          if (selectedValue.id === (e as React.ChangeEvent<HTMLSelectElement>).target.id) {
-            return { ...selectedValue, value: (e as React.ChangeEvent<HTMLSelectElement>).target.value };
+          if (selectedValue.id === (e.target as HTMLOptionElement)?.id) {
+            return { ...selectedValue, value: (e.target as HTMLOptionElement)?.value };
           } else {
             return selectedValue;
           }
@@ -75,22 +75,22 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
     //Inset the select elements at the corresponding select wrapper index,
     //because ReactDOMServer.renderToString ignores onChange handlers
     useLayoutEffect(() => {
-      //Has to be selected with query because ReactDOMServer.renderToString ignores refs
-      const selectLength = document.querySelectorAll(".question-gap-text-with-dropdown .select").length;
+      //Get all select elements by class
+      const selectElements = document.getElementsByClassName("select") as HTMLCollectionOf<HTMLSelectElement>;
 
       //Guards
       if (
         selectedValues === undefined ||
-        selectLength === 0 ||
+        selectElements.length === 0 ||
         selectedValues.length <= 0 ||
-        selectLength !== selectedValues.length
+        selectElements.length !== selectedValues.length
       ) {
         return;
       }
 
       //Append a child to the wrapper x amount of times
-      for (let index = 0; index < selectLength; index++) {
-        const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+      for (let index = 0; index < selectElements.length; index++) {
+        const select = selectElements[index];
 
         if (!select) return;
 
@@ -102,8 +102,7 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
 
         if (formDisabled) {
           select.disabled = true;
-
-          if (options.dropdowns?.[index]?.correct === selectedValues[index].value) {
+          if (options.dropdowns?.[index]?.correct === selectedValues[index]?.value) {
             select.style.borderColor = "green";
           } else {
             select.style.borderColor = "red";
@@ -114,26 +113,27 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
       }
 
       return () => {
-        const selectLength = document.querySelectorAll(".question-gap-text-with-dropdown select").length;
+        const selectElements = document.getElementsByClassName("select") as HTMLCollectionOf<HTMLSelectElement>;
 
         //Guards
         if (
           selectedValues === undefined ||
-          selectLength === 0 ||
+          selectElements.length === 0 ||
           selectedValues.length <= 0 ||
-          selectLength !== selectedValues.length
+          selectElements.length !== selectedValues.length
         ) {
           return;
         }
 
-        // Add event listeners to each gap
-        for (let index = 0; index < selectLength; index++) {
-          const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+        // Remove event listeners to each gap
+        for (let index = 0; index < selectElements.length; index++) {
+          const select = selectElements[index];
 
           if (!select) return;
 
           // Remove event listeners
           select.removeEventListener("change", handleChange);
+          select.removeAttribute("style");
         }
       };
     }, [selectedValues, formDisabled, handleChange, options.dropdowns]);
@@ -188,10 +188,10 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
         });
         setSelectedValues([...emptySelected]);
 
-        const elements = document.getElementsByClassName("select").length;
+        const selectElements = document.getElementsByClassName("select") as HTMLCollectionOf<HTMLSelectElement>;
 
-        for (let index = 0; index < elements; index++) {
-          const select = document.getElementById(`select-${index}`) as HTMLSelectElement;
+        for (let index = 0; index < selectElements.length; index++) {
+          const select = selectElements[index];
 
           if (!select) return;
 
@@ -212,16 +212,12 @@ export const GapTextDropdown = forwardRef<IForwardRefFunctions, GapTextDropdownC
     }));
 
     //JSX
-    return (
-      <>
-        <div className='question-gap-text-with-dropdown' dangerouslySetInnerHTML={{ __html: memoedText }} />
-      </>
-    );
+    return <div className='question-gap-text-with-dropdown' dangerouslySetInnerHTML={{ __html: memoedText }} />;
   }
 );
 
 function textWithBlanks(text: string, shuffledDropdowns: string[][]): string {
-  //Render the json string in markdown and return html nodes
+  //Render the json string in markdown and return a string of html
   //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
   //remarkGfm draws markdown tables
   const htmlString = ReactDOMServer.renderToString(

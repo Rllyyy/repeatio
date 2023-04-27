@@ -13,7 +13,6 @@ describe("Test deletion of module", () => {
     });
   });
 
-  //TODO delete this
   it("should delete module that is located in localStorage", () => {
     //Add item to localStorage and check existence
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");

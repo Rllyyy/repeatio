@@ -1,6 +1,6 @@
 //Import React
 import { StrictMode } from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { Route, Routes } from "react-router-dom";
 import { Router } from "./components/Router/Router";
 
@@ -34,7 +34,9 @@ import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
+root.render(
   <StrictMode>
     <Router>
       <Sidebar />
@@ -64,6 +66,5 @@ ReactDOM.render(
       <Footer />
       <CustomToastContainer />
     </Router>
-  </StrictMode>,
-  document.getElementById("root")
+  </StrictMode>
 );

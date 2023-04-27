@@ -3,6 +3,8 @@
 */
 
 /* ----------------------------------- Imports -------------------------------------------- */
+import { FC, PropsWithChildren } from "react";
+
 //MaterialUI
 import { styled } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
@@ -88,11 +90,10 @@ const StyledMenu = styled((props: MenuProps) => (
 interface IPopoverMenu {
   anchorEl: HTMLButtonElement | null;
   handlePopoverClose: () => void;
-  children: React.ReactNode;
 }
 
 //PopoverMenu that is returned
-export const PopoverMenu = ({ anchorEl, handlePopoverClose, children }: IPopoverMenu) => {
+export const PopoverMenu: FC<PropsWithChildren<IPopoverMenu>> = ({ anchorEl, handlePopoverClose, children }) => {
   return (
     <StyledMenu
       MenuListProps={{
