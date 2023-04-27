@@ -87,14 +87,14 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
   //Attack events to the inputs
   useLayoutEffect(() => {
     // Get the number of of gaps
-    const inputElementsLength = document.getElementsByClassName("gap").length;
+    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
 
     // Return from function if there are no elements found
-    if (inputElementsLength === undefined || inputElementsLength === 0) return;
+    if (inputElements === undefined || inputElements.length === 0) return;
 
     // Loop through
-    for (let index = 0; index < inputElementsLength; index++) {
-      const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+    for (let index = 0; index < inputElements.length; index++) {
+      const input = inputElements[index];
 
       if (!input) return;
 
@@ -107,60 +107,46 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
 
       // attach function to prevent form submission on enter click
       input.addEventListener("keydown", onKeyDownPreventSubmit);
+
+      if (formDisabled) {
+        // disable the input
+        input.disabled = true;
+
+        //  Add green or red border if the form was submitted (and is therefor disabled)
+        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
+          input.style.borderColor = "green";
+        } else {
+          input.style.borderColor = "red";
+        }
+      } else {
+        // enable the input
+        input.disabled = false;
+      }
     }
 
     return () => {
       // Get the number of of gaps
-      const inputElementLength = document.getElementsByClassName("gap").length;
+      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
 
       // Guards if there are no elements
-      if (inputElementLength === undefined || inputElementLength === 0) {
+      if (inputElements === undefined || inputElements.length === 0) {
         return;
       }
 
-      // Add event listeners to each gap
-      for (let index = 0; index < inputElementLength; index++) {
-        const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+      // Remove event listeners from each gap
+      for (let index = 0; index < inputElements.length; index++) {
+        const input = inputElements[index];
 
         if (!input) return;
 
         // Remove event listeners
         input.removeEventListener("change", updateInput);
         input.removeEventListener("keydown", onKeyDownPreventSubmit);
+        input.removeAttribute("style");
+        input.disabled = false;
       }
     };
-  }, [inputValues, options, updateInput, options.correctGapValues, onKeyDownPreventSubmit]);
-
-  useLayoutEffect(() => {
-    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
-
-    for (let index = 0; index < inputElements.length; index++) {
-      // Logic if form is disabled/enabled
-      if (formDisabled) {
-        // disable the input
-        inputElements[index].disabled = true;
-
-        //  Add green or red border if the form was submitted (and is therefor disabled)
-        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
-          inputElements[index].style.borderColor = "green";
-        } else {
-          inputElements[index].style.borderColor = "red";
-        }
-      } else {
-        // enable the input
-        inputElements[index].disabled = false;
-      }
-    }
-
-    return () => {
-      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
-
-      for (let index = 0; index < inputElements.length; index++) {
-        inputElements[index].removeAttribute("style");
-        inputElements[index].disabled = true;
-      }
-    };
-  }, [formDisabled]);
+  }, [inputValues, updateInput, options.correctGapValues, onKeyDownPreventSubmit, formDisabled]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
@@ -191,9 +177,10 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         //return empty string for every input value in the array
         setInputValues(Array(inputValues.length).fill(""));
 
-        const elements = document.getElementsByClassName("gap").length;
-        for (let index = 0; index < elements; index++) {
-          const input = document.getElementById(`input-${index}`) as HTMLInputElement;
+        const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+        for (let index = 0; index < inputElements.length; index++) {
+          const input = inputElements[index];
 
           if (!input) return;
 
