@@ -85,23 +85,25 @@ interface IMockQuestionWithRouter {
 const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ qID, mode, order }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${mode}&order=${order}`]}>
-      <Routes>
-        <Route
-          path='/module/:moduleID/question/:questionID'
-          element={
-            <QuestionIdsContext.Provider
-              value={
-                {
-                  questionIds: data.questions.map((question) => question.id),
-                  setQuestionIds: mockSetQuestionIds,
-                } as IQuestionIdsContext
-              }
-            >
-              <Question />
-            </QuestionIdsContext.Provider>
-          }
-        />
-      </Routes>
+      <main>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsContext.Provider
+                value={
+                  {
+                    questionIds: data.questions.map((question) => question.id),
+                    setQuestionIds: mockSetQuestionIds,
+                  } as IQuestionIdsContext
+                }
+              >
+                <Question />
+              </QuestionIdsContext.Provider>
+            }
+          />
+        </Routes>
+      </main>
     </MemoryRouter>
   );
 };
