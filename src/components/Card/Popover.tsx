@@ -20,7 +20,7 @@ interface IPopoverButton {
   target?: string;
 }
 //Component
-export const PopoverButton = ({ handleClick, target }: IPopoverButton) => {
+export const PopoverButton: React.FC<IPopoverButton> = ({ handleClick, target }) => {
   return (
     <button
       className='popover-button'
@@ -64,6 +64,9 @@ const StyledMenu = styled((props: MenuProps) => (
     "& .MuiMenuItem-root": {
       color: "inherit",
       cursor: "pointer",
+      "@media screen and (max-width: 650px)": {
+        minHeight: "44px",
+      },
       "&:hover": {
         "@media screen and (pointer: fine) and (hover: hover)": {
           backgroundColor: "rgb(240, 240, 245)",
@@ -126,9 +129,9 @@ const IconWithText = ({ icon, text }: { icon: JSX.Element; text: string }) => {
 };
 
 //Component
-export const PopoverMenuItem = ({ handleClick, text, icon, disabled }: IPopoverMenuItem) => {
+export const PopoverMenuItem: React.FC<IPopoverMenuItem> = ({ handleClick, text, icon, disabled, ...props }) => {
   return (
-    <MenuItem onClick={handleClick} disableRipple disabled={disabled}>
+    <MenuItem onClick={handleClick} disableRipple disabled={disabled} {...props}>
       <IconWithText icon={icon} text={text} />
     </MenuItem>
   );

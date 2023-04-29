@@ -13,11 +13,6 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Define global process
-// https://github.com/cypress-io/cypress/issues/21434
-global.process = global.process || {};
-global.process.env = global.process.env || {};
-
 // Import commands.js using ES2015 syntax:
 import "./commands";
 
@@ -25,6 +20,11 @@ import "./commands";
 // require('./commands')
 
 import { mount } from "cypress/react18";
+
+// Define global process
+// https://github.com/cypress-io/cypress/issues/21434
+global.process = global.process || {};
+global.process.env = global.process.env || {};
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.

@@ -9,6 +9,7 @@ import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
 import { ModuleNotFound } from "./ModuleNotFound";
+import MenuItem from "@mui/material/MenuItem";
 
 //Icons
 import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
@@ -433,21 +434,20 @@ const BookmarkedQuestionsBottom = () => {
   );
 };
 
-const ImportBookmarkedQuestions = ({
-  handleChange,
-}: {
+interface IImportBookmarkedQuestions {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
-}) => {
+}
+
+const ImportBookmarkedQuestions: React.FC<IImportBookmarkedQuestions> = ({ handleChange }) => {
   return (
-    <li className='MuiMenuItem-root'>
+    <MenuItem className='MuiMenuItem-root' disableRipple disableGutters sx={{ padding: "0" }}>
       <label
         htmlFor='file-upload'
-        className='MuiMenuItem-root'
         style={{
-          minHeight: "48px",
           padding: "6px 16px",
           display: "flex",
           alignItems: "center",
+          cursor: "pointer",
         }}
       >
         <TbFileImport />
@@ -461,6 +461,6 @@ const ImportBookmarkedQuestions = ({
         accept='.json'
         onChange={handleChange}
       />
-    </li>
+    </MenuItem>
   );
 };
