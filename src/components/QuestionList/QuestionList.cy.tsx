@@ -9,6 +9,8 @@ import "../../index.css";
 
 //Types
 import { IParams } from "../../utils/types";
+import { parseJSON } from "../../utils/parseJSON";
+import { IModule } from "../module/module";
 
 //Mocha for typescript
 declare var it: Mocha.TestFunction;
@@ -44,5 +46,121 @@ describe("QuestionList", () => {
   it("should render 404 Error if module isn't found", () => {
     cy.mount(<QuestionListWithRouter moduleID='error' />);
     cy.contains("h1", "404").should("exist");
+  });
+
+  it("should move a question down and change localStorage", { viewportWidth: 800 }, () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
+    cy.get("button[aria-label='Move qID-2 down'")
+      .click()
+      .then(() => {
+        cy.get("span.id").should(($spans) => {
+          const idValues = $spans.toArray().map((span) => span.textContent);
+          expect(idValues).to.deep.equal(["qID-1", "qID-3", "qID-2", "qID-4", "qID-5", "qID-6"]);
+        });
+      })
+      .then(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+        // Assert that none of the other module values changed
+        expect(module?.id).to.deep.equal("cypress_1");
+        expect(module?.name).to.deep.equal("Cypress Fixture Module");
+
+        // Assert the changed order of question
+        const moduleQuestionIds = module?.questions.map((question) => question.id);
+        expect(moduleQuestionIds).to.deep.equal(["qID-1", "qID-3", "qID-2", "qID-4", "qID-5", "qID-6"]);
+      });
+  });
+
+  it("should move a question two down and update localStorage with changes", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
+    cy.get("button[aria-label='Move qID-2 down'")
+      .click()
+      .click()
+      .then(() => {
+        cy.get("span.id").should(($spans) => {
+          const idValues = $spans.toArray().map((span) => span.textContent);
+          expect(idValues).to.deep.equal(["qID-1", "qID-3", "qID-4", "qID-2", "qID-5", "qID-6"]);
+        });
+      })
+      .then(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+        // Assert that none of the other module values changed
+        expect(module?.id).to.deep.equal("cypress_1");
+        expect(module?.name).to.deep.equal("Cypress Fixture Module");
+
+        // Assert the changed order of question
+        const moduleQuestionIds = module?.questions.map((question) => question.id);
+        expect(moduleQuestionIds).to.deep.equal(["qID-1", "qID-3", "qID-4", "qID-2", "qID-5", "qID-6"]);
+      });
+  });
+
+  it("should move a question up and change the localStorage", { viewportWidth: 800 }, () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
+    cy.get("button[aria-label='Move qID-2 up'")
+      .click()
+      .then(() => {
+        cy.get("span.id").should(($spans) => {
+          const idValues = $spans.toArray().map((span) => span.textContent);
+          expect(idValues).to.deep.equal(["qID-2", "qID-1", "qID-3", "qID-4", "qID-5", "qID-6"]);
+        });
+      })
+      .then(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+        // Assert that none of the other module values changed
+        expect(module?.id).to.deep.equal("cypress_1");
+        expect(module?.name).to.deep.equal("Cypress Fixture Module");
+
+        // Assert the changed order of question
+        const moduleQuestionIds = module?.questions.map((question) => question.id);
+        expect(moduleQuestionIds).to.deep.equal(["qID-2", "qID-1", "qID-3", "qID-4", "qID-5", "qID-6"]);
+      });
+  });
+
+  it("should move the first question to the end if clicking on move up", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
+    cy.get("button[aria-label='Move qID-1 up'")
+      .click()
+      .then(() => {
+        cy.get("span.id").should(($spans) => {
+          const idValues = $spans.toArray().map((span) => span.textContent);
+          expect(idValues).to.deep.equal(["qID-2", "qID-3", "qID-4", "qID-5", "qID-6", "qID-1"]);
+        });
+      })
+      .then(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+        // Assert that none of the other module values changed
+        expect(module?.id).to.deep.equal("cypress_1");
+        expect(module?.name).to.deep.equal("Cypress Fixture Module");
+
+        // Assert the changed order of question
+        const moduleQuestionIds = module?.questions.map((question) => question.id);
+        expect(moduleQuestionIds).to.deep.equal(["qID-2", "qID-3", "qID-4", "qID-5", "qID-6", "qID-1"]);
+      });
+  });
+
+  it("should move the last question to the beginning if clicking on move down", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
+    cy.get("button[aria-label='Move qID-6 down'")
+      .click()
+      .then(() => {
+        cy.get("span.id").should(($spans) => {
+          const idValues = $spans.toArray().map((span) => span.textContent);
+          expect(idValues).to.deep.equal(["qID-6", "qID-1", "qID-2", "qID-3", "qID-4", "qID-5"]);
+        });
+      })
+      .then(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+        // Assert that none of the other module values changed
+        expect(module?.id).to.deep.equal("cypress_1");
+        expect(module?.name).to.deep.equal("Cypress Fixture Module");
+
+        // Assert the changed order of question
+        const moduleQuestionIds = module?.questions.map((question) => question.id);
+        expect(moduleQuestionIds).to.deep.equal(["qID-6", "qID-1", "qID-2", "qID-3", "qID-4", "qID-5"]);
+      });
   });
 });
