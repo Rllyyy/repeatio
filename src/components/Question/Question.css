@@ -351,7 +351,7 @@
   margin: 0 5px;
   padding: 5px;
   max-width: 70px;
-  border: 1.5px solid var(--custom-border-color);
+  border: 1px solid var(--custom-border-color-light);
   border-radius: 4px;
   outline: none;
 }
@@ -376,22 +376,23 @@
   outline-offset: 0px;
 }
 
+.question-actions-navigation-wrapper input:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: -1px;
+  border-color: var(--custom-prime-color);
+}
+
 /* Media for devices with mouse input */
 @media only screen and (pointer: fine) {
   .question-actions-navigation-wrapper input:hover {
-    border-color: var(--custom-prime-color);
+    border-color: var(--custom-border-color);
     outline: var(--custom-prime-color);
-    outline-width: thin;
   }
 
   .question-actions-navigation-wrapper button:hover:not(:disabled) svg {
     color: var(--custom-prime-color);
     stroke: var(--custom-prime-color);
     fill: var(--custom-prime-color);
-  }
-
-  .question-actions-navigation-wrapper input:hover {
-    border-color: var(--custom-secondary-color);
   }
 
   .question-actions-navigation-wrapper input:focus {

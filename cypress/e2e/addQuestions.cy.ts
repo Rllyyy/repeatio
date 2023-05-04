@@ -119,9 +119,9 @@ describe("Adding a question using the QuestionEditor component", () => {
     //Click add button
     cy.get(".ReactModal__Content").contains("button", "Add").click();
 
-    //Navigate to correct question by using to last button after clicking start
+    //Navigate to the just added question
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
-    cy.get("button[aria-label='Navigate to last Question'").click();
+    cy.get("input[aria-label='Navigate to question number']").clear().type("7");
 
     //Check that id, title, points and help are in the document
     Object.values(newQuestion).forEach((item) => {
@@ -222,7 +222,7 @@ describe("Adding a question using the QuestionEditor component", () => {
 
     //Visit new Question
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
-    cy.get("button[aria-label='Navigate to last Question']").click();
+    cy.get("input[aria-label='Navigate to question number']").clear().type("7");
     cy.contains("ID: new-id");
 
     cy.contains("Textarea value for option-0").click();

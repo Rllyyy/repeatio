@@ -194,30 +194,16 @@ describe("Question", () => {
     cy.contains("ID: qID-1").should("exist");
   });
 
-  it("should navigate to first question when clicking the to first question button", () => {
-    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
-    cy.visit("/module/cypress_1/question/qID-4?mode=practice&order=chronological");
-
-    cy.get("button[aria-label='Navigate to first Question']").click();
-
-    // Assert that the url changed
-    cy.url().should("include", "/module/cypress_1/question/qID-1?mode=practice&order=chronological");
-
-    // Assert that the new question loaded
-    cy.contains("ID: qID-1").should("exist");
-  });
-
-  it("should navigate to last question when clicking the to last question button", () => {
+  it("should navigate to the provided input navigation value", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.visit("/module/cypress_1/question/qID-2?mode=practice&order=chronological");
 
-    cy.get("button[aria-label='Navigate to last Question']").click();
+    cy.get("input[aria-label='Navigate to question number']").clear().type("4");
 
-    // Assert that the url changed
-    cy.url().should("include", "/module/cypress_1/question/qID-6?mode=practice&order=chronological");
+    cy.url().should("include", "/module/cypress_1/question/qID-4?mode=practice&order=chronological");
 
     // Assert that the new question loaded
-    cy.contains("ID: qID-6").should("exist");
+    cy.contains("ID: qID-4").should("exist");
   });
 
   it("should navigate to the last question if clicking previous on first question", () => {

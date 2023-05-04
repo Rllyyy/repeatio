@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import Home from "../../pages/index";
 import "../../index.css";
 import { MemoryRouter, Route, Routes } from "react-router-dom";

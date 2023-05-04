@@ -1,6 +1,5 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
 
 //Context
 import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questionIdsContext";
@@ -9,11 +8,11 @@ import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questio
 import { IParams } from "../../../../utils/types";
 import { TUseQuestion } from "../../useQuestion";
 
-//Navigation svg from https://tablericons.com
+//Icons
+import { TbPlayerSkipBackFilled, TbPlayerSkipForwardFilled } from "react-icons/tb";
 
 //TODO
 //- Consider moving all Buttons into Components
-//- Remove to first and to last question
 
 type TQuestionNavigation = {
   handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
@@ -21,42 +20,12 @@ type TQuestionNavigation = {
 
 export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ handleResetQuestionComponent }) => {
   //Access custom hook navigation functions
-  const {
-    navigateToFirstQuestion,
-    navigateToPreviousQuestion,
-    navigateToNextQuestion,
-    navigateToLastQuestion,
-    navigateToInputValue,
-    progressPlaceholder,
-  } = useQuestionNavigation();
+  const { navigateToPreviousQuestion, navigateToNextQuestion, navigateToInputValue, preventInputSubmit, inputValue } =
+    useQuestionNavigation();
 
   //JSX
   return (
     <div className={`question-navigation`}>
-      {/* To first Question */}
-      <button
-        data-testid='first-question-button'
-        aria-label='Navigate to first Question'
-        onClick={() => {
-          navigateToFirstQuestion();
-          handleResetQuestionComponent();
-        }}
-        type='button'
-      >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='navigation-start'
-          width='48'
-          height='48'
-          viewBox='0 0 24 24'
-          fill='none'
-          aria-hidden='true'
-        >
-          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-          <path d='M20 5v14l-12 -7z' />
-          <line x1='5' y1='5' x2='5' y2='19' />
-        </svg>
-      </button>
       {/* To previous Question */}
       <button
         data-testid='previous-question-button'
@@ -67,22 +36,17 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ handleResetQ
         }}
         type='button'
       >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='navigation-before'
-          width='48'
-          height='48'
-          viewBox='0 0 24 24'
-          fill='true'
-          aria-hidden='true'
-        >
-          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-          <path d='M7 4v16l13 -8z' />
-        </svg>
+        <TbPlayerSkipBackFilled />
       </button>
       {/* To Input value */}
-      {/* //TODO handle Change  */}
-      <input type='number' placeholder={progressPlaceholder} min='1' onKeyDown={navigateToInputValue} />
+      <input
+        aria-label='Navigate to question number'
+        type='number'
+        min='1'
+        value={inputValue}
+        onChange={navigateToInputValue}
+        onKeyDown={preventInputSubmit}
+      />
       {/* To next Question */}
       <button
         data-testid='nav-next-question-button'
@@ -93,48 +57,15 @@ export const QuestionNavigation: React.FC<TQuestionNavigation> = ({ handleResetQ
           handleResetQuestionComponent();
         }}
       >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='navigation-skip'
-          width='48'
-          height='48'
-          viewBox='0 0 24 24'
-          fill='none'
-          aria-hidden='true'
-        >
-          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-          <path d='M7 4v16l13 -8z' />
-        </svg>
-      </button>
-      {/* Button to last Question */}
-      <button
-        data-testid='last-question-button'
-        aria-label='Navigate to last Question'
-        type='button'
-        onClick={() => {
-          navigateToLastQuestion();
-          handleResetQuestionComponent();
-        }}
-      >
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          className='icon icon-tabler icon-tabler-player-skip-forward'
-          width='48'
-          height='48'
-          viewBox='0 0 24 24'
-          fill='none'
-          aria-hidden='true'
-        >
-          <path stroke='none' d='M0 0h24v24H0z' fill='none' />
-          <path d='M4 5v14l12 -7z' />
-          <line x1='19' y1='5' x2='19' y2='19' />
-        </svg>
+        <TbPlayerSkipForwardFilled />
       </button>
     </div>
   );
 };
 
 export const useQuestionNavigation = () => {
+  const [inputValue, setInputValue] = useState<string>("");
+
   //context
   const { questionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
 
@@ -150,22 +81,26 @@ export const useQuestionNavigation = () => {
   const mode = new URLSearchParams(search).get("mode") || "practice"; //Fallback to practice if urlSearchParams is undefined
   const order = new URLSearchParams(search).get("order") || "chronological"; //Fallback to chronological order if urlSearchParams is undefined
 
-  //Navigation
-  //Go to first question in module
-  const navigateToFirstQuestion = () => {
-    const firstIDInQuestionArray = questionIds?.[0];
+  // Set the value of the navigation input on url change
+  useEffect(() => {
+    //find the current index
+    const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
 
-    //Only push to history if not already at the first question
-    //TODO notify the user that the already is at the beginning
-    if (params.questionID !== firstIDInQuestionArray) {
-      navigate({
-        pathname: `/module/${params.moduleID}/question/${firstIDInQuestionArray}`,
-        search: `?mode=${mode}&order=${order}`,
-      });
+    //Return the index and add 1 so indexes aren't zero based if question can be found
+    if (currentIndex >= 0 && typeof currentIndex !== "undefined") {
+      // Update the input value to be index + 1
+      setInputValue((currentIndex + 1).toString());
+    } else {
+      setInputValue("");
     }
-  };
 
-  //Go to the previous question
+    return () => {
+      setInputValue("");
+    };
+  }, [params.questionID, questionIds]);
+
+  //Navigation
+  //Navigate to the previous question
   const navigateToPreviousQuestion = () => {
     //get Current index
     const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
@@ -184,28 +119,36 @@ export const useQuestionNavigation = () => {
     }
   };
 
-  //TODO: Go to provided input
-  const navigateToInputValue = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    toast.warn("This feature isn't implemented yet :/", {
-      position: toast.POSITION.TOP_RIGHT,
-    });
-    if (e.key === "Enter") {
-      e.preventDefault();
+  // Navigate to the position with the input value and change input value
+  const navigateToInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    // Don't allow the user to enter just 0
+    if (value === "0") return;
+
+    // Update state
+    setInputValue(value);
+
+    // Convert input string to number
+    const intValue = parseInt(value);
+
+    // Navigate to position if value is a number and bigger than 0
+    if (!isNaN(intValue) && intValue >= 1) {
+      const newID = questionIds[intValue - 1];
+
+      if (newID) {
+        navigate({
+          pathname: `/module/${params.moduleID}/question/${newID}`,
+          search: `?mode=${mode}&order=${order}`,
+        });
+      }
     }
   };
 
-  //Return the placeholder value for the input
-  const currentQuestionPageIndexPlaceholder = () => {
-    //find the current index
-    const currentIndex = questionIds?.findIndex((id) => id === params.questionID);
-
-    if (typeof currentIndex === "undefined") return;
-
-    //Return the index and add 1 so indexes aren't zero based if question can be found
-    if (currentIndex >= 0) {
-      return (currentIndex + 1).toString();
-    } else {
-      return undefined;
+  //Prevent input submitting question on enter key
+  const preventInputSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
     }
   };
 
@@ -230,26 +173,11 @@ export const useQuestionNavigation = () => {
     }
   };
 
-  //Go to last question
-  const navigateToLastQuestion = () => {
-    const lastIDInQuestionArray = questionIds?.[questionIds.length - 1];
-
-    //Only push to history if not already at the last point
-    //TODO notify the user that the end was reached
-    if (params.questionID !== lastIDInQuestionArray) {
-      navigate({
-        pathname: `/module/${params.moduleID}/question/${lastIDInQuestionArray}`,
-        search: `?mode=${mode}&order=${order}`,
-      });
-    }
-  };
-
   return {
-    navigateToFirstQuestion,
     navigateToPreviousQuestion,
     navigateToNextQuestion,
-    navigateToLastQuestion,
     navigateToInputValue,
-    progressPlaceholder: currentQuestionPageIndexPlaceholder(),
+    preventInputSubmit,
+    inputValue,
   } as const;
 };

@@ -1,6 +1,6 @@
-const { defineConfig } = require("cypress");
-const { rmdir, existsSync } = require("fs");
 import viteConfig from "./vite.config";
+import { defineConfig } from "cypress";
+import { rmdir, existsSync } from "fs";
 
 export default defineConfig({
   e2e: {

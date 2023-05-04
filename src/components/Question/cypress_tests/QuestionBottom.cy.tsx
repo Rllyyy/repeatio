@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 import { Question, QuestionBottom } from "../Question";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { IParams, ISearchParams } from "../../../utils/types";
@@ -403,5 +405,215 @@ describe("Question Bottom Component", () => {
 
     // Assert that the navigation is still visible
     cy.get(".question-actions-navigation-wrapper").should("be.visible");
+  });
+
+  it("should change the question when changing the navigation input", () => {
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='gap_text'
+        order='chronological'
+        questionID='gt-1'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number'").type("1");
+
+    cy.contains("ID: gt-11").should("exist");
+  });
+
+  it("should show the current position", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-3'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").should("have.value", "3");
+  });
+
+  it("should show the current position at 0 for the first question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-1'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").should("have.value", "1");
+  });
+
+  it("should not change/unmount the question if clearing the navigation input", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-1'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").clear().should("have.value", "");
+
+    cy.contains("ID: qID-1");
+  });
+
+  it("should keep the focus on the input navigation on change", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-1'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").clear().type("4");
+
+    // Assert that the input is focused
+    cy.focused().should("have.attr", "aria-label", "Navigate to question number");
+  });
+
+  it("should not change the question if navigating to a position that is not in range of the questions", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-1'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").type("23").should("have.value", "123");
+
+    cy.contains("ID: qID-1");
+  });
+
+  it("should show empty text content if the question isn't found", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-does-not-exist'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").should("have.value", "").type("3");
+
+    cy.contains("ID: qID-3").should("exist");
+  });
+
+  it("should show the current position in input when navigating to the next question", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='cypress_1'
+        order='chronological'
+        questionID='qID-2'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    // Navigate to next question
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    cy.get("input[aria-label='Navigate to question number']").should("have.value", "3");
+  });
+
+  it("should clear the question correction when navigating by using the input navigation", () => {
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='multiple_response'
+        order='chronological'
+        questionID='mr-2'
+      />
+    );
+
+    // Submit question
+    cy.get("button[type='submit'").click();
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    cy.get("input[aria-label='Navigate to question number'").clear().type("1");
+
+    // Assert that the question correction disappeared
+    cy.get(".question-correction").should("not.exist");
+
+    // Assert that all input elements are active
+    cy.get("section.question-user-response")
+      .get("input[type='checkbox']")
+      .each(($el) => {
+        expect($el).to.have.prop("disabled", false);
+      });
+  });
+
+  it("should not submit the question when clicking enter on the navigation input element", () => {
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+    cy.mount(
+      <RenderComponentWithRouter
+        component={<Question />}
+        mode='practice'
+        moduleID='multiple_response'
+        order='chronological'
+        questionID='mr-2'
+      />
+    );
+
+    // Show navigation
+    cy.get("button[aria-label='Show Navigation']").click();
+
+    // Type enter
+    cy.get("input[aria-label='Navigate to question number'").type("{enter}");
+
+    cy.get(".question-correction").should("not.exist");
   });
 });
