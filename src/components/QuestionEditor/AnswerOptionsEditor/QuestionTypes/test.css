@@ -1,0 +1,19 @@
+.add-line-circle:hover {
+  transform: scale(1.1);
+}
+
+/* .line:hover {
+ // stroke: red;
+ // color: "blue";
+} */
+
+.circle-x {
+  /* display: none; */
+  fill: black;
+}
+
+.gee:hover .circle-x {
+  stroke: blue;
+  display: block;
+  cursor: pointer;
+}
