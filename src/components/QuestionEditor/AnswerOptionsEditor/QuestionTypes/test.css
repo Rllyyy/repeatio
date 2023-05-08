@@ -1,19 +1,26 @@
 .add-line-circle:hover {
   transform: scale(1.1);
+  border-color: var(--custom-prime-color);
 }
 
-/* .line:hover {
- // stroke: red;
- // color: "blue";
-} */
-
-.circle-x {
-  /* display: none; */
-  fill: black;
+.line-container:hover circle {
+  r: 9;
 }
 
-.gee:hover .circle-x {
-  stroke: blue;
-  display: block;
-  cursor: pointer;
+.add-line-circle {
+  border-color: rgb(150, 150, 150);
+}
+
+.editor-ext-match-left.highlight-editor-left-circles .add-line-circle,
+.editor-ext-match-right.highlight-editor-right-circles .add-line-circle {
+  border-color: rgb(122, 122, 245);
+}
+
+.editor-ext-match-left.highlight-editor-left-circles .add-line-circle:hover,
+.editor-ext-match-right.highlight-editor-right-circles .add-line-circle:hover {
+  border-color: var(--custom-prime-color);
+}
+
+.add-line-circle.editor-highlight-circle {
+  border-color: rgb(122, 122, 245);
 }
