@@ -51,9 +51,9 @@ interface ICorrectMatch {
 }
 
 export interface IExtendedMatch {
-  leftSide: IExtendedMatchItem[];
-  rightSide: IExtendedMatchItem[];
-  correctMatches: ICorrectMatch[];
+  leftSide: IExtendedMatchItem[] | undefined;
+  rightSide: IExtendedMatchItem[] | undefined;
+  correctMatches: ICorrectMatch[] | undefined;
 }
 
 interface IExtendedMatchProps extends IQuestionTypeComponent {
@@ -87,8 +87,8 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     //Randomize the values.
     //Other question types (multiple-response /-choice) check if the new shuffled array is equal to the old one
     //and get a new one until they aren't but I personally think this is not worth the performance
-    const leftShuffle = shuffleArray(options.leftSide);
-    const rightShuffle = shuffleArray(options.rightSide);
+    const leftShuffle = shuffleArray(options.leftSide || []);
+    const rightShuffle = shuffleArray(options.rightSide || []);
 
     //Set current refs
     left.current = leftShuffle.map(() => createRef());
@@ -246,22 +246,23 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       //TODO remove line if property (right or left) is missing
 
       //Check if all the elements in solution is also present in the lines array (state)
-      const everySolutionInState = options.correctMatches.every((match) => {
-        const isEqualTest = lines.some((line) => {
-          const matchObject = {
-            left: line.left?.getAttribute("data-ident"),
-            right: line.right?.getAttribute("data-ident"),
-          };
+      const everySolutionInState =
+        options.correctMatches?.every((match) => {
+          const isEqualTest = lines.some((line) => {
+            const matchObject = {
+              left: line.left?.getAttribute("data-ident"),
+              right: line.right?.getAttribute("data-ident"),
+            };
 
-          return isEqual(match, matchObject);
-        });
+            return isEqual(match, matchObject);
+          });
 
-        return isEqualTest;
-      });
+          return isEqualTest;
+        }) || true;
 
       //Check if every option matches the solution and compare the length of the arrays, so the user can't trick the program by matching all possibilities.
       //And return boolean (if is correct) to question form
-      return everySolutionInState && options.correctMatches.length === lines.length;
+      return everySolutionInState && options.correctMatches?.length === lines.length;
     },
 
     //Return the correct answer as a Component so it can be displayed in the parent component
@@ -294,8 +295,8 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       right.current = null;
 
       //Reshuffle the options
-      const leftShuffle = shuffleArray(options.leftSide);
-      const rightShuffle = shuffleArray(options.rightSide);
+      const leftShuffle = shuffleArray(options.leftSide || []);
+      const rightShuffle = shuffleArray(options.rightSide || []);
 
       //Set current refs
       left.current = leftShuffle.map(() => createRef());
@@ -312,7 +313,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     <div className='question-extended-match'>
       <div className='extended-match-grid'>
         <div className={`ext-match-left-side ${highlightLeft && "highlight-all-left-circles"}`}>
-          {shuffledLeftOptions.map((item, index) => {
+          {shuffledLeftOptions?.map((item, index) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>
@@ -339,7 +340,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
         </div>
         {lines.length > 0 && <Canvas lines={lines} />}
         <div className={`ext-match-right-side ${highlightRight && "highlight-all-right-circles"}`}>
-          {shuffledRightOptions.map((item, index) => {
+          {shuffledRightOptions?.map((item, index) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`}>

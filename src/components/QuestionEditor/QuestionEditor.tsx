@@ -34,6 +34,8 @@ import { IQuestion, TUseQuestion } from "../Question/useQuestion";
 import { TAnswerOptions } from "../Question/useQuestion";
 import { parseJSON } from "../../utils/parseJSON";
 import { IModule } from "../module/module";
+import { IExtendedMatch } from "../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
+import { IExtendedMatchTemp } from "./AnswerOptionsEditor/QuestionTypes/ExtendedMatchEditor";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
@@ -141,18 +143,6 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
     //Return if there are any errors
     if (Object.keys(errors).length > 0) return;
 
-    //Don't allow question editing when using mode random
-    if (new URLSearchParams(search).get("mode") === "random") {
-      //TODO fix this
-      toast.warn(
-        "Can't edit this questions while using mode random! Navigate to this question using the question overview.",
-        {
-          autoClose: 12000,
-        }
-      );
-      return;
-    }
-
     //Setup variables
     hasSubmitted.current = true;
     let onSubmitErrors = {};
@@ -206,6 +196,24 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
         answerOptions: {
           text: removeGapContent(replaceUnsupportedChars(output.answerOptions.tempText)),
           correctGapValues: extractCorrectGapValues(output.answerOptions.tempText),
+        },
+      };
+    } else if (question.type === "extended-match") {
+      output = {
+        ...output,
+        answerOptions: {
+          ...output.answerOptions,
+          correctMatches: ((output.answerOptions as IExtendedMatchTemp)?.correctMatches ?? []).reduce(
+            (acc, { left, right }) => {
+              const leftId = left?.id.split("add-line-")[1];
+              const rightId = right?.id.split("add-line-")[1];
+              if (leftId !== undefined && rightId !== undefined) {
+                acc?.push({ left: leftId, right: rightId });
+              }
+              return acc;
+            },
+            [] as IExtendedMatch["correctMatches"]
+          ),
         },
       };
     }
@@ -359,6 +367,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
           answerOptionsError={errors.answerOptions}
           setErrors={setErrors}
           hasSubmitted={hasSubmitted.current}
+          setQuestion={setQuestion}
         />
         {errors?.answerOptions && <p className='modal-question-error'>{errors?.answerOptions}</p>}
       </div>
@@ -395,6 +404,8 @@ function getAnswerOptionsError({
         return "Add at least one item!";
       case "gap-text":
         return "Add a text!";
+      case "extended-match":
+        return "Add at least one item!";
       default:
         return "Add at least one item!";
     }
@@ -416,6 +427,10 @@ function getAnswerOptionsError({
     !(answerOptions as IMultipleResponse[])?.some((option) => option.isCorrect)
   ) {
     return "Check at least one item!";
+  }
+
+  if (type === "extended-match" && (answerOptions as IExtendedMatchTemp)?.correctMatches?.length === 0) {
+    return "Add at least one line!";
   }
 }
 

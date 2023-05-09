@@ -1,61 +1,54 @@
 import React, { useState, useRef, useEffect } from "react";
 import TextareaAutoSize from "react-textarea-autosize";
 import { useSize } from "../../../../hooks/useSize";
-import { IExtendedMatch, IExtendedMatchLine } from "../../../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
-import { TErrors } from "../../QuestionEditor";
 
 import "./test.css";
 
 // Icons
 import { HiXMark } from "react-icons/hi2";
 
-type Props = {
-  name?: string;
-  /*
-  options: IExtendedMatch;
-  handleEditorChange: (value: IExtendedMatch) => void;
-  lastSelected: string;
-  setLastSelected: React.Dispatch<React.SetStateAction<string>>;
-  answerOptionsError: string;
-  setErrors: React.Dispatch<React.SetStateAction<TErrors>>; */
-};
+// Interfaces and types
+import { IQuestion } from "../../../Question/useQuestion";
+import { IExtendedMatch, IExtendedMatchLine } from "../../../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
+import { TErrors } from "../../QuestionEditor";
+import { objectWithoutProp } from "../../helpers";
 
-interface IState extends Omit<IExtendedMatch, "correctMatches"> {
-  correctMatches: IExtendedMatchLine[];
+export interface IExtendedMatchTemp extends Omit<IExtendedMatch, "correctMatches"> {
+  correctMatches: IExtendedMatchLine[] | undefined;
 }
 
-export const ExtendedMatchEditor: React.FC<Props> = ({
-  name,
-  /*
-  options,
-  handleEditorChange,
-  lastSelected,
-  setLastSelected,
-  answerOptionsError,
-  setErrors, */
-}) => {
-  const [testOptions, setTestOptions] = useState<IState>({ leftSide: [], rightSide: [], correctMatches: [] });
+type Props = {
+  name?: string;
+  setQuestion: React.Dispatch<React.SetStateAction<IQuestion>>;
+  options: IExtendedMatchTemp;
+  answerOptionsError: string;
+  setErrors: React.Dispatch<React.SetStateAction<TErrors>>;
+};
 
+export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestion, answerOptionsError, setErrors }) => {
   const [highlightRight, setHighlightRight] = useState(false);
   const [highlightLeft, setHighlightLeft] = useState(false);
   const [highlightSelectedCircle, setHighlightSelectedCircle] = useState<string | null>();
 
-  const left = useRef<Array<HTMLButtonElement | null>>(testOptions.leftSide.map(() => null) || []);
-  const right = useRef<Array<HTMLButtonElement | null>>(testOptions.rightSide.map(() => null) || []);
+  const left = useRef<Array<HTMLButtonElement | null>>([]);
+  const right = useRef<Array<HTMLButtonElement | null>>([]);
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const side = e.target.id.split("-")[1] === "left" ? "leftSide" : "rightSide";
 
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        [side]: prev[side].map((item) => {
-          if (item.id === e.target.id.split("textarea-")[1]) {
-            return { ...item, text: e.target.value };
-          } else {
-            return { ...item };
-          }
-        }),
+        answerOptions: {
+          ...prev.answerOptions,
+          [side]: (prev.answerOptions as IExtendedMatchTemp)?.[side]?.map((item) => {
+            if (item.id === e.target.id.split("textarea-")[1]) {
+              return { ...item, text: e.target.value };
+            } else {
+              return { ...item };
+            }
+          }),
+        },
       };
     });
   };
@@ -65,12 +58,15 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
 
     const side = sideShort === "left" ? "leftSide" : "rightSide";
 
-    const newOption = { id: `${findUniqueID(testOptions[side] ?? [], sideShort)}`, text: "" };
+    const newOption = { id: `${findUniqueID(options?.[side] ?? [], sideShort)}`, text: "" };
 
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        [side]: [...(prev[side] ?? []), newOption],
+        answerOptions: {
+          ...prev.answerOptions,
+          [side]: [...((prev.answerOptions as IExtendedMatchTemp)?.[side] ?? []), newOption],
+        },
       };
     });
   };
@@ -81,17 +77,19 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
 
     const side = sideShort === "left" ? "leftSide" : "rightSide";
 
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        correctMatches: [
-          ...prev.correctMatches.filter((item) => {
-            const lineLeftId = item.left?.id.split("add-line-")[1];
-            const lineRightId = item.right?.id.split("add-line-")[1];
-            return lineRightId !== id && lineLeftId !== id;
-          }),
-        ],
-        [side]: prev[side].filter((item) => item.id !== id),
+        answerOptions: {
+          ...(prev.answerOptions as IExtendedMatchTemp),
+          correctMatches:
+            (prev.answerOptions as IExtendedMatchTemp)?.correctMatches?.filter((item) => {
+              const lineLeftId = item.left?.id.split("add-line-")[1];
+              const lineRightId = item.right?.id.split("add-line-")[1];
+              return lineRightId !== id && lineLeftId !== id;
+            }) || [],
+          [side]: (prev.answerOptions as IExtendedMatchTemp)?.[side]?.filter((item) => item.id !== id),
+        },
       };
     });
 
@@ -108,15 +106,18 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
 
     const [idLeft, idRight] = id.split("_");
 
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        correctMatches: prev.correctMatches.filter((item) => {
-          const lineLeftId = item.left?.id.split("add-line-")[1];
-          const lineRightId = item.right?.id.split("add-line-")[1];
+        answerOptions: {
+          ...(prev.answerOptions as IExtendedMatchTemp),
+          correctMatches: (prev.answerOptions as IExtendedMatchTemp).correctMatches?.filter((item) => {
+            const lineLeftId = item.left?.id.split("add-line-")[1];
+            const lineRightId = item.right?.id.split("add-line-")[1];
 
-          return lineLeftId !== idLeft || lineRightId !== idRight;
-        }),
+            return lineLeftId !== idLeft || lineRightId !== idRight;
+          }),
+        },
       };
     });
   };
@@ -176,21 +177,21 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
 
     // Get the last line element from the lines state
     //const lastLine = testOptions.correctMatches[(testOptions.correctMatches?.length || 0) - 1];
-    const lastLine = testOptions.correctMatches[testOptions.correctMatches.length - 1];
-    //console.log(lastLine);
+    const lastLine = options?.correctMatches?.[options?.correctMatches?.length - 1];
 
-    if (testOptions.correctMatches.length === 0) {
-      testOptions.correctMatches.push({ left: circle });
+    if (options.correctMatches?.length === 0 || typeof options.correctMatches === "undefined") {
+      //options.correctMatches?.push({ left: circle });
+      options.correctMatches = [{ left: circle }];
 
       setHighlightSelectedCircle(id);
       setHighlightRight(true);
-    } else if (lastLine.right !== undefined && lastLine.left !== undefined) {
-      testOptions.correctMatches.push({ left: circle });
+    } else if (lastLine?.right !== undefined && lastLine.left !== undefined) {
+      options?.correctMatches?.push({ left: circle });
       setHighlightRight(true);
       setHighlightSelectedCircle(id);
-    } else if (lastLine.left === undefined && lastLine.right !== undefined) {
-      testOptions.correctMatches = testOptions.correctMatches.map((item, currentIndex) => {
-        if (currentIndex === testOptions.correctMatches.length - 1) {
+    } else if (lastLine?.left === undefined && lastLine?.right !== undefined) {
+      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
+        if (currentIndex === (options?.correctMatches?.length ?? 0) - 1) {
           return { ...item, left: circle };
         } else {
           return item;
@@ -198,9 +199,13 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
       });
       setHighlightLeft(false);
       setHighlightSelectedCircle(null);
-    } else if (lastLine.right === undefined && lastLine.left !== undefined) {
-      testOptions.correctMatches = testOptions.correctMatches.map((item, currentIndex) => {
-        if (currentIndex === testOptions.correctMatches.length - 1) {
+
+      if (answerOptionsError) {
+        setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+      }
+    } else if (lastLine?.right === undefined && lastLine?.left !== undefined) {
+      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
+        if (currentIndex === (options.correctMatches?.length ?? 0) - 1) {
           return { left: circle };
         } else {
           return item;
@@ -211,11 +216,13 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
       console.warn("Update left line failed");
     }
 
-    // Update the lines state with the modified array.
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        correctMatches: [...testOptions.correctMatches],
+        answerOptions: {
+          ...(prev.answerOptions as IExtendedMatchTemp),
+          correctMatches: [...(options.correctMatches || [])],
+        },
       };
     });
   };
@@ -226,19 +233,20 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
     const circle = right.current[id as keyof IExtendedMatchLine["right"]];
 
     // Get the last line element from the lines state
-    const lastLine = testOptions.correctMatches[testOptions.correctMatches.length - 1];
+    const lastLine = options.correctMatches?.[options.correctMatches?.length - 1];
 
-    if (testOptions.correctMatches.length === 0) {
-      testOptions.correctMatches.push({ right: circle });
+    if (options.correctMatches?.length === 0 || typeof options.correctMatches === "undefined") {
+      options.correctMatches = [{ right: circle }];
+
       setHighlightLeft(true);
       setHighlightSelectedCircle(id);
-    } else if (lastLine.left !== undefined && lastLine.right !== undefined) {
-      testOptions.correctMatches.push({ right: circle });
+    } else if (lastLine?.left !== undefined && lastLine.right !== undefined) {
+      options.correctMatches?.push({ right: circle });
       setHighlightLeft(true);
       setHighlightSelectedCircle(id);
-    } else if (lastLine.right === undefined && lastLine.left !== undefined) {
-      testOptions.correctMatches = testOptions.correctMatches.map((item, currentIndex) => {
-        if (currentIndex === testOptions.correctMatches.length - 1) {
+    } else if (lastLine?.right === undefined && lastLine?.left !== undefined) {
+      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
+        if (currentIndex === (options.correctMatches?.length ?? 0) - 1) {
           return { ...item, right: circle };
         } else {
           return item;
@@ -246,9 +254,13 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
       });
       setHighlightRight(false);
       setHighlightSelectedCircle(null);
-    } else if (lastLine.left === undefined && lastLine.right !== undefined) {
-      testOptions.correctMatches = testOptions.correctMatches.map((item, currentIndex) => {
-        if (currentIndex === testOptions.correctMatches.length - 1) {
+
+      if (answerOptionsError) {
+        setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+      }
+    } else if (lastLine?.left === undefined && lastLine?.right !== undefined) {
+      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
+        if (currentIndex === (options.correctMatches?.length ?? 0) - 1) {
           return { right: circle };
         } else {
           return item;
@@ -259,41 +271,65 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
       console.warn("Update right line failed");
     }
 
-    // Update the lines state with the modified array.
-    setTestOptions((prev) => {
+    setQuestion((prev) => {
       return {
         ...prev,
-        correctMatches: [...testOptions.correctMatches],
+        answerOptions: {
+          ...(prev.answerOptions as IExtendedMatchTemp),
+          correctMatches: [...(options.correctMatches || [])],
+        },
       };
     });
   };
 
   // Update the refs inside the state to match after rerender
   useEffect(() => {
-    setTestOptions((prev) => {
-      let updated = prev.correctMatches.map(({ left: leftElement, right: rightElement }) => {
-        const leftId = leftElement?.id.split("add-line-")[1];
-        const rightId = rightElement?.id.split("add-line-")[1];
-        // get the ref
-        if (leftId && rightId) {
-          return {
-            left: left.current[leftId as keyof IExtendedMatchLine["left"]],
-            right: right.current[rightId as keyof IExtendedMatchLine["right"]],
-          };
-        } else if (leftId) {
-          return { left: left.current[leftId as keyof IExtendedMatchLine["left"]] };
-        } else {
-          return { right: right.current[rightId as keyof IExtendedMatchLine["right"]] };
+    setQuestion((prev) => {
+      let updated = (prev.answerOptions as IExtendedMatchTemp)?.correctMatches?.map(
+        ({ left: leftElement, right: rightElement }) => {
+          if (typeof leftElement === "string" || typeof rightElement === "string") {
+            if (leftElement && rightElement) {
+              return {
+                left: left.current[leftElement as keyof IExtendedMatchLine["left"]],
+                right: right.current[rightElement as keyof IExtendedMatchLine["right"]],
+              };
+            } else if (leftElement) {
+              return {
+                left: left.current[leftElement as keyof IExtendedMatchLine["left"]],
+              };
+            } else {
+              return {
+                right: right.current[rightElement as keyof IExtendedMatchLine["right"]],
+              };
+            }
+          }
+
+          const leftId = leftElement?.id?.split("add-line-")[1];
+          const rightId = rightElement?.id?.split("add-line-")[1];
+          // get the ref
+          if (leftId && rightId) {
+            return {
+              left: left.current[leftId as keyof IExtendedMatchLine["left"]],
+              right: right.current[rightId as keyof IExtendedMatchLine["right"]],
+            };
+          } else if (leftId) {
+            return { left: left.current[leftId as keyof IExtendedMatchLine["left"]] };
+          } else {
+            return { right: right.current[rightId as keyof IExtendedMatchLine["right"]] };
+          }
         }
-      });
+      );
+
       return {
         ...prev,
-        correctMatches: updated,
+        answerOptions: {
+          ...(prev.answerOptions as IExtendedMatchTemp),
+          correctMatches: updated || [],
+        },
       };
     });
-
     //TODO evaluate if a return is needed here
-  }, [testOptions.rightSide, testOptions.leftSide]);
+  }, [options?.rightSide, options?.leftSide, setQuestion]);
 
   return (
     <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -309,7 +345,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
         }}
         className={`editor-ext-match-left ${highlightLeft ? "highlight-editor-left-circles" : ""}`}
       >
-        {testOptions?.leftSide?.map((item) => {
+        {options?.leftSide?.map((item) => {
           return (
             <div
               key={item.id}
@@ -379,7 +415,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
           +
         </button>
       </div>
-      <SVGElement correctMatches={testOptions.correctMatches} handleLineRemove={handleLineRemove} />
+      <SVGElement correctMatches={options?.correctMatches} handleLineRemove={handleLineRemove} />
       <div
         style={{
           flexGrow: "1",
@@ -391,7 +427,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({
           width: "100%",
         }}
       >
-        {testOptions?.rightSide?.map((item) => {
+        {options?.rightSide?.map((item) => {
           return (
             <div
               key={item.id}
@@ -472,8 +508,8 @@ function findUniqueID(
 ) {
   //IF can't find
   let newID;
-  for (let indexID = 0; indexID <= existingElements.length; indexID++) {
-    const idExists = existingElements.find((element) => element.id === `${side}-${indexID}`);
+  for (let indexID = 0; indexID <= (existingElements?.length ?? 0); indexID++) {
+    const idExists = existingElements?.find((element) => element.id === `${side}-${indexID}`);
     if (!idExists) {
       newID = `${side}-${indexID}`;
       break;
@@ -483,7 +519,7 @@ function findUniqueID(
 }
 
 interface ISVGElement {
-  correctMatches: IState["correctMatches"];
+  correctMatches: IExtendedMatchTemp["correctMatches"];
   handleLineRemove: (e: React.MouseEvent<SVGCircleElement, MouseEvent>) => void;
 }
 
@@ -505,8 +541,8 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
 
           const y2 = (item.right?.parentElement?.clientHeight || 0) / 2 + (item.right?.parentElement?.offsetTop || 0);
 
-          const leftId = item.left?.id.split("add-line-")[1];
-          const rightId = item.right?.id.split("add-line-")[1];
+          const leftId = item.left?.id?.split("add-line-")[1];
+          const rightId = item.right?.id?.split("add-line-")[1];
 
           const uID = `${leftId}_${rightId}`;
 
