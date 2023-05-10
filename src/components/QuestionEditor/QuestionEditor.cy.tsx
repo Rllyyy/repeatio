@@ -23,7 +23,7 @@ const MockFormWithRouter = () => {
     <MemoryRouter initialEntries={["/module/test"]}>
       <Routes>
         <Route
-          path='/module/test'
+          path='/module/:moduleID'
           element={
             <QuestionIdsProvider>
               <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
@@ -248,6 +248,33 @@ describe("Check order when editing a existing question", () => {
         expect(editorOrder).to.deep.equal(originalOrder);
         expect(editorOrder.length).to.equal(6);
       });
+  });
+
+  it("should have the same order for extended-match elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-5' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalLeftSideOrder: string[] = []; //
+    cy.get(".ext-match-left-side")
+      .find(".ext-match-element-text")
+      .each(($item) => originalLeftSideOrder.push($item.text()));
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+    let editorLeftSideOrder: string[] = [];
+
+    cy.get(".editor-ext-match-left")
+      .find("textarea")
+      .each(($item) => {
+        editorLeftSideOrder.push($item.text());
+      })
+      .should(() => expect(editorLeftSideOrder).to.deep.equal(originalLeftSideOrder));
   });
 });
 

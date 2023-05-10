@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { MultipleChoiceEditor } from "./QuestionTypes/MultipleChoiceEditor";
 import { MultipleResponseEditor } from "./QuestionTypes/MultipleResponseEditor";
 import { GapTextEditor } from "./QuestionTypes/GapTextEditor";
+import { ExtendedMatchEditor, IExtendedMatchTemp } from "./QuestionTypes/ExtendedMatchEditor";
 
 //Interfaces/Types
 import { TAnswerOptions, IQuestion } from "../../Question/useQuestion";
@@ -25,6 +26,7 @@ import { CgExtensionRemove } from "react-icons/cg";
 import { FaMarkdown } from "react-icons/fa";
 
 interface IAnswerOptionsEditor {
+  setQuestion: React.Dispatch<React.SetStateAction<IQuestion>>;
   questionType: IQuestion["type"];
   answerValues: TAnswerOptions | undefined;
   handleEditorChange: (value: TAnswerOptions) => void;
@@ -35,6 +37,7 @@ interface IAnswerOptionsEditor {
 
 //Editor
 export const AnswerOptionsEditor = ({
+  setQuestion,
   questionType,
   answerValues,
   handleEditorChange,
@@ -183,6 +186,16 @@ export const AnswerOptionsEditor = ({
             name='gap-text'
             tempText={(answerValues as IGapTextWithTempText)?.tempText || ""}
             handleEditorChange={handleEditorChange}
+            answerOptionsError={answerOptionsError}
+            setErrors={setErrors}
+          />
+          <ExtendedMatchEditor
+            name='extended-match'
+            options={answerValues as IExtendedMatchTemp}
+            /* handleEditorChange={handleEditorChange}
+            lastSelected={lastSelected}
+            setLastSelected={setLastSelected} */
+            setQuestion={setQuestion}
             answerOptionsError={answerOptionsError}
             setErrors={setErrors}
           />

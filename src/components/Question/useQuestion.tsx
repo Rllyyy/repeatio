@@ -4,6 +4,7 @@ import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionN
 import { parseJSON } from "../../utils/parseJSON";
 import { shuffleArray } from "../../utils/shuffleArray";
 import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "../Home/helpers";
+import { toast } from "react-toastify";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -19,7 +20,7 @@ import { IExtendedMatch } from "./QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IModule } from "../module/module";
 import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
-import { toast } from "react-toastify";
+import { IExtendedMatchTemp } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/ExtendedMatchEditor";
 
 export type TAnswerOptions =
   | IMultipleChoice[]
@@ -28,6 +29,7 @@ export type TAnswerOptions =
   | IGapTextDropdown
   | IGapTextWithTempText
   | IExtendedMatch
+  | IExtendedMatchTemp
   | undefined;
 
 export interface IQuestion {
