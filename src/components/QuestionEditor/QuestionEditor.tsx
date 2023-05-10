@@ -224,7 +224,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
       let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
       module?.questions.push(output as IQuestion);
 
-      localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module));
+      localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
     } else {
       //Handle updating a question
       let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
@@ -430,6 +430,12 @@ function getAnswerOptionsError({
   }
 
   if (type === "extended-match" && (answerOptions as IExtendedMatchTemp)?.correctMatches?.length === 0) {
+    return "Add at least one line!";
+  }
+
+  // Check that the first object contains more than 1 property (left and right)
+  const obj = (answerOptions as IExtendedMatchTemp)?.correctMatches?.[0];
+  if (obj && Object.keys(obj).length < 2) {
     return "Add at least one line!";
   }
 }

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import TextareaAutoSize from "react-textarea-autosize";
 import { useSize } from "../../../../hooks/useSize";
 
-import "./test.css";
+import "./ExtendedMatchEditor.css";
 
 // Icons
 import { HiXMark } from "react-icons/hi2";
@@ -73,7 +73,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
 
   const handleElementRemove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const sideShort = (e.target as HTMLButtonElement).id.split("-")[2];
-    const id = (e.target as HTMLButtonElement).id.split("remove-btn-")[1];
+    const id = (e.target as HTMLButtonElement).id.split("remove-element-")[1];
 
     const side = sideShort === "left" ? "leftSide" : "rightSide";
 
@@ -101,7 +101,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
     }
   };
 
-  const handleLineRemove = (e: React.MouseEvent<SVGCircleElement, MouseEvent>) => {
+  const handleLineRemove = (e: React.SyntheticEvent) => {
     const id = e.currentTarget.id.split("_circle")[0]; //Format: left-x_right-x_circle
 
     const [idLeft, idRight] = id.split("_");
@@ -121,54 +121,6 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
       };
     });
   };
-
-  /* const updateLeftLine = (index: number) => {
-    // Get the current circle element from the left ref object using the circleIndex
-    const circle = left.current[index];
-    //console.log(circle);
-
-    // Get the last line element from the lines state
-    //const lastLine = testOptions.correctMatches[(testOptions.correctMatches?.length || 0) - 1];
-    const lastLine = testOptions.correctMatches[testOptions.correctMatches.length - 1];
-
-    if (!lastLine || (lastLine.left !== undefined && lastLine.right !== undefined)) {
-      // If there is no last line element or both left and right properties are already set,
-      // add a new line element with the left property set to the current circle element,
-      // and highlight the selected circle and the opposite side.
-
-      testOptions.correctMatches.push({ left: circle });
-      //setHighlightSelectedCircle(`left-${circleIndex}`);
-      //setHighlightRight(true);
-      console.log("1");
-    }
-    // If the last line element has the right property set and the left property not set,
-    // set the left property to the current circle element, remove the highlight from the single circle and the whole left section.
-    else if (lastLine.right !== undefined && lastLine.left === undefined) {
-      lastLine.left = circle;
-      //setHighlightSelectedCircle(null);
-      //setHighlightLeft(false);
-      console.log("2");
-
-      //console.log(duplicateLineExists);
-    }
-    // If the last line element has the left property set and the right property not set,
-    // set the left property to the current circle element and highlight the selected circle.
-    else if (lastLine.left !== undefined && lastLine.right === undefined) {
-      lastLine.left = circle;
-      //setHighlightSelectedCircle(`left-${circleIndex}`);
-      console.log("3");
-    }
-
-    // Update the lines state with the modified array.
-    setTestOptions((prev) => {
-      return {
-        ...prev,
-        correctMatches: [...testOptions.correctMatches],
-      };
-    });
-  }; */
-
-  // console.log(left.current);
 
   const updateLeftLine = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const id = e.currentTarget.id.split("add-line-")[1];
@@ -190,13 +142,40 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
       setHighlightRight(true);
       setHighlightSelectedCircle(id);
     } else if (lastLine?.left === undefined && lastLine?.right !== undefined) {
-      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
-        if (currentIndex === (options?.correctMatches?.length ?? 0) - 1) {
-          return { ...item, left: circle };
+      // Find the index of the last item in the array
+      const lastItemIndex = (options?.correctMatches?.length ?? 0) - 1;
+
+      // Loop through each item in the array using reduce
+      options.correctMatches = (options.correctMatches || []).reduce((accumulator, item, currentIndex) => {
+        // Check if this is the last item in the array
+        if (currentIndex === lastItemIndex) {
+          // Find the index of the item we want to update
+          const index = options?.correctMatches?.findIndex((otherItem) => {
+            return (
+              otherItem.right?.id.split("add-line-")[1] === lastLine?.right?.id.split("add-line-")[1] &&
+              otherItem.left?.id.split("add-line-")[1] === id
+            );
+          });
+
+          // If the item is already at the beginning of the array, don't modify it
+          if (index === 0) {
+            // Don't add anything to the accumulator
+            console.warn("Line already exists");
+          } else {
+            // Create a copy of the item with the 'left' property updated
+            const updatedItem = { ...item, left: circle };
+            // Add the updated item to the accumulator
+            accumulator?.push(updatedItem);
+          }
         } else {
-          return item;
+          // This is not the last item in the array, so add it to the accumulator unchanged
+          accumulator?.push(item);
         }
-      });
+
+        // Return the accumulator for the next iteration
+        return accumulator;
+      }, [] as IExtendedMatchTemp["correctMatches"]);
+
       setHighlightLeft(false);
       setHighlightSelectedCircle(null);
 
@@ -245,13 +224,39 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
       setHighlightLeft(true);
       setHighlightSelectedCircle(id);
     } else if (lastLine?.right === undefined && lastLine?.left !== undefined) {
-      options.correctMatches = options.correctMatches?.map((item, currentIndex) => {
-        if (currentIndex === (options.correctMatches?.length ?? 0) - 1) {
-          return { ...item, right: circle };
+      const lastItemIndex = (options?.correctMatches?.length ?? 0) - 1;
+
+      // Loop through each item in the array using reduce
+      options.correctMatches = (options.correctMatches || []).reduce((accumulator, item, currentIndex) => {
+        // Check if this is the last item in the array
+        if (currentIndex === lastItemIndex) {
+          // Find the index of the item we want to update
+          const index = options?.correctMatches?.findIndex((otherItem) => {
+            return (
+              otherItem.left?.id.split("add-line-")[1] === lastLine?.left?.id.split("add-line-")[1] &&
+              otherItem.right?.id.split("add-line-")[1] === id
+            );
+          });
+
+          // If the item is already at the beginning of the array, don't modify it
+          if (index === 0) {
+            // Don't add anything to the accumulator
+            console.warn("Line already exists");
+          } else {
+            // Create a copy of the item with the 'right' property updated
+            const updatedItem = { ...item, right: circle };
+            // Add the updated item to the accumulator
+            accumulator?.push(updatedItem);
+          }
         } else {
-          return item;
+          // This is not the last item in the array, so add it to the accumulator unchanged
+          accumulator?.push(item);
         }
-      });
+
+        // Return the accumulator for the next iteration
+        return accumulator;
+      }, [] as IExtendedMatchTemp["correctMatches"]);
+
       setHighlightRight(false);
       setHighlightSelectedCircle(null);
 
@@ -328,7 +333,6 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
         },
       };
     });
-    //TODO evaluate if a return is needed here
   }, [options?.rightSide, options?.leftSide, setQuestion]);
 
   return (
@@ -362,7 +366,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
                   color: "red",
                   cursor: "pointer",
                 }}
-                id={`remove-btn-${item.id}`}
+                id={`remove-element-${item.id}`}
                 onClick={handleElementRemove}
                 aria-label={`Remove element ${item.id}`}
               >
@@ -426,6 +430,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           position: "relative",
           width: "100%",
         }}
+        className={`editor-ext-match-right ${highlightRight ? "highlight-editor-right-circles" : ""}`}
       >
         {options?.rightSide?.map((item) => {
           return (
@@ -433,7 +438,6 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
               key={item.id}
               style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2px", position: "relative" }}
               aria-label={`Element ${item.id}`}
-              className={`editor-ext-match-right ${highlightRight ? "highlight-editor-right-circles" : ""}`}
             >
               <button
                 style={{
@@ -473,7 +477,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
                   color: "red",
                   cursor: "pointer",
                 }}
-                id={`remove-btn-${item.id}`}
+                id={`remove-element-${item.id}`}
                 onClick={handleElementRemove}
                 aria-label={`Remove element ${item.id}`}
               >
@@ -520,13 +524,19 @@ function findUniqueID(
 
 interface ISVGElement {
   correctMatches: IExtendedMatchTemp["correctMatches"];
-  handleLineRemove: (e: React.MouseEvent<SVGCircleElement, MouseEvent>) => void;
+  handleLineRemove: (e: React.SyntheticEvent) => void;
 }
 
 const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const svgSize = useSize(svgRef as React.MutableRefObject<HTMLElement | null>);
   const svgWidth = svgSize?.width;
+
+  const removeLineOnEnter = (e: React.KeyboardEvent<SVGCircleElement>) => {
+    if (e.key === "Enter") {
+      handleLineRemove(e);
+    }
+  };
 
   return (
     <svg
@@ -535,7 +545,7 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
       style={{ maxWidth: "300px", width: "100%", flexShrink: "1.5" }}
     >
       {correctMatches
-        ?.filter((item) => item.left && item.right)
+        ?.filter((item) => item.left && item.right && typeof item.left === "object" && typeof item.right === "object")
         .map((item) => {
           const y1 = (item.left?.parentElement?.clientHeight || 0) / 2 + (item.left?.parentElement?.offsetTop || 0);
 
@@ -563,9 +573,12 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
                 cy={(y1 + y2) / 2}
                 r='8'
                 onClick={handleLineRemove}
+                onKeyDown={removeLineOnEnter}
                 role='button'
                 id={`${uID}_circle`}
                 style={{ cursor: "pointer" }}
+                focusable='true'
+                tabIndex={0}
               />
               <g
                 transform={`translate(${(svgWidth || 0) / 2}, ${(y1 + y2) / 2})`}
@@ -583,15 +596,6 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
 };
 
 //TODO
-// - all elements textarea?
-// - remove class line? from line
-// - rename #remove-btn-right-0 to #remove-element-right-0
-// - edit
-// - remove console logs
-// - correct matches should have min length 1 else error on submit
-// -remove test.css
-// - add highlight ✔
+// - edit + tests
 // replace margin for add button with display grid
-// Interface for svg ✔
-// - reset errors on change
-// - replace + with svg
+// - add comments

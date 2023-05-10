@@ -7,6 +7,17 @@
   r: 9;
 }
 
+.line-container circle:focus {
+  outline: none;
+}
+
+.line-container circle:focus-visible {
+  r: 9;
+  outline: 2px solid red;
+  border-radius: 2px;
+  outline-offset: 3px;
+}
+
 .add-line-circle {
   border-color: rgb(150, 150, 150);
 }

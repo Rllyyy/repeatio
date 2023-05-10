@@ -5,21 +5,24 @@ import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 
 //Css
 import "../../../../index.css";
+import { parseJSON } from "../../../../utils/parseJSON";
+import { IModule } from "../../../module/module";
+import { IExtendedMatch } from "../../../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
-//declare const expect: Chai.ExpectStatic;
+declare const expect: Chai.ExpectStatic;
 
 describe("ExtendedMatchEditor", () => {
   beforeEach(() => {
     const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
 
     cy.mount(
-      <MemoryRouter initialEntries={["/module/test"]}>
+      <MemoryRouter initialEntries={["/module/cypress_1"]}>
         <Routes>
           <Route
-            path='/module/test'
+            path='/module/:moduleID'
             element={
               <QuestionIdsProvider>
                 <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
@@ -75,7 +78,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("button#add-left-element").should("have.css", "width", "154.28125px");
   });
 
-  it("should remove an element", () => {
+  it("should remove an element with click", () => {
     cy.get("button[aria-label='Add left element']").click();
     cy.get("button[aria-label='Remove element left-0'").click();
 
@@ -256,7 +259,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-0_right-0_line").should("have.attr", "x2", "102.578125").and("have.attr", "y2", "18.5");
   });
 
-  it("should remove the correct line", () => {
+  it("should remove the correct line onClick", () => {
     cy.get("button[aria-label='Add left element']").click().click().click();
     cy.get("button[aria-label='Add right element']").click().click();
 
@@ -275,6 +278,20 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-0_right-0_line").should("not.exist");
     cy.get("line#left-1_right-0_line").should("exist");
     cy.get("line#left-2_right-1_line").should("exist");
+  });
+
+  it("should remove a line onEnter key press", () => {
+    cy.get("button[aria-label='Add left element']").click();
+    cy.get("button[aria-label='Add right element']").click();
+
+    cy.get("button[id='add-line-left-0']").click();
+    cy.get("button[id='add-line-right-0']").click();
+
+    cy.realPress(["Shift", "Tab"]);
+    cy.realPress("Enter");
+
+    cy.get(".line-container").should("have.length", 0);
+    cy.get("line#left-0_right-0_line").should("not.exist");
   });
 
   it("should remove the lines related to an element if it gets removed", () => {
@@ -436,7 +453,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("button[aria-label='Add right element']").click();
 
     cy.get("button[id='add-line-right-0']").click();
-    cy.get("button#remove-btn-right-0").click();
+    cy.get("button#remove-element-right-0").click();
 
     cy.get(".highlight-editor-left-circles").should("not.exist");
     cy.get("button[id='add-line-left-0']").and("have.css", "border-color", "rgb(150, 150, 150)");
@@ -455,6 +472,177 @@ describe("ExtendedMatchEditor", () => {
       .should("not.have.class", "editor-highlight-circle")
       .and("have.css", "border-color", "rgb(150, 150, 150)");
   });
-});
 
-// In form not submit on enter (all elements)
+  it("should show an error if there is no line on submit", () => {
+    cy.get("input[name='id']").type("1");
+    cy.get("button[aria-label='Add right element']").click();
+    cy.get("button[aria-label='Add left element']").click();
+
+    cy.get("textarea#textarea-left-0").type("1");
+    cy.get("textarea#textarea-right-0").type("1");
+
+    cy.contains("button", "Add").click();
+
+    cy.contains("Add at least one line!").should("exist");
+
+    // clear error if a line is added
+    cy.get("button[id='add-line-right-0']").click();
+    cy.get("button[id='add-line-left-0']").click();
+
+    cy.contains("Add at least one line!").should("not.exist");
+  });
+
+  it("should show an error if there is only one point of a single line on submit", () => {
+    cy.get("input[name='id']").type("1");
+    cy.get("button[aria-label='Add right element']").click();
+    cy.get("button[aria-label='Add left element']").click();
+
+    cy.get("textarea#textarea-left-0").type("1");
+    cy.get("textarea#textarea-right-0").type("1");
+
+    cy.get("button[id='add-line-right-0']").click();
+
+    cy.contains("button", "Add").click();
+
+    cy.contains("Add at least one line!").should("exist");
+
+    // clear error if a line is added
+    cy.get("button[id='add-line-left-0']").click();
+
+    cy.contains("Add at least one line!").should("not.exist");
+  });
+
+  it("should filter out incomplete lines on submit", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.get("input[name='id']").type("filter-incomplete", { delay: 2 });
+
+    cy.get("button[aria-label='Add right element']").click().click();
+    cy.get("button[aria-label='Add left element']").click();
+
+    cy.get("textarea#textarea-left-0").type("1", { delay: 2 });
+    cy.get("textarea#textarea-right-0").type("1", { delay: 2 });
+    cy.get("textarea#textarea-right-1").type("2", { delay: 2 });
+
+    cy.get("button[id='add-line-right-0']").click();
+    cy.get("button[id='add-line-left-0']").click();
+
+    cy.get("button[id='add-line-right-1']").click();
+
+    cy.contains("button", "Add")
+      .click()
+      .should(() => {
+        const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+
+        const matches = (
+          localStorageItem?.questions?.[localStorageItem?.questions?.length - 1].answerOptions as IExtendedMatch
+        )?.correctMatches;
+
+        expect(matches).to.deep.equal([
+          {
+            left: "left-0",
+            right: "right-0",
+          },
+        ]);
+      });
+  });
+
+  it("should not add duplicate line (left second point)", () => {
+    cy.get("button[aria-label='Add right element']").click();
+    cy.get("button[aria-label='Add left element']").click().click();
+
+    cy.get("button[id='add-line-right-0']").click();
+    cy.get("button[id='add-line-left-0']").click();
+
+    cy.get("button[id='add-line-right-0']").click();
+    cy.get("button[id='add-line-left-0']").click();
+
+    cy.get("g.line-container").should("have.length", 1);
+
+    // Add new line
+    cy.get("button[id='add-line-left-1']").click();
+    cy.get("g.line-container").should("have.length", 1);
+
+    cy.get("button[id='add-line-right-0']").click();
+    cy.get("g.line-container").should("have.length", 2);
+    cy.get("line#left-1_right-0_line").should("have.attr", "y1", "61.5");
+    cy.get("line#left-1_right-0_line").should("have.attr", "y2", "18.5");
+  });
+
+  it("should not add duplicate line (right second point)", () => {
+    cy.get("button[aria-label='Add left element']").click();
+    cy.get("button[aria-label='Add right element']").click().click();
+
+    cy.get("button[id='add-line-left-0']").click();
+    cy.get("button[id='add-line-right-0']").click();
+
+    cy.get("button[id='add-line-left-0']").click();
+    cy.get("button[id='add-line-right-0']").click();
+
+    cy.get("g.line-container").should("have.length", 1);
+
+    // Add new line
+    cy.get("button[id='add-line-right-1']").click();
+    cy.get("g.line-container").should("have.length", 1);
+
+    cy.get("button[id='add-line-left-0']").click();
+    cy.get("g.line-container").should("have.length", 2);
+
+    cy.get("line#left-0_right-1_line").should("have.attr", "y1", "18.5");
+    cy.get("line#left-0_right-1_line").should("have.attr", "y2", "61.5");
+  });
+
+  it("should not submit the question if using enter on the elements", () => {
+    cy.get("button#add-left-element").click().realPress("Enter");
+    cy.get("#textarea-left-1").type("{enter}");
+    cy.realPress("Tab").realPress("Enter");
+    cy.realPress(["Shift", "Tab"]).realPress(["Shift", "Tab"]).realPress("Enter");
+
+    cy.get("button#add-right-element").click();
+
+    cy.get("button#add-line-right-0").click();
+    cy.get("button#add-line-left-0").click();
+
+    cy.get("#left-0_right-0_circle").realPress("Enter");
+
+    cy.realPress("Tab").realPress("Tab").realPress("Enter");
+
+    cy.get("@handleModalCloseSpy").should("not.have.been.called");
+  });
+
+  it("should support editing with only keyboard events (tab+enter)", () => {
+    cy.get(".editor-content ").click();
+    cy.realPress("Tab");
+
+    cy.realPress("Enter");
+
+    // Assert that a new element was created
+    cy.get("div[aria-label='Element left-0']").should("exist");
+
+    // Add left point
+    cy.realPress(["Shift", "Tab"]);
+    cy.realPress("Enter");
+    cy.get("button#add-line-left-0").should("have.class", "editor-highlight-circle");
+
+    // Add right element
+    cy.realPress("Tab").realPress("Tab");
+    cy.realPress("Enter");
+
+    cy.get(".editor-ext-match-right").should("have.class", "highlight-editor-right-circles");
+
+    // Add right point to complete line
+    cy.realPress(["Shift", "Tab"]).realPress(["Shift", "Tab"]).realPress(["Shift", "Tab"]);
+    cy.realPress("Enter");
+    cy.get("line#left-0_right-0_line").should("exist");
+
+    // remove line with enter
+    cy.realPress(["Shift", "Tab"]);
+    cy.realPress("Enter");
+    cy.get("line#left-0_right-0_line").should("not.exist");
+
+    // remove element
+    cy.realPress("Tab").realPress("Tab").realPress("Tab");
+    cy.realPress("Enter");
+    cy.get("button[aria-label='Remove element right-0']").should("not.exist");
+  });
+});
