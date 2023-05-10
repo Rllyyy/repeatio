@@ -78,7 +78,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("button#add-left-element").should("have.css", "width", "154.28125px");
   });
 
-  it("should remove an element with click", () => {
+  it("should remove an element onClick", () => {
     cy.get("button[aria-label='Add left element']").click();
     cy.get("button[aria-label='Remove element left-0'").click();
 
@@ -112,9 +112,15 @@ describe("ExtendedMatchEditor", () => {
     cy.get("textarea[id='textarea-right-0']").type("First element").should("have.value", "First element");
   });
 
-  it("add a line between two elements", () => {
+  it("add a line between two elements and update the module", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.get("input[name='id']").type("simple-extended-match", { delay: 2 });
+
     cy.get("button[aria-label='Add left element']").click();
     cy.get("button[aria-label='Add right element']").click();
+
+    cy.get("textarea#textarea-left-0").type("left");
+    cy.get("textarea#textarea-right-0").type("right");
 
     cy.get("button[id='add-line-right-0']").click();
     cy.get("button[id='add-line-left-0']").click();
@@ -129,6 +135,36 @@ describe("ExtendedMatchEditor", () => {
 
     cy.get("line#left-0_right-0_line").should("have.attr", "x2", "61.421875");
     cy.get("line#left-0_right-0_line").should("have.attr", "y2", "18.5");
+
+    cy.contains("button", "Add")
+      .click()
+      .should(() => {
+        const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+
+        const answerOptions = localStorageItem?.questions?.[localStorageItem?.questions?.length - 1]
+          .answerOptions as IExtendedMatch;
+
+        expect(answerOptions).to.deep.equal({
+          correctMatches: [
+            {
+              left: "left-0",
+              right: "right-0",
+            },
+          ],
+          leftSide: [
+            {
+              id: "left-0",
+              text: "left",
+            },
+          ],
+          rightSide: [
+            {
+              id: "right-0",
+              text: "right",
+            },
+          ],
+        });
+      });
   });
 
   it("should add a diagonal line between two elements", () => {
@@ -147,12 +183,20 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-1_right-0_line").should("have.attr", "y2", "18.5");
   });
 
-  it("should add multiple lines", () => {
+  it("should add multiple lines and add the question to the localStorage", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.get("input[name='id']").type("simple-extended-match", { delay: 2 });
+
     cy.get("button[aria-label='Add left element']").click().click();
-    cy.get("button[aria-label='Add right element']").click();
+    cy.get("button[aria-label='Add right element']").click().click();
 
     cy.get("button[id='add-line-right-0']").click();
     cy.get("button[id='add-line-left-1']").click();
+
+    cy.get("textarea#textarea-left-0").type("left 0");
+    cy.get("textarea#textarea-left-1").type("left 1");
+    cy.get("textarea#textarea-right-0").type("right 0");
+    cy.get("textarea#textarea-right-1").type("right 1");
 
     cy.get("button[id='add-line-left-0']").click();
     cy.get("button[id='add-line-right-0']").click();
@@ -164,6 +208,48 @@ describe("ExtendedMatchEditor", () => {
 
     cy.get("line#left-1_right-0_line").should("have.attr", "y1", "61.5");
     cy.get("line#left-1_right-0_line").should("have.attr", "y2", "18.5");
+
+    cy.contains("button", "Add")
+      .click()
+      .should(() => {
+        const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+
+        const answerOptions = localStorageItem?.questions?.[localStorageItem?.questions?.length - 1]
+          .answerOptions as IExtendedMatch;
+
+        expect(answerOptions).to.deep.equal({
+          correctMatches: [
+            {
+              left: "left-1",
+              right: "right-0",
+            },
+            {
+              left: "left-0",
+              right: "right-0",
+            },
+          ],
+          leftSide: [
+            {
+              id: "left-0",
+              text: "left 0",
+            },
+            {
+              id: "left-1",
+              text: "left 1",
+            },
+          ],
+          rightSide: [
+            {
+              id: "right-0",
+              text: "right 0",
+            },
+            {
+              id: "right-1",
+              text: "right 1",
+            },
+          ],
+        });
+      });
   });
 
   it("should only add one line if clicking one side twice", () => {

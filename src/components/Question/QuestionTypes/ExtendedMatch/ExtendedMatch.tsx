@@ -40,7 +40,7 @@ import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
 //- remove callbacks as they don't do anything
 //- Check if line already in lines array and give message to user
 
-interface IExtendedMatchItem {
+export interface IExtendedMatchItem {
   id: string;
   text: string;
 }

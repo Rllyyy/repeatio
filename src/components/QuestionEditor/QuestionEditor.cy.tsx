@@ -23,7 +23,7 @@ const MockFormWithRouter = () => {
     <MemoryRouter initialEntries={["/module/test"]}>
       <Routes>
         <Route
-          path='/module/test'
+          path='/module/:moduleID'
           element={
             <QuestionIdsProvider>
               <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
