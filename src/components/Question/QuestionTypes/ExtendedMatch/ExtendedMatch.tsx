@@ -18,7 +18,6 @@ import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 
 //Import Components
-import { Canvas } from "./Canvas";
 import { AnswerCorrection } from "./AnswerCorrection";
 
 //Import css
@@ -31,12 +30,11 @@ import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
+import { useSize } from "../../../../hooks/useSize";
 
 //I am really not proud of this component :/ and refactor it for a future release
-//Each line in the canvas is an object in the lines array
+//Each line in the svg is an object in the lines array
 //TODO refactor:
-//- the button setter (left/right)
-//- switch canvas with svg
 //- remove callbacks as they don't do anything
 //- Check if line already in lines array and give message to user
 
@@ -61,8 +59,8 @@ interface IExtendedMatchProps extends IQuestionTypeComponent {
 }
 
 export interface IExtendedMatchLine {
-  left?: HTMLButtonElement | undefined | null;
-  right?: HTMLButtonElement | undefined | null;
+  left?: HTMLButtonElement | HTMLDivElement | undefined | null;
+  right?: HTMLButtonElement | HTMLDivElement | undefined | null;
 }
 
 //Component
@@ -226,7 +224,23 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     [lines, formDisabled]
   );
 
-  //Remove all the lines from the canvas/state
+  const handleLineRemove = (e: React.SyntheticEvent) => {
+    if (formDisabled) return;
+
+    const id = e.currentTarget.id.split("_remove-btn")[0]; //Format: left-x_right-x_remove-btn
+    const [idLeft, idRight] = id.split("_");
+
+    setLines((prev) => {
+      return prev.filter((item) => {
+        const leftLineId = item.left?.getAttribute("data-ident");
+        const rightLineId = item.right?.getAttribute("data-ident");
+
+        return leftLineId !== idLeft || rightLineId !== idRight;
+      });
+    });
+  };
+
+  //Remove all the lines from the state
   const removeAllLines = () => {
     setHighlightSelectedCircle(null);
     setHighlightLeft(false);
@@ -243,12 +257,13 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       setHighlightRight(false);
       setHighlightLeft(false);
 
-      //TODO remove line if property (right or left) is missing
+      //Remove line if property (right or left) is missing
+      const filteredLines = lines.filter((line) => line.left && line.right);
 
       //Check if all the elements in solution is also present in the lines array (state)
       const everySolutionInState =
         options.correctMatches?.every((match) => {
-          const isEqualTest = lines.some((line) => {
+          const isEqualTest = filteredLines.some((line) => {
             const matchObject = {
               left: line.left?.getAttribute("data-ident"),
               right: line.right?.getAttribute("data-ident"),
@@ -258,11 +273,11 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
           });
 
           return isEqualTest;
-        }) || true;
+        }) ?? true;
 
       //Check if every option matches the solution and compare the length of the arrays, so the user can't trick the program by matching all possibilities.
       //And return boolean (if is correct) to question form
-      return everySolutionInState && options.correctMatches?.length === lines.length;
+      return everySolutionInState && options.correctMatches?.length === filteredLines.length;
     },
 
     //Return the correct answer as a Component so it can be displayed in the parent component
@@ -316,7 +331,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
           {shuffledLeftOptions?.map((item, index) => {
             const { text, id } = item;
             return (
-              <div className='ext-match-element' key={`ext-match-element-${id}`}>
+              <div className='ext-match-element' key={`ext-match-element-${id}`} id={`element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
                   children={text}
@@ -333,17 +348,18 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                   data-ident={id}
                   type='button'
                   onClick={() => updateLeftLine(index)}
+                  disabled={formDisabled}
                 />
               </div>
             );
           })}
         </div>
-        {lines.length > 0 && <Canvas lines={lines} />}
+        <SVGElement lines={lines} handleLineRemove={handleLineRemove} formDisabled={formDisabled} mode='drawable' />
         <div className={`ext-match-right-side ${highlightRight && "highlight-all-right-circles"}`}>
           {shuffledRightOptions?.map((item, index) => {
             const { text, id } = item;
             return (
-              <div className='ext-match-element' key={`ext-match-element-${id}`}>
+              <div className='ext-match-element' key={`ext-match-element-${id}`} id={`element-${id}`}>
                 <ReactMarkdown
                   className='ext-match-element-text'
                   children={text}
@@ -360,6 +376,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                   data-ident={id}
                   type='button'
                   onClick={() => updateRightLine(index)}
+                  disabled={formDisabled}
                 />
               </div>
             );
@@ -374,3 +391,87 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     </div>
   );
 });
+
+interface ISVGDrawable {
+  lines: IExtendedMatchLine[];
+  handleLineRemove: (e: React.SyntheticEvent) => void;
+  formDisabled: boolean;
+  mode: "drawable";
+}
+
+interface ISVGStatic {
+  lines: IExtendedMatchLine[];
+  mode: "static";
+}
+
+type ISVGElement = ISVGDrawable | ISVGStatic;
+
+export const SVGElement: React.FC<ISVGElement> = (props) => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const svgSize = useSize(svgRef as React.MutableRefObject<HTMLElement | null>);
+  const svgWidth = svgSize?.width;
+
+  const color = props.mode === "static" ? "gray" : props.formDisabled ? "gray" : "black";
+
+  const removeLineOnEnter = (e: React.KeyboardEvent<SVGCircleElement>) => {
+    if (e.key === "Enter" && props.mode === "drawable") {
+      props.handleLineRemove(e);
+    }
+  };
+
+  return (
+    <svg className='svg-element' xmlns='http://www.w3.org/2000/svg' ref={svgRef}>
+      {props.lines
+        .filter((item) => item.left && item.right)
+        .map((item) => {
+          const y1 = (item.left?.parentElement?.offsetHeight || 0) / 2 + (item.left?.parentElement?.offsetTop || 0);
+
+          const y2 = (item.right?.parentElement?.offsetHeight || 0) / 2 + (item.right?.parentElement?.offsetTop || 0);
+
+          const leftId = item.left?.getAttribute("data-ident");
+          const rightId = item.right?.getAttribute("data-ident");
+
+          const lineId = props.mode === "drawable" ? `${leftId}_${rightId}_line` : `${leftId}_${rightId}_line-static`;
+
+          return (
+            <g className='line-g' key={`line-wrapper-${props.mode}_${leftId}-${rightId}`}>
+              <line x1={0} y1={y1} x2={svgWidth} y2={y2} stroke={color} strokeWidth='2' id={lineId} />
+              {props.mode === "drawable" && (
+                <>
+                  <circle
+                    cx={(svgWidth || 0) / 2}
+                    cy={(y1 + y2) / 2}
+                    r='8'
+                    onClick={props.handleLineRemove}
+                    onKeyDown={removeLineOnEnter}
+                    id={`${leftId}_${rightId}_remove-btn`}
+                    fill={color}
+                    style={{ cursor: !props.formDisabled ? "pointer" : "not-allowed" }}
+                    focusable='true'
+                    tabIndex={!props.formDisabled ? 0 : undefined}
+                    role={!props.formDisabled ? "button" : undefined}
+                    aria-disabled={props.formDisabled ? true : false}
+                  />
+                  <g
+                    transform={`translate(${(svgWidth || 0) / 2}, ${(y1 + y2) / 2})`}
+                    pointerEvents={"none"}
+                    className='x-mark'
+                  >
+                    <line x1={-3} y1={-3} x2={3} y2={3} stroke='white' strokeWidth={2} />
+                    <line x1={3} y1={-3} x2={-3} y2={3} stroke='white' strokeWidth={2} />
+                  </g>
+                </>
+              )}
+            </g>
+          );
+        })}
+    </svg>
+  );
+};
+
+/* TODO:
+ - should not remove line if form is disabled 
+ - not enable duplicates
+ - replace clientHeight with offsetHeight in Editor
+ - remove incomplete lines from question correction
+*/

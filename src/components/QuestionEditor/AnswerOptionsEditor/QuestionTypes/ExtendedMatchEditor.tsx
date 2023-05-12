@@ -609,7 +609,7 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
                 stroke='black'
                 strokeWidth='2'
                 className='line'
-                id={`${uID}_line`}
+                id={`${uID}_line-editor`}
               />
               <circle
                 cx={(svgWidth || 0) / 2}

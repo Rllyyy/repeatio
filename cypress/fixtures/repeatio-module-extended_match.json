@@ -1,0 +1,134 @@
+{
+  "id": "extended_match",
+  "name": "Test extended-match question type",
+  "type": "module",
+  "lang": "en",
+  "compatibility": "0.5.0",
+  "questions": [
+    {
+      "id": "em-1",
+      "title": "This is the first extended-match question",
+      "points": 5,
+      "type": "extended-match",
+      "help": "Connect the dots.",
+      "answerOptions": {
+        "leftSide": [
+          {
+            "id": "left-0",
+            "text": "left 0"
+          },
+          {
+            "id": "left-1",
+            "text": "left 1"
+          }
+        ],
+        "rightSide": [
+          {
+            "id": "right-0",
+            "text": "right 0"
+          },
+          {
+            "id": "right-1",
+            "text": "right 1"
+          },
+          {
+            "id": "right-2",
+            "text": "right 2"
+          }
+        ],
+        "correctMatches": [
+          {
+            "left": "left-0",
+            "right": "right-0"
+          },
+          {
+            "left": "left-1",
+            "right": "right-2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "em-2",
+      "title": "This is the second extended-match question",
+      "points": 5,
+      "type": "extended-match",
+      "help": "Connect the dots.",
+      "answerOptions": {
+        "leftSide": [
+          {
+            "id": "left-0",
+            "text": "1 + 1"
+          },
+          {
+            "id": "left-1",
+            "text": "2 + 2"
+          }
+        ],
+        "rightSide": [
+          {
+            "id": "right-0",
+            "text": "2"
+          },
+          {
+            "id": "right-1",
+            "text": "4"
+          },
+          {
+            "id": "right-2",
+            "text": "3"
+          }
+        ],
+        "correctMatches": [
+          {
+            "left": "left-0",
+            "right": "right-0"
+          },
+          {
+            "left": "left-1",
+            "right": "right-1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "em-3",
+      "title": "This is the third extended-match question",
+      "points": 5,
+      "type": "extended-match",
+      "help": "Connect the dots.",
+      "answerOptions": {
+        "leftSide": [],
+        "rightSide": [],
+        "correctMatches": []
+      }
+    },
+    {
+      "id": "em-4",
+      "title": "This is the fourth extended-match question",
+      "points": 5,
+      "type": "extended-match",
+      "help": "Connect the dots.",
+      "answerOptions": {
+        "leftSide": [
+          {
+            "id": "left-0",
+            "text": "1"
+          }
+        ],
+        "rightSide": [
+          {
+            "id": "right-0",
+            "text": "2"
+          }
+        ],
+        "correctMatches": [
+          {
+            "left": "left-0",
+            "right": "right-0"
+          }
+        ]
+      }
+    }
+  ]
+}

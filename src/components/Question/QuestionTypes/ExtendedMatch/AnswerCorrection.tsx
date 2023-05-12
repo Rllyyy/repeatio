@@ -10,7 +10,7 @@ import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 
 //Components
-import { Canvas } from "./Canvas";
+import { SVGElement } from "./ExtendedMatch";
 
 // Interfaces
 import { IExtendedMatch } from "./ExtendedMatch";
@@ -47,7 +47,7 @@ export const AnswerCorrection = ({
 
   //Update the correct lines array
   useEffect(() => {
-    const newCorrectMatches = correctMatches.map((item) => {
+    const newCorrectMatches = correctMatches?.map((item) => {
       //Find left item
       const resultLeft = leftCorrection.current?.find((obj) => obj.current?.getAttribute("data-ident") === item.left);
 
@@ -55,10 +55,12 @@ export const AnswerCorrection = ({
         (obj) => obj.current?.getAttribute("data-ident") === item.right
       );
 
+      // console.log(item.right);
+
       return { left: resultLeft?.current, right: resultRight?.current };
     });
 
-    setCorrectLines([...newCorrectMatches]);
+    setCorrectLines([...(newCorrectMatches || [])]);
 
     return () => {
       setCorrectLines([]);
@@ -68,7 +70,7 @@ export const AnswerCorrection = ({
   return (
     <div className='extended-match-grid-solution'>
       <div className={`ext-match-left-side`}>
-        {shuffledLeftOptions.map((item, index) => {
+        {shuffledLeftOptions?.map((item, index) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
@@ -89,9 +91,9 @@ export const AnswerCorrection = ({
           );
         })}
       </div>
-      <Canvas lines={correctLines} />
+      <SVGElement lines={correctLines} mode='static' />
       <div className={`ext-match-right-side`}>
-        {shuffledRightOptions.map((item, index) => {
+        {shuffledRightOptions?.map((item, index) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>

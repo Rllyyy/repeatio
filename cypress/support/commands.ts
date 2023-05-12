@@ -36,6 +36,7 @@ type Fixtures =
   | "repeatio-module-multiple_choice.json"
   | "repeatio-module-multiple_response.json"
   | "repeatio-module-empty-questions.json"
+  | "repeatio-module-extended_match.json"
   | "repeatio-module-cypress_1.json"
   | "repeatio-marked-types_1.json"
   | "repeatio-marked-cypress_1.json"
