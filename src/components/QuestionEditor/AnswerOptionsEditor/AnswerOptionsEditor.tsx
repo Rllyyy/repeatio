@@ -93,6 +93,9 @@ export const AnswerOptionsEditor = ({
         if (!hasSubmitted) return;
         setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
         break;
+      case "extended-match":
+        toast.info("Use the plus buttons to add extended-match options");
+        break;
       case "":
         toast.warn("Choose a question type!");
         break;
@@ -147,6 +150,10 @@ export const AnswerOptionsEditor = ({
         toast.warn("Highlight the gap you want to remove!");
       }
       return;
+    }
+
+    if (questionType === "extended-match") {
+      toast.info("Use the cross buttons to delete extended-match items");
     }
   };
 

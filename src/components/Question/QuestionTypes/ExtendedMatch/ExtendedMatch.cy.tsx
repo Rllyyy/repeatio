@@ -50,7 +50,7 @@ describe("Extended Match component", () => {
     cy.get("svg.svg-element>g").should("not.exist");
   });
 
-  it("should create a line between two elements", () => {
+  it("should create a line between two elements (left side first)", () => {
     cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
 
     cy.get(".ext-match-left-side").find(".ext-match-element-circle").first().click();
@@ -63,6 +63,15 @@ describe("Extended Match component", () => {
       .and("have.attr", "y1", 25)
       .and("have.attr", "x2", 80)
       .and("have.attr", "y2", 25);
+  });
+
+  it("should create a line between two elements (right side first)", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    cy.get(".ext-match-element-circle[data-ident='right-0']").click();
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+
+    cy.get("line#left-0_right-0_line").should("exist");
   });
 
   it("should create multiple lines", () => {
@@ -101,7 +110,7 @@ describe("Extended Match component", () => {
     cy.get("line#left-0_right-1_line").should("exist");
   });
 
-  it("should choose the last point for a line if clicking on a side twice", () => {
+  it("should choose the last point for a line if clicking on right side twice", () => {
     cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
 
     cy.get(".ext-match-element-circle[data-ident='right-1']").click();
@@ -109,6 +118,63 @@ describe("Extended Match component", () => {
     cy.get(".ext-match-element-circle[data-ident='left-0']").click();
 
     cy.get("line#left-0_right-0_line").should("exist");
+  });
+
+  it("should choose the last point for a line if clicking on left side twice", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    cy.get(".ext-match-element-circle[data-ident='left-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-0']").click();
+
+    cy.get("line#left-0_right-0_line").should("exist");
+  });
+
+  it("should not render duplicate lines (left point first)", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+
+    cy.get(".ext-match-element-circle[data-ident='left-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+
+    cy.get(".ext-match-element-circle[data-ident='left-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+
+    cy.get("line#left-0_right-1_line").should("exist").and("have.length", 1);
+    cy.get("line#left-1_right-1_line").should("exist").and("have.length", 1);
+    cy.get("svg.svg-element>g").should("have.length", 2);
+  });
+
+  it("should not render duplicate lines (right point first)", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='left-1']").click();
+
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+    cy.get(".ext-match-element-circle[data-ident='left-1']").click();
+
+    cy.get("line#left-0_right-1_line").should("exist").and("have.length", 1);
+    cy.get("line#left-1_right-1_line").should("exist").and("have.length", 1);
+    cy.get("svg.svg-element>g").should("have.length", 2);
+  });
+
+  it("should not render duplicate lines if first line is a duplicate", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+
+    cy.get(".ext-match-element-circle[data-ident='left-0']").click();
+    cy.get(".ext-match-element-circle[data-ident='right-1']").click();
+
+    cy.get("line#left-0_right-1_line").should("exist").and("have.length", 1);
+    cy.get("svg.svg-element>g").should("have.length", 1);
   });
 
   it("should select an element if clicking on it and highlight the opposite side", () => {
@@ -264,8 +330,6 @@ describe("Extended Match component inside Question component", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='extended_match' questionID='em-1' />);
     cy.get(".ext-match-element").should("have.length", 5);
   });
-
-  //TODO not submit on enter
 
   /* Reset */
   it("should reset the lines if clicking on the reset button", () => {

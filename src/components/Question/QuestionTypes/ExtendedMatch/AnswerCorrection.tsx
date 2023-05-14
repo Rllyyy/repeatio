@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createRef, RefObject } from "react";
+import { useState, useEffect, useRef } from "react";
 import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 //Markdown
@@ -24,8 +24,6 @@ interface IExtendedMatchAnswerCorrectionProps {
   correctMatches: IExtendedMatch["correctMatches"];
   shuffledLeftOptions: IExtendedMatch["leftSide"];
   shuffledRightOptions: IExtendedMatch["rightSide"];
-  left: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
-  right: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
 }
 
 //Component
@@ -33,31 +31,22 @@ export const AnswerCorrection = ({
   correctMatches,
   shuffledLeftOptions,
   shuffledRightOptions,
-  left,
-  right,
 }: IExtendedMatchAnswerCorrectionProps) => {
   //useState
   const [correctLines, setCorrectLines] = useState<IExtendedMatchLineCorrection[]>([]);
 
   //useRef
-  const leftCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(left?.current?.map(() => createRef()));
-  const rightCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(
-    right?.current?.map(() => createRef())
-  );
+  //Refs
+  const left = useRef<Array<HTMLDivElement | null>>([]);
+  const right = useRef<Array<HTMLDivElement | null>>([]);
 
   //Update the correct lines array
   useEffect(() => {
     const newCorrectMatches = correctMatches?.map((item) => {
-      //Find left item
-      const resultLeft = leftCorrection.current?.find((obj) => obj.current?.getAttribute("data-ident") === item.left);
-
-      const resultRight = rightCorrection.current?.find(
-        (obj) => obj.current?.getAttribute("data-ident") === item.right
-      );
-
-      // console.log(item.right);
-
-      return { left: resultLeft?.current, right: resultRight?.current };
+      return {
+        left: left.current[item.left as keyof IExtendedMatchLineCorrection["left"]],
+        right: right.current[item.right as keyof IExtendedMatchLineCorrection["right"]],
+      };
     });
 
     setCorrectLines([...(newCorrectMatches || [])]);
@@ -70,7 +59,7 @@ export const AnswerCorrection = ({
   return (
     <div className='extended-match-grid-solution'>
       <div className={`ext-match-left-side`}>
-        {shuffledLeftOptions?.map((item, index) => {
+        {shuffledLeftOptions?.map((item) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
@@ -84,7 +73,7 @@ export const AnswerCorrection = ({
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={leftCorrection.current?.[index]}
+                ref={(el) => (left.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
                 data-ident={id}
               />
             </div>
@@ -93,7 +82,7 @@ export const AnswerCorrection = ({
       </div>
       <SVGElement lines={correctLines} mode='static' />
       <div className={`ext-match-right-side`}>
-        {shuffledRightOptions?.map((item, index) => {
+        {shuffledRightOptions?.map((item) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
@@ -107,7 +96,7 @@ export const AnswerCorrection = ({
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={rightCorrection.current?.[index]}
+                ref={(el) => (right.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
                 data-ident={id}
               />
             </div>

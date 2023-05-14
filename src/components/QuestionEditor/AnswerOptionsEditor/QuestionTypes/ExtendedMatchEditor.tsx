@@ -136,8 +136,8 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
   const updateLeftLine = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const id = e.currentTarget.id.split("add-line-")[1];
 
-    // Get the current circle element from the left ref object using the circleIndex
-    const circle = left.current[id as keyof IExtendedMatchLine["right"]];
+    // Get the current circle element from the left ref object using the id
+    const circle = left.current[id as keyof IExtendedMatchLine["left"]];
 
     // Get the last line element from the lines state
     const lastLine = options?.correctMatches?.[options?.correctMatches?.length - 1];
@@ -228,7 +228,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
   const updateRightLine = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const id = e.currentTarget.id.split("add-line-")[1];
 
-    // Get the current circle element from the left ref object using the circleIndex
+    // Get the current circle element from the left ref object using the id
     const circle = right.current[id as keyof IExtendedMatchLine["right"]];
 
     // Get the last line element from the lines state
@@ -266,7 +266,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           });
 
           // If the item is already at the beginning of the array, don't modify it
-          if (index === 0) {
+          if ((index ?? 0) >= 0) {
             // Don't add anything to the accumulator
             console.warn("Line already exists");
           } else {
@@ -368,45 +368,59 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
   }, [options?.rightSide, options?.leftSide, setQuestion]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-      <SideWrapperComponent side='left' highlightSide={highlightSide}>
-        {options?.leftSide?.map((item) => {
-          return (
-            <Element key={item.id} id={item.id}>
-              <RemoveElementButton id={item.id} handleElementRemove={handleElementRemove} />
-              <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
-              <AddLineButton
-                id={item.id}
-                highlightSelectedCircle={highlightSelectedCircle}
-                sideCurrent={left.current}
-                updateLine={updateLeftLine}
-                side='left'
-              />
-            </Element>
-          );
-        })}
-        <AddElementButton side='left' handleElementAdd={handleElementAdd} />
-      </SideWrapperComponent>
-      <SVGElement correctMatches={options?.correctMatches} handleLineRemove={handleLineRemove} />
-      <SideWrapperComponent side='right' highlightSide={highlightSide}>
-        {options?.rightSide?.map((item) => {
-          return (
-            <Element key={item.id} id={item.id}>
-              <AddLineButton
-                id={item.id}
-                highlightSelectedCircle={highlightSelectedCircle}
-                side='right'
-                sideCurrent={right.current}
-                updateLine={updateRightLine}
-              />
-              <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
-              <RemoveElementButton id={item.id} handleElementRemove={handleElementRemove} />
-            </Element>
-          );
-        })}
-        <AddElementButton side='right' handleElementAdd={handleElementAdd} />
-      </SideWrapperComponent>
-    </div>
+    <>
+      <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+        <SideWrapperComponent side='left' highlightSide={highlightSide}>
+          {options?.leftSide?.map((item) => {
+            return (
+              <Element key={item.id} id={item.id}>
+                <RemoveElementButton id={item.id} handleElementRemove={handleElementRemove} />
+                <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
+                <AddLineButton
+                  id={item.id}
+                  highlightSelectedCircle={highlightSelectedCircle}
+                  sideCurrent={left.current}
+                  updateLine={updateLeftLine}
+                  side='left'
+                />
+              </Element>
+            );
+          })}
+          <AddElementButton side='left' handleElementAdd={handleElementAdd} />
+        </SideWrapperComponent>
+        <SVGElement correctMatches={options?.correctMatches} handleLineRemove={handleLineRemove} />
+        <SideWrapperComponent side='right' highlightSide={highlightSide}>
+          {options?.rightSide?.map((item) => {
+            return (
+              <Element key={item.id} id={item.id}>
+                <AddLineButton
+                  id={item.id}
+                  highlightSelectedCircle={highlightSelectedCircle}
+                  side='right'
+                  sideCurrent={right.current}
+                  updateLine={updateRightLine}
+                />
+                <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
+                <RemoveElementButton id={item.id} handleElementRemove={handleElementRemove} />
+              </Element>
+            );
+          })}
+          <AddElementButton side='right' handleElementAdd={handleElementAdd} />
+        </SideWrapperComponent>
+      </div>
+      <p
+        style={{
+          borderTop: "1px solid var(--custom-border-color-lighter)",
+          color: "gray",
+          fontSize: "14px",
+          paddingTop: "6px",
+          marginTop: "20px",
+        }}
+      >
+        Create a match object by first clicking on the plus button. Then click on the circles to create a connection.
+        Dragging is not supported!
+      </p>
+    </>
   );
 };
 

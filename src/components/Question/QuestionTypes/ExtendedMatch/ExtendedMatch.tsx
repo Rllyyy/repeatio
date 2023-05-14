@@ -1,13 +1,4 @@
-import {
-  forwardRef,
-  useRef,
-  useLayoutEffect,
-  useState,
-  createRef,
-  useImperativeHandle,
-  useCallback,
-  RefObject,
-} from "react";
+import { forwardRef, useRef, useLayoutEffect, useState, useImperativeHandle, useCallback } from "react";
 
 //Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
@@ -36,7 +27,6 @@ import { useSize } from "../../../../hooks/useSize";
 //Each line in the svg is an object in the lines array
 //TODO refactor:
 //- remove callbacks as they don't do anything
-//- Check if line already in lines array and give message to user
 
 export interface IExtendedMatchItem {
   id: string;
@@ -69,13 +59,12 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
   const [lines, setLines] = useState<IExtendedMatchLine[]>([]);
   const [shuffledLeftOptions, setShuffledLeftOptions] = useState<IExtendedMatchProps["options"]["leftSide"]>([]);
   const [shuffledRightOptions, setShuffledRightOptions] = useState<IExtendedMatchProps["options"]["rightSide"]>([]);
-  const [highlightRight, setHighlightRight] = useState(false);
-  const [highlightLeft, setHighlightLeft] = useState(false);
+  const [highlightSide, setHighlightSide] = useState<"left" | "right" | null>(null);
   const [highlightSelectedCircle, setHighlightSelectedCircle] = useState<string | null>();
 
   //Refs
-  const left = useRef<RefObject<HTMLButtonElement>[] | null | undefined>();
-  const right = useRef<RefObject<HTMLButtonElement>[] | null | undefined>();
+  const left = useRef<Array<HTMLButtonElement | null>>([]);
+  const right = useRef<Array<HTMLButtonElement | null>>([]);
 
   //Reset the ref options changes
   useLayoutEffect(() => {
@@ -88,10 +77,6 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     const leftShuffle = shuffleArray(options.leftSide || []);
     const rightShuffle = shuffleArray(options.rightSide || []);
 
-    //Set current refs
-    left.current = leftShuffle.map(() => createRef());
-    right.current = rightShuffle.map(() => createRef());
-
     //Update the state
     setShuffledLeftOptions(leftShuffle);
     setShuffledRightOptions(rightShuffle);
@@ -101,63 +86,85 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       setLines([]);
       setShuffledLeftOptions([]);
       setShuffledRightOptions([]);
-      left.current = null;
-      right.current = null;
-      setHighlightRight(false);
-      setHighlightLeft(false);
+      left.current = [];
+      right.current = [];
+      setHighlightSide(null);
     };
   }, [options]);
 
   //EventHandler when the user clicks the left circles
   const updateLeftLine = useCallback(
-    (circleIndex: number) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       //Guards
       if (formDisabled) return;
 
       //Variables
       let updatedLines = [...lines];
+      const id = e.currentTarget.getAttribute("data-ident");
+      const newElement = left.current[id as keyof IExtendedMatchLine["left"]];
       const lastLineElement = lines[lines.length - 1];
 
       //Update the lines state depending on the user action
-      if (updatedLines.length === 0) {
+      if (updatedLines.length === 0 || typeof updatedLines === "undefined") {
         //If length of the lines array is zero there needs to be no further checking, the object can just be pushed to the array
-        updatedLines.push({ left: left.current?.[circleIndex].current });
+        updatedLines = [{ left: newElement }];
 
         //Highlight the selected circle and the opposite side
-        setHighlightSelectedCircle(`left-${circleIndex}`);
-        setHighlightRight(true);
+        setHighlightSelectedCircle(id);
+        setHighlightSide("right");
       } else if (lastLineElement.right !== undefined && lastLineElement.left !== undefined) {
         //Set the left property of a new line, but it's not the first line by checking if both elements (left/right) of the line before are set.
-        updatedLines.push({ left: left.current?.[circleIndex].current });
+        updatedLines.push({ left: newElement });
 
         //Highlight the circle the user clicked on and the opposite side
-        setHighlightSelectedCircle(`left-${circleIndex}`);
-        setHighlightRight(true);
+        setHighlightSelectedCircle(id);
+        setHighlightSide("right");
       } else if (lastLineElement.left === undefined && lastLineElement.right !== undefined) {
         //Case if the user first clicks a right side element
-        updatedLines = updatedLines.map((element, index) => {
-          if (index === updatedLines.length - 1) {
-            return { ...element, left: left.current?.[circleIndex].current };
+        const lastItemIndex = (updatedLines?.length ?? 0) - 1;
+
+        // This part ensures that no duplicate lines are added
+        // Loop through each item in the array using reduce
+        updatedLines = (updatedLines || []).reduce((accumulator, item, currentIndex) => {
+          // Check if this is the last item in the array
+          if (currentIndex === lastItemIndex) {
+            // Find the index of the item we want to update
+            const index = updatedLines?.findIndex((item) => {
+              return (
+                item.right?.getAttribute("data-ident") === lastLineElement.right?.getAttribute("data-ident") &&
+                item.left?.getAttribute("data-ident") === id
+              );
+            });
+
+            // If the item is already at the beginning of the array, don't modify it
+            if ((index ?? 0) >= 0) {
+              // Don't add anything to the accumulator
+              console.warn("Line already exists");
+              //return
+            } else if (index < 0) {
+              // Create a copy of the item with the 'left' property updated
+              const updatedItem = { ...item, left: newElement };
+              // Add the updated item to the accumulator
+              accumulator?.push(updatedItem);
+            }
           } else {
-            return element;
+            // This is not the last item in the array, so add it to the accumulator unchanged
+            accumulator?.push(item);
           }
-        });
+
+          // Return the accumulator for the next iteration
+          return accumulator;
+        }, [] as IExtendedMatchLine[]);
 
         //Remove the highlight from the single circle and the whole left section
         setHighlightSelectedCircle(null);
-        setHighlightLeft(false);
+        setHighlightSide(null);
       } else if (lastLineElement.right === undefined && lastLineElement.left !== undefined) {
         //Case if the user clicks a left element but then clicks another left element, so just the most recent value is used
-        updatedLines = updatedLines.map((element, index) => {
-          if (index === updatedLines.length - 1) {
-            return { left: left?.current?.[circleIndex]?.current };
-          } else {
-            return element;
-          }
-        });
+        updatedLines[(updatedLines?.length ?? 0) - 1].left = newElement;
 
         //Highlight the circle the user clicked on (the opposite side is already highlighted)
-        setHighlightSelectedCircle(`left-${circleIndex}`);
+        setHighlightSelectedCircle(id);
       }
 
       //Update the state
@@ -168,54 +175,78 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
 
   //EventHandler when the user clicks the right circles
   const updateRightLine = useCallback(
-    (circleIndex: number) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       //Guards
       if (formDisabled) return;
 
       //Variables
       let updatedLines = [...lines];
+      const id = e.currentTarget.getAttribute("data-ident");
+      const newElement = right.current[id as keyof IExtendedMatchLine["right"]];
       const lastLineElement = lines[lines.length - 1];
 
       //Update the lines state depending on the user action
-      if (updatedLines.length === 0) {
+      if (updatedLines.length === 0 || typeof updatedLines === "undefined") {
         //If length of the lines state is zero there needs to be no further checking, the object can just be pushed to the array
-        updatedLines.push({ right: right.current?.[circleIndex].current });
+        updatedLines = [{ right: newElement }];
 
         //Highlight the selected circle and the opposite side
-        setHighlightSelectedCircle(`right-${circleIndex}`);
-        setHighlightLeft(true);
+        setHighlightSelectedCircle(id);
+        setHighlightSide("left");
       } else if (lastLineElement.left !== undefined && lastLineElement.right !== undefined) {
         //Set the right property of a new line, but it's not the first line by checking if both elements (left/right) of the line before are set.
-        updatedLines.push({ right: right.current?.[circleIndex].current });
+        updatedLines.push({ right: newElement });
 
         //Highlight the clicked circle and the opposite side
-        setHighlightSelectedCircle(`right-${circleIndex}`);
-        setHighlightLeft(true);
+        setHighlightSelectedCircle(id);
+        setHighlightSide("left");
       } else if (lastLineElement.right === undefined && lastLineElement.left !== undefined) {
-        //Case if the user first clicks a left side element but there are already at least one line
-        updatedLines = updatedLines.map((element, index) => {
-          if (index === updatedLines.length - 1) {
-            return { ...element, right: right.current?.[circleIndex].current };
+        //Case if the user first clicks a left side element
+
+        const lastItemIndex = (updatedLines?.length ?? 0) - 1;
+
+        // This part ensures that no duplicate lines are added
+        // Loop through each item in the array using reduce
+        updatedLines = (updatedLines || []).reduce((accumulator, item, currentIndex) => {
+          // Check if this is the last item in the array
+          if (currentIndex === lastItemIndex) {
+            // Find the index of the item we want to update
+            const index = updatedLines?.findIndex((item) => {
+              return (
+                item.left?.getAttribute("data-ident") === lastLineElement.left?.getAttribute("data-ident") &&
+                item.right?.getAttribute("data-ident") === id
+              );
+            });
+
+            // If the item is already at the beginning of the array, don't modify it
+            if ((index ?? 0) >= 0) {
+              // Don't add anything to the accumulator
+              console.warn("Line already exists");
+              //return
+            } else if (index < 0) {
+              // Create a copy of the item with the 'right' property updated
+              const updatedItem = { ...item, right: newElement };
+              // Add the updated item to the accumulator
+              accumulator?.push(updatedItem);
+            }
           } else {
-            return element;
+            // This is not the last item in the array, so add it to the accumulator unchanged
+            accumulator?.push(item);
           }
-        });
+
+          // Return the accumulator for the next iteration
+          return accumulator;
+        }, [] as IExtendedMatchLine[]);
 
         //Remove the highlights
         setHighlightSelectedCircle(null);
-        setHighlightRight(false);
+        setHighlightSide(null);
       } else if (lastLineElement.left === undefined && lastLineElement.right !== undefined) {
         //Case if the user clicks a right element but then clicks another right element, so just the most recent selected circle is used
-        updatedLines = updatedLines.map((element, index) => {
-          if (index === updatedLines.length - 1) {
-            return { right: right.current?.[circleIndex].current };
-          } else {
-            return element;
-          }
-        });
+        updatedLines[(updatedLines.length ?? 0) - 1].right = newElement;
 
         //Highlight the circle the user clicked on (the opposite side is already highlighted)
-        setHighlightSelectedCircle(`right-${circleIndex}`);
+        setHighlightSelectedCircle(id);
       }
 
       //Update lines array
@@ -243,8 +274,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
   //Remove all the lines from the state
   const removeAllLines = () => {
     setHighlightSelectedCircle(null);
-    setHighlightLeft(false);
-    setHighlightRight(false);
+    setHighlightSide(null);
     //Reset the state to empty array
     setLines([]);
   };
@@ -254,8 +284,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     //Check if the answer is correct.
     checkAnswer() {
       setHighlightSelectedCircle(null);
-      setHighlightRight(false);
-      setHighlightLeft(false);
+      setHighlightSide(null);
 
       //Remove line if property (right or left) is missing
       const filteredLines = lines.filter((line) => line.left && line.right);
@@ -289,8 +318,6 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
           correctMatches={options.correctMatches}
           shuffledLeftOptions={shuffledLeftOptions}
           shuffledRightOptions={shuffledRightOptions}
-          left={left}
-          right={right}
         />
       );
     },
@@ -306,16 +333,12 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       removeAllLines();
 
       //Reset the refs
-      left.current = null;
-      right.current = null;
+      left.current = [];
+      right.current = [];
 
       //Reshuffle the options
       const leftShuffle = shuffleArray(options.leftSide || []);
       const rightShuffle = shuffleArray(options.rightSide || []);
-
-      //Set current refs
-      left.current = leftShuffle.map(() => createRef());
-      right.current = rightShuffle.map(() => createRef());
 
       //Update the state
       setShuffledLeftOptions(leftShuffle);
@@ -327,8 +350,8 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
   return (
     <div className='question-extended-match'>
       <div className='extended-match-grid'>
-        <div className={`ext-match-left-side ${highlightLeft && "highlight-all-left-circles"}`}>
-          {shuffledLeftOptions?.map((item, index) => {
+        <div className={`ext-match-left-side ${highlightSide === "left" ? "highlight-all-left-circles" : ""}`}>
+          {shuffledLeftOptions?.map((item) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`} id={`element-${id}`}>
@@ -342,12 +365,12 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
-                    highlightSelectedCircle === `left-${index}` && "highlight-single-circle"
+                    highlightSelectedCircle === id && "highlight-single-circle"
                   }`}
-                  ref={left.current?.[index]}
+                  ref={(el) => (left.current[id as keyof IExtendedMatchLine["left"]] = el)}
                   data-ident={id}
                   type='button'
-                  onClick={() => updateLeftLine(index)}
+                  onClick={updateLeftLine}
                   disabled={formDisabled}
                 />
               </div>
@@ -355,8 +378,8 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
           })}
         </div>
         <SVGElement lines={lines} handleLineRemove={handleLineRemove} formDisabled={formDisabled} mode='drawable' />
-        <div className={`ext-match-right-side ${highlightRight && "highlight-all-right-circles"}`}>
-          {shuffledRightOptions?.map((item, index) => {
+        <div className={`ext-match-right-side ${highlightSide === "right" ? "highlight-all-right-circles" : ""}`}>
+          {shuffledRightOptions?.map((item) => {
             const { text, id } = item;
             return (
               <div className='ext-match-element' key={`ext-match-element-${id}`} id={`element-${id}`}>
@@ -370,12 +393,12 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
-                    highlightSelectedCircle === `right-${index}` && "highlight-single-circle"
+                    highlightSelectedCircle === id && "highlight-single-circle"
                   }`}
-                  ref={right.current?.[index]}
+                  ref={(el) => (right.current[id as keyof IExtendedMatchLine["right"]] = el)}
                   data-ident={id}
                   type='button'
-                  onClick={() => updateRightLine(index)}
+                  onClick={updateRightLine}
                   disabled={formDisabled}
                 />
               </div>
