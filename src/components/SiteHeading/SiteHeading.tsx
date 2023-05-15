@@ -1,9 +1,10 @@
+import { PropsWithChildren } from "react";
+
 interface ISiteHeading {
   title: string;
-  children?: React.ReactNode;
 }
 
-export const SiteHeading: React.FC<ISiteHeading> = ({ title, children }) => {
+export const SiteHeading: React.FC<PropsWithChildren<ISiteHeading>> = ({ title, children }) => {
   return (
     <div className='site-heading' style={{ display: "flex", alignItems: "start" }}>
       <h1
