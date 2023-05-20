@@ -810,7 +810,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
     cy.get("button#editor-add-item").click();
     cy.get(".editor-content").find("input[type='radio']").click();
     cy.get(".editor-content").find("textarea").first().type("mc option text");
-    cy.get("button[type='submit']").click();
+    cy.contains("button", "Add").click();
 
     cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true");
 
@@ -821,7 +821,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
   context("HTML5 Browser validation", () => {
     it("should show browser validation error for required id input", () => {
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("input[name='id']").then(($input) => {
         expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please fill in this field.");
       });
@@ -830,7 +830,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
     it("should show browser validation error for required select input", () => {
       cy.get("input[name='id']").type("new-id");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("select[name='type']").then(($input) => {
         expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please select an item in the list.");
       });
@@ -841,7 +841,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("select[name='type']").select("multiple-choice");
       cy.get("input[name='points']").type("-5");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("input[name='points']").then(($input) => {
         expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Value must be greater than or equal to 0.");
       });
@@ -851,7 +851,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("input[name='id']").type("new-id");
       cy.get("select[name='type']").select("multiple-choice");
       cy.get("button#editor-add-item").click();
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Check for validation error message on radio and click it after test
       cy.get(".editor-content")
@@ -861,7 +861,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         })
         .click();
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       cy.get(".editor-content")
         .find("textarea")
@@ -877,7 +877,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("button#editor-add-item").click().click();
 
       //Check for message to show up and click after message shows
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get(".editor-content")
         .find("label[data-testid='option-0']")
         .find("input[type='radio']")
@@ -898,7 +898,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .first()
         .type("Textarea value for option-1");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Validate that the form submits
       cy.get("@handleModalCloseSpy").should("have.been.called");
@@ -911,7 +911,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("input[type='checkbox'][value='option-0']").check();
 
       //Submit form
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Find HTML validation message on textarea
       cy.get(".editor-content")
@@ -923,14 +923,14 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .type("Content after first tried submit");
 
       //Validate that the form submits
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
     it("should show HTML5 validation errors onSubmit", () => {
       cy.get("input[name='id']").type("new-id");
       cy.get("select[name='type']").select("gap-text");
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       cy.get("textarea#editor-gap-text-textarea").then(($textarea) => {
         expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.eq("Please fill in this field.");
@@ -973,13 +973,13 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get(".editor-content").find("textarea").first().type("Option-0 textarea content");
 
       //Submit form, expect error and break out of submit
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.contains("p", "Check at least one item!").should("exist");
       cy.get("@handleModalCloseSpy").should("not.have.been.called");
 
       //Fix error and check for successful submit
       cy.get("input[type='checkbox'][value='option-0']").check();
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.contains("p", "Check at least one item!").should("not.exist");
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
@@ -1059,7 +1059,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       cy.contains("p", "The id can't be empty!").should("not.exist");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1076,7 +1077,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       ).should("not.exist");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1093,7 +1095,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       );
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1110,7 +1113,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       cy.get(".editor-content").find("textarea").first().type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1179,7 +1183,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .first()
         .type("Textarea value for option-0");
 
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1231,7 +1236,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1251,7 +1257,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1285,7 +1292,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
   });

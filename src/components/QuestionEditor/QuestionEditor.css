@@ -62,20 +62,22 @@
 
 .question-editor-form .buttons {
   margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .question-editor-form .buttons button {
   all: unset;
-  padding: 10px 20px;
+  padding: 10px 6px;
   border-radius: 5px;
   font-size: 18px;
   font-weight: 600;
 
   line-height: 1;
-  margin-right: 10px;
   text-align: center;
   width: 100%;
-  max-width: 100px;
+  max-width: 130px;
 }
 
 .question-editor-form .buttons button:not([aria-disabled="true"]) {
@@ -123,6 +125,7 @@
 
 .question-editor-form .buttons .cancel {
   box-shadow: inset var(--custom-border-color-light) 0px 0px 0px 1px;
+  margin-left: auto;
 }
 
 .question-editor-form .buttons .update-add-question:focus-visible,
@@ -153,12 +156,32 @@
   }
 
   .question-editor-form .buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    gap: 6px;
   }
 
   .question-editor-form .buttons button {
     margin: 0;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .question-editor-form {
+    width: 100%;
+  }
+  .question-editor-form .buttons {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .question-editor-form .buttons button[type="submit"] {
+    box-sizing: border-box;
+    width: calc(50% - 3px);
+    max-width: none;
+  }
+
+  .question-editor-form .buttons .cancel {
+    max-width: none;
+    width: 100%;
+    margin-left: 0;
   }
 }

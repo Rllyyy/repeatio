@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, SyntheticEvent } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 //Context
@@ -136,7 +136,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
   };
 
   //Handle form submit
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -220,7 +220,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
 
     //Adding or updating a question
     if (props.mode === "create") {
-      //If the user is adding a question (not given prevQuestion), push the new question to the end of the localStorage
+      //If the user is adding a question, push the new question to the end of the localStorage
       let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
       module?.questions.push(output as IQuestion);
 
@@ -314,8 +314,16 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
     }
 
     if (props.mode === "edit") {
-      // Deselect current question
+      // Reset current question
       props.handleResetQuestionComponent();
+    }
+
+    // Navigate to just added question if button name is add-and-view
+    if (props.mode === "create" && (e.nativeEvent.submitter as HTMLButtonElement)?.name === "add-and-view") {
+      navigate({
+        pathname: `/module/${params.moduleID}/question/${output.id}`,
+        search: `?mode=practice&order=chronological`,
+      });
     }
 
     hasSubmitted.current = false;
@@ -373,13 +381,38 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
       </div>
       {/* Buttons */}
       <div className='buttons'>
-        <button
-          type='submit'
-          className={`update-add-question`}
-          aria-disabled={Object.keys(errors).length > 0 ? true : false}
-        >
-          {props.mode === "edit" ? "Update" : "Add"}
-        </button>
+        {props.mode === "create" ? (
+          <>
+            <button
+              type='submit'
+              className={`update-add-question`}
+              aria-disabled={Object.keys(errors).length > 0 ? true : false}
+              aria-label='Add Question'
+              name='add'
+            >
+              Add
+            </button>
+            <button
+              type='submit'
+              className='update-add-question'
+              aria-disabled={Object.keys(errors).length > 0 ? true : false}
+              aria-label='Add and navigate to Question'
+              name='add-and-view'
+            >
+              Add + View
+            </button>
+          </>
+        ) : (
+          <button
+            type='submit'
+            className={`update-add-question`}
+            aria-disabled={Object.keys(errors).length > 0 ? true : false}
+            name='update'
+            aria-label='Update Question'
+          >
+            Update
+          </button>
+        )}
         <button type='button' className='cancel' onClick={props.handleModalClose}>
           Cancel
         </button>

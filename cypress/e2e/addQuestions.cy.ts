@@ -143,6 +143,20 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.contains("Yes, that's correct!").should("be.visible");
   });
 
+  it("should visit the added question after clicking on Add + View", () => {
+    cy.get("input[name='id']").type("ls-id-1");
+    cy.get("select[name='type']").select("multiple-choice");
+
+    cy.get("button#editor-add-item").click();
+    cy.get("input[type='radio']").click();
+    cy.get("textarea.editor-label-textarea").type("correct");
+
+    cy.contains("Add + View").click();
+
+    cy.contains("p", "ID: ls-id-1").should("exist");
+    cy.url().should("include", "/module/cypress_1/question/ls-id-1?mode=practice&order=chronological");
+  });
+
   it("should add new Question to localStorage", () => {
     //ID
     cy.get("input[name='id'").type("ls-id-1");
@@ -190,11 +204,13 @@ describe("Adding a question using the QuestionEditor component", () => {
       .first()
       .type("Textarea value for option-0", { delay: 2 });
 
-    cy.get("form button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.contains("A question with this id already exists!").should("exist");
+
     //Expect the submit button to not work
-    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true").click();
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true");
+    cy.get("button[aria-label='Add Question']").click();
 
     //Visit link in error message
     cy.contains("a", "View: qID-1").click();
@@ -213,12 +229,13 @@ describe("Adding a question using the QuestionEditor component", () => {
       .first()
       .type("Textarea value for option-0", { delay: 2 });
 
-    cy.get("form button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.contains("A question with this id already exists!").should("exist");
     cy.get("input[name='id']").clear().type("new-id");
     cy.contains("A question with this id already exists!").should("not.exist");
-    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+    cy.get("button[aria-label='Add Question']").click();
 
     //Visit new Question
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
@@ -245,7 +262,7 @@ describe("Adding a question of type gap-text", () => {
 
   it("should add gap text with one gap", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This is a simple [test]");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("test");
@@ -259,7 +276,7 @@ describe("Adding a question of type gap-text", () => {
 
   it("should add gap-text with multiple gaps", () => {
     cy.get("textarea#editor-gap-text-textarea").type("[This] is a [complex] [test]", { force: true });
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").first().type("This");
@@ -275,7 +292,7 @@ describe("Adding a question of type gap-text", () => {
 
   it("should add gap-text with multiple correct values for one gap", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text supports [multiple; more than one] correct values");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("more than one");
@@ -300,7 +317,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text supports[multiple;more than one]correct values", {
       force: true,
     });
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -314,7 +331,7 @@ describe("Adding a question of type gap-text", () => {
 
   it("should save multiline gap text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text is [split] into{enter}two[lines]");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("div.question-gap-text").invoke("height").should("be.greaterThan", 45);
@@ -326,7 +343,7 @@ describe("Adding a question of type gap-text", () => {
       "<div style='white-space: normal'>{enter}{enter}| Tables   |      Are      |  [nice] |{enter}|----------|:-------------:|------:|{enter}| col 1 is |  left-aligned | $1600 |{enter}{enter}</div>",
       { delay: 2 }
     );
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("table").should("exist").and("be.visible");
@@ -338,7 +355,7 @@ describe("Adding a question of type gap-text", () => {
       { delay: 2 }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -375,7 +392,7 @@ describe("Adding a question of type gap-text", () => {
       }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -398,7 +415,7 @@ describe("Adding a question of type gap-text", () => {
       { delay: 2 }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -417,7 +434,7 @@ describe("Adding a question of type gap-text", () => {
       { delay: 2 }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
