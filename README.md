@@ -2,9 +2,9 @@
 
 _Learn, repeat and memorize tasks with repeatio._
 
-## [Start Learning](https://repeatio.netlify.app)
+## [Start Learning](https://repeatio.de)
 
-## :construction: Current limitations (v0.4) :construction:
+## :construction: Current limitations (v0.5) :construction:
 
 > **Warning**  
 > Not all browser and devices are supported!  
@@ -33,7 +33,6 @@ _Learn, repeat and memorize tasks with repeatio._
 |Performance  | :2nd_place_medal: | :grey_question: | :x:             | :3rd_place_medal: | :grey_question: | :x:              |
 |Functionality| :1st_place_medal: | :grey_question: | :x:             | :1st_place_medal: | :grey_question: | :x:              |
 
-<!--Chrome is missing dvh-->
 <!--Firefox not perfect because html validation is not supported, :has() not supported-->
 
 ### Legend
@@ -110,7 +109,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
 1. Inside the module you want to add a question find the card `Add Question` and click on `Add >`.
 2. Fill in the required fields ([Learn more](#question-editor) about the Question Editor)
-3. Click on `Add`
+3. Click on `Add` or `Add + View`
 4. The question will be added to the end of the existing questions
 
 ### Edit a existing Question
@@ -147,43 +146,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <img src="./.github/Docs/assets/images/example-multiple-choice.png" alt="Multiple Choice Example" height="180px" />
 
-  <p>You can add this type of question through the normal UI. Download the .json file and edit it through a editor like vs code.</p>
-
-  <i><b>.json:</b></i>
-
-  ```json
-  {
-    "id": "qID-1",
-    "title": "This question is of the type Multiple-Choice. Exactly _**one**_ correct answer must be selected. A circle in front of each option can help to identify this kind of question. How many options can be correct?",
-    "points": 5,
-    "type": "multiple-choice",
-    "help": "Please choose the correct answer.",
-    "answerOptions": [
-      {
-        "id": "option-0",
-        "text": "All options can be correct",
-        "isCorrect": false
-      },
-      {
-        "id": "option-1",
-        "text": "One or more options can be correct",
-        "isCorrect": false
-      },
-      {
-        "id": "option-2",
-        "text": "No option can be correct",
-        "isCorrect": false
-      },
-      {
-        "id": "option-3",
-        "text": "Exactly one option can be correct",
-        "isCorrect": true
-      }
-    ]
-  }
-  ```
-
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-1?mode=practice&order=chronological)_**
+  <p>You can add and edit this type of question through the normal UI.</p>
 
 </details>
 
@@ -196,94 +159,20 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <img src="./.github/Docs/assets/images/example-multiple-response.png" alt="Multiple Response Example" height="240px" />
 
-  <p>You can add this type of question through the normal UI. Download the .json file and edit it through a editor like vs code.</p>
-  <b><i>.json:</i></b>
-
-  ```json
-  {
-    "id": "qID-2",
-    "title": "Multiple Response questions have _**at least one**_ correct answer. This type of question is represented by a square in front of each option. <br /> Please note that _**all**_ correct options must be selected, otherwise there will be no points awarded.<br /> How many options can be correct?",
-    "points": 5,
-    "type": "multiple-response",
-    "help": "Please choose the correct answer(s).",
-    "answerOptions": [
-      {
-        "id": "option-0",
-        "text": "All options can be correct",
-        "isCorrect": true
-      },
-      {
-        "id": "option-1",
-        "text": "One or more options can be correct",
-        "isCorrect": true
-      },
-      {
-        "id": "option-2",
-        "text": "No option can be correct",
-        "isCorrect": false
-      },
-      {
-        "id": "option-3",
-        "text": "One option can be correct",
-        "isCorrect": true
-      },
-      {
-        "id": "option-4",
-        "text": "This question type is identical with Multiple-Choice questions",
-        "isCorrect": false
-      },
-      {
-        "id": "option-5",
-        "text": "Half points can be awarded if 50% of the options are correct",
-        "isCorrect": false
-      }
-    ]
-  }
-  ```
-
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-2?mode=practice&order=chronological)_**
+  <p>You can add and edit this type of question through the normal UI.</p>
 
 </details>
 
 <details>
   <summary><b>Gap Text</b></summary>
 
-  <p>Gap Text questions require the user to fill in the missing words. A gap is created by a square bracket.<p>
+  <p>Gap Text questions require the user to fill in the missing words. In the editor a gap is created by wrapping the correct word(s) inside square brackets and separating multiple correct words with a semicolon like this: [correct; right].<p>
 
   <i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-gap-text.png" alt="Gap Text Example" />
 
-  <p>You can <b>not</b> add this type of question through the normal UI. Download the module and edit the raw .json file!</p>
-  <b><i>.json:</i></b>
-
-  ```json
-  {
-    "id": "qID-3",
-    "title": "This is a question of the type gap text. Each gap has to be filled with the correct word.<br /> Please note that spelling mistakes are _**not tolerated**_ but partial points are awarded for a correct gap.<br /> If different words are correct for one gap, you only need to input one but the correction will show all separated by a semicolon (;). The following text has three gaps that have to be filled.",
-    "points": 5,
-    "type": "gap-text",
-    "help": "Fill in the blanks.",
-    "answerOptions": {
-      "text": "A gap text question can have multiple []. A semicolon separates the [] words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
-      "correctGapValues": [
-        [
-          "gaps"
-        ],
-        [
-          "correct",
-          "right"
-        ],
-        [
-          "not"
-        ]
-      ]
-    }
-  }
-  ```
-
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-3?mode=practice&order=chronological)_**
-
+  <p>You can add and edit this type of question through the normal UI.</p>
 </details>
 
 <details>
@@ -346,57 +235,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <img src="./.github/Docs/assets/images/example-extended-match.png" alt="Extended Match Example" height="200px"/>
 
-  <p>You can <b>not</b> add this type of question through the normal UI. Download the .json file and edit it through a editor like vs code.</p>
-
-  <b><i>.json:</i></b>
-
-  ```json
-  {
-    "id": "qID-5",
-    "title": "This is a question of the type Extended Match. The values of the left side have to be connected to the values of the right side but not all values have to be connected. A value can be selected by clicking on the circle. Dragging is currently not supported.<br /> Please note that _**all**_ correct options must be connected, otherwise there will be no points awarded. Please connect the following values.",
-    "points": 5,
-    "type": "extended-match",
-    "help": "Connect the dots.",
-    "answerOptions": {
-      "leftSide": [
-        {
-          "id": "left-0",
-          "text": "Hello"
-        },
-        {
-          "id": "left-1",
-          "text": "7+4"
-        }
-      ],
-      "rightSide": [
-        {
-          "id": "right-0",
-          "text": "World"
-        },
-        {
-          "id": "right-1",
-          "text": "20"
-        },
-        {
-          "id": "right-2",
-          "text": "11"
-        }
-      ],
-      "correctMatches": [
-        {
-          "left": "left-0",
-          "right": "right-0"
-        },
-        {
-          "left": "left-1",
-          "right": "right-2"
-        }
-      ]
-    }
-  }
-  ```
-
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-5?mode=practice&order=chronological)_**
+  <p>You can add and edit this type of question through the normal UI.</p>
 
 </details>
 
@@ -815,7 +654,7 @@ If you want to view your bookmarked questions on a different device or browser y
 1. In the module you want to export the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
 2. Now click on `Export`
   <img src="./.github/Docs/assets/images/export-bookmarked-questions.png" height="180px" />
-3. The browser will either prompt you to choose a file location or download the file directly to your download folder
+3. The browser will either prompt you to choose a file location or download the file directly to the default download folder
 
 ### Import bookmarked Questions
 
@@ -830,10 +669,9 @@ If you want to view your bookmarked questions on a different device or browser y
 
 Use these steps to reset your bookmarked questions.
 
-1. In the module you want to import the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
+1. In the module you want to clear the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
 2. Now click on `Delete`
   <img src="./.github/Docs/assets/images/delete-bookmarked-questions.png" height="180px" />
-3. A new window should open where you can choose the file
 
 ## Editing raw JSON
 
