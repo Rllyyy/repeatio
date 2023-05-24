@@ -473,7 +473,7 @@ export const SVGElement: React.FC<ISVGElement> = (props) => {
                     focusable='true'
                     tabIndex={!props.formDisabled ? 0 : undefined}
                     role={!props.formDisabled ? "button" : undefined}
-                    aria-disabled={props.formDisabled ? true : false}
+                    aria-disabled={props.formDisabled}
                   />
                   <g
                     transform={`translate(${(svgWidth || 0) / 2}, ${(y1 + y2) / 2})`}
@@ -491,10 +491,3 @@ export const SVGElement: React.FC<ISVGElement> = (props) => {
     </svg>
   );
 };
-
-/* TODO:
- - should not remove line if form is disabled 
- - not enable duplicates
- - replace clientHeight with offsetHeight in Editor
- - remove incomplete lines from question correction
-*/

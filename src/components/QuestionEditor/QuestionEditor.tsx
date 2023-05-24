@@ -380,13 +380,13 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
         {errors?.answerOptions && <p className='modal-question-error'>{errors?.answerOptions}</p>}
       </div>
       {/* Buttons */}
-      <div className='buttons'>
+      <div className={`buttons ${props.mode}`}>
         {props.mode === "create" ? (
           <>
             <button
               type='submit'
               className={`update-add-question`}
-              aria-disabled={Object.keys(errors).length > 0 ? true : false}
+              aria-disabled={Object.keys(errors).length > 0}
               aria-label='Add Question'
               name='add'
             >
@@ -395,7 +395,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
             <button
               type='submit'
               className='update-add-question'
-              aria-disabled={Object.keys(errors).length > 0 ? true : false}
+              aria-disabled={Object.keys(errors).length > 0}
               aria-label='Add and navigate to Question'
               name='add-and-view'
             >
@@ -406,7 +406,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
           <button
             type='submit'
             className={`update-add-question`}
-            aria-disabled={Object.keys(errors).length > 0 ? true : false}
+            aria-disabled={Object.keys(errors).length > 0}
             name='update'
             aria-label='Update Question'
           >

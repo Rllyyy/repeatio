@@ -145,6 +145,7 @@ export const MultipleChoice = forwardRef<IForwardRefFunctions, MultipleChoiceCom
                     <Radio
                       className='formControlLabel-radio'
                       data-testid={`formControlLabel-radio-${option.id}`}
+                      size='medium'
                       sx={{
                         color: `${!formDisabled ? "var(--custom-prime-color)" : "var(--custom-border-color-light)"}`,
                         "&.Mui-checked": {

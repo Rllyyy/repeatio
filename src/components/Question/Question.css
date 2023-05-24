@@ -11,6 +11,8 @@
 
   display: grid;
   grid-template-rows: 1fr min-content;
+
+  font-size: 18px;
 }
 
 /* Markdown specific */
@@ -39,6 +41,7 @@
 .question-form table {
   margin: 5px 0;
   border-collapse: collapse;
+  word-break: break-word;
 }
 
 .question-form table,
@@ -124,6 +127,10 @@
   margin: 2px 0 5px 0;
   font-style: italic;
   color: var(--custom-secondary-color);
+}
+
+.question-user-response {
+  margin-top: 12px;
 }
 
 /* Targets the question-correction section*/

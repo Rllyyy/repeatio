@@ -2,33 +2,22 @@
 /* ! Some css properties (mui-checkcolor, color) are defined in the react component  */
 
 .question-multiple-response .MuiFormControlLabel-root {
-  margin-bottom: 5px;
+  margin-bottom: 12px;
   margin-right: 0;
   margin-left: -6px;
   width: calc(100% + 6px) !important;
   border-radius: 3px;
 }
 
-.question-multiple-response .MuiFormControlLabel-root {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-checkbox:hover {
+.question-multiple-response .MuiFormControlLabel-root > .formControlLabel-checkbox:hover {
   background-color: transparent;
 }
 
-/* TODO change this to style size prop */
-.question-multiple-response .MuiSvgIcon-root {
-  font-size: 26px;
-}
-
-.question-multiple-response .MuiFormControlLabel-root>.formControlLabel-typography {
+.question-multiple-response .MuiFormControlLabel-root > .formControlLabel-typography {
   font-size: 18px;
-  padding-top: 8px;
+  padding-top: 1px;
   padding-left: 2px;
-  padding-right: 5px;
+  padding-right: 4px;
 }
 
 .question-multiple-response .Mui-disabled .formControlLabel-typography {
@@ -43,7 +32,7 @@
 }
 
 .correction-multipleResponse-list-item::before {
-  content: '■';
+  content: "■";
   position: absolute;
   left: 0px;
   top: 0px;
@@ -53,21 +42,10 @@
 /* Media Query for phones */
 @media only screen and (max-width: 650px) {
   .question-multiple-response .MuiFormControlLabel-root {
-    padding: 0px 0 !important;
+    margin-bottom: 8px;
   }
 
-  /* Override the checkbox size of mui */
-  .question-multiple-response .MuiSvgIcon-root {
-    font-size: 30px !important;
-  }
-
-  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-typography {
-    font-size: 18px;
-    padding-top: 10px;
-    padding-left: 0;
-  }
-
-  .question-multiple-response .MuiFormControlLabel-root>.formControlLabel-checkbox:hover {
+  .question-multiple-response .MuiFormControlLabel-root > .formControlLabel-checkbox:hover {
     background-color: transparent;
   }
 

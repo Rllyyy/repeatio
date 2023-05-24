@@ -45,7 +45,7 @@ export const ShuffleQuestionsButton: React.FC<IShuffleButton> = ({ disabled, mod
       style={{ position: "relative" }}
       role='switch'
       aria-label={order === "chronological" ? "Enable shuffle" : "Disable shuffle"}
-      aria-checked={order === "random" ? true : false}
+      aria-checked={order === "random"}
       disabled={disabled}
     >
       <BiShuffle style={{ color: order === "random" ? "var(--custom-prime-color)" : undefined, padding: 2 }} />

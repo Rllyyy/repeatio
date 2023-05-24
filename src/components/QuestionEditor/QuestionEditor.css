@@ -69,6 +69,8 @@
 
 .question-editor-form .buttons button {
   all: unset;
+  box-sizing: border-box;
+
   padding: 10px 6px;
   border-radius: 5px;
   font-size: 18px;
@@ -173,13 +175,12 @@
     gap: 6px;
   }
 
-  .question-editor-form .buttons button[type="submit"] {
-    box-sizing: border-box;
+  .question-editor-form .buttons.create button[type="submit"] {
     width: calc(50% - 3px);
     max-width: none;
   }
 
-  .question-editor-form .buttons .cancel {
+  .question-editor-form .buttons.create .cancel {
     max-width: none;
     width: 100%;
     margin-left: 0;

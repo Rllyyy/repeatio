@@ -1,6 +1,5 @@
 .editor {
   width: 100%;
-  /* min-height: 200px; */
   outline: 1px solid var(--custom-border-color-lighter);
 
   border-radius: 3px;
