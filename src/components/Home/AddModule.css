@@ -40,11 +40,17 @@
 .import-module .import-module-btn,
 .create-module .create-module-btn {
   all: unset;
+  box-sizing: border-box;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
 
   place-self: start center;
 
   line-height: 1;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
 
   color: white;
@@ -136,6 +142,7 @@
 
 .drop-browse-btn {
   all: unset;
+  box-sizing: border-box;
 
   background-color: var(--custom-secondary-color);
   color: white;
@@ -148,7 +155,6 @@
   font-weight: 500;
 
   border-radius: 5px;
-  cursor: pointer;
 }
 
 .import-module .accepted-files {
@@ -209,8 +215,7 @@
   padding: 0.6rem;
 }
 
-.import-module .import-module-btn.disabled {
-  background-color: var(--custom-border-color-light);
+.import-module .import-module-btn[aria-disabled="true"] {
   cursor: not-allowed;
 }
 
@@ -300,11 +305,12 @@
     background-color: var(--custom-prime-color-dark);
   }
 
-  .drop-browse-btn:hover {
+  .drop-browse-btn:not(:disabled):hover {
+    cursor: pointer;
     background-color: rgb(61, 64, 82);
   }
 
-  .import-module .import-module-btn.enabled:hover,
+  .import-module .import-module-btn[aria-disabled="false"]:hover,
   .create-module .create-module-btn:hover:not(:disabled) {
     background-color: var(--custom-prime-color-dark);
   }

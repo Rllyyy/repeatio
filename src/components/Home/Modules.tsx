@@ -6,7 +6,7 @@ import { AnimatePresence } from "framer-motion";
 import { GridCards } from "../GridCards/GridCards";
 import { Card, LinkElement } from "../Card/Card";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
-import { Spinner } from "../Spinner/Spinner";
+import { CircularTailSpinner } from "../Spinner";
 import { ProgressPie } from "../Card/ProgressPie";
 
 //Icons
@@ -40,7 +40,7 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
   //TODO switch to suspense maybe (react 18)
 
   if (loading) {
-    return <Spinner />;
+    return <CircularTailSpinner />;
   }
 
   //Return grid of modules and "add module" card when the component has loaded

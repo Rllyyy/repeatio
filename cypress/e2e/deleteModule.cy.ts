@@ -25,7 +25,7 @@ describe("Test deletion of module", () => {
       .click()
       .should(() => {
         //Delete from localStorage
-        expect(localStorage.getItem("repeatio-module-cypress_1")).to.be.null;
+        expect(localStorage.getItem("repeatio-module-cypress_1")).to.equal(null);
       });
 
     //Toast and console.log

@@ -83,7 +83,7 @@ describe("Test the module that is provided by the public folder", () => {
       .should("exist")
       .and(() => {
         const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-types_1"));
-        expect(module).not.to.be.null;
+        expect(module).not.to.equal(null);
 
         const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);

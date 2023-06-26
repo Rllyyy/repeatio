@@ -101,7 +101,7 @@ describe("Importing a Module", () => {
     });
 
     //Wait for the file to be added and click button after
-    cy.get("button.import-module-btn.enabled")
+    cy.get("button.import-module-btn[aria-disabled='false']")
       .click({ force: true })
       .should(() => {
         const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));

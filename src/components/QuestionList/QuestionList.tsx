@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 //Components
-import { Spinner } from "../Spinner/Spinner";
+import { CircularTailSpinner } from "../Spinner";
 import { ModuleNotFound } from "../module/ModuleNotFound";
 
 // Reducer
@@ -64,7 +64,7 @@ export const QuestionList = () => {
   }, []);
 
   if (loading) {
-    return <Spinner />;
+    return <CircularTailSpinner />;
   }
 
   if (error) {

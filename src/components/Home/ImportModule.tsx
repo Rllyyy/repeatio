@@ -2,8 +2,9 @@ import React, { useState, useCallback, useMemo } from "react";
 import { useDropzone, FileRejection, DropzoneOptions, FileError } from "react-dropzone";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { moduleAlreadyInStorage, getFileTypeAndID } from "./helpers";
+import { getFilesWithId } from "./helpers";
 import { Tooltip } from "@mui/material";
+import { CircularBarsSpinner } from "../Spinner";
 
 //Icons
 import { CgFileDocument } from "react-icons/cg";
@@ -22,55 +23,32 @@ export interface IFile extends File {
 
 export const ImportModule = ({ handleModalClose }: IImportModule) => {
   const [files, setFiles] = useState<IFile[]>([]);
+  const [loading, setLoading] = useState(false);
 
   //Update the prev files states on drop/upload with the new selected files and update warnings
   const onDropAccepted = useCallback<NonNullable<DropzoneOptions["onDropAccepted"]>>(
     async (acceptedFiles) => {
-      let acceptedFilesWithID: IFile[] = [];
-      let warnings: Array<string> = [];
+      setLoading(true);
 
-      //Loop through accepted files to add id prop to file and add warning if module is already in storage
-      for await (const acceptedFile of acceptedFiles) {
-        //get id and type from the file
-        const fileTypeAndID = await getFileTypeAndID(acceptedFile);
+      try {
+        // Promise.allSettled will wait for the timeout to resolve instead of Promise.all immediately going to the catch if there is an error
+        const [res] = await Promise.allSettled([
+          getFilesWithId({ acceptedFiles, files }),
+          new Promise((resolve) => setTimeout(resolve, 800)),
+        ]);
 
-        //Check if the imported file is a bookmark file and show error if so
-        if (fileTypeAndID.fileType === "marked" || fileTypeAndID.fileType === "bookmark") {
-          toast.error(
-            `Failed to import the bookmarked questions for "${fileTypeAndID.id}"! Navigate to the module and click import inside the 3 dots found at 'Bookmarked Questions' to import bookmarked Questions!`,
-            { autoClose: 12000 }
-          );
-          continue;
-        }
-
-        //Check if file is a old repeatio version
-        if (!fileTypeAndID.id) {
-          toast.error("The version of this file is incompatible with this version of repeatio! ", { autoClose: 12000 });
-          continue;
-        }
-
-        //Combine the imported file with the information from inside (id and type)
-        let newFile: IFile = Object.assign(acceptedFile, fileTypeAndID);
-
-        //This doesn't work if the user import the same file (but with a different name) at the same time but this isn't really a problem as it will be added to the storage only once (edge case)
-        if (!files.find((file) => file.id === newFile.id)) {
-          //Check Storage if the file is already in the localStorage
-          if (moduleAlreadyInStorage(newFile.id)) {
-            newFile = Object.assign(newFile, { alreadyExistInLS: true });
-            warnings.push(`${newFile.id}`);
-          }
-          acceptedFilesWithID.push(newFile);
+        if (res.status === "fulfilled") {
+          setFiles([...files, ...res.value]);
         } else {
-          toast.error(
-            `A file with the same ID (${newFile.id}) is already in your imports! Remove it, to add this file!`
-          );
+          throw new Error("getFilesWithId threw an error");
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.error(error.message);
         }
       }
 
-      //Update files state if there are any new files added else escape function
-      if (acceptedFilesWithID.length > 0) {
-        setFiles([...files, ...acceptedFilesWithID]);
-      }
+      setLoading(false);
     },
     [files]
   );
@@ -127,6 +105,8 @@ export const ImportModule = ({ handleModalClose }: IImportModule) => {
   const handleImportSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (loading) return;
+
     if (files.length < 1) {
       toast.warn("Please select a file!");
       return;
@@ -176,7 +156,7 @@ export const ImportModule = ({ handleModalClose }: IImportModule) => {
         <p className='background'>
           <span className='strike'>or</span>
         </p>
-        <button type='button' onClick={open} className='drop-browse-btn'>
+        <button type='button' onClick={open} className='drop-browse-btn' disabled={!!loading}>
           Browse files
         </button>
       </div>
@@ -203,7 +183,7 @@ export const ImportModule = ({ handleModalClose }: IImportModule) => {
         })}
       </ul>
       <WarningMessage showWarning={showLocalStorageOverwriteWarning} />
-      <ImportModuleButton filesLength={files.length} />
+      <ImportModuleButton filesLength={files.length} loading={loading} />
     </form>
   );
 };
@@ -225,11 +205,17 @@ const WarningMessage = React.memo(({ showWarning }: { showWarning: boolean }) =>
 });
 
 /* ------------------------------------------Import Module Button ------------------------------- */
-const ImportModuleButton = React.memo(({ filesLength }: { filesLength: number }) => {
+type IImportModuleButton = {
+  filesLength: number;
+  loading: boolean;
+};
+const ImportModuleButton: React.FC<IImportModuleButton> = React.memo(({ filesLength, loading }) => {
+  const disabled = filesLength <= 0 || loading;
   return (
     //Disabling is not handled on the disabled prop because the warning should show onClick
-    <button type='submit' className={`import-module-btn ${filesLength > 0 ? "enabled" : "disabled"}`}>
-      Import
+    <button type='submit' className='import-module-btn' aria-disabled={!!disabled}>
+      <span style={{ color: loading ? "transparent" : "" }}>Import</span>
+      {loading && <CircularBarsSpinner size='m' />}
     </button>
   );
 });

@@ -337,7 +337,7 @@ describe("Test deletion of bookmarked Questions", () => {
     cy.contains("li", "Delete")
       .click()
       .should(() => {
-        expect(localStorage.getItem("repeatio-marked-cypress_1")).to.be.null;
+        expect(localStorage.getItem("repeatio-marked-cypress_1")).to.equal(null);
       });
 
     //Check with ui
