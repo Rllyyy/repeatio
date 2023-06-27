@@ -159,9 +159,9 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useLayoutEffect(() => {
-    if (size && size?.width > 800) {
+    if (size && size?.width > 650) {
       setCollapsedActionsNav(false);
-    } else if (size && size?.width <= 800) {
+    } else if (size && size?.width <= 650) {
       setCollapsedActionsNav(true);
     }
   }, [size?.width, size, setCollapsedActionsNav]);
