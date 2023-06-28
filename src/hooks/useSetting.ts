@@ -1,9 +1,11 @@
 import { useSyncExternalStore } from "react";
+import { TModuleSortOption } from "../components/Home/ModuleSortButton";
 import { parseJSON } from "../utils/parseJSON";
 
 export interface ISettings {
   addedExampleModule?: boolean;
   expanded?: boolean;
+  moduleSort?: TModuleSortOption;
 }
 
 /**

@@ -83,8 +83,8 @@ describe("Question Bottom Component", () => {
     cy.get("div.question-bottom").find("button.question-retry").should("be.disabled");
   });
 
-  it("should not render the question actions and navigation and have class collapsed on component widths <= 800", () => {
-    cy.viewport(800, 720);
+  it("should not render the question actions and navigation and have class collapsed on component widths <= 650", () => {
+    cy.viewport(650, 720);
     cy.mount(
       <RenderComponentWithRouter
         component={
@@ -111,8 +111,8 @@ describe("Question Bottom Component", () => {
     cy.get(".question-actions-navigation-wrapper").should("not.exist");
   });
 
-  it("should render the question actions and navigation and have class expanded on a component widths >= 801", () => {
-    cy.viewport(900, 720);
+  it("should render the question actions and navigation and have class expanded on a component widths >= 651", () => {
+    cy.viewport(651, 720);
     cy.mount(
       <RenderComponentWithRouter
         component={
@@ -140,7 +140,7 @@ describe("Question Bottom Component", () => {
   });
 
   it("should collapse the bottom if resizing the viewport", () => {
-    cy.viewport(900, 720);
+    cy.viewport(750, 720);
     cy.mount(
       <RenderComponentWithRouter
         component={
@@ -159,7 +159,7 @@ describe("Question Bottom Component", () => {
         mode='practice'
       />
     );
-    cy.viewport(800, 720);
+    cy.viewport(600, 720);
 
     // Assert that question-bottom has class collapsed
     cy.get("div.question-bottom").should("have.class", "collapsed");

@@ -9,6 +9,7 @@ import { CustomToastContainer } from "../toast/toast";
 // Interfaces / Types
 import { TSettings } from "../../utils/types";
 import { IModule } from "../module/module";
+import { ISettings } from "../../hooks/useSetting";
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
@@ -28,6 +29,46 @@ const MockModulesWithRouter = () => {
 };
 
 describe("Modules (Home) component", () => {
+  it("should render modules from the localStorage", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article.card").should("have.length", 3); //The third module is the example module that gets automatically added on first ever visit
+
+    // Assert that the correct amount of questions get counted
+    cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "12 Questions").should("exist");
+  });
+
+  it("should add the default module to the localStorage if there is to settings item in the localStorage", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article.card")
+      .should("have.length", 1)
+      .should(() => {
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        expect(settings?.addedExampleModule).to.equal(true);
+      });
+  });
+
+  it("should not add the default module to the localStorage if the module was previously added to the module but the module was deleted (settings.addedExampleModule === false)", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    // Add settings to show that the item was already added
+    localStorage.setItem("repeatio-settings", JSON.stringify({ addedExampleModule: true }));
+
+    cy.get("article.card")
+      .should("not.exist")
+      .should(() => {
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        expect(settings?.addedExampleModule).to.equal(true);
+      });
+  });
+});
+
+/* Module sort */
+describe("Module sort", () => {
   it("should default select the sort by name (ascending)", () => {
     cy.mount(<MockModulesWithRouter />);
 
@@ -90,7 +131,7 @@ describe("Modules (Home) component", () => {
         "module-gap_text_dropdown",
         "module-types_1",
         "module-cypress_1",
-      ]); //
+      ]);
   });
 
   it("should sort the modules by id ascending on select click", () => {
@@ -105,8 +146,6 @@ describe("Modules (Home) component", () => {
 
     cy.contains("button", "Sort").click();
     cy.contains("ID (ascending)").click();
-
-    //cy.wait(200);
 
     // get order of all items
     cy.get("article")
@@ -147,7 +186,7 @@ describe("Modules (Home) component", () => {
       ]);
   });
 
-  it("should sort a added module ", () => {
+  it("should sort a added module", () => {
     cy.viewport(800, 700);
 
     // Add Modules to localStorage
@@ -169,6 +208,55 @@ describe("Modules (Home) component", () => {
       .should("deep.equal", ["module-cypress_1", "module-types_1", "module-Y"]);
   });
 
+  it("should update the sort settings in the localStorage on sort change", () => {
+    const settings: ISettings = {
+      expanded: true,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings, null, "\t"));
+
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.contains("button", "Sort").click();
+    cy.contains("ID (descending)")
+      .click()
+      .should(() => {
+        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        expect(localStorageItem).not.to.equal(null);
+        expect(localStorageItem?.moduleSort).to.equal("ID (descending)");
+        expect(localStorageItem?.expanded).to.equal(true);
+      });
+  });
+
+  it("should use the sort from the localStorage ", () => {
+    cy.fixtureToLocalStorage("repeatio-settings.json");
+
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text_dropdown.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
+    cy.fixtureToLocalStorage("repeatio-module-multiple_response.json");
+
+    cy.mount(<MockModulesWithRouter />);
+
+    // get order of all items
+    cy.get("article")
+      .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
+      .should("deep.equal", [
+        "module-cypress_1",
+        "module-gap_text",
+        "module-gap_text_dropdown",
+        "module-multiple_choice",
+        "module-multiple_response",
+      ]);
+  });
+});
+
+/* Add Module Modal */
+describe("Add Module modal", () => {
   it("should show modal if clicking on the 'Add Module' button", () => {
     cy.viewport(500, 500);
     cy.mount(<MockModulesWithRouter />);
@@ -226,44 +314,10 @@ describe("Modules (Home) component", () => {
     cy.get("button.modal-close-btn").click();
     cy.get("div.ReactModal__Content--after-open").should("not.exist");
   });
+});
 
-  it("should add the default module to the localStorage if there is to settings item in the localStorage", () => {
-    cy.mount(<MockModulesWithRouter />);
-
-    cy.get("article.card")
-      .should("have.length", 1)
-      .should(() => {
-        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
-        expect(settings?.addedExampleModule).to.equal(true);
-      });
-  });
-
-  it("should not add the default module to the localStorage if the module was previously added to the module but the module was deleted (settings.addedExampleModule === false)", () => {
-    cy.mount(<MockModulesWithRouter />);
-
-    // Add settings to show that the item was already added
-    localStorage.setItem("repeatio-settings", JSON.stringify({ addedExampleModule: true }));
-
-    cy.get("article.card")
-      .should("not.exist")
-      .should(() => {
-        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
-        expect(settings?.addedExampleModule).to.equal(true);
-      });
-  });
-
-  it("should render modules from the localStorage", () => {
-    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
-    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
-
-    cy.mount(<MockModulesWithRouter />);
-
-    cy.get("article.card").should("have.length", 3); //The third module is the example module that gets automatically added on first ever visit
-
-    // Assert that the correct amount of questions get counted
-    cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "12 Questions").should("exist");
-  });
-
+/* Module Deletion */
+describe("Module deletion", () => {
   it("should remove a module from the overview if it gets deleted", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
@@ -277,10 +331,7 @@ describe("Modules (Home) component", () => {
     cy.get("article[data-cy='module-gap_text").should("not.exist");
     cy.get("article.card").should("have.length", 2);
   });
-});
 
-/* Module Deletion */
-describe("Module deletion", () => {
   it("should delete module that is located in localStorage", () => {
     cy.mount(<MockModulesWithRouter />);
 

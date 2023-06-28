@@ -40,6 +40,7 @@ type Fixtures =
   | "repeatio-module-cypress_1.json"
   | "repeatio-marked-types_1.json"
   | "repeatio-marked-cypress_1.json"
+  | "repeatio-settings.json"
   | (string & {});
 
 declare global {
@@ -75,7 +76,9 @@ Cypress.Commands.add("mount", (component, options) => {
 Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
   cy.fixture(fileName).then((fileContent) => {
     //Build localStorage name from the type (module/marked) and the id
-    localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
+    /* localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t")); */
+    //console.log(fileName);
+    localStorage.setItem(fileName.split(".json")[0], JSON.stringify(fileContent, null, "\t"));
   });
 });
 

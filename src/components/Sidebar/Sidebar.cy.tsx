@@ -153,7 +153,7 @@ describe("<Sidebar />", () => {
       });
   });
 
-  it.only("should update the highlight if clicking on navbar item", () => {
+  it("should update the highlight if clicking on navbar item", () => {
     cy.viewport(750, 600);
     cy.mount(<MockSidebarWithRouter />);
     cy.contains("a", "Tutorials")

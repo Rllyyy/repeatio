@@ -2,14 +2,14 @@
 import { Modules } from "../components/Home/Modules";
 import { AddModule } from "../components/Home/AddModule";
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
-import { TModuleSortOption, SortButton } from "../components/Home/ModuleSortButton";
-import { useState } from "react";
+import { SortButton } from "../components/Home/ModuleSortButton";
 
 // CSS
 import "../components/Home/Home.css";
+import { useSetting } from "../hooks/useSetting";
 
 const Home = () => {
-  const [sort, setSort] = useState<TModuleSortOption>("Name (ascending)");
+  const [sort, setSort] = useSetting("moduleSort", "Name (ascending)");
 
   return (
     <>

@@ -6,11 +6,11 @@ import List from "@mui/material/List";
 
 const moduleSortOptions = ["Name (ascending)", "Name (descending)", "ID (ascending)", "ID (descending)"] as const;
 
-export type TModuleSortOption = typeof moduleSortOptions[number];
+export type TModuleSortOption = (typeof moduleSortOptions)[number];
 
 interface ISortButton {
   sort: TModuleSortOption;
-  setSort: React.Dispatch<React.SetStateAction<TModuleSortOption>>;
+  setSort: (newValue: TModuleSortOption) => void;
 }
 
 /* Source: https://codesandbox.io/s/0e67co?file=/demo.tsx and https://mui.com/material-ui/react-menu/*/
