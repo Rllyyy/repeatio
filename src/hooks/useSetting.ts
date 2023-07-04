@@ -6,6 +6,7 @@ export interface ISettings {
   addedExampleModule?: boolean;
   expanded?: boolean;
   moduleSort?: TModuleSortOption;
+  embedYoutubeVideos?: boolean;
 }
 
 /**

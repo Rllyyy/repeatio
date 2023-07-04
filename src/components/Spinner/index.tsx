@@ -19,7 +19,7 @@ const sizes = {
 };
 
 interface ICircularBarsSpinner extends React.SVGProps<SVGSVGElement> {
-  size: keyof typeof sizes;
+  size?: keyof typeof sizes;
 }
 
 export const CircularBarsSpinner: React.FC<ICircularBarsSpinner> = ({ size = "m", ...rest }) => {
