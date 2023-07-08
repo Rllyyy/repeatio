@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useSyncExternalStore } from "react";
 import packageJSON from "../../../../../package.json";
 
 //functions
@@ -29,43 +29,120 @@ interface IBookmarkQuestionComponent
 
 //Component
 export const BookmarkQuestion = ({ questionID, moduleID, disabled, ...props }: IBookmarkQuestionComponent) => {
-  const [bookmarked, setBookmarked] = useState(false);
+  const { isBookmarked, addQuestionToBookmark, removeQuestionFromBookmark } = useBookmarked(questionID, moduleID);
+
+  //Add or remove the question id in the bookmark
+  const onBookmarkClick = () => {
+    // Exist function if no questionID is given
+    if (!questionID) {
+      console.warn("questionID is undefined!");
+      return;
+    }
+
+    if (!isBookmarked) {
+      addQuestionToBookmark();
+    } else {
+      removeQuestionFromBookmark();
+    }
+  };
+
+  //JSX
+  return (
+    <button
+      type='button'
+      className='bookmark-question-button'
+      aria-label={isBookmarked ? "Unsave Question" : "Save Question"}
+      onClick={onBookmarkClick}
+      disabled={disabled}
+      {...props}
+    >
+      {/* Decide which button to display */}
+      {isBookmarked ? (
+        <MdBookmarkRemove className='bookmark-remove' data-testid='bookmark-remove' />
+      ) : (
+        <MdBookmarkAdd className='bookmark-add' data-testid='bookmark-add' />
+      )}
+    </button>
+  );
+};
+
+function subscribe(onBookmarkChange: () => void) {
+  //Add event listener for custom event that should be triggered every time a bookmarked value in the localStorage changes
+  window.addEventListener("bookmark-event", onBookmarkChange);
+
+  //Remove event listener
+  return () => {
+    window.removeEventListener("bookmark-event", onBookmarkChange);
+  };
+}
+
+function getSnapShot(moduleId: IBookmarkedQuestions["id"] | undefined) {
+  if (typeof moduleId === "undefined") {
+    console.warn("ID of module is undefined");
+    return null;
+  }
+
+  return localStorage.getItem(`repeatio-marked-${moduleId}`);
+}
+
+const useBookmarked = (
+  questionId: TBookmarkedQuestionID | undefined,
+  moduleId: IBookmarkedQuestions["id"] | undefined
+) => {
+  const localStorageValue = useSyncExternalStore(subscribe, () => getSnapShot(moduleId));
+
+  // parse the localStorage string to object
+  const bookmarkedQuestions = parseJSON<IBookmarkedQuestions>(localStorageValue)?.questions;
+
+  let isBookmarked: boolean;
+  if (bookmarkedQuestions !== null && questionId && bookmarkedQuestions?.includes(questionId)) {
+    isBookmarked = true;
+  } else {
+    isBookmarked = false;
+  }
 
   //Add the Question ID to the bookmark array
-  const addQuestionToBookmark = (id: TBookmarkedQuestionID) => {
+  const addQuestionToBookmark = () => {
+    if (!questionId) return;
     //Get the saved questions from the local storage
-    const bookmarkLocalStorage = getBookmarkedLocalStorageItem(moduleID);
+    const bookmarkLocalStorage = getBookmarkedLocalStorageItem(moduleId);
 
     if (
       bookmarkLocalStorage !== null &&
       bookmarkLocalStorage !== undefined &&
       bookmarkLocalStorage?.questions &&
-      !bookmarkLocalStorage?.questions?.includes(id)
+      !bookmarkLocalStorage?.questions?.includes(questionId)
     ) {
       //Append the id to the existing bookmarked questions in the localStorage array
       localStorage.setItem(
-        `repeatio-marked-${moduleID}`,
-        JSON.stringify({ ...bookmarkLocalStorage, questions: [...bookmarkLocalStorage.questions, id] }, null, "\t")
+        `repeatio-marked-${moduleId}`,
+        JSON.stringify(
+          { ...bookmarkLocalStorage, questions: [...bookmarkLocalStorage.questions, questionId] },
+          null,
+          "\t"
+        )
       );
     } else {
       //Create a new localStorage item with the id saved to the questions array
       //Get comb, set id with params;
       const newBookmarkedItem: IBookmarkedQuestions = {
-        id: moduleID || "error", //TODO change this
+        id: moduleId ?? "error", //TODO change this
         type: "marked",
         compatibility: packageJSON.version,
-        questions: [id],
+        questions: [questionId],
       };
-      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify(newBookmarkedItem, null, "\t"));
+      localStorage.setItem(`repeatio-marked-${moduleId}`, JSON.stringify(newBookmarkedItem, null, "\t"));
     }
     //Dispatch event that updates the state
-    window.dispatchEvent(new Event("bookmark-event"));
+    window.dispatchEvent(new StorageEvent("bookmark-event"));
   };
 
   //Remove the Question ID from the bookmark array
-  const removeQuestionFromBookmark = (id: TBookmarkedQuestionID) => {
+  const removeQuestionFromBookmark = () => {
+    if (!questionId) return;
+
     //Get the bookmarked item from the local storage
-    const bookmarkLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
+    const bookmarkLocalStorageItem = getBookmarkedLocalStorageItem(moduleId);
 
     //Remove the id from the bookmark or delete the whole storage item
     if (bookmarkLocalStorageItem?.questions && bookmarkLocalStorageItem?.questions.length > 1) {
@@ -73,82 +150,21 @@ export const BookmarkQuestion = ({ questionID, moduleID, disabled, ...props }: I
 
       const newBookmarkedItem: IBookmarkedQuestions = {
         ...bookmarkLocalStorageItem,
-        questions: bookmarkLocalStorageItem.questions.filter((qID) => qID !== id),
+        questions: bookmarkLocalStorageItem.questions.filter((qID) => qID !== questionId),
       };
       //Update the localStorage
-      localStorage.setItem(`repeatio-marked-${moduleID}`, JSON.stringify(newBookmarkedItem, null, "\t"));
+      localStorage.setItem(`repeatio-marked-${moduleId}`, JSON.stringify(newBookmarkedItem, null, "\t"));
     } else {
       //Delete the whole storage item if there was just one item left and it gets removed
-      localStorage.removeItem(`repeatio-marked-${moduleID}`);
+      localStorage.removeItem(`repeatio-marked-${moduleId}`);
     }
 
     //Dispatch event that updates the state
-    window.dispatchEvent(new Event("bookmark-event"));
+    window.dispatchEvent(new StorageEvent("bookmark-event"));
   };
 
-  //Add or remove the question id in the bookmark
-  const onBookmarkClick = () => {
-    // Exist function if no questionID is given
-    if (!questionID) {
-      // TODO maybe add toast
-      console.warn("questionID is undefined!");
-      return;
-    }
-
-    if (!bookmarked) {
-      addQuestionToBookmark(questionID);
-    } else {
-      removeQuestionFromBookmark(questionID);
-    }
-  };
-
-  //Set the state of the saved state by checking if there is a json value for this module that contains the id
-  const setBookmarkedState = useCallback(() => {
-    //Get the bookmarked question for a local Storage item
-    const bookmarkedQuestionsInItem = getBookmarkedQuestionsFromModule(moduleID);
-
-    //If the bookmark array exists for this module and the array includes the id,
-    //set the state to saved else the question is not saved
-    if (bookmarkedQuestionsInItem !== null && questionID && bookmarkedQuestionsInItem?.includes(questionID)) {
-      setBookmarked(true);
-    } else {
-      setBookmarked(false);
-    }
-  }, [questionID, moduleID]);
-
-  //Set the state so the correct icon can be displayed
-  useEffect(() => {
-    //On questionID change check if the id exist in the saved questions
-    setBookmarkedState();
-
-    //Add event listener for custom event that should be triggered every time a bookmarked value in the localStorage changes
-    window.addEventListener("bookmark-event", setBookmarkedState);
-
-    //Remove event listener and reset the state
-    return () => {
-      window.removeEventListener("bookmark-event", setBookmarkedState);
-      setBookmarked(false);
-    };
-  }, [questionID, moduleID, setBookmarkedState]);
-
-  //JSX
-  return (
-    <button
-      type='button'
-      className='bookmark-question-button'
-      aria-label={bookmarked ? "Unsave Question" : "Save Question"}
-      onClick={onBookmarkClick}
-      disabled={disabled}
-      {...props}
-    >
-      {/* Decide which button to display */}
-      {bookmarked ? (
-        <MdBookmarkRemove className='bookmark-remove' data-testid='bookmark-remove' />
-      ) : (
-        <MdBookmarkAdd className='bookmark-add' data-testid='bookmark-add' />
-      )}
-    </button>
-  );
+  // Return value and functions
+  return { isBookmarked, addQuestionToBookmark, removeQuestionFromBookmark } as const;
 };
 
 /**
