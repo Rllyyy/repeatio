@@ -3,12 +3,62 @@ import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFo
 import { fetchModuleFromFileSystem } from "../../utils/fetchModuleFromFileSystem";
 import { parseJSON } from "../../utils/parseJSON";
 import { toast } from "react-toastify";
+import { z } from "zod";
 
 // Interfaces + types
 import { IModule } from "../module/module";
 import { IFile } from "./ImportModule";
 import { TSettings } from "../../utils/types";
 import { TModuleSortOption } from "./ModuleSortButton";
+
+const moduleIdRegex = /[^a-zA-Z0-9-ß_~.\u0080-\uFFFF]/g;
+
+const hasNoSpaces = (value: string) => !value.match(/ /g);
+
+const isValid = (value: string) => !moduleIdRegex.test(value);
+
+const isNotDuplicate = (value: string) => !moduleAlreadyInStorage(value);
+
+const langIsValid = (value: string) => value === "en" || value === "de";
+
+export const createModuleSchema = z.object({
+  /* ID */
+  id: z
+    .string()
+    .trim()
+    .min(1, { message: "Provide an ID for the module." })
+    .refine((value) => !value.includes("module"), {
+      message: `The word "module" is a reserved keyword and can't be used inside an ID!`,
+    })
+    .refine(hasNoSpaces, (value) => ({
+      message: `The ID has to be one word! Use hyphens ("-") to concat the word (${value.replace(/ /g, "-")})`,
+    }))
+    .refine(isValid, (value) => ({
+      message: `The id contains invalid characters (${value.match(moduleIdRegex)?.join(", ")})`,
+    }))
+    .refine(isNotDuplicate, (value) => ({ message: `ID of module ("${value}") already exists!` })),
+
+  /* Name */
+  name: z.string().trim().min(1, { message: "Provide a name for the module." }),
+
+  /* Language */
+  lang: z
+    .string()
+    .min(1, { message: "Select a language for the module." })
+    .refine(langIsValid, { message: "Language is invalid. Please report this issue at contact@repeatio.de" }),
+
+  /* Compatibility */
+  compatibility: z.string().min(1, {
+    message:
+      "Invalid compatibility version. Please contact the devs through GitHub (https://github.com/Rllyyy/repeatio).",
+  }),
+
+  /* Type */
+  type: z.string().min(1), // this should be z.literal("module")
+
+  /* Questions */
+  questions: z.array(z.unknown()).default([]),
+});
 
 /**
  * Gets an array of all modules stored in the browser's local storage.

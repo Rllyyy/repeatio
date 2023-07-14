@@ -109,6 +109,17 @@ describe("Creating a module", () => {
     cy.contains("p", "Select a language for the module.").should("exist");
   });
 
+  it("should highlight the incorrect fields", () => {
+    const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+    cy.mount(<CreateModule handleModalClose={handleModalCloseSpy} />);
+
+    cy.contains("button", "Create").click();
+
+    cy.get("input#create-module-id-input").should("have.css", "border", "1px solid rgb(231, 76, 60)");
+    cy.get("input#create-module-name-input").should("have.css", "border", "1px solid rgb(231, 76, 60)");
+    cy.get("select#create-module-language-select").should("have.css", "border", "1px solid rgb(231, 76, 60)");
+  });
+
   //Error display on submit for id and clearing if error are healed
   it("should show error if id of module is missing on submit and clear error if changing", () => {
     cy.mount(<MockCreateModuleComponent />);
@@ -173,6 +184,23 @@ describe("Creating a module", () => {
     cy.get("select#create-module-language-select").should("not.have.class", "is-invalid");
   });
 
+  it("should show error if invalid character is provided to the id", () => {
+    const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+    cy.mount(<CreateModule handleModalClose={handleModalCloseSpy} />);
+
+    cy.get("input#create-module-id-input").type("invalid#");
+
+    cy.get("input#create-module-name-input").type("Module created with cypress", { delay: 2 });
+    cy.get("select#create-module-language-select").select("English");
+    cy.contains("button", "Create").click();
+
+    cy.contains("p", "The id contains invalid characters (#)").should("exist");
+
+    // remove error on correction
+    cy.get("input#create-module-id-input").type("{backspace}");
+    cy.contains("p", "The id contains invalid characters (#)").should("not.exist");
+  });
+
   //Error if using space inside id input
   it("should show error if using space in id", () => {
     cy.mount(<MockCreateModuleComponent />);
@@ -219,6 +247,44 @@ describe("Creating a module", () => {
         const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_2"));
 
         expect(localStorageItem?.id).to.equal("cypress_2");
+        expect(localStorageItem?.name).to.equal("Module created with cypress");
+        expect(localStorageItem?.type).to.equal("module");
+        expect(localStorageItem?.lang).to.equal("en");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
+        expect(localStorageItem?.questions).to.have.length(0);
+      });
+  });
+
+  it("should show an error if the trimmed module already exists in the localStorage", () => {
+    const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+    cy.mount(<CreateModule handleModalClose={handleModalCloseSpy} />);
+
+    //Setup localStorage to have item
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    //Type into inputs
+    cy.get("input#create-module-id-input").type("cypress_1 ");
+    cy.get("input#create-module-name-input").type("Module created with cypress", { delay: 2 });
+    cy.get("select#create-module-language-select").select("English");
+    cy.contains("button", "Create").click();
+
+    cy.contains("p", `ID of module ("cypress_1") already exists!`).should("exist");
+  });
+
+  it("should remove any leading and ending spaces", () => {
+    const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+    cy.mount(<CreateModule handleModalClose={handleModalCloseSpy} />);
+
+    //Type into inputs
+    cy.get("input#create-module-id-input").type(" cypress_1 ");
+    cy.get("input#create-module-name-input").type("Module created with cypress", { delay: 2 });
+    cy.get("select#create-module-language-select").select("English");
+    cy.contains("button", "Create")
+      .click()
+      .should(() => {
+        const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+
+        expect(localStorageItem?.id).to.equal("cypress_1");
         expect(localStorageItem?.name).to.equal("Module created with cypress");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");

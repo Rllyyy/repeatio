@@ -72,8 +72,6 @@ export const Settings = () => {
     }
   };
 
-  console.log(loading);
-
   return (
     <>
       <div id='appearance'>

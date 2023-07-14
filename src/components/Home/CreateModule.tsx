@@ -2,13 +2,17 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import packageJson from "../../../package.json";
 
 //functions
-import { moduleAlreadyInStorage } from "./helpers";
+import { createModuleSchema } from "./helpers";
 
 //interfaces
 import { IModule } from "../module/module";
+
+type IModuleSchema = z.infer<typeof createModuleSchema>;
 
 interface ICreateModule {
   handleModalClose: () => void;
@@ -20,13 +24,14 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IModule>({
+  } = useForm({
+    resolver: zodResolver(createModuleSchema),
     defaultValues: {
       id: "",
       name: "",
       type: "module",
       lang: "",
-      compatibility: packageJson.version,
+      compatibility: packageJson.version || "",
       questions: [],
     },
   });
@@ -38,50 +43,8 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
     }
   };
 
-  //Validate id else return with error message.
-  //Runs only after first submit and after that on every onChange
-  //The ID:
-  // - 1. should not include word module
-  // - 2. should not include any space character
-  // - 3. should match url requirements
-  // - 4. should not already exist (be unique)
-  const validateID = (value: string) => {
-    //1. Check if id includes the word module as it is a reserved keyword (to split the )
-    if (value.includes("module")) {
-      return `The word "module" is a reserved keyword and can't be used inside an ID!`;
-    }
-
-    //2. Filter out space character
-    const spaceRegex = / /g;
-    const spaces = value.match(spaceRegex)?.join("");
-
-    if (spaces && spaces?.length > 0) {
-      return `The ID has to be one word! Use hyphens ("-") to concat the word (${value.replace(/ /g, "-")})`;
-    }
-
-    //3. Check for only allowed (url) characters
-    //Filter out everything that is not: a-z, A-Z, 0-9, ä-Ü
-    const regex = /[^a-zA-Z0-9-ß_~.\u0080-\uFFFF]/g;
-    const notAllowedChars = value
-      .match(regex)
-      ?.map((el) => `"${el}"`)
-      .join(", ");
-
-    if (notAllowedChars && notAllowedChars?.length > 0) {
-      return `The id contains non allowed characters (${notAllowedChars})`;
-    }
-
-    //4. Check if module id is duplicate
-    if (moduleAlreadyInStorage(value)) {
-      return `ID of module ("${value}") already exists!`;
-    }
-
-    //If all check pass, return true
-    return true;
-  };
-
   //Update the localStorage on form submit
-  const formSubmit = (data: IModule) => {
+  const formSubmit = (data: IModuleSchema) => {
     //Update localeStorage and tell the window that a new storage event occurred
     localStorage.setItem(`repeatio-module-${data.id}`, JSON.stringify(data, null, "\t"));
     window.dispatchEvent(new Event("storage"));
@@ -96,6 +59,9 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
     handleModalClose();
   };
 
+  // log any errors to console
+  errors && Object.keys(errors).length >= 1 && console.error(errors);
+
   //JSX
   return (
     <form className='create-module' onSubmit={handleSubmit(formSubmit)}>
@@ -107,10 +73,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
           id='create-module-id-input'
           spellCheck='false'
           autoComplete='off'
-          {...register("id", {
-            required: "Provide an ID for the module.",
-            validate: (value) => validateID(value),
-          })}
+          {...register("id")}
           onKeyDown={preventSubmit}
           className={`${errors.id ? "is-invalid" : ""}`}
         />
@@ -124,7 +87,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
           id='create-module-name-input'
           spellCheck='false'
           autoComplete='off'
-          {...register("name", { required: "Provide a name for the module." })}
+          {...register("name")}
           className={`${errors.name ? "is-invalid" : ""}`}
           onKeyDown={preventSubmit}
         />
@@ -135,9 +98,7 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
         <label htmlFor='create-module-language-select'>Language</label>
         <select
           id='create-module-language-select'
-          {...register("lang", {
-            required: "Select a language for the module.",
-          })}
+          {...register("lang")}
           className={`${errors.lang ? "is-invalid" : ""}`}
         >
           {/* language values are defined in ISO-639-1 */}
@@ -155,9 +116,10 @@ export const CreateModule = ({ handleModalClose }: ICreateModule) => {
           id='create-module-compatibility-input'
           spellCheck='false'
           autoComplete='off'
-          {...register("compatibility", { required: "Provide a version for the module." })}
+          {...register("compatibility")}
           disabled
         />
+        {errors.compatibility && <p className='error-message'>{errors.compatibility?.message}</p>}
       </div>
       <button type='submit' className='create-module-btn' disabled={Object.keys(errors).length >= 1}>
         Create
