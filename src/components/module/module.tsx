@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
+import React, { useState, useCallback, useLayoutEffect, useSyncExternalStore } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 //Components
@@ -45,7 +45,6 @@ export interface IModule {
   questions: IQuestion[];
 }
 
-//TODO move this outside
 interface LocationState {
   name: string | undefined;
 }
@@ -54,37 +53,19 @@ interface LocationState {
 export const Module = () => {
   //Access state of link
   const location = useLocation();
+
   const locationState = location.state as LocationState;
 
-  //useState
-  const [moduleName, setModuleName] = useState(locationState?.name);
-  const [error, setError] = useState(false);
+  //Access params
+  const { moduleID } = useParams<{ moduleID: string }>();
+
+  // Get modulename from passed link state or localStorage
+  const { moduleName, error } = useModuleName(locationState?.name, moduleID);
+
   const [showModal, setShowModal] = useState(false);
 
   //Navigate (previously history)
   let navigate = useNavigate();
-
-  //Params
-  const { moduleID } = useParams<{ moduleID: string }>();
-
-  /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the the home modules. */
-  useEffect(() => {
-    if (!locationState?.name) {
-      // fetch from localStorage
-      const moduleNameFromStorage = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.name;
-
-      // if there is a module found with the id, update the moduleName state else show error
-      if (moduleNameFromStorage) {
-        setModuleName(moduleNameFromStorage);
-      } else {
-        setError(true);
-      }
-    }
-
-    return () => {
-      setModuleName("");
-    };
-  }, [moduleID, locationState?.name]);
 
   /*EVENTS*/
   //Train with all questions in chronological order starting at the first question
@@ -199,12 +180,9 @@ export const Module = () => {
     return <ModuleNotFound />;
   }
 
-  // TODO: Add Suspense with react 18 <Spinner />
-  //
-
   //JSX
   return (
-    <div id={moduleName}>
+    <div id={moduleName ?? moduleID}>
       <SiteHeading title={`${moduleName} (${moduleID})`} />
       <GridCards>
         {moduleCards.map((card) => {
@@ -227,6 +205,46 @@ export const Module = () => {
       <QuestionEditor handleModalClose={handleModalClose} mode={"create"} showModal={showModal} />
     </div>
   );
+};
+
+// Subscribe to any custom storage events (should be triggered if user edits module)
+function subscribe(onSettingsChange: () => void) {
+  window.addEventListener("storageEvent", onSettingsChange);
+
+  return () => window.removeEventListener("storageEvent", onSettingsChange);
+}
+
+// Return localStorage module
+function getSnapShot(key: string | undefined) {
+  if (typeof key === "undefined" || key === null) return;
+
+  return localStorage.getItem(`repeatio-module-${key}`);
+}
+
+// Custom hook to get the module name based on locationStateName and moduleId
+const useModuleName = (locationStateName: LocationState["name"], moduleId: string | undefined) => {
+  const module = useSyncExternalStore(subscribe, () => getSnapShot(moduleId));
+
+  // Check if locationStateName is provided
+  if (locationStateName) {
+    // Return locationStateName as moduleName
+    return { moduleName: locationStateName };
+  } else if (module) {
+    /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the home modules. */
+    const parsedModule = parseJSON<IModule>(module);
+
+    // Check if parsedModule is valid
+    if (typeof parsedModule !== "undefined" && parsedModule !== null) {
+      // Return parsedModule's name as moduleName
+      return { moduleName: parsedModule.name };
+    } else {
+      // Return an error flag indicating invalid parsedModule
+      return { error: true };
+    }
+  } else {
+    // Return an error flag indicating no module found
+    return { error: true };
+  }
 };
 
 //Display bottom of BookmarkedQuestions
