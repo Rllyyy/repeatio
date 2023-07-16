@@ -214,7 +214,7 @@ const ImportModuleButton: React.FC<IImportModuleButton> = React.memo(({ filesLen
   return (
     //Disabling is not handled on the disabled prop because the warning should show onClick
     <button type='submit' className='import-module-btn' aria-disabled={!!disabled}>
-      <span>Import</span>
+      <span style={{ color: loading ? "transparent" : "", fontSize: "inherit" }}>Import</span>
       {loading && <CircularBarsSpinner size='m' />}
     </button>
   );

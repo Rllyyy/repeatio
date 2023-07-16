@@ -33,6 +33,7 @@ export const CircularBarsSpinner: React.FC<ICircularBarsSpinner> = ({ size = "m"
         alignItems: "center",
         width: "100%",
       }}
+      className='circular-bars-spinner'
     >
       <svg
         viewBox='0 0 2400 2400'

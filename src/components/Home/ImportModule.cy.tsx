@@ -62,6 +62,46 @@ describe("Importing a Module", () => {
       });
   });
 
+  it("should replace the text inside the Import button with a spinner", () => {
+    cy.mount(<MockImportModuleComponent />);
+
+    //Send file to upload area
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    cy.get("form.import-module").contains("button", "Import");
+
+    // Assert that the text import is invisible while the import is loading
+    cy.get("button[type='submit']").contains("Import").should("have.css", "color", "rgba(0, 0, 0, 0)");
+
+    // Import button should reappear after file finished uploading
+    cy.get("button[type='submit']").contains("Import").should("have.css", "color", "rgb(255, 255, 255)");
+  });
+
+  it("should display a loading symbol while the module data is uploading", () => {
+    cy.mount(<MockImportModuleComponent />);
+
+    //Send file to upload area
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    cy.get("div.circular-bars-spinner").should("exist");
+  });
+
   //Test if the toast for successful imports works
   it("should show success toast after importing module", () => {
     cy.mount(<MockImportModuleComponent />);
