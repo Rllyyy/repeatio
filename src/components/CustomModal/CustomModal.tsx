@@ -1,4 +1,4 @@
-import { useState, useEffect, PropsWithChildren } from "react";
+import { PropsWithChildren, useSyncExternalStore } from "react";
 import Modal from "react-modal";
 
 import { IoClose } from "react-icons/io5";
@@ -41,41 +41,39 @@ export const CustomModal: React.FC<PropsWithChildren<ICustomModal>> = ({
   desktopModalHeight,
   children,
 }) => {
-  const [mobileLayout, setMobileLayout] = useState(false);
+  const mobileLayout = useMobile();
 
   Modal.setAppElement(document.getElementsByTagName("main")[0]);
-
-  //TODO replace this in the future with css container query
-  useEffect(() => {
-    const handleResize = () => {
-      const { innerWidth: width } = window;
-
-      if (width <= 650) {
-        setMobileLayout(true);
-      } else {
-        setMobileLayout(false);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <Modal
       isOpen={showModal}
       parentSelector={() => document.getElementsByTagName("main")[0]}
       onRequestClose={handleModalClose}
-      className={desktopModalHeight === "fit-content" ? "fit-content" : "max-modal"}
+      className={`custom-modal ${desktopModalHeight === "fit-content" ? "fit-content" : "max-modal"}`}
       style={
         !mobileLayout
           ? {
               content: {
                 height: desktopModalHeight || null,
               },
+              overlay: {
+                position: "absolute",
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                inset: 0,
+                height: "100%",
+                overflow: "visible",
+                backdropFilter: "blur(0.5px)",
+              },
             }
-          : {}
+          : {
+              overlay: {
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backdropFilter: "blur(0.5px)",
+              },
+            }
       }
     >
       <div className='title-close-wrapper'>
@@ -84,9 +82,21 @@ export const CustomModal: React.FC<PropsWithChildren<ICustomModal>> = ({
           <IoClose />
         </button>
       </div>
-
       <div className='line' />
       <div className='modal-content'>{children}</div>
     </Modal>
   );
 };
+
+// Custom hook that return true if the viewport is smaller or equal to 650 px
+const useMobile = () => {
+  return useSyncExternalStore(subscribe, () => window.innerWidth <= 650);
+};
+
+function subscribe(onViewPortChange: () => void) {
+  window.addEventListener("resize", onViewPortChange);
+
+  return () => {
+    window.removeEventListener("resize", onViewPortChange);
+  };
+}

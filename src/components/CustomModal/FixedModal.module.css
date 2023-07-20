@@ -1,0 +1,19 @@
+.fixed-modal h1 {
+  /* color: red; */
+  font-size: 2rem;
+  font-weight: 500;
+  /*  letter-spacing: 0.09px; */
+}
+
+.close-modal-btn {
+  place-self: center center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media only screen and (hover: hover) and (pointer: fine) {
+  .close-modal-btn:hover {
+    color: red;
+  }
+}

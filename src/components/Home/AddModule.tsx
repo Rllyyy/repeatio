@@ -3,7 +3,8 @@ import React, { useRef, useState, useMemo } from "react";
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { ImportModule } from "./ImportModule";
-import { CreateModule } from "./CreateModule";
+import { ModuleEditorForm } from "../ModuleEditor";
+/* import { CreateModule } from "./CreateModule"; */
 
 //hooks
 import { useSize } from "../../hooks/useSize";
@@ -183,7 +184,7 @@ function DisplayImportOrCreateComponent({
   }
 
   if (component === "create") {
-    return <CreateModule handleModalClose={handleModalClose} />;
+    return <ModuleEditorForm handleModalClose={handleModalClose} mode='create' />;
   }
 
   if (component === "import") {

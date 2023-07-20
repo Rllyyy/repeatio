@@ -129,18 +129,18 @@ describe("Test creating a new module", () => {
   it("should add module and show toast when creating a module", () => {
     //Fill in form and click create button
     //id
-    cy.get("input#create-module-id-input").type("test_cy_1").should("have.value", "test_cy_1");
+    cy.get("input#module-editor-id-input").type("test_cy_1").should("have.value", "test_cy_1");
     //name
-    cy.get("input#create-module-name-input")
+    cy.get("input#module-editor-name-input")
       .type("Module created with cypress", { delay: 2 })
       .should("have.value", "Module created with cypress");
     //language
-    cy.get("select#create-module-language-select").select("English").should("have.value", "en");
-    cy.get("select#create-module-language-select").find("option:selected").should("have.text", "English");
+    cy.get("select#module-editor-language-select").select("English").should("have.value", "en");
+    cy.get("select#module-editor-language-select").find("option:selected").should("have.text", "English");
     //compatibility
-    cy.get("input#create-module-compatibility-input").should("be.disabled").and("have.value", version);
+    cy.get("input#module-editor-compatibility-input").should("be.disabled").and("have.value", version);
 
-    cy.get("form.create-module").contains("button", "Create").click();
+    cy.get("form").contains("button", "Create").click();
 
     //Navigate to newly created module by toast
     cy.get(".Toastify__toast").contains("a", "test_cy_1").click({ force: true });

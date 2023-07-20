@@ -33,6 +33,8 @@ import {
 } from "../Question/components/Actions/BookmarkQuestion";
 import { IQuestion } from "../Question/useQuestion";
 
+import { ModuleEditor } from "../ModuleEditor";
+
 //TODO
 // - test if no saved questions but then imported => should enable export
 
@@ -63,6 +65,8 @@ export const Module = () => {
   const { moduleName, error } = useModuleName(locationState?.name, moduleID);
 
   const [showModal, setShowModal] = useState(false);
+
+  const [showModuleEditor, setShowModuleEditor] = useState(false);
 
   //Navigate (previously history)
   let navigate = useNavigate();
@@ -169,10 +173,10 @@ export const Module = () => {
     },
     {
       title: "Module Info",
-      disabled: true,
+      disabled: false,
       description: "",
       icon: <AiOutlineEdit />,
-      bottom: [<ButtonElement key='info' buttonText='View' />],
+      bottom: [<ButtonElement key='info' buttonText='Edit' handleClick={() => setShowModuleEditor(true)} />],
     },
   ];
 
@@ -203,6 +207,12 @@ export const Module = () => {
         })}
       </GridCards>
       <QuestionEditor handleModalClose={handleModalClose} mode={"create"} showModal={showModal} />
+      <ModuleEditor
+        handleModalClose={() => setShowModuleEditor(false)}
+        mode='edit'
+        moduleId={moduleID}
+        showModal={showModuleEditor}
+      />
     </div>
   );
 };

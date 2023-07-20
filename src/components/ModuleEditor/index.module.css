@@ -1,0 +1,83 @@
+.module-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.module-editor > div {
+  margin-bottom: 1.3rem;
+}
+
+.module-editor > div > label {
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+
+  font-weight: 500;
+}
+
+.module-editor > div > input,
+.module-editor > div > select {
+  display: block;
+  padding: 8px;
+  width: 100%;
+
+  border: 1px solid var(--custom-border-color-lighter);
+  border-radius: 5px;
+  outline-offset: -1px;
+}
+
+.error-message {
+  color: rgb(231, 76, 60);
+  margin-top: 0.3em;
+  font-size: 16px;
+}
+
+.module-editor-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+
+  place-self: start center;
+
+  line-height: 1;
+  font-weight: 500;
+  font-size: 18px;
+
+  color: white;
+  background-color: var(--custom-prime-color);
+
+  padding: 10px 20px;
+  margin-top: auto;
+
+  border-radius: 5px;
+  cursor: pointer;
+
+  outline: none;
+  border: none;
+}
+
+/* --------------------------------------- States ------------------------------------------- */
+.module-editor > div > input:focus-visible,
+.module-editor > div > select:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+}
+
+.module-editor-btn:disabled {
+  background-color: var(--custom-border-color-light);
+  cursor: not-allowed;
+}
+
+.module-editor-btn:focus-visible {
+  outline: 2px solid var(--custom-prime-color);
+  outline-offset: 5px;
+}
+
+/* ------------------------------------- Media Querries ------------------------------------- */
+@media screen and (hover: hover) and (pointer: fine) {
+  .module-editor-btn:hover:not(:disabled) {
+    background-color: var(--custom-prime-color-dark);
+  }
+}

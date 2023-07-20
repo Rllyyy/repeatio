@@ -37,8 +37,7 @@
   min-height: 362px;
 }
 
-.import-module .import-module-btn,
-.create-module .create-module-btn {
+.import-module .import-module-btn {
   all: unset;
   box-sizing: border-box;
 
@@ -73,7 +72,6 @@
   height: 100%;
 }
 
-/* Import Module */
 .import-module > div,
 .import-module > .accepted-files {
   margin-bottom: 0.8rem;
@@ -219,58 +217,6 @@
   cursor: not-allowed;
 }
 
-/* -------------------------------------- Create Module -------------------------- */
-.create-module {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
-.create-module > div {
-  margin-bottom: 1.3rem;
-}
-
-.create-module > div > label {
-  display: block;
-  line-height: 1;
-  margin-bottom: 0.5rem;
-
-  font-weight: 500;
-}
-
-.create-module > div > input,
-.create-module > div > select {
-  display: block;
-  padding: 8px;
-  width: 100%;
-
-  border: 1px solid var(--custom-border-color-lighter);
-  border-radius: 5px;
-  outline-offset: -1px;
-}
-
-.create-module > div > input.is-invalid,
-.create-module > div > select.is-invalid {
-  border-color: rgb(231, 76, 60);
-  background-color: rgba(231, 76, 60, 0.08);
-}
-
-.create-module #create-module-compatibility-input {
-  background-color: whitesmoke;
-}
-
-.create-module .error-message {
-  color: rgb(231, 76, 60);
-  margin-top: 0.3em;
-  font-size: 16px;
-}
-
-.import-create-module .create-module-btn:disabled {
-  background-color: var(--custom-border-color-light);
-  cursor: not-allowed;
-}
-
 /* --------------------------------------- States ------------------------------------------- */
 /* Active */
 .drop-browse-btn:active {
@@ -284,11 +230,7 @@
   outline-offset: 3px;
 }
 
-.create-module > div > input:focus-visible,
-.create-module > div > select:focus-visible {
-  outline: 2px solid var(--custom-prime-color);
-}
-
+/* TODO narrow down the button */
 .import-create-module button:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 5px;
@@ -310,8 +252,7 @@
     background-color: rgb(61, 64, 82);
   }
 
-  .import-module .import-module-btn[aria-disabled="false"]:hover,
-  .create-module .create-module-btn:hover:not(:disabled) {
+  .import-module .import-module-btn[aria-disabled="false"]:hover {
     background-color: var(--custom-prime-color-dark);
   }
 
