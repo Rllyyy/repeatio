@@ -7,7 +7,8 @@ _Learn, repeat and memorize tasks with repeatio._
 ## :construction: Current limitations (v0.5) :construction:
 
 > **Warning**  
-> Not all browser and devices are supported!  
+> **Regularly** backup your data by **exporting** your modules and bookmarked questions!
+> **Clearing the browsers cache** (e.g. before an exam) will result in a **loss of your data**!
 > Currently not all UI elements are working (e.g. module progress)!  
 > Only use Electron if you know how to edit .json files. The website should work just fine for most users.  
 
@@ -15,35 +16,32 @@ _Learn, repeat and memorize tasks with repeatio._
 
 ### Desktop
 
-|             | Chrome            | Edge              | Safari          | Firefox           | Opera             | Internet Explorer | Electron (Developers only) |
-|:-----------:|:-----------------:|:-----------------:|:---------------:|:-----------------:|:-----------------:|:-----------------:|:--------------------------:|
-|Performance  | :1st_place_medal: | :1st_place_medal: | :grey_question: | :1st_place_medal: | :3rd_place_medal: | :x:               | :1st_place_medal:          |
-|Functionality| :1st_place_medal: | :grey_question:   | :grey_question: | :2nd_place_medal: | :1st_place_medal: | :x:               | :3rd_place_medal:          |
+|               |      Chrome       |       Edge        |     Safari      |      Firefox      |       Opera       | Internet Explorer | Electron (Developers only) |
+| :-----------: | :---------------: | :---------------: | :-------------: | :---------------: | :---------------: | :---------------: | :------------------------: |
+|  Performance  | :1st_place_medal: | :1st_place_medal: | :grey_question: | :1st_place_medal: | :3rd_place_medal: |        :x:        |     :1st_place_medal:      |
+| Functionality | :1st_place_medal: |  :grey_question:  | :grey_question: | :2nd_place_medal: | :1st_place_medal: |        :x:        |     :3rd_place_medal:      |
 
 <!--Firefox not perfect because: window.showSaveFilePicker is not supported + :has() not supported-->
 <!--Opera ok because modal performance-->
 
 ### Mobile
 
-> **Warning**  
-> Devices running iOS are currently **_not_** supported! This includes **_all_** browsers (Safari, Chrome on iOS, ...)!
-
-|             | Chrome            | Edge            | Safari          | Firefox           | Opera           | Samsung Internet |
-|:-----------:|:-----------------:|:---------------:|:---------------:|:-----------------:|:---------------:|:----------------:|
-|Performance  | :2nd_place_medal: | :grey_question: | :x:             | :3rd_place_medal: | :grey_question: | :x:              |
-|Functionality| :1st_place_medal: | :grey_question: | :x:             | :1st_place_medal: | :grey_question: | :x:              |
+|               |      Chrome       |      Edge       |      Safari       |      Firefox      |      Opera      | Samsung Internet |
+| :-----------: | :---------------: | :-------------: | :---------------: | :---------------: | :-------------: | :--------------: |
+|  Performance  | :2nd_place_medal: | :grey_question: | :3rd_place_medal: | :3rd_place_medal: | :grey_question: |       :x:        |
+| Functionality | :1st_place_medal: | :grey_question: | :3rd_place_medal: | :1st_place_medal: | :grey_question: |       :x:        |
 
 <!--Firefox not perfect because html validation is not supported, :has() not supported-->
 
 ### Legend
 
-| Emoji            | Value       |
-|:----------------:|-------------|
-|:1st_place_medal: | Excellent   |
-|:2nd_place_medal: | Very good   |
-|:3rd_place_medal: | Ok          |
-|:grey_question:   | Unknown     |
-|:x:               | Unsupported |
+|       Emoji       | Value       |
+| :---------------: | ----------- |
+| :1st_place_medal: | Excellent   |
+| :2nd_place_medal: | Very good   |
+| :3rd_place_medal: | Ok          |
+|  :grey_question:  | Unknown     |
+|        :x:        | Unsupported |
 
 ## Module
 
@@ -126,14 +124,14 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
 #### Fields
 
-| Field               |                   Description                          | Styleable?         | Required?          |
-|:--------------------|:-------------------------------------------------------|:------------------:|:------------------:|
-| `id`                |  The unique id of the questions                        | :x:                | :heavy_check_mark: |
-| `title`             |  The title of the question                             | :heavy_check_mark: | :x:                |
-| `points`            |  Max point value of a question                         | :x:                | :x:                |
-| `type`              |  The type of the question                              | :x:                | :heavy_check_mark: |
-| `help`              |  Explain what the user needs to do                     | :heavy_check_mark: | :x:                |
-| `answerOptions`     |  The interactive part of the question                  | :heavy_check_mark: | :heavy_check_mark: |
+| Field           | Description                          |     Styleable?     |     Required?      |
+| :-------------- | :----------------------------------- | :----------------: | :----------------: |
+| `id`            | The unique id of the questions       |        :x:         | :heavy_check_mark: |
+| `title`         | The title of the question            | :heavy_check_mark: |        :x:         |
+| `points`        | Max point value of a question        |        :x:         |        :x:         |
+| `type`          | The type of the question             |        :x:         | :heavy_check_mark: |
+| `help`          | Explain what the user needs to do    | :heavy_check_mark: |        :x:         |
+| `answerOptions` | The interactive part of the question | :heavy_check_mark: | :heavy_check_mark: |
 
 #### Question Types
 
@@ -469,9 +467,9 @@ Text outside list
 some text
 
 | Heading 1 | Heading 2 |
-| --------- | :-----------: |
-| Item 1    | Item 2 |
-| Item 3    | Item 4 |
+| --------- | :-------: |
+| Item 1    |  Item 2   |
+| Item 3    |  Item 4   |
 
 Text outside table 
 ```
@@ -504,9 +502,9 @@ Text outside table
 some text
 
 | Heading 1 | Heading 2 |
-| --------- | :-----------: |
-| Item 1    | Item 2 |
-| Item 3    | Item 4 |
+| --------- | :-------: |
+| Item 1    |  Item 2   |
+| Item 3    |  Item 4   |
 
 Text outside table
       </td>

@@ -4,11 +4,16 @@ import { Form } from "./QuestionEditor";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
+import { parseJSON } from "../../utils/parseJSON";
+import { Question } from "../Question/Question";
 
 //CSS
 import "../../index.css";
-import { Question } from "../Question/Question";
+
+//Interfaces
 import { IParams, ISearchParams } from "../../utils/types";
+import { IModule } from "../module/module";
+import { IGapText } from "../Question/QuestionTypes/GapText/GapText";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
@@ -20,7 +25,7 @@ const MockFormWithRouter = () => {
   const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
 
   return (
-    <MemoryRouter initialEntries={["/module/test"]}>
+    <MemoryRouter initialEntries={["/module/cypress_1"]}>
       <Routes>
         <Route
           path='/module/:moduleID'
@@ -726,7 +731,6 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
     });
 
     it("should not add blank space before gap at beginning of textarea but add a blank space after the gap", () => {
-      //cy.get("textarea#editor-gap-text-textarea").type("surround{enter}");
       cy.get("button#editor-add-item").click();
       cy.get("textarea#editor-gap-text-textarea").should("have.value", "[value] ");
     });
@@ -793,6 +797,75 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get("textarea#editor-gap-text-textarea").type("There is no gap here").setSelection("no");
       cy.get("button#editor-remove-item").click();
       cy.get(".Toastify").contains("Found no gaps inside the selection!").should("exist");
+    });
+
+    it("should replace double quotes outside html tags in gap-text-text", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+      cy.get("input[name='id']").type("test-id");
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `Here is a "quote"\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside ["gaps"]`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
+        });
+    });
+
+    it("should replace apostrophe with ‘ that are outside of html", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+      cy.get("input[name='id']").type("test-id");
+
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `Here is a 'apostrophe' that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside ['apostrophe']`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
+        });
+    });
+
+    it("should correctly switch between lower and upper quotation marks", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+      cy.get("input[name='id']").type("test-id");
+
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `"Here are quotation marks" but not here. Apostrophes ' outside "or ' inside should not change this pattern". This should [render]`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `„Here are quotation marks“ but not here. Apostrophes ‘ outside „or ‘ inside should not change this pattern“. This should []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`render`]]);
+        });
     });
   });
 });

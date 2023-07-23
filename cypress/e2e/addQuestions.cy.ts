@@ -408,44 +408,6 @@ describe("Adding a question of type gap-text", () => {
     cy.get("img").invoke("height").should("equal", 256);
     cy.get("section.question-user-response").find("input").should("have.length", 1);
   });
-
-  it("should replace double quotes only outside of html tags in gap-text text", () => {
-    cy.get("textarea#editor-gap-text-textarea").type(
-      `Here is a "quote"\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside ["gaps"]`,
-      { delay: 2 }
-    );
-
-    cy.get("button[aria-label='Add Question']")
-      .click()
-      .should(() => {
-        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
-        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
-        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-          `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
-        );
-
-        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
-      });
-  });
-
-  it("should replace apostrophe with ‘ that are outside of html", () => {
-    cy.get("textarea#editor-gap-text-textarea").type(
-      `Here is a 'apostrophe' that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside ['apostrophe']`,
-      { delay: 2 }
-    );
-
-    cy.get("button[aria-label='Add Question']")
-      .click()
-      .should(() => {
-        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
-        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
-        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-          `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
-        );
-
-        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
-      });
-  });
 });
 
 export {};

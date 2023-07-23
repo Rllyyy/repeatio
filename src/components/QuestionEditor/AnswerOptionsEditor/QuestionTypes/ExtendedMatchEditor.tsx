@@ -601,6 +601,9 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
       ref={svgRef}
       style={{ maxWidth: "300px", width: "100%", flexShrink: "1.5" }}
     >
+      {/* Fixes an issue on iOS that would result in an incorrect svg size if there are no elements on one side */}
+      <rect width='100%' height='100%' fill='transparent' />
+      {/* Map of each complete line */}
       {correctMatches
         ?.filter((item) => item.left && item.right && typeof item.left === "object" && typeof item.right === "object")
         .map((item) => {

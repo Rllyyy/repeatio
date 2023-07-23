@@ -444,6 +444,9 @@ export const SVGElement: React.FC<ISVGElement> = (props) => {
 
   return (
     <svg className='svg-element' xmlns='http://www.w3.org/2000/svg' ref={svgRef}>
+      {/* Fixes an issue on iOS that would result in an incorrect svg size if there are no elements on one side */}
+      <rect width='100%' height='100%' fill='transparent' />
+      {/* Map over each complete line */}
       {props.lines
         .filter((item) => item.left && item.right)
         .map((item) => {

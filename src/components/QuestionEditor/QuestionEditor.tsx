@@ -474,22 +474,28 @@ function getAnswerOptionsError({
 }
 
 /**
- * Replace the characters that are not supported by gap-text and gap-text-dropdown
+ * Replaces quotes outside HTML tags and attributes with "„", "“" or "‘"
  * Ignores unsupported characters inside html tags as they aren't rendered later
  */
 function replaceUnsupportedChars(text: string) {
-  let count = 0;
-  return text
-    .split(/(?<!<[^>]*)"/g)
-    .map((str) => {
-      if (count++ % 2 !== 0) {
-        return `„${str}“`;
-      } else {
-        return str;
-      }
-    })
-    .join("")
-    .replaceAll(/(?<!<[^>]*)'/g, "‘");
+  // Replace double quotes outside HTML tags and attributes with "„" and "“"
+  // Most iOS devices don't support regex lookbehind resulting in a syntax error  that can't be
+  // fixed with limiting the function to non iOS devices or wrapping the call inside a try catch
+  // These where the old regex functions /(?<!<[^>]*)"/g and /(?<!<[^>]*)'/g
+  let lowerCaseQuote = true;
+  const outputString = text.replace(/<[^>]*>|"|'/g, (match) => {
+    if (match === '"') {
+      const quote = lowerCaseQuote ? "„" : "“";
+      lowerCaseQuote = !lowerCaseQuote;
+      return quote;
+    } else if (match === "'") {
+      return "‘";
+    } else {
+      return match;
+    }
+  });
+
+  return outputString;
 }
 
 /* -------------------------------TEXTAREA for multiline inputs --------------------------------- */

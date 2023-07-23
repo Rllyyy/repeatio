@@ -1,7 +1,6 @@
 import TextareaAutoSize from "react-textarea-autosize";
 import { forwardRef } from "react";
 import { objectWithoutProp } from "../../helpers";
-import { isSafari } from "react-device-detect";
 
 //Types
 import { TErrors } from "../../QuestionEditor";
@@ -30,17 +29,6 @@ export const GapTextEditor = forwardRef<HTMLTextAreaElement, IGapTextEditorCompo
       if (answerOptionsError) {
         setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
       }
-    }
-
-    //Return error text if user uses safari because safari does not support lookbehind
-    //https://bugs.webkit.org/show_bug.cgi?id=174931
-    if (isSafari) {
-      return (
-        <p style={{ color: "rgb(231, 76, 60)", paddingBottom: "10px" }}>
-          Your browser (safari) does not support features used for this question type! Use a different browser to add or
-          edit this type of question.
-        </p>
-      );
     }
 
     //Return textarea
