@@ -896,7 +896,10 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
     it("should show browser validation error for required id input", () => {
       cy.contains("button", "Add").click();
       cy.get("input[name='id']").then(($input) => {
-        expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please fill in this field.");
+        expect(($input[0] as HTMLInputElement).validationMessage).to.be.oneOf([
+          "Please fill in this field.",
+          "Please fill out this field.",
+        ]);
       });
     });
 
@@ -940,7 +943,10 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .find("textarea")
         .first()
         .then(($textarea) => {
-          expect($textarea[0].validationMessage).to.eq("Please fill in this field.");
+          expect($textarea[0].validationMessage).to.be.oneOf([
+            "Please fill in this field.",
+            "Please fill out this field.",
+          ]);
         });
     });
 
@@ -991,7 +997,10 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .find("textarea")
         .first()
         .then(($input) => {
-          expect($input[0].validationMessage).to.eq("Please fill in this field.");
+          expect($input[0].validationMessage).to.be.oneOf([
+            "Please fill in this field.",
+            "Please fill out this field.",
+          ]);
         })
         .type("Content after first tried submit");
 
@@ -1006,7 +1015,10 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.contains("button", "Add").click();
 
       cy.get("textarea#editor-gap-text-textarea").then(($textarea) => {
-        expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.eq("Please fill in this field.");
+        expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.be.oneOf([
+          "Please fill in this field.",
+          "Please fill out this field.",
+        ]);
       });
     });
   });
