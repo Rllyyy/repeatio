@@ -103,4 +103,4 @@ jobs:
           path: build
 
       - name: Jest run tests
-        run: jest
+        run: yarn test
