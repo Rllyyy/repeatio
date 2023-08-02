@@ -102,5 +102,8 @@ jobs:
           name: build
           path: build
 
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - name: Jest run tests
         run: yarn test
