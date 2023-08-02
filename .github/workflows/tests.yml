@@ -1,5 +1,9 @@
 # https://docs.cypress.io/guides/continuous-integration/github-actions
 name: Tests
+
+env:
+  SSL_CERT_DIR: /etc/ssl/certs
+
 on:
   [push]
   # push:
