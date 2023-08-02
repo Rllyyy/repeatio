@@ -2,7 +2,9 @@ import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { MultipleChoice } from "./MultipleChoice";
 
-import { expect, it, describe } from "@jest/globals";
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
 
 const mockOptions = [
   {

@@ -3,6 +3,10 @@ import user from "@testing-library/user-event";
 
 import { GapTextDropdown } from "./GapTextDropdown";
 
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
+
 //MOCKS
 //Mock provided answerOptions
 const options = {

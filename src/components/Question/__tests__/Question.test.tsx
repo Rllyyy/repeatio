@@ -7,6 +7,10 @@ import { IQuestion } from "../useQuestion";
 import { IModule } from "../../module/module";
 import { ISearchParams } from "../../../utils/types";
 
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
+
 //Question test data
 const mockFilteredQuestions: IModule["questions"] = [
   {
@@ -220,7 +224,7 @@ describe("<Question />", () => {
     expect(questionTypeHelpElement).toBeInTheDocument();
   });
 
-  it("should render the question with the id of qID-2 when given the correct params", () => {
+  test("should render the question with the id of qID-2 when given the correct params", () => {
     render(<MockQuestionWithRouter qID='qID-2' mode='practice' order='chronological' />);
 
     const idElement = screen.getByText("ID: qID-2");

@@ -2,6 +2,10 @@ import { screen, render, cleanup } from "@testing-library/react";
 import { MultipleResponse } from "./MultipleResponse";
 import user from "@testing-library/user-event";
 
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
+
 //Mocks
 const options = [
   {
