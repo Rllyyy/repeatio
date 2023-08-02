@@ -11,8 +11,6 @@ declare var it: jest.It;
 declare var describe: jest.Describe;
 declare const expect: jest.Expect;
 
-let x;
-
 //Question test data
 const mockFilteredQuestions: IModule["questions"] = [
   {
