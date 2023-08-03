@@ -1,12 +1,6 @@
 # https://docs.cypress.io/guides/continuous-integration/github-actions
-name: Tests
-
-#[push]
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+name: Cypress Tests
+on: [push]
 
 jobs:
   # Create and save build
@@ -47,9 +41,6 @@ jobs:
           name: build
           path: build
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Cypress run e2e tests
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
@@ -78,9 +69,6 @@ jobs:
           name: build
           path: build
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Cypress run component tests
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
@@ -93,23 +81,3 @@ jobs:
           browser: chrome
           # Only include component tests
           component: true
-
-  jest:
-    runs-on: ubuntu-latest
-    needs: install
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Download the build folder
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: build
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Jest run tests
-        run: yarn test
