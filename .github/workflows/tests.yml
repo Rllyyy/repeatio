@@ -1,17 +1,20 @@
 # https://docs.cypress.io/guides/continuous-integration/github-actions
 name: Tests
 
-#[push]
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  [push]
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   # Create and save build
   install:
     runs-on: ubuntu-22.04
+
+    timeout-minutes: 5 # Set a timeout of 5 minutes for this job
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -38,8 +41,8 @@ jobs:
       fail-fast: false # https://github.com/cypress-io/github-action/issues/48
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      # - name: Checkout
+      # uses: actions/checkout@v3
 
       - name: Download the build folder
         uses: actions/download-artifact@v3
@@ -47,16 +50,13 @@ jobs:
           name: build
           path: build
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Cypress run e2e tests
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
         with:
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
-          start: vite preview --port 3000
+          start: yarn serve --port 3000
           wait-on: "http://localhost:3000" # Waits for above
           # Runs on chrome
           browser: chrome
@@ -78,16 +78,13 @@ jobs:
           name: build
           path: build
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Cypress run component tests
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
         with:
           # Starts web server for E2E tests - replace with your own server invocation
           # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
-          start: vite preview --port 3000
+          start: yarn serve --port 3000
           wait-on: "http://localhost:3000" # Waits for above
           # Run on chrome
           browser: chrome
