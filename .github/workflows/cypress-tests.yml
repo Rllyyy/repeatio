@@ -69,6 +69,11 @@ jobs:
           name: build
           path: build
 
+      - name: Install Node.js
+        uses: actions/setup-node@v2.4.0
+        with:
+          node-version: "16.x"
+
       - name: Cypress run component tests
         # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v5
