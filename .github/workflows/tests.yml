@@ -2,11 +2,10 @@
 name: Tests
 
 on:
-  [push]
-  # push:
-  #   branches: [main]
-  # pull_request:
-  #   branches: [main]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   # Create and save build

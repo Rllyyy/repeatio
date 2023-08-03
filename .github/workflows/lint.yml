@@ -1,15 +1,15 @@
 name: Lint
 
+# Run lint workflow on push / pr to main or release branch
 on:
-  [push]
-  # push:
-  # branches:
-  #- main
-  #- 'release-*'
-  # pull_request:
-  #branches:
-  #- main
-  #- 'release-*'
+  push:
+    branches:
+      - main
+      - "release-v*"
+  pull_request:
+    branches:
+      - main
+      - "release-v*"
 
 jobs:
   lint:
