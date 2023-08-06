@@ -1,16 +1,27 @@
-# repeatio
+<div align="center">
+  <!-- Icon -->
+  <a href="https://www.repeatio.de">
+    <img src=".github/images/brain.svg" height="90" alt="repeatio icon showing a brain"/>
+  </a>
+  
+  <!-- Text -->
+  <h1 align="center">
+   repeatio.de <br/>
+    <a href="https://www.repeatio.de">Start Learning Today</a>
+  </h1>
+  
+  <!-- Mockup -->
+  <a href="https://www.repeatio.de">
+    <img src=".github/images/3-mobile.png" width="600px" alt="Mockup of repeatio">
+  </a>
+</div>
 
-_Learn, repeat and memorize tasks with repeatio._
-
-## [Start Learning](https://repeatio.de)
-
-## :construction: Current limitations (v0.5) :construction:
+## :construction: Current limitations (v0.5)
 
 > **Warning**  
 > **Regularly** backup your data by **exporting** your modules and bookmarked questions!
-> **Clearing the browsers cache** (e.g. before an exam) will result in a **loss of your data**!
+> **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
 > Currently not all UI elements are working (e.g. module progress)!  
-> Only use Electron if you know how to edit .json files. The website should work just fine for most users.  
 
 ## Browser Support
 
