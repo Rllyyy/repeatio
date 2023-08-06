@@ -17,7 +17,7 @@
 </div>
 
 > **Warning**
-> 
+>
 > - **Regularly** backup your data by **exporting** your modules and bookmarked questions!
 > - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
 > - Some UI elements are currently not working (e.g. module progress)!  
