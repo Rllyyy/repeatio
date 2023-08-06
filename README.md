@@ -16,12 +16,10 @@
   </a>
 </div>
 
-## :construction: Current limitations (v0.5)
-
 > **Warning**  
-> **Regularly** backup your data by **exporting** your modules and bookmarked questions!
-> **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
-> Currently not all UI elements are working (e.g. module progress)!  
+> - **Regularly** backup your data by **exporting** your modules and bookmarked questions!
+> - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
+> - Some UI elements are currently not working (e.g. module progress)!  
 
 ## Browser Support
 
