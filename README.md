@@ -22,6 +22,8 @@
 > - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
 > - Some UI elements are currently not working (e.g. module progress)!  
 
+## [:clapper: Watch the Tutorial](https://youtu.be/Rqsy0nL4WK8)
+
 ## Browser Support
 
 ### Desktop
