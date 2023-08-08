@@ -10,7 +10,7 @@ import "./index.css";
 //Import Pages
 import Home from "./pages/index";
 
-import { TutorialsPage } from "./pages/tutorials";
+//import { TutorialsPage } from "./pages/tutorials";
 import { ContributePage } from "./pages/contribute";
 import { ThanksPage } from "./pages/thanks";
 import { NewsPage } from "./pages/news";
@@ -35,7 +35,8 @@ import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 import { ScrollToTop } from "./utils/ScrollToTop";
 import { CircularTailSpinner } from "./components/Spinner";
 
-// Lazy load settings page
+// Lazy load pages
+const TutorialsPage = React.lazy(() => import("./pages/tutorials"));
 const SettingsPage = React.lazy(() => import("./pages/settings"));
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -48,7 +49,16 @@ root.render(
       <main>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/tutorials' element={<TutorialsPage />} />
+          <Route
+            path='/tutorials'
+            element={
+              <ErrorBoundary fallback={<p>Failed to load.</p>}>
+                <Suspense fallback={<CircularTailSpinner />}>
+                  <TutorialsPage />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
           <Route path='/contribute' element={<ContributePage />} />
           <Route path='/thanks' element={<ThanksPage />} />
           <Route path='/news' element={<NewsPage />} />

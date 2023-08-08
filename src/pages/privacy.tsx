@@ -120,7 +120,7 @@ export const PrivacyPage = () => {
             <span>7</span>
           </div>
           <p>22397 Hamburg</p>
-          <p>E-Mail: repeatio.dev[aet]gmail.com</p>
+          <p>E-Mail: contact@repeatio.de</p>
         </div>
         <br />
         <p>
@@ -318,7 +318,7 @@ export const PrivacyPage = () => {
           B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Bestimmungen - insbesondere
           gesetzliche Aufbewahrungsfristen - bleiben unberührt.
         </p>
-        {/* <h2>5. Plugins und Tools</h2>
+        <h2>5. Plugins und Tools</h2>
         <h3 style={{ marginTop: ".5rem" }}>YouTube mit erweitertem Datenschutz</h3>
         <p>
           Diese Website bindet Videos der YouTube ein. Betreiber der Seiten ist die Google Ireland Limited ("Google"),
@@ -356,12 +356,12 @@ export const PrivacyPage = () => {
           Einwilligung ist jederzeit widerrufbar.
         </p>
         <p>
-          Weitere Informationen über Datenschutz bei YouTube finden Sie in deren Datenschutzerklärung unter:
+          Weitere Informationen über Datenschutz bei YouTube finden Sie in deren Datenschutzerklärung unter:{" "}
           <a href='https://policies.google.com/privacy?hl=de' target='_blank' rel='noopener noreferrer'>
             https://policies.google.com/privacy?hl=de
           </a>
           .
-        </p> */}
+        </p>
         <br />
         <p>
           Quelle: <a href='https://www.e-recht24.de'>https://www.e-recht24.de</a>
