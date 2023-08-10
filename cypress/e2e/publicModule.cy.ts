@@ -36,17 +36,18 @@ describe("Test the module that is provided by the public folder", () => {
 
     //Gap Text
     cy.contains("Yes, that's correct!").should("not.exist");
-    cy.get("#input-wrapper-0").find("input").type("gaps");
-    cy.get("#input-wrapper-1").find("input").type("correct");
-    cy.get("#input-wrapper-2").find("input").type("not");
+    cy.get("#input-0").type("gaps");
+    cy.get("#input-1").type("correct");
+    cy.get("#input-2").type("not");
+    cy.get("body").click();
     cy.get("button[aria-label='Check Question']").click();
     cy.contains("Yes, that's correct!");
     cy.get("button[aria-label='Next Question']").click();
 
     //Gap Text Dropdown
     cy.contains("Yes, that's correct!").should("not.exist");
-    cy.get("#select-wrapper-0").find("select").select("Dropdown");
-    cy.get("#select-wrapper-1").find("select").select("50%");
+    cy.get("#select-0").select("Dropdown");
+    cy.get("#select-1").select("50%");
     cy.get("button[aria-label='Check Question']").click();
     cy.contains("Yes, that's correct!");
     cy.get("button[aria-label='Next Question']").click();
@@ -63,8 +64,8 @@ describe("Test the module that is provided by the public folder", () => {
 
     //Tables
     cy.contains("Yes, that's correct!").should("not.exist");
-    cy.get("#select-wrapper-0").find("select").select("1.8 Mio");
-    cy.get("#select-wrapper-1").find("select").select("1.5 Mio");
+    cy.get("#select-0").select("1.8 Mio");
+    cy.get("#select-1").select("1.5 Mio");
     cy.get("button[aria-label='Check Question']").click();
     cy.contains("Yes, that's correct!");
     cy.get("button[aria-label='Next Question']").click();
@@ -82,7 +83,7 @@ describe("Test the module that is provided by the public folder", () => {
       .should("exist")
       .and(() => {
         const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-types_1"));
-        expect(module).not.to.be.null;
+        expect(module).not.to.equal(null);
 
         const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);

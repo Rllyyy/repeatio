@@ -1,11 +1,11 @@
 import React from "react";
+import TextAreaAutoSize from "react-textarea-autosize";
 
 //Material UI
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 //Import functions
 import { objectWithoutProp } from "../../helpers";
@@ -139,7 +139,7 @@ export const MultipleChoiceEditor = ({
                 />
               }
               label={
-                <TextareaAutosize
+                <TextAreaAutoSize
                   spellCheck='false'
                   autoComplete='false'
                   required

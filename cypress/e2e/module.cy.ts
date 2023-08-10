@@ -24,6 +24,36 @@ describe("module Page", () => {
     cy.contains("h1", "Cypress Fixture Module (cypress_1)").should("exist");
   });
 
+  it("should switch the module if navigating to a new module via the url", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
+
+    cy.visit("/module/cypress_1");
+
+    cy.visit("/module/gap_text");
+
+    cy.contains("h1", "Test gap-text question type").should("exist");
+
+    cy.get("article[data-cy='Practice']").contains("button", "Start").click();
+
+    cy.contains("ID: gt-1").should("exist");
+  });
+
+  it("should use the link state when navigating from the homepage to the module", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.visit("/");
+
+    cy.contains("h2", "Cypress Fixture Module (cypress_1)");
+
+    // Deleting the localStorage to confirm that the module is using the link state and not the localStorage data
+    cy.clearLocalStorage("repeatio-module-cypress_1");
+
+    cy.get("a[aria-label='View Cypress Fixture Module']").click();
+
+    cy.contains("h1", "Cypress Fixture Module (cypress_1)").should("exist");
+  });
+
   it("should show module if refreshing module page", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 

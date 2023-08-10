@@ -9,18 +9,21 @@
 
   line-height: 1;
   text-align: center;
+  white-space: nowrap;
 
   background-color: var(--custom-prime-color);
   color: whitesmoke;
   cursor: pointer;
 
-  margin-left: 5px;
-  padding: 10px 0;
-
-  width: 100%;
-  max-width: 118px;
+  padding: 10px 10px;
 
   border-radius: 5px;
+}
+
+.add-module-btn:focus-visible {
+  outline: 2px solid var(--custom-prime-color-dark);
+  outline-offset: 4px;
+  background-color: var(--custom-prime-color-dark);
 }
 
 .add-module-btn p {
@@ -34,14 +37,19 @@
   min-height: 362px;
 }
 
-.import-module .import-module-btn,
-.create-module .create-module-btn {
+.import-module .import-module-btn {
   all: unset;
+  box-sizing: border-box;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
 
   place-self: start center;
 
   line-height: 1;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
 
   color: white;
@@ -54,12 +62,6 @@
   cursor: pointer;
 }
 
-/* .import-create-module h2 {
-  text-align: start;
-  width: 100%;
-  margin-bottom: 0.5rem;
-} */
-
 .import-module {
   display: flex;
   align-items: center;
@@ -70,7 +72,6 @@
   height: 100%;
 }
 
-/* Import Module */
 .import-module > div,
 .import-module > .accepted-files {
   margin-bottom: 0.8rem;
@@ -139,6 +140,7 @@
 
 .drop-browse-btn {
   all: unset;
+  box-sizing: border-box;
 
   background-color: var(--custom-secondary-color);
   color: white;
@@ -151,7 +153,6 @@
   font-weight: 500;
 
   border-radius: 5px;
-  cursor: pointer;
 }
 
 .import-module .accepted-files {
@@ -212,60 +213,7 @@
   padding: 0.6rem;
 }
 
-.import-module .import-module-btn.disabled {
-  background-color: var(--custom-border-color-light);
-  cursor: not-allowed;
-}
-
-/* -------------------------------------- Create Module -------------------------- */
-.create-module {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
-.create-module > div {
-  margin-bottom: 1.3rem;
-}
-
-.create-module > div > label {
-  display: block;
-  line-height: 1;
-  margin-bottom: 0.5rem;
-
-  font-weight: 500;
-}
-
-.create-module > div > input,
-.create-module > div > select {
-  display: block;
-  padding: 8px;
-  width: 100%;
-
-  border: 1px solid var(--custom-border-color-lighter);
-  border-radius: 5px;
-  outline-offset: -1px;
-}
-
-.create-module > div > input.is-invalid,
-.create-module > div > select.is-invalid {
-  border-color: rgb(231, 76, 60);
-  background-color: rgba(231, 76, 60, 0.08);
-}
-
-.create-module #create-module-compatibility-input {
-  background-color: whitesmoke;
-}
-
-.create-module .error-message {
-  color: rgb(231, 76, 60);
-  margin-top: 0.3em;
-  font-size: 16px;
-}
-
-.import-create-module .create-module-btn:disabled {
-  background-color: var(--custom-border-color-light);
+.import-module .import-module-btn[aria-disabled="true"] {
   cursor: not-allowed;
 }
 
@@ -282,11 +230,7 @@
   outline-offset: 3px;
 }
 
-.create-module > div > input:focus-visible,
-.create-module > div > select:focus-visible {
-  outline: 2px solid var(--custom-prime-color);
-}
-
+/* TODO narrow down the button */
 .import-create-module button:focus-visible {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 5px;
@@ -303,12 +247,12 @@
     background-color: var(--custom-prime-color-dark);
   }
 
-  .drop-browse-btn:hover {
+  .drop-browse-btn:not(:disabled):hover {
+    cursor: pointer;
     background-color: rgb(61, 64, 82);
   }
 
-  .import-module .import-module-btn.enabled:hover,
-  .create-module .create-module-btn:hover:not(:disabled) {
+  .import-module .import-module-btn[aria-disabled="false"]:hover {
     background-color: var(--custom-prime-color-dark);
   }
 

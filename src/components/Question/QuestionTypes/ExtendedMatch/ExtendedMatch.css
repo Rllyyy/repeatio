@@ -5,7 +5,6 @@
   grid-template-columns: 42% 42%;
   grid-gap: 16%;
 
-
   width: 100%;
   max-width: 1400px;
 }
@@ -19,8 +18,8 @@
   justify-self: end;
 }
 
-.extended-match-grid canvas,
-.extended-match-grid-solution canvas {
+.extended-match-grid .svg-element,
+.extended-match-grid-solution .svg-element {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -67,6 +66,22 @@
   width: 100%;
 }
 
+/* TODO what if form is disabled */
+.svg-element .line-g:hover circle[aria-disabled="false"] {
+  r: 9;
+}
+
+.svg-element .line-g circle[aria-disabled="false"] {
+  outline: none;
+}
+
+.svg-element .line-g circle:focus-visible[aria-disabled="false"] {
+  r: 9;
+  outline: 3px solid red;
+  border-radius: 1px;
+  outline-offset: 5px;
+}
+
 /* Images */
 .extended-match-grid .ext-match-element-text img,
 .extended-match-grid-solution .ext-match-element-text img {
@@ -107,7 +122,6 @@
   border-color: rgb(122, 122, 245);
 }
 
-/* TODO Do this with transform origin?? */
 .ext-match-left-side .ext-match-element-circle {
   right: -10px;
 }
@@ -118,6 +132,10 @@
 
 .extended-match-grid .circle-enabled:active {
   border-color: var(--custom-prime-color);
+}
+
+.ext-match-element-circle.circle-enabled:active {
+  transform: scale(1.1);
 }
 
 .extended-match-grid .circle-disabled:hover {
@@ -142,7 +160,7 @@
   text-decoration: underline;
 }
 
-.remove-lines-btn:focus-visible {
+.remove-lines-btn:focus-visible:not(:disabled) {
   outline: 2px solid var(--custom-prime-color);
   outline-offset: 3px;
 }
@@ -152,6 +170,7 @@
   .extended-match-grid .circle-enabled:hover {
     cursor: pointer;
     border-color: var(--custom-prime-color);
+    transform: scale(1.1);
   }
 
   .extended-match-grid .remove-lines-btn:hover {
@@ -164,10 +183,9 @@
   .extended-match-grid {
     grid-template-columns: 43% 43%;
     grid-gap: 14%;
-
   }
 
-  .extended-match-grid canvas {
+  .extended-match-grid -svg-element {
     width: 14%;
   }
 

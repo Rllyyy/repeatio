@@ -1,6 +1,8 @@
 import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect, useMemo } from "react";
-import { render } from "react-dom";
 import ReactDOMServer from "react-dom/server";
+import DOMPurify from "dompurify";
+import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // React markdown related imports
 import ReactMarkdown from "react-markdown";
@@ -18,8 +20,6 @@ import { AnswerCorrection } from "./AnswerCorrection";
 
 // Interfaces/Types
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
-import DOMPurify from "dompurify";
-import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
 
 // Define Interfaces
 export interface IGapText {
@@ -35,10 +35,8 @@ interface IGapTextProps extends IQuestionTypeComponent {
 //The code in this Component may seem a bit odd.
 //The reason for this weirdness is that it mixes JSON, MarkDown, HTML and JSX so it can use Markdown for syntax like tables, strong, ...
 //The Component gets the JSON string, exports it to Markdown and then to HTML (with ReactDOMServer)
-//Because ReactDOMServer.renderToString ignores onChange handlers the input element can't be placed for now.
-//But a marker is placed to know where to append the input later.
-//All the output of the ReactDOMServer.renderToString is then placed inside a dangerouslySetInnerHTML.
-//When the useLayoutEffect is called it inserts an input element at the marker.
+//Then an input element gets inserted into where the gaps "[]" are.
+//Because ReactDOMServer.renderToString ignores onChange handlers these events have to be added by the useLayoutEffect
 //At the end I just have to say this: Is it fast? no. Is it logical? no. Does it work? YES
 //Feel free to update the code but this is honestly the best I can come up with atm that supports Markdown elements (tables, styling, ...) and user set input elements.
 
@@ -53,42 +51,31 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
   /* Functions */
   //Update the input where the input index is equal to the inputValues index
   const updateInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+    (e: Event) => {
       const newInputValue = inputValues.map((value, index) => {
-        if (index === idx) {
-          return e.target.value;
+        // Update the value of the array if the index of the id is equal to the index to the inputValues array element
+        if (index === parseInt((e.target as HTMLInputElement)?.getAttribute("id")!.split("-")[1])) {
+          return (e.target as HTMLInputElement).value;
         } else {
           return value;
         }
       });
-      setInputValues(newInputValue);
+
+      // Update the state
+      setInputValues([...newInputValue]);
     },
     [inputValues]
   );
 
-  const onKeyDownPreventSubmit = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+  //Prevent the form submission when entering "Enter" on an input element
+  const onKeyDownPreventSubmit = useCallback((e: KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
     }
   }, []);
 
-  const customStyle = useCallback(
-    (index: number) => {
-      if (!formDisabled) return;
-
-      if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
-        return { borderColor: "green" };
-      } else {
-        return { borderColor: "red" };
-      }
-    },
-    [formDisabled, inputValues, options.correctGapValues]
-  );
-
-  //Set the dangerouslySetInnerHTML for question-gap-text div element
-
-  /* UseEffects */
-  //Create array with x amount of empty input values
+  /* UseLayoutEffects */
+  //Create array with x amount of empty input values and reset
   useLayoutEffect(() => {
     setInputValues(Array(options?.correctGapValues?.length).fill(""));
 
@@ -97,38 +84,69 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
     };
   }, [options.correctGapValues]);
 
-  //!Add try catch
-  //Inset the input elements at the corresponding input wrapper index,
-  //because ReactDOMServer.renderToString ignores onChange handlers
+  //Attack events to the inputs
   useLayoutEffect(() => {
-    //Has to be selected with query because ReactDOMServer.renderToString ignores refs
-    const inputWrapperLength = document.querySelectorAll(".question-gap-text .input-wrapper").length;
+    // Get the number of of gaps
+    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
 
-    //Guards
-    if (inputValues === undefined || inputWrapperLength === 0) {
-      return;
+    // Return from function if there are no elements found
+    if (inputElements === undefined || inputElements.length === 0) return;
+
+    // Loop through
+    for (let index = 0; index < inputElements.length; index++) {
+      const input = inputElements[index];
+
+      if (!input) return;
+
+      // Set the value of the input
+      input.setAttribute("value", inputValues[index] || "");
+
+      // attach handleChange function
+      // One could change this to eventListener "input", but don't forget to also remove this event in the return function!
+      input.addEventListener("change", updateInput);
+
+      // attach function to prevent form submission on enter click
+      input.addEventListener("keydown", onKeyDownPreventSubmit);
+
+      if (formDisabled) {
+        // disable the input
+        input.disabled = true;
+
+        //  Add green or red border if the form was submitted (and is therefor disabled)
+        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
+          input.style.borderColor = "green";
+        } else {
+          input.style.borderColor = "red";
+        }
+      } else {
+        // enable the input
+        input.disabled = false;
+      }
     }
 
-    //Append a child to the wrapper x amount of times
-    for (let index = 0; index < inputWrapperLength; index++) {
-      render(
-        <input
-          type='text'
-          key={`input-${index}`}
-          id={`input-${index}`}
-          disabled={formDisabled}
-          autoCapitalize='off'
-          autoComplete='off'
-          spellCheck='false'
-          onKeyDown={onKeyDownPreventSubmit}
-          onChange={(e) => updateInput(e, index)}
-          style={customStyle(index)}
-          value={inputValues[index] || ""}
-        />,
-        document.getElementById(`input-wrapper-${index}`)
-      );
-    }
-  }, [inputValues, formDisabled, updateInput, options, onKeyDownPreventSubmit, customStyle]);
+    return () => {
+      // Get the number of of gaps
+      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+      // Guards if there are no elements
+      if (inputElements === undefined || inputElements.length === 0) {
+        return;
+      }
+
+      // Remove event listeners from each gap
+      for (let index = 0; index < inputElements.length; index++) {
+        const input = inputElements[index];
+
+        if (!input) return;
+
+        // Remove event listeners
+        input.removeEventListener("change", updateInput);
+        input.removeEventListener("keydown", onKeyDownPreventSubmit);
+        input.removeAttribute("style");
+        input.disabled = false;
+      }
+    };
+  }, [inputValues, updateInput, options.correctGapValues, onKeyDownPreventSubmit, formDisabled]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
@@ -138,13 +156,14 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       checkAnswer() {
         //Strip the input values of any whitespace at the beginning or end and update the state (which will be updated after the function has completely finished)
         const trimmedInputValues = inputValues.map((value) => value.trim());
+
         setInputValues(trimmedInputValues);
 
         //Check if every gap correlates with the correct value from the gap array and return true/false to question form
         return (
           options.correctGapValues?.every((gapArray: string[], index: number) =>
             gapArray?.includes(trimmedInputValues[index])
-          ) || false
+          ) ?? true
         );
       },
 
@@ -157,6 +176,19 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       resetSelection() {
         //return empty string for every input value in the array
         setInputValues(Array(inputValues.length).fill(""));
+
+        const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
+
+        for (let index = 0; index < inputElements.length; index++) {
+          const input = inputElements[index];
+
+          if (!input) return;
+
+          input.value = "";
+
+          // Remove the style from the html to reset to the border color that is set by css
+          input.removeAttribute("style");
+        }
       },
 
       //Trigger a useEffect (rerender) by increasing a state value
@@ -177,39 +209,35 @@ function textWithBlanks(text: string): string {
   //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
   //remarkGfm draws markdown tables
   const htmlString = ReactDOMServer.renderToString(
-    <ReactMarkdown children={text} rehypePlugins={[rehypeRaw, rehypeKatex]} remarkPlugins={[remarkGfm, remarkMath]} />
+    <ReactMarkdown
+      children={text}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      remarkPlugins={[remarkGfm, remarkMath]}
+    />
   );
 
   //Split the html notes where the input should be inserted
   const htmlStringSplit = htmlString.split("[]");
 
   //Insert the input marker between the array elements but not at the end
-  const mappedArray = htmlStringSplit.map((line, index) => {
-    if (index < htmlStringSplit.length - 1) {
-      return ReactDOMServer.renderToString(
-        <>
-          <p>{line}</p>
-          {/* ReactDOMServer.renderToString ignores event handlers so this is a marker for where to insert the input at the useEffect */}
-          <div className={"input-wrapper"} id={`input-wrapper-${index}`}></div>
-        </>
-      );
-    } else {
-      return ReactDOMServer.renderToString(<p>{line}</p>);
-    }
-  });
+  const htmlWithGaps = htmlStringSplit
+    .map((line, index) => {
+      if (index < htmlStringSplit.length - 1) {
+        return line.concat(
+          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false' />`
+        );
+      } else {
+        return line;
+      }
+    })
+    .join("");
 
-  //Combine the array to one string again
-  const joinedElements = mappedArray.join("");
-
-  //Remove jsx specific html syntax
-  const exportHTML = joinedElements
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&quot;", '"')
-    .replaceAll('data-reactroot=""', "");
+  //return htmlWithGaps;
 
   // Sanitize the result
-  return DOMPurify.sanitize(exportHTML, {
+  return DOMPurify.sanitize(htmlWithGaps, {
     FORBID_TAGS: forbiddenTags,
     FORBID_ATTR: forbiddenAttributes,
   });

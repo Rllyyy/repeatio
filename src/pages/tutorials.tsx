@@ -1,13 +1,19 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
+import { Tutorials } from "../components/Tutorials";
 
-export const TutorialsPage = () => {
+const TutorialsPage = () => {
   return (
-    <>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "1200px",
+        margin: "0 auto",
+      }}
+    >
       <SiteHeading title='Tutorials' />
-      <p style={{ marginTop: "20px" }}>There seems to be nothing here...</p>
-      <p>
-        Visit <a href='https://github.com/Rllyyy/repeatio'>Github</a> to view the current status of this project.
-      </p>
-    </>
+      <Tutorials />
+    </div>
   );
 };
+
+export default TutorialsPage;

@@ -25,6 +25,7 @@ import { shuffleArray } from "../../../../utils/shuffleArray";
 
 //Interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Define Interfaces
 export interface IMultipleResponse {
@@ -118,6 +119,8 @@ export const MultipleResponse = forwardRef<IForwardRefFunctions, MultipleRespons
                   <li className='correction-multipleResponse-list-item' key={item.id}>
                     <ReactMarkdown
                       children={item.text}
+                      linkTarget='_blank'
+                      transformLinkUri={normalizeLinkUri}
                       rehypePlugins={[rehypeRaw, rehypeKatex]}
                       remarkPlugins={[remarkGfm, remarkMath]}
                     />
@@ -173,6 +176,8 @@ export const MultipleResponse = forwardRef<IForwardRefFunctions, MultipleRespons
                   label={
                     <Typography component={"span"} className={`formControlLabel-typography`}>
                       <ReactMarkdown
+                        linkTarget='_blank'
+                        transformLinkUri={normalizeLinkUri}
                         children={option.text}
                         rehypePlugins={[rehypeRaw, rehypeKatex]}
                         remarkPlugins={[remarkGfm, remarkMath]}

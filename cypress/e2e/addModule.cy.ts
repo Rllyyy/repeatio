@@ -70,13 +70,13 @@ describe("Test importing a new module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.4.0");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
 
     //Should close modal
     cy.contains("h1", "Create or import a Module").should("not.exist");
-    cy.get(".ReactModalPortal").should("not.exist");
+    cy.get(".ReactModal__Overlay--after-open").should("not.exist");
   });
 
   //Test if the toast for successful imports works
@@ -129,18 +129,18 @@ describe("Test creating a new module", () => {
   it("should add module and show toast when creating a module", () => {
     //Fill in form and click create button
     //id
-    cy.get("input#create-module-id-input").type("test_cy_1").should("have.value", "test_cy_1");
+    cy.get("input#module-editor-id-input").type("test_cy_1").should("have.value", "test_cy_1");
     //name
-    cy.get("input#create-module-name-input")
+    cy.get("input#module-editor-name-input")
       .type("Module created with cypress", { delay: 2 })
       .should("have.value", "Module created with cypress");
     //language
-    cy.get("select#create-module-language-select").select("English").should("have.value", "en");
-    cy.get("select#create-module-language-select").find("option:selected").should("have.text", "English");
+    cy.get("select#module-editor-language-select").select("English").should("have.value", "en");
+    cy.get("select#module-editor-language-select").find("option:selected").should("have.text", "English");
     //compatibility
-    cy.get("input#create-module-compatibility-input").should("be.disabled").and("have.value", version);
+    cy.get("input#module-editor-compatibility-input").should("be.disabled").and("have.value", version);
 
-    cy.get("form.create-module").contains("button", "Create").click();
+    cy.get("form").contains("button", "Create").click();
 
     //Navigate to newly created module by toast
     cy.get(".Toastify__toast").contains("a", "test_cy_1").click({ force: true });

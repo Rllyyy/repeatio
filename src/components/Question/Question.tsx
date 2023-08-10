@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect, useContext, memo, useLayoutEffect } from "react";
 import { useParams } from "react-router-dom";
 
+//Functions
+import { normalizeLinkUri } from "../../utils/normalizeLinkUri";
+
 //Markdown related
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -21,6 +24,7 @@ import { QuestionNavigation } from "./components/QuestionNavigation/QuestionNavi
 import { DeleteQuestion } from "./components/Actions/DeleteQuestion";
 import { EditQuestion } from "./components/Actions/EditQuestion";
 import { BookmarkQuestion } from "./components/Actions/BookmarkQuestion";
+import { ShuffleQuestionsButton } from "./components/Actions/ShuffleQuestions";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -155,9 +159,9 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useLayoutEffect(() => {
-    if (size && size?.width > 800) {
+    if (size && size?.width > 650) {
       setCollapsedActionsNav(false);
-    } else if (size && size?.width <= 800) {
+    } else if (size && size?.width <= 650) {
       setCollapsedActionsNav(true);
     }
   }, [size?.width, size, setCollapsedActionsNav]);
@@ -194,6 +198,7 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
             handleResetQuestionComponent={handleResetQuestionComponent}
           />
           <BookmarkQuestion moduleID={moduleID} questionID={question?.id} disabled={disabled} />
+          <ShuffleQuestionsButton moduleID={moduleID} questionID={question?.id} disabled={disabled} />
           <QuestionNavigation handleResetQuestionComponent={handleResetQuestionComponent} />
         </div>
       )}
@@ -227,15 +232,17 @@ interface IQuestionTitle {
   title: IQuestion["title"];
 }
 //Title of the question
-const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
+export const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
   if (!title) return <></>;
 
   return (
     <ReactMarkdown
       className='question-title'
+      children={title}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
       rehypePlugins={[rehypeRaw, rehypeKatex]}
       remarkPlugins={[remarkMath, remarkGfm]}
-      children={title}
     />
   );
 };
@@ -261,9 +268,11 @@ const QuestionTypeHelp: React.FC<IQuestionTypeHelp> = ({ help }) => {
   return (
     <ReactMarkdown
       className='question-type-help'
+      children={help}
+      linkTarget='_blank'
+      transformLinkUri={normalizeLinkUri}
       rehypePlugins={[rehypeRaw, rehypeKatex]}
       remarkPlugins={[remarkMath, remarkGfm]}
-      children={help}
     />
   );
 };

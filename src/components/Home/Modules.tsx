@@ -1,11 +1,12 @@
 import { useState, useLayoutEffect, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
+import { AnimatePresence } from "framer-motion";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
 import { Card, LinkElement } from "../Card/Card";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
-import { Spinner } from "../Spinner/Spinner";
+import { CircularTailSpinner } from "../Spinner";
 import { ProgressPie } from "../Card/ProgressPie";
 
 //Icons
@@ -15,49 +16,64 @@ import { BiTrash } from "react-icons/bi";
 //Functions
 import { saveFile } from "../../utils/saveFile";
 import { parseJSON } from "../../utils/parseJSON";
-import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "./helpers";
+import {
+  addExampleModuleToLocalStorage,
+  getLocalStorageModules,
+  isExampleModuleAdded,
+  sortLocalStorageModules,
+} from "./helpers";
 
 //Interfaces and Types
 import { IModule } from "../module/module";
 import { TSettings } from "../../utils/types";
+import { TModuleSortOption } from "./ModuleSortButton";
 
+interface IModules {
+  sort: TModuleSortOption;
+}
 //Component
-export const Modules = () => {
-  const { modules, loading } = useAllModules();
+export const Modules: React.FC<IModules> = ({ sort }) => {
+  const { modules, loading } = useAllModules(sort);
   const { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose } = useHomePopover();
 
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
 
-  //const MemoedIcon = useMemo(() => <ProgressPie progress={55} />, []);
   if (loading) {
-    return <Spinner />;
+    return <CircularTailSpinner />;
   }
 
   //Return grid of modules and "add module" card when the component has loaded
   return (
     <GridCards>
-      {modules?.map((module) => {
-        const { id, name, questions } = module;
-        return (
-          <Card
-            key={id}
-            data-cy={`module-${id}`}
-            type='module'
-            title={`${name} (${id})`}
-            description={`${questions?.length} Questions`}
-            icon={<ProgressPie progress={55} />}
-          >
-            <LinkElement
-              key={`card-link-${id}`}
-              linkTo={{ pathname: `/module/${id}`, state: { name } }}
-              linkAriaLabel={`View ${name}`}
-              linkText='View'
-            />
-            <PopoverButton handleClick={handlePopoverButtonClick} target={id} />
-          </Card>
-        );
-      })}
+      <AnimatePresence initial={false}>
+        {modules?.map((module) => {
+          const { id, name, questions } = module;
+          return (
+            <Card
+              key={id}
+              data-cy={`module-${id}`}
+              type='module'
+              title={`${name} (${id})`}
+              description={`${questions?.length} Questions`}
+              icon={<ProgressPie progress={55} />}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+            >
+              <LinkElement
+                key={`card-link-${id}`}
+                linkTo={`/module/${id}`}
+                state={{ name }}
+                linkAriaLabel={`View ${name}`}
+                linkText='View'
+              />
+              <PopoverButton handleClick={handlePopoverButtonClick} target={id} />
+            </Card>
+          );
+        })}
+      </AnimatePresence>
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
         <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />
@@ -67,7 +83,7 @@ export const Modules = () => {
 };
 
 // Return the whole localStorage
-const useAllModules = () => {
+const useAllModules = (sort: TModuleSortOption) => {
   const [loading, setLoading] = useState(true);
   const [modules, setModules] = useState<IModule[]>([]);
 
@@ -83,29 +99,14 @@ const useAllModules = () => {
     }
 
     //Setup variables for the module
-    let localStorageModules: IModule[] = [];
+    const localStorageModules: IModule[] = getLocalStorageModules();
 
-    Object.entries(localStorage).forEach((key) => {
-      if (key[0].startsWith("repeatio-module")) {
-        //Get item, transform to object, on error add to moduleErrors array
-        try {
-          const module = localStorage.getItem(key[0]);
-          const moduleJSON = parseJSON<IModule>(module);
-          if (moduleJSON !== undefined && moduleJSON !== null) {
-            localStorageModules.push(moduleJSON);
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            toast.warn(`${key[0]}: ${error.message}`);
-          }
-        }
-      }
-    });
+    const sortedLocalStorageModules = sortLocalStorageModules(localStorageModules, sort);
 
     //Update states
-    setModules(localStorageModules);
+    setModules(sortedLocalStorageModules);
     setLoading(false);
-  }, []);
+  }, [sort]);
 
   //Refetch the modules if the localeStorage changes
   const onStorageChange = useCallback(() => {

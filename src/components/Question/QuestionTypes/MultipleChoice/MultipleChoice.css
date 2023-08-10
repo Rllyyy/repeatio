@@ -2,12 +2,9 @@
 /* ! Some css properties (mui-checkcolor, color) are defined in the react component  */
 
 .question-multiple-choice .formControlLabel {
-  width: 100% !important;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  width: calc(100% + 6px) !important;
   border-radius: 3px;
-  margin-bottom: 5px;
+  margin-bottom: 12px;
 }
 
 .question-multiple-choice .MuiFormControlLabel-root,
@@ -15,18 +12,14 @@
   margin-left: -6px;
 }
 
-.question-multiple-choice .formControlLabel>.formControlLabel-typography {
+.question-multiple-choice .formControlLabel > .formControlLabel-typography {
   font-size: 18px;
-  padding-top: 10px;
+  padding-top: 1px;
   padding-left: 2px;
 }
 
-.question-multiple-choice .formControlLabel>.formControlLabel-radio:hover {
+.question-multiple-choice .formControlLabel > .formControlLabel-radio:hover {
   background-color: transparent;
-}
-
-.question-multiple-choice .MuiSvgIcon-root {
-  font-size: 26px;
 }
 
 /* The first value is for development, the second is production. 
@@ -49,7 +42,7 @@ This is the only way if found to have it still animated but disable the out anim
 }
 
 .correction-multipleChoice-list-item::before {
-  content: '•';
+  content: "•";
   position: absolute;
   left: 0px;
   top: -5px;
@@ -61,17 +54,6 @@ This is the only way if found to have it still animated but disable the out anim
 /* Media Query for phones */
 @media only screen and (max-width: 650px) {
   .question-multiple-choice .formControlLabel {
-    padding: 2px 0 !important;
-  }
-
-  /* Override the checkbox size of mui */
-  .question-multiple-choice .MuiSvgIcon-root {
-    font-size: 30px !important;
-  }
-
-  .question-multiple-choice .formControlLabel>.formControlLabel-typography {
-    font-size: 18px;
-    padding-top: 10px;
-    padding-left: 0;
+    margin-bottom: 8px;
   }
 }

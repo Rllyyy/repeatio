@@ -1,0 +1,103 @@
+.categoryHeading {
+  font-weight: 400;
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+
+.categoryItemsWrapper {
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  margin-top: 10px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.categoryItem {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  gap: 2px 12px;
+}
+
+.categoryItem:not(:last-child) {
+  border-bottom: 1px solid lightgray;
+}
+
+.settingName {
+  font-weight: 500;
+}
+
+.settingDescription {
+  font-size: 1rem;
+  color: #616161;
+  line-height: 1.35;
+}
+
+.exportButton {
+  cursor: pointer;
+
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  height: auto;
+
+  justify-self: center;
+  align-self: center;
+
+  padding: 8px 16px;
+  background-color: rgb(245, 243, 253);
+
+  border: 1px solid var(--custom-border-color-lighter);
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+}
+
+.deleteButton {
+  position: relative;
+
+  cursor: pointer;
+
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  height: auto;
+  justify-self: center;
+  align-self: center;
+  padding: 8px 16px;
+  background-color: rgb(247, 242, 242);
+  color: rgb(168, 6, 6);
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+}
+
+.exportModulesIncludeBookmarkedFiles {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.deleteModulesIncludeBookmarkedFiles {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+@media screen and (hover: hover) and (pointer: fine) {
+  .exportButton:hover {
+    background-color: var(--custom-prime-color);
+    color: white;
+  }
+
+  .deleteButton:hover {
+    background-color: darkred;
+    color: white;
+  }
+}

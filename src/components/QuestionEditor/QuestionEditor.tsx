@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import React, { useState, useContext, useRef, SyntheticEvent } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -7,7 +7,7 @@ import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsCo
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { AnswerOptionsEditor } from "./AnswerOptionsEditor/AnswerOptionsEditor";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
+import TextareaAutoSize from "react-textarea-autosize";
 import { toast } from "react-toastify";
 
 //CSS
@@ -29,12 +29,13 @@ import { removeGapContent, extractCorrectGapValues } from "./AnswerOptionsEditor
 import { IParams } from "../../utils/types.js";
 import { getBookmarkedLocalStorageItem } from "../Question/components/Actions/BookmarkQuestion";
 import { IMultipleChoice } from "../Question/QuestionTypes/MultipleChoice/MultipleChoice";
-import { IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IMultipleResponse } from "../Question/QuestionTypes/MultipleResponse/MultipleResponse";
 import { IQuestion, TUseQuestion } from "../Question/useQuestion";
 import { TAnswerOptions } from "../Question/useQuestion";
 import { parseJSON } from "../../utils/parseJSON";
 import { IModule } from "../module/module";
+import { IExtendedMatch } from "../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
+import { IExtendedMatchTemp } from "./AnswerOptionsEditor/QuestionTypes/ExtendedMatchEditor";
 
 /* A few words on validation:
 Validation for the inputs is done with native HTML validation (i.e. required), onSubmit and onChange.
@@ -44,17 +45,17 @@ For some reason firefox android does not support HTML5 validation.
 */
 
 //Component
-//TODO in React@v18 use useID hook for label/input elements
 
 type EditQuestionMode = {
   mode: "edit";
   handleModalClose: () => void;
+  showModal: boolean;
   prevQuestion: IQuestion;
   fetchQuestion: TUseQuestion["fetchQuestion"];
   handleResetQuestionComponent: TUseQuestion["handleResetQuestionComponent"];
 };
 
-type CreateQuestionMode = { mode: "create"; handleModalClose: () => void };
+type CreateQuestionMode = { mode: "create"; handleModalClose: () => void; showModal: boolean };
 
 type TEditorModes = EditQuestionMode | CreateQuestionMode;
 
@@ -65,6 +66,7 @@ export const QuestionEditor: React.FC<TEditorModes> = (props) => {
       handleModalClose={props.handleModalClose}
       title={props.mode === "edit" ? "Edit Question" : "Add Question"}
       desktopModalHeight='90vh'
+      showModal={props.showModal}
     >
       {props.mode === "create" ? (
         <Form mode='create' handleModalClose={props.handleModalClose} />
@@ -92,7 +94,11 @@ const newEmptyQuestion = {
   answerOptions: undefined,
 };
 
-export const Form: React.FC<TEditorModes> = (props) => {
+type EditForm = Omit<EditQuestionMode, "showModal">;
+
+type CreateForm = Omit<CreateQuestionMode, "showModal">;
+
+export const Form: React.FC<EditForm | CreateForm> = (props) => {
   //State - If creating a new question, provide a predefined empty object else use and modify the previous question
   const [question, setQuestion] = useState<IQuestion>(
     props.mode === "create" ? newEmptyQuestion : () => setPreviousQuestion(props.prevQuestion)
@@ -106,8 +112,8 @@ export const Form: React.FC<TEditorModes> = (props) => {
   //Params
   const params = useParams<IParams>();
 
-  //History
-  let history = useHistory();
+  //navigate (previously history)
+  let navigate = useNavigate();
 
   //Location
   const { search } = useLocation();
@@ -130,24 +136,12 @@ export const Form: React.FC<TEditorModes> = (props) => {
   };
 
   //Handle form submit
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
     e.preventDefault();
     e.stopPropagation();
 
     //Return if there are any errors
     if (Object.keys(errors).length > 0) return;
-
-    //Don't allow question editing when using mode random
-    if (new URLSearchParams(search).get("mode") === "random") {
-      //TODO fix this
-      toast.warn(
-        "Can't edit this questions while using mode random! Navigate to this question using the question overview.",
-        {
-          autoClose: 12000,
-        }
-      );
-      return;
-    }
 
     //Setup variables
     hasSubmitted.current = true;
@@ -204,15 +198,33 @@ export const Form: React.FC<TEditorModes> = (props) => {
           correctGapValues: extractCorrectGapValues(output.answerOptions.tempText),
         },
       };
+    } else if (question.type === "extended-match") {
+      output = {
+        ...output,
+        answerOptions: {
+          ...output.answerOptions,
+          correctMatches: ((output.answerOptions as IExtendedMatchTemp)?.correctMatches ?? []).reduce(
+            (acc, { left, right }) => {
+              const leftId = left?.id.split("add-line-")[1];
+              const rightId = right?.id.split("add-line-")[1];
+              if (leftId !== undefined && rightId !== undefined) {
+                acc?.push({ left: leftId, right: rightId });
+              }
+              return acc;
+            },
+            [] as IExtendedMatch["correctMatches"]
+          ),
+        },
+      };
     }
 
     //Adding or updating a question
     if (props.mode === "create") {
-      //If the user is adding a question (not given prevQuestion), push the new question to the end of the localStorage
+      //If the user is adding a question, push the new question to the end of the localStorage
       let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
       module?.questions.push(output as IQuestion);
 
-      localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module));
+      localStorage.setItem(`repeatio-module-${params.moduleID}`, JSON.stringify(module, null, "\t"));
     } else {
       //Handle updating a question
       let module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
@@ -267,7 +279,7 @@ export const Form: React.FC<TEditorModes> = (props) => {
         setQuestionIds([...questionIds]);
 
         //Navigate to new path with new id
-        history.push({
+        navigate({
           pathname: `/module/${params.moduleID}/question/${output.id}`,
           search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
             new URLSearchParams(search).get("order") || "chronological"
@@ -302,8 +314,16 @@ export const Form: React.FC<TEditorModes> = (props) => {
     }
 
     if (props.mode === "edit") {
-      // Deselect current question
+      // Reset current question
       props.handleResetQuestionComponent();
+    }
+
+    // Navigate to just added question if button name is add-and-view
+    if (props.mode === "create" && (e.nativeEvent.submitter as HTMLButtonElement)?.name === "add-and-view") {
+      navigate({
+        pathname: `/module/${params.moduleID}/question/${output.id}`,
+        search: `?mode=practice&order=chronological`,
+      });
     }
 
     hasSubmitted.current = false;
@@ -355,18 +375,44 @@ export const Form: React.FC<TEditorModes> = (props) => {
           answerOptionsError={errors.answerOptions}
           setErrors={setErrors}
           hasSubmitted={hasSubmitted.current}
+          setQuestion={setQuestion}
         />
         {errors?.answerOptions && <p className='modal-question-error'>{errors?.answerOptions}</p>}
       </div>
       {/* Buttons */}
-      <div className='buttons'>
-        <button
-          type='submit'
-          className={`update-add-question`}
-          aria-disabled={Object.keys(errors).length > 0 ? true : false}
-        >
-          {props.mode === "edit" ? "Update" : "Add"}
-        </button>
+      <div className={`buttons ${props.mode}`}>
+        {props.mode === "create" ? (
+          <>
+            <button
+              type='submit'
+              className={`update-add-question`}
+              aria-disabled={Object.keys(errors).length > 0}
+              aria-label='Add Question'
+              name='add'
+            >
+              Add
+            </button>
+            <button
+              type='submit'
+              className='update-add-question'
+              aria-disabled={Object.keys(errors).length > 0}
+              aria-label='Add and navigate to Question'
+              name='add-and-view'
+            >
+              Add + View
+            </button>
+          </>
+        ) : (
+          <button
+            type='submit'
+            className={`update-add-question`}
+            aria-disabled={Object.keys(errors).length > 0}
+            name='update'
+            aria-label='Update Question'
+          >
+            Update
+          </button>
+        )}
         <button type='button' className='cancel' onClick={props.handleModalClose}>
           Cancel
         </button>
@@ -391,6 +437,8 @@ function getAnswerOptionsError({
         return "Add at least one item!";
       case "gap-text":
         return "Add a text!";
+      case "extended-match":
+        return "Add at least one item!";
       default:
         return "Add at least one item!";
     }
@@ -414,32 +462,40 @@ function getAnswerOptionsError({
     return "Check at least one item!";
   }
 
-  if (
-    type === "gap-text" &&
-    "tempText" in (answerOptions as IGapTextWithTempText) &&
-    (answerOptions as IGapTextWithTempText).tempText?.startsWith("|")
-  ) {
-    return "Can't start with this key! If want to render a table wrap the markdown for the table in <div style='white-space: normal'>(line break) Markdown (line break)</div>.";
+  if (type === "extended-match" && (answerOptions as IExtendedMatchTemp)?.correctMatches?.length === 0) {
+    return "Add at least one line!";
+  }
+
+  // Check that the first object contains more than 1 property (left and right)
+  const obj = (answerOptions as IExtendedMatchTemp)?.correctMatches?.[0];
+  if (obj && Object.keys(obj).length < 2) {
+    return "Add at least one line!";
   }
 }
 
 /**
- * Replace the characters that are not supported by gap-text and gap-text-dropdown
+ * Replaces quotes outside HTML tags and attributes with "„", "“" or "‘"
  * Ignores unsupported characters inside html tags as they aren't rendered later
  */
 function replaceUnsupportedChars(text: string) {
-  let count = 0;
-  return text
-    .split(/(?<!<[^>]*)"/g)
-    .map((str) => {
-      if (count++ % 2 !== 0) {
-        return `„${str}“`;
-      } else {
-        return str;
-      }
-    })
-    .join("")
-    .replaceAll(/(?<!<[^>]*)'/g, "‘");
+  // Replace double quotes outside HTML tags and attributes with "„" and "“"
+  // Most iOS devices don't support regex lookbehind resulting in a syntax error  that can't be
+  // fixed with limiting the function to non iOS devices or wrapping the call inside a try catch
+  // These where the old regex functions /(?<!<[^>]*)"/g and /(?<!<[^>]*)'/g
+  let lowerCaseQuote = true;
+  const outputString = text.replace(/<[^>]*>|"|'/g, (match) => {
+    if (match === '"') {
+      const quote = lowerCaseQuote ? "„" : "“";
+      lowerCaseQuote = !lowerCaseQuote;
+      return quote;
+    } else if (match === "'") {
+      return "‘";
+    } else {
+      return match;
+    }
+  });
+
+  return outputString;
 }
 
 /* -------------------------------TEXTAREA for multiline inputs --------------------------------- */
@@ -458,7 +514,7 @@ const EditorFormTextarea = ({
   return (
     <div className={`modal-question-${labelTextLowerCase}`}>
       <label htmlFor={`modal-question-${labelTextLowerCase}-textarea`}>{labelText}</label>
-      <TextareaAutosize
+      <TextareaAutoSize
         name={labelTextLowerCase}
         id={`modal-question-${labelTextLowerCase}-textarea`}
         value={value || ""}

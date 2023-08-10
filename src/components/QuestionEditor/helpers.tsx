@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { getGapTextTempText, IGapTextWithTempText } from "./AnswerOptionsEditor/QuestionTypes/GapTextEditor";
-import { isSafari } from "react-device-detect";
 
 //Interfaces + Types
 import { IQuestion } from "../Question/useQuestion";
@@ -147,9 +146,7 @@ export function checkContainsSpaces({ value, fieldName }: { value: string; field
  */
 export function setPreviousQuestion(question: IQuestion) {
   //Combine the text and correctGapValues of gap-text to a variable that is used for the input
-  //Prevent Safari because lookbehind support: https://bugs.webkit.org/show_bug.cgi?id=174931
-  //TODO check if safari ever supports this feature
-  if (question?.type === "gap-text" && !isSafari) {
+  if (question?.type === "gap-text") {
     question = {
       ...question,
       answerOptions: {

@@ -1,6 +1,7 @@
 export interface IParams {
   moduleID?: string;
   questionID?: string;
+  [key: string]: string | undefined;
 }
 
 export interface ISearchParams {

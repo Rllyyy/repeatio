@@ -24,11 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-//To enable tabbing in cypress: https://github.com/kuceb/cypress-plugin-tab
-import "cypress-plugin-tab";
+//To enable tabbing in cypress: https://github.com/dmtrKovalenko/cypress-real-events
+import "cypress-real-events";
 
-// React 16, 17
-import { mount } from "cypress/react";
+// React 18
+import { mount } from "cypress/react18";
 
 type Fixtures =
   | "repeatio-module-gap_text.json"
@@ -36,9 +36,11 @@ type Fixtures =
   | "repeatio-module-multiple_choice.json"
   | "repeatio-module-multiple_response.json"
   | "repeatio-module-empty-questions.json"
+  | "repeatio-module-extended_match.json"
   | "repeatio-module-cypress_1.json"
   | "repeatio-marked-types_1.json"
   | "repeatio-marked-cypress_1.json"
+  | "repeatio-settings.json"
   | (string & {});
 
 declare global {
@@ -74,7 +76,9 @@ Cypress.Commands.add("mount", (component, options) => {
 Cypress.Commands.add("fixtureToLocalStorage", (fileName) => {
   cy.fixture(fileName).then((fileContent) => {
     //Build localStorage name from the type (module/marked) and the id
-    localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t"));
+    /* localStorage.setItem(`repeatio-${fileContent.type}-${fileContent.id}`, JSON.stringify(fileContent, null, "\t")); */
+    //console.log(fileName);
+    localStorage.setItem(fileName.split(".json")[0], JSON.stringify(fileContent, null, "\t"));
   });
 });
 

@@ -5,15 +5,17 @@ import isElectron from "is-electron";
 export type TSaveFile = {
   file: string;
   name: string;
+  showSuccessToast?: boolean;
 };
 
 //Download a file as json to user selected location or downloads folder
-export async function saveFile({ file, name }: TSaveFile) {
+export async function saveFile({ file, name, showSuccessToast = true }: TSaveFile) {
   //Cypress/Electron don't support the filePicker API
   if ((window as any).Cypress || isElectron()) {
     const blob = new Blob([file], { type: "application/json" });
     saveAs(blob, `${name}.json`);
-    toast.success(`Downloaded module as "${name}.json"`);
+
+    if (showSuccessToast) toast.success(`Downloaded module as "${name}.json"`);
     return;
   }
 
@@ -31,15 +33,15 @@ export async function saveFile({ file, name }: TSaveFile) {
     await writable.write(file);
     // Close the file and write the contents to disk.
     await writable.close();
-    toast.success(`Downloaded module as "${fileHandle.name}"`);
+    if (showSuccessToast) toast.success(`Downloaded module as "${name}.json"`);
   } catch (e) {
-    if (e! instanceof Error) {
+    if (e instanceof Error) {
       //If fileHandle isn't supported (firefox/safari/mobile), use save-as library and catch aborted error
       //compatibility: https://developer.mozilla.org/en-US/docs/Web/API/FileSystemHandle#browser_compatibility
       if (e.name === "TypeError") {
         const blob = new Blob([file], { type: "application/json" });
         saveAs(blob, `${name}.json`);
-        toast.success(`Downloaded module as "${name}.json"`);
+        if (showSuccessToast) toast.success(`Downloaded module as "${name}.json"`);
       } else if (e.name !== "AbortError") {
         toast.warn(e.message);
       }

@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, PropsWithChildren, useMemo, useState, FC } from "react";
 
 // Interfaces
 import { IQuestion } from "../Question/useQuestion";
@@ -12,7 +12,7 @@ export interface IQuestionIdsContext {
 export const QuestionIdsContext = createContext({} as IQuestionIdsContext);
 
 //Provide the data to all children
-export const QuestionIdsProvider = ({ children }: { children: React.ReactNode }) => {
+export const QuestionIdsProvider: FC<PropsWithChildren> = ({ children }) => {
   const [data, setData] = useState<IQuestionIdsContext["questionIds"]>([]);
 
   // Memorize the data

@@ -2,6 +2,10 @@ import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { GapText } from "./GapText";
 
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
+
 //provide options
 const options = {
   text: "[] two three. One [] three. One two [].",

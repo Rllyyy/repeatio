@@ -3,7 +3,7 @@
   "name": "Test gap text with dropdown question type",
   "type": "module",
   "lang": "en",
-  "compatibility": "0.4.0",
+  "compatibility": "0.5.0",
   "questions": [
     {
       "id": "gtd-1",
@@ -74,6 +74,71 @@
               "10"
             ],
             "correct": "10"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gtd-4",
+      "title": "This is the title of the forth question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This dropdown has options"
+      }
+    },
+    {
+      "id": "gtd-5",
+      "title": "This is the title of the fifth question",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This is the\n[] question",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "first",
+              "second",
+              "fifth"
+            ],
+            "correct": "fifth"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gtd-6",
+      "title": "This is the title of the sixth question (Testing Lists)",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": "This is a List of fruits:\n- Apple\n- Banana\n- []\n\nContent after the list",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "Ball",
+              "Tomato",
+              "Orange"
+            ],
+            "correct": "Orange"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gtd-7",
+      "title": "This is the title of the sixth question (Testing Tables)",
+      "type": "gap-text-dropdown",
+      "answerOptions": {
+        "text": " This | table |\n|------|------|\n| should   | []   |\n\nContent after the table",
+        "dropdowns": [
+          {
+            "id": "select-0",
+            "options": [
+              "Ball",
+              "Tomato",
+              "work"
+            ],
+            "correct": "work"
           }
         ]
       }

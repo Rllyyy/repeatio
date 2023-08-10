@@ -119,9 +119,9 @@ describe("Adding a question using the QuestionEditor component", () => {
     //Click add button
     cy.get(".ReactModal__Content").contains("button", "Add").click();
 
-    //Navigate to correct question by using to last button after clicking start
+    //Navigate to the just added question
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
-    cy.get("button[aria-label='Navigate to last Question'").click();
+    cy.get("input[aria-label='Navigate to question number']").clear().type("7");
 
     //Check that id, title, points and help are in the document
     Object.values(newQuestion).forEach((item) => {
@@ -141,6 +141,20 @@ describe("Adding a question using the QuestionEditor component", () => {
     cy.contains("This answer is correct").click();
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("be.visible");
+  });
+
+  it("should visit the added question after clicking on Add + View", () => {
+    cy.get("input[name='id']").type("ls-id-1");
+    cy.get("select[name='type']").select("multiple-choice");
+
+    cy.get("button#editor-add-item").click();
+    cy.get("input[type='radio']").click();
+    cy.get("textarea.editor-label-textarea").type("correct");
+
+    cy.contains("Add + View").click();
+
+    cy.contains("p", "ID: ls-id-1").should("exist");
+    cy.url().should("include", "/module/cypress_1/question/ls-id-1?mode=practice&order=chronological");
   });
 
   it("should add new Question to localStorage", () => {
@@ -190,11 +204,13 @@ describe("Adding a question using the QuestionEditor component", () => {
       .first()
       .type("Textarea value for option-0", { delay: 2 });
 
-    cy.get("form button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.contains("A question with this id already exists!").should("exist");
+
     //Expect the submit button to not work
-    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true").click();
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true");
+    cy.get("button[aria-label='Add Question']").click();
 
     //Visit link in error message
     cy.contains("a", "View: qID-1").click();
@@ -213,16 +229,17 @@ describe("Adding a question using the QuestionEditor component", () => {
       .first()
       .type("Textarea value for option-0", { delay: 2 });
 
-    cy.get("form button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.contains("A question with this id already exists!").should("exist");
     cy.get("input[name='id']").clear().type("new-id");
     cy.contains("A question with this id already exists!").should("not.exist");
-    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+    cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+    cy.get("button[aria-label='Add Question']").click();
 
     //Visit new Question
     cy.get("article[data-cy='Practice']").contains("button", "Start").click();
-    cy.get("button[aria-label='Navigate to last Question']").click();
+    cy.get("input[aria-label='Navigate to question number']").clear().type("7");
     cy.contains("ID: new-id");
 
     cy.contains("Textarea value for option-0").click();
@@ -245,38 +262,53 @@ describe("Adding a question of type gap-text", () => {
 
   it("should add gap text with one gap", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This is a simple [test]");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("test");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
 
   it("should add gap-text with multiple gaps", () => {
     cy.get("textarea#editor-gap-text-textarea").type("[This] is a [complex] [test]", { force: true });
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").first().type("This");
     cy.get("section.question-user-response").find("input").eq(1).type("complex");
     cy.get("section.question-user-response").find("input").last().type("test");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
 
   it("should add gap-text with multiple correct values for one gap", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text supports [multiple; more than one] correct values");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("section.question-user-response").find("input").type("more than one");
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
     cy.contains("This text supports multiple; more than one correct values").should("exist");
 
     cy.get("button[aria-label='Retry Question']").click();
     cy.get("section.question-user-response").find("input").type("multiple");
+
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
   });
@@ -285,7 +317,7 @@ describe("Adding a question of type gap-text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text supports[multiple;more than one]correct values", {
       force: true,
     });
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -299,7 +331,7 @@ describe("Adding a question of type gap-text", () => {
 
   it("should save multiline gap text", () => {
     cy.get("textarea#editor-gap-text-textarea").type("This text is [split] into{enter}two[lines]");
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("div.question-gap-text").invoke("height").should("be.greaterThan", 45);
@@ -311,7 +343,7 @@ describe("Adding a question of type gap-text", () => {
       "<div style='white-space: normal'>{enter}{enter}| Tables   |      Are      |  [nice] |{enter}|----------|:-------------:|------:|{enter}| col 1 is |  left-aligned | $1600 |{enter}{enter}</div>",
       { delay: 2 }
     );
-    cy.get("button[type='submit']").click();
+    cy.get("button[aria-label='Add Question']").click();
 
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("table").should("exist").and("be.visible");
@@ -323,7 +355,7 @@ describe("Adding a question of type gap-text", () => {
       { delay: 2 }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -341,10 +373,13 @@ describe("Adding a question of type gap-text", () => {
     cy.get("section.question-user-response").find("input").first().type("This");
     cy.get("section.question-user-response").find("input").last().type("gap");
 
+    // Click the dom to trigger lose of focus on input and rerender of component
+    cy.get("body").click();
+
     cy.get("button[type='submit']").click();
     cy.contains("Yes, that's correct!").should("exist");
-    cy.get("p.correct-gap-value").first().should("have.text", "This");
-    cy.get("p.correct-gap-value").last().should("have.text", "gap; hole");
+    cy.get("span.correct-gap-value").first().should("have.text", "This");
+    cy.get("span.correct-gap-value").last().should("have.text", "gap; hole");
     cy.get(".question-correction").contains("a", "link").should("exist");
     cy.get(".question-correction").contains("a", "another link").should("exist");
   });
@@ -357,7 +392,7 @@ describe("Adding a question of type gap-text", () => {
       }
     );
 
-    cy.get("button[type='submit']")
+    cy.get("button[aria-label='Add Question']")
       .click()
       .should(() => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
@@ -372,44 +407,6 @@ describe("Adding a question of type gap-text", () => {
     cy.visit("/module/empty-questions/question/test-id?mode=practice&order=chronological");
     cy.get("img").invoke("height").should("equal", 256);
     cy.get("section.question-user-response").find("input").should("have.length", 1);
-  });
-
-  it("should replace double quotes only outside of html tags in gap-text text", () => {
-    cy.get("textarea#editor-gap-text-textarea").type(
-      `Here is a "quote"\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside ["gaps"]`,
-      { delay: 2 }
-    );
-
-    cy.get("button[type='submit']")
-      .click()
-      .should(() => {
-        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
-        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
-        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-          `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
-        );
-
-        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
-      });
-  });
-
-  it("should replace apostrophe with ‘ that are outside of html", () => {
-    cy.get("textarea#editor-gap-text-textarea").type(
-      `Here is a 'apostrophe' that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside ['apostrophe']`,
-      { delay: 2 }
-    );
-
-    cy.get("button[type='submit']")
-      .click()
-      .should(() => {
-        const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-empty-questions"))?.questions;
-        const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
-        expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-          `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
-        );
-
-        expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
-      });
   });
 });
 

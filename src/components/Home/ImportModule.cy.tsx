@@ -57,9 +57,49 @@ describe("Importing a Module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.4.0");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
+  });
+
+  it("should replace the text inside the Import button with a spinner", () => {
+    cy.mount(<MockImportModuleComponent />);
+
+    //Send file to upload area
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    cy.get("form.import-module").contains("button", "Import");
+
+    // Assert that the text import is invisible while the import is loading
+    cy.get("button[type='submit']").contains("Import").should("have.css", "color", "rgba(0, 0, 0, 0)");
+
+    // Import button should reappear after file finished uploading
+    cy.get("button[type='submit']").contains("Import").should("have.css", "color", "rgb(255, 255, 255)");
+  });
+
+  it("should display a loading symbol while the module data is uploading", () => {
+    cy.mount(<MockImportModuleComponent />);
+
+    //Send file to upload area
+    cy.fixture("repeatio-module-cypress_1.json").then((fileContent) => {
+      cy.get('input[type="file"]').selectFile(
+        {
+          contents: fileContent,
+          fileName: "repeatio-module-cypress_1.json",
+        },
+        { force: true }
+      );
+    });
+
+    cy.get("div.circular-bars-spinner").should("exist");
   });
 
   //Test if the toast for successful imports works
@@ -101,7 +141,7 @@ describe("Importing a Module", () => {
     });
 
     //Wait for the file to be added and click button after
-    cy.get("button.import-module-btn.enabled")
+    cy.get("button.import-module-btn[aria-disabled='false']")
       .click({ force: true })
       .should(() => {
         const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
@@ -110,7 +150,7 @@ describe("Importing a Module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.4.0");
+        expect(localStorageItem?.compatibility).to.equal("0.5.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
   });
@@ -155,7 +195,7 @@ describe("Importing a Module", () => {
       name: "Local Storage Item 1",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -220,7 +260,7 @@ describe("Importing a Module", () => {
       name: "File 1",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -322,7 +362,7 @@ describe("Importing a Module", () => {
       name: "This module was replaced by cypress",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -405,7 +445,7 @@ describe("Importing a Module", () => {
       name: "File 1",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -423,7 +463,7 @@ describe("Importing a Module", () => {
       name: "File 2",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 

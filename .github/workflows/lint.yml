@@ -1,0 +1,26 @@
+name: Lint
+
+# Run lint workflow on push / pr to main or release branch
+on:
+  push:
+    branches:
+      - main
+      - "release-v*"
+  pull_request:
+    branches:
+      - main
+      - "release-v*"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check TypeScript errors with ESLint
+        run: yarn eslint --ext .ts,.tsx src/

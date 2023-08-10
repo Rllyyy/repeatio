@@ -3,7 +3,8 @@ import React, { useRef, useState, useMemo } from "react";
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
 import { ImportModule } from "./ImportModule";
-import { CreateModule } from "./CreateModule";
+import { ModuleEditorForm } from "../ModuleEditor";
+/* import { CreateModule } from "./CreateModule"; */
 
 //hooks
 import { useSize } from "../../hooks/useSize";
@@ -26,15 +27,14 @@ export const AddModule = () => {
       <button className='add-module-btn' onClick={() => setShowModal(true)} type='button'>
         <p>Add Module</p>
       </button>
-      {showModal && (
-        <CustomModal
-          handleModalClose={handleModalClose}
-          title='Create or import a Module'
-          desktopModalHeight='fit-content'
-        >
-          <ComponentChooser handleModalClose={handleModalClose} />
-        </CustomModal>
-      )}
+      <CustomModal
+        handleModalClose={handleModalClose}
+        showModal={showModal}
+        title='Create or import a Module'
+        desktopModalHeight='fit-content'
+      >
+        <ComponentChooser handleModalClose={handleModalClose} />
+      </CustomModal>
     </>
   );
 };
@@ -184,7 +184,7 @@ function DisplayImportOrCreateComponent({
   }
 
   if (component === "create") {
-    return <CreateModule handleModalClose={handleModalClose} />;
+    return <ModuleEditorForm handleModalClose={handleModalClose} mode='create' />;
   }
 
   if (component === "import") {

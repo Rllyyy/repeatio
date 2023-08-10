@@ -1,6 +1,5 @@
 .editor {
   width: 100%;
-  /* min-height: 200px; */
   outline: 1px solid var(--custom-border-color-lighter);
 
   border-radius: 3px;
@@ -106,8 +105,8 @@
 }
 
 .editor .editor-content.gap-text {
-  /* TextAreaAutosize has some weird margin at the bottom */
   padding: 10px 10px 0 10px;
+  box-sizing: border-box;
 }
 
 .editor .editor-message {

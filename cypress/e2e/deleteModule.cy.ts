@@ -13,7 +13,6 @@ describe("Test deletion of module", () => {
     });
   });
 
-  //TODO delete this
   it("should delete module that is located in localStorage", () => {
     //Add item to localStorage and check existence
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
@@ -26,7 +25,7 @@ describe("Test deletion of module", () => {
       .click()
       .should(() => {
         //Delete from localStorage
-        expect(localStorage.getItem("repeatio-module-cypress_1")).to.be.null;
+        expect(localStorage.getItem("repeatio-module-cypress_1")).to.equal(null);
       });
 
     //Toast and console.log

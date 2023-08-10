@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IParams } from "../../utils/types";
 import { IModule } from "./module";
 
@@ -10,7 +10,7 @@ import "./ModuleNotFound.css";
 //inspired by: https://ui.mantine.dev/category/error-pages
 export const ModuleNotFound = () => {
   const { moduleID } = useParams<IParams>();
-  let history = useHistory();
+  let navigate = useNavigate();
 
   return (
     <div className='module-not-found'>
@@ -33,7 +33,7 @@ export const ModuleNotFound = () => {
         <Link to={"/"} id='back-home'>
           Home
         </Link>
-        <button onClick={() => history.goBack()}>Previous URL</button>
+        <button onClick={() => navigate(-1)}>Previous URL</button>
       </div>
       <UserModulesList />
     </div>
@@ -90,7 +90,7 @@ export const UserModulesList = () => {
         {modules?.map(({ id, name }) => {
           return (
             <li key={`list-item-${id}`}>
-              <Link to={{ pathname: `/module/${id}`, state: { name } }}>
+              <Link to={`/module/${id}`} state={name}>
                 {name} ({id})
               </Link>
             </li>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, memo } from "react";
+import { memo, useCallback, useSyncExternalStore } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 //Import Icons
@@ -33,74 +33,70 @@ const navbarCategories = [
   { className: "settings", linkTo: "settings", icon: <RiSettings4Fill className='category-icon' />, text: "Settings" },
 ];
 
-const Categories = memo(({ setExpandSidebar, expandSidebar }: TExpandSidebar) => {
-  const [isMobile, setIsMobile] = useState<boolean | undefined>();
-  const [currentlyViewedCategory, setCurrentlyViewedCategory] = useState("");
+const Categories = ({ expandedSidebar, setExpandedSidebar }: TExpandSidebar) => {
+  const isMobile = useSyncExternalStore(subscribe, () => window.innerWidth <= 650);
+  const { pathname } = useLocation();
 
-  //Detect url changes to highlight background of current component in navbar
-  const location = useLocation();
-
-  //Update the useState value every time the url changes
-  useEffect(() => {
-    const currentPath = location.pathname;
-
-    //Remove dash that is in-front of the url
-    let pathNoDash = currentPath.split("/")[1];
-
-    if (pathNoDash !== currentlyViewedCategory) {
-      setCurrentlyViewedCategory(pathNoDash);
-    }
-  }, [location.pathname, currentlyViewedCategory]);
-
-  //Set is mobile to true when the viewport is smaller than 650px
-  const handleWindowResize = useCallback(() => {
-    if (window.innerWidth <= 650) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, []);
-
-  //Check if the size of the window is smaller than 650px so the special mobile navbar behavior is applied
-  useEffect(() => {
-    handleWindowResize();
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, [handleWindowResize]);
+  //Get the currently viewed category from the URL path
+  const currentlyViewedCategory = pathname.split("/")[1];
 
   //Close the navbar when on mobile when the users clicks on a category.
   //Only runs when the viewport is smaller than 650px
   const closeMenuOnMobileClick = useCallback(() => {
     if (!isMobile) return;
-    setExpandSidebar(false);
-  }, [isMobile, setExpandSidebar]);
+    setExpandedSidebar(false);
+  }, [isMobile, setExpandedSidebar]);
 
   return (
     <div className='category-items'>
       {navbarCategories.map((category) => {
-        //destructure category
-        const { className, linkTo, icon, text } = category;
         return (
-          <Link
-            to={`/${linkTo}`}
-            key={className}
-            onClick={closeMenuOnMobileClick}
-            aria-label={className}
-            className={`${className}${currentlyViewedCategory === linkTo ? " currentView" : ""}`}
-          >
-            {icon}
-
-            <p className={`category-title ${expandSidebar && "sidebar-button-expanded"}`} aria-hidden={!expandSidebar}>
-              {text}
-            </p>
-          </Link>
+          <LinkItem
+            category={category}
+            closeMenuOnMobileClick={closeMenuOnMobileClick}
+            isCurrentlyViewed={currentlyViewedCategory === category.linkTo}
+            expandedSidebar={expandedSidebar}
+            key={category.text}
+          />
         );
       })}
     </div>
   );
-});
+};
+
+// Add event listener for window resizing
+function subscribe(onWindowResize: () => void) {
+  window.addEventListener("resize", onWindowResize);
+
+  return () => window.removeEventListener("resize", onWindowResize);
+}
+
+interface ILinkItem {
+  category: (typeof navbarCategories)[number];
+  closeMenuOnMobileClick: () => void;
+  isCurrentlyViewed: boolean;
+  expandedSidebar: boolean;
+}
+
+const LinkItem: React.FC<ILinkItem> = memo(
+  ({ category, closeMenuOnMobileClick, isCurrentlyViewed, expandedSidebar }) => {
+    const { className, linkTo, icon, text } = category;
+
+    return (
+      <Link
+        to={`/${linkTo}`}
+        key={className}
+        onClick={closeMenuOnMobileClick}
+        aria-label={className}
+        className={`${className}${isCurrentlyViewed ? " currentView" : ""}`}
+      >
+        {icon}
+        <p className={`category-title ${expandedSidebar && "sidebar-button-expanded"}`} aria-hidden={!expandedSidebar}>
+          {text}
+        </p>
+      </Link>
+    );
+  }
+);
 
 export { Categories, navbarCategories };

@@ -167,7 +167,7 @@ describe("Updating a question using the Question editor", () => {
     const newBookmarkLocalStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-1", "qID-6"],
     };
 
@@ -233,6 +233,7 @@ describe("Updating a question of type gap-text", () => {
         });
 
       cy.get("section.question-user-response").find("input").type("updated");
+      cy.get("body").click();
       cy.get("button[type='submit']").click();
       cy.contains("p", "Yes, that's correct!").should("exist");
       cy.contains("This is the updated question").should("exist");

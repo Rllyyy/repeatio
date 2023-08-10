@@ -1,0 +1,20 @@
+.consent-button {
+  border: none;
+
+  display: block;
+  padding: 8px;
+  font-weight: 600;
+  font-size: medium;
+  background-color: var(--custom-prime-color);
+
+  border-radius: 4px;
+  color: var(--custom-tertiary-color);
+  margin-top: auto;
+}
+
+@media only screen and (hover: hover) and (pointer: fine) {
+  .consent-button:hover {
+    background-color: var(--custom-prime-color-dark);
+    cursor: pointer;
+  }
+}

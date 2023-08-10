@@ -1,15 +1,19 @@
 /// <reference types="cypress" />
 
 import { Form } from "./QuestionEditor";
-import { MemoryRouter, Route, Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QuestionIdsProvider } from "../module/questionIdsContext";
 import { CustomToastContainer } from "../toast/toast";
+import { parseJSON } from "../../utils/parseJSON";
+import { Question } from "../Question/Question";
 
 //CSS
 import "../../index.css";
-import { Question } from "../Question/Question";
+
+//Interfaces
 import { IParams, ISearchParams } from "../../utils/types";
+import { IModule } from "../module/module";
+import { IGapText } from "../Question/QuestionTypes/GapText/GapText";
 
 //Mocha / Chai for typescript
 declare var it: Mocha.TestFunction;
@@ -18,18 +22,22 @@ declare const expect: Chai.ExpectStatic;
 
 //Mock Component with Router and Context
 const MockFormWithRouter = () => {
-  const history = createMemoryHistory();
-  const route = "/module/test";
-  history.push(route);
-
   const handleModalCloseSpy = cy.spy().as("handleModalCloseSpy");
+
   return (
-    <Router history={history}>
-      <QuestionIdsProvider>
-        <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
-        <CustomToastContainer />
-      </QuestionIdsProvider>
-    </Router>
+    <MemoryRouter initialEntries={["/module/cypress_1"]}>
+      <Routes>
+        <Route
+          path='/module/:moduleID'
+          element={
+            <QuestionIdsProvider>
+              <Form handleModalClose={handleModalCloseSpy} mode={"create"} />
+            </QuestionIdsProvider>
+          }
+        />
+      </Routes>
+      <CustomToastContainer />
+    </MemoryRouter>
   );
 };
 
@@ -41,9 +49,16 @@ const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, q
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>
@@ -94,11 +109,17 @@ describe("QuestionEditor.cy.js", () => {
   });
 
   it("should support tabbing content", () => {
-    cy.get("body").tab().focused().should("have.attr", "name", "id");
-    cy.get("input[name='id']").tab().focused().should("have.attr", "name", "title");
-    cy.get("textarea[name='title']").tab().focused().should("have.attr", "name", "points");
-    cy.get("input[name='points']").tab().focused().should("have.attr", "name", "help");
-    cy.get("textarea[name='help']").tab().focused().should("have.attr", "name", "type");
+    cy.get("label[for='modal-question-id-input']").click().realPress("Tab");
+    cy.focused().should("have.attr", "name", "title");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "points");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "help");
+
+    cy.realPress("Tab");
+    cy.focused().should("have.attr", "name", "type");
   });
 
   it("should show 'Please select a Question Type' if no type is selected and clear it after type is selected", () => {
@@ -106,6 +127,18 @@ describe("QuestionEditor.cy.js", () => {
 
     cy.get("select[name='type']").select("multiple-choice");
     cy.contains("Please select a Question Type").should("not.exist");
+  });
+
+  it("should grow the textarea", { scrollBehavior: false, viewportHeight: 500, viewportWidth: 480 }, () => {
+    cy.get("textarea[name='title']")
+      .type("The title for this question should wrap to the next line", { delay: 1 })
+      .invoke("outerHeight")
+      .should("be.greaterThan", 60);
+
+    cy.get("textarea[name='help']")
+      .type("The help for this question should wrap to the next line", { delay: 1 })
+      .invoke("outerHeight")
+      .should("be.greaterThan", 60);
   });
 
   it("should show 'Please select a Question Type' after if was changed back to empty value", () => {
@@ -220,6 +253,33 @@ describe("Check order when editing a existing question", () => {
         expect(editorOrder).to.deep.equal(originalOrder);
         expect(editorOrder.length).to.equal(6);
       });
+  });
+
+  it("should have the same order for extended-match elements in the question and question editor", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockQuestionWithRouter questionID='qID-5' mode='practice' moduleID='cypress_1' order='chronological' />);
+
+    let originalLeftSideOrder: string[] = []; //
+    cy.get(".ext-match-left-side")
+      .find(".ext-match-element-text")
+      .each(($item) => originalLeftSideOrder.push($item.text()));
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Edit Question']").click();
+    let editorLeftSideOrder: string[] = [];
+
+    cy.get(".editor-ext-match-left")
+      .find("textarea")
+      .each(($item) => {
+        editorLeftSideOrder.push($item.text());
+      })
+      .should(() => expect(editorLeftSideOrder).to.deep.equal(originalLeftSideOrder));
   });
 });
 
@@ -424,6 +484,26 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("label[data-testid='option-1']").should("exist");
     });
 
+    it("should grow the multiple-choice textarea", { viewportHeight: 500, viewportWidth: 470 }, () => {
+      cy.get("select[name='type']").select("multiple-choice");
+
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("This multiple choice textarea should wrap", { delay: 1 })
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+    });
+
+    it("should not submit the form if pressing enter on the textarea and instead grow the textarea", () => {
+      cy.get("select[name='type']").select("multiple-choice");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("{enter}")
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+      cy.get("@handleModalCloseSpy").should("not.have.been.called");
+    });
+
     it("should show no errors if removing multiple answerOptions before submit (multiple-choice)", () => {
       cy.get("select[name='type']").select("multiple-choice");
 
@@ -546,6 +626,25 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get(".editor").find("label[data-testid='formControlLabel-option-1']").should("exist");
     });
 
+    it("should grow and wrap the multiple-response textarea", { viewportHeight: 500, viewportWidth: 485 }, () => {
+      cy.get("select[name='type']").select("multiple-response");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("This multiple response textarea should wrap", { delay: 1 })
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+    });
+
+    it("should not submit the form if pressing enter on the textarea and instead grow the textarea", () => {
+      cy.get("select[name='type']").select("multiple-response");
+      cy.get("button#editor-add-item").click();
+      cy.get("textarea.editor-label-textarea[required]")
+        .type("{enter}")
+        .invoke("outerHeight")
+        .should("be.greaterThan", 60);
+      cy.get("@handleModalCloseSpy").should("not.have.been.called");
+    });
+
     it("should show no errors if removing multiple answerOptions before submit (multiple-response)", () => {
       cy.get("select[name='type']").select("multiple-response");
 
@@ -559,6 +658,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
     beforeEach(() => {
       cy.get("select[name='type']").select("gap-text");
     });
+
     it("should update the textarea with a given value", () => {
       cy.get("#editor-gap-text-textarea").type("This is a [test]").should("have.value", "This is a [test]");
     });
@@ -596,6 +696,15 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get("#editor-gap-text-textarea").should("have.value", "[value] ");
     });
 
+    it("should grow the gap-text textarea", { viewportHeight: 500, viewportWidth: 500 }, () => {
+      cy.get("textarea#editor-gap-text-textarea")
+        .type("{enter}{enter}{enter}The value for this textarea for this question should wrap", {
+          delay: 1,
+        })
+        .invoke("height")
+        .should("be.greaterThan", 130);
+    });
+
     it("should clear textarea value when switching to other question type and reset back", () => {
       cy.get("#editor-gap-text-textarea").type("This will be removed");
       cy.get("select[name='type']").select("multiple-choice");
@@ -622,7 +731,6 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
     });
 
     it("should not add blank space before gap at beginning of textarea but add a blank space after the gap", () => {
-      //cy.get("textarea#editor-gap-text-textarea").type("surround{enter}");
       cy.get("button#editor-add-item").click();
       cy.get("textarea#editor-gap-text-textarea").should("have.value", "[value] ");
     });
@@ -690,6 +798,75 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get("button#editor-remove-item").click();
       cy.get(".Toastify").contains("Found no gaps inside the selection!").should("exist");
     });
+
+    it("should replace double quotes outside html tags in gap-text-text", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+      cy.get("input[name='id']").type("test-id");
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `Here is a "quote"\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside ["gaps"]`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
+        });
+    });
+
+    it("should replace apostrophe with ‘ that are outside of html", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+      cy.get("input[name='id']").type("test-id");
+
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `Here is a 'apostrophe' that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside ['apostrophe']`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
+        });
+    });
+
+    it("should correctly switch between lower and upper quotation marks", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+      cy.get("input[name='id']").type("test-id");
+
+      cy.get("textarea#editor-gap-text-textarea").type(
+        `"Here are quotation marks" but not here. Apostrophes ' outside "or ' inside should not change this pattern". This should [render]`,
+        { delay: 2 }
+      );
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
+
+          const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
+          expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
+            `„Here are quotation marks“ but not here. Apostrophes ‘ outside „or ‘ inside should not change this pattern“. This should []`
+          );
+
+          expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`render`]]);
+        });
+    });
   });
 });
 
@@ -706,7 +883,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
     cy.get("button#editor-add-item").click();
     cy.get(".editor-content").find("input[type='radio']").click();
     cy.get(".editor-content").find("textarea").first().type("mc option text");
-    cy.get("button[type='submit']").click();
+    cy.contains("button", "Add").click();
 
     cy.get("button[type='submit']").should("have.attr", "aria-disabled", "true");
 
@@ -717,16 +894,19 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
   context("HTML5 Browser validation", () => {
     it("should show browser validation error for required id input", () => {
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("input[name='id']").then(($input) => {
-        expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please fill in this field.");
+        expect(($input[0] as HTMLInputElement).validationMessage).to.be.oneOf([
+          "Please fill in this field.",
+          "Please fill out this field.",
+        ]);
       });
     });
 
     it("should show browser validation error for required select input", () => {
       cy.get("input[name='id']").type("new-id");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("select[name='type']").then(($input) => {
         expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Please select an item in the list.");
       });
@@ -737,7 +917,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("select[name='type']").select("multiple-choice");
       cy.get("input[name='points']").type("-5");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("input[name='points']").then(($input) => {
         expect(($input[0] as HTMLInputElement).validationMessage).to.eq("Value must be greater than or equal to 0.");
       });
@@ -747,7 +927,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("input[name='id']").type("new-id");
       cy.get("select[name='type']").select("multiple-choice");
       cy.get("button#editor-add-item").click();
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Check for validation error message on radio and click it after test
       cy.get(".editor-content")
@@ -757,13 +937,16 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         })
         .click();
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       cy.get(".editor-content")
         .find("textarea")
         .first()
         .then(($textarea) => {
-          expect($textarea[0].validationMessage).to.eq("Please fill in this field.");
+          expect($textarea[0].validationMessage).to.be.oneOf([
+            "Please fill in this field.",
+            "Please fill out this field.",
+          ]);
         });
     });
 
@@ -773,7 +956,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("button#editor-add-item").click().click();
 
       //Check for message to show up and click after message shows
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get(".editor-content")
         .find("label[data-testid='option-0']")
         .find("input[type='radio']")
@@ -794,7 +977,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
         .first()
         .type("Textarea value for option-1");
 
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Validate that the form submits
       cy.get("@handleModalCloseSpy").should("have.been.called");
@@ -807,29 +990,35 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get("input[type='checkbox'][value='option-0']").check();
 
       //Submit form
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       //Find HTML validation message on textarea
       cy.get(".editor-content")
         .find("textarea")
         .first()
         .then(($input) => {
-          expect($input[0].validationMessage).to.eq("Please fill in this field.");
+          expect($input[0].validationMessage).to.be.oneOf([
+            "Please fill in this field.",
+            "Please fill out this field.",
+          ]);
         })
         .type("Content after first tried submit");
 
       //Validate that the form submits
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
     it("should show HTML5 validation errors onSubmit", () => {
       cy.get("input[name='id']").type("new-id");
       cy.get("select[name='type']").select("gap-text");
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
 
       cy.get("textarea#editor-gap-text-textarea").then(($textarea) => {
-        expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.eq("Please fill in this field.");
+        expect(($textarea[0] as HTMLTextAreaElement).validationMessage).to.be.oneOf([
+          "Please fill in this field.",
+          "Please fill out this field.",
+        ]);
       });
     });
   });
@@ -869,13 +1058,13 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       cy.get(".editor-content").find("textarea").first().type("Option-0 textarea content");
 
       //Submit form, expect error and break out of submit
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.contains("p", "Check at least one item!").should("exist");
       cy.get("@handleModalCloseSpy").should("not.have.been.called");
 
       //Fix error and check for successful submit
       cy.get("input[type='checkbox'][value='option-0']").check();
-      cy.get("button[type='submit']").click();
+      cy.contains("button", "Add").click();
       cy.contains("p", "Check at least one item!").should("not.exist");
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
@@ -886,17 +1075,6 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
 
       cy.contains("button", "Add").click();
       cy.contains("p", "Add at least one item!");
-    });
-
-    it("should show error if input for gap-text starts with '|' and clear error onChange", () => {
-      cy.get("input[name='id']").type("new-id");
-      cy.get("select[name='type']").select("gap-text");
-      cy.get("textarea#editor-gap-text-textarea").type("|");
-      cy.contains("button", "Add").click();
-      cy.contains("Can't start with this key!").should("exist");
-
-      cy.get("textarea#editor-gap-text-textarea").type("new text");
-      cy.contains("Can't start with this key!").should("not.exist");
     });
 
     it("should show errors for different form elements at the same time", () => {
@@ -966,7 +1144,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       cy.contains("p", "The id can't be empty!").should("not.exist");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -983,7 +1162,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       ).should("not.exist");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1000,7 +1180,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       );
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1017,7 +1198,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
       cy.get(".editor-content").find("textarea").first().type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1086,7 +1268,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .first()
         .type("Textarea value for option-0");
 
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1138,7 +1321,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1158,7 +1342,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
 
@@ -1192,7 +1377,8 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
         .type("Textarea value for option-0");
 
       //Expect the submit button to work
-      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false").click();
+      cy.get("button[type='submit']").should("have.attr", "aria-disabled", "false");
+      cy.contains("button", "Add").click();
       cy.get("@handleModalCloseSpy").should("have.been.called");
     });
   });

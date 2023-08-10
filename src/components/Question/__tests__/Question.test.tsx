@@ -2,11 +2,14 @@ import { screen, render, cleanup } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import { Question } from "../Question";
 import { IQuestionIdsContext, QuestionIdsContext } from "../../module/questionIdsContext";
-import { Router, Route, Switch, MemoryRouter, RouteComponentProps } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { Route, MemoryRouter, Routes } from "react-router-dom";
 import { IQuestion } from "../useQuestion";
 import { IModule } from "../../module/module";
 import { ISearchParams } from "../../../utils/types";
+
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
 
 //Question test data
 const mockFilteredQuestions: IModule["questions"] = [
@@ -69,7 +72,7 @@ const data: IModule = {
   name: "TestModule",
   type: "module",
   lang: "lat",
-  compatibility: "0.4.0",
+  compatibility: "0.5.0",
   questions: mockFilteredQuestions,
 };
 
@@ -86,38 +89,26 @@ interface IMockQuestionWithRouter {
 const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ qID, mode, order }) => {
   return (
     <MemoryRouter initialEntries={[`/module/${data.id}/question/${qID}?mode=${mode}&order=${order}`]}>
-      <Switch>
-        <QuestionIdsContext.Provider
-          value={
-            {
-              questionIds: data.questions.map((question) => question.id),
-              setQuestionIds: mockSetQuestionIds,
-            } as IQuestionIdsContext
-          }
-        >
-          <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsContext.Provider>
-      </Switch>
+      <main>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsContext.Provider
+                value={
+                  {
+                    questionIds: data.questions.map((question) => question.id),
+                    setQuestionIds: mockSetQuestionIds,
+                  } as IQuestionIdsContext
+                }
+              >
+                <Question />
+              </QuestionIdsContext.Provider>
+            }
+          />
+        </Routes>
+      </main>
     </MemoryRouter>
-  );
-};
-
-const MockQuestionWithRouterAndHistory = ({ history }: { history: RouteComponentProps["history"] }) => {
-  return (
-    <Router history={history}>
-      <Switch>
-        <QuestionIdsContext.Provider
-          value={
-            {
-              questionIds: data.questions.map((question) => question.id),
-              setQuestionIds: mockSetQuestionIds,
-            } as IQuestionIdsContext
-          }
-        >
-          <Route exact path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsContext.Provider>
-      </Switch>
-    </Router>
   );
 };
 
@@ -233,7 +224,7 @@ describe("<Question />", () => {
     expect(questionTypeHelpElement).toBeInTheDocument();
   });
 
-  it("should render the question with the id of qID-2 when given the correct params", () => {
+  test("should render the question with the id of qID-2 when given the correct params", () => {
     render(<MockQuestionWithRouter qID='qID-2' mode='practice' order='chronological' />);
 
     const idElement = screen.getByText("ID: qID-2");
@@ -538,23 +529,6 @@ describe("<Question />", () => {
     expect(inputElements.every((input) => input.value === "")).toBeTruthy();
   });
 
-  //Expect to trim the gap text input to be trimmed
-  it("should trim the input values when checking the answer", () => {
-    render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
-
-    //Type into the input elements
-    let inputElements = screen.getAllByRole("textbox");
-    user.type(inputElements[0], "One"); //"One" and "one" could both be correct
-    user.type(inputElements[1], "two ");
-    user.type(inputElements[2], " three");
-
-    //Click check button
-    user.click(screen.getByTestId("question-check"));
-
-    //Expect the answer to be correct (although it has trailing and leading whitespace)
-    expect(screen.getByTestId("question-correction")).toHaveClass("answer-correct");
-  });
-
   //Expect gap text to accept different correct values
   it("should render question correct when providing two different values to gap text which both could be correct", () => {
     render(<MockQuestionWithRouter qID='qID-3' mode='practice' order='chronological' />);
@@ -602,104 +576,4 @@ describe("<Question />", () => {
     const questionNotFoundTitle = screen.getByText("Question not found!");
     expect(questionNotFoundTitle).toBeInTheDocument();
   });
-
-  //Test the history hook Expect the url to change to new params when checking a question
-  //Expect the history hook and ui to update on next button click
-  it("should update the url (useHistory hook) when clicking the next button and update the ui", () => {
-    //Create history
-    const history = createMemoryHistory();
-    history.push({
-      pathname: `/module/${data.id}/question/${data.questions[0].id}`,
-      search: "?mode=practice&order=chronological",
-    });
-
-    //render Component with history prop
-    render(<MockQuestionWithRouterAndHistory history={history} />);
-
-    //Click the check button
-    const checkQuestionButton = screen.getByTestId("question-check");
-    user.click(checkQuestionButton);
-
-    //Click the next button to navigate to next question
-    const nextQuestionButton = screen.getByTestId("question-next");
-    user.click(nextQuestionButton);
-
-    expect(history.location.pathname).toBe(`/module/${data.id}/question/${data.questions[1].id}`);
-
-    //Expect the ui to update to new qiD
-    const questionIDText = screen.getByTestId("question-id").textContent;
-    expect(questionIDText).toBe(`ID: ${data.questions[1].id}`);
-  });
-
-  //Expect the url to change to previous element in array
-  it("should go to previous url when clicking the previous question button", () => {
-    const history = createMemoryHistory();
-    history.push({
-      pathname: `/module/${data.id}/question/${data.questions[1].id}`,
-      search: "?mode=practice&order=chronological",
-    });
-    render(<MockQuestionWithRouterAndHistory history={history} />);
-
-    //click the previous check button twice
-    const buttonElement = screen.getByTestId("previous-question-button");
-    user.click(buttonElement);
-
-    expect(history.location.pathname).toBe(`/module/${data.id}/question/${data.questions[0].id}`);
-  });
-
-  //Expect the array to restart at the last element when clicking the previous question button when on the first element on the array (only test the url not UI)
-  it("should restart the array when clicking previous question on the first element in the array", () => {
-    //Create history prop (data.questions[0].id === "qID-1")
-    const history = createMemoryHistory();
-    history.push({
-      pathname: `/module/${data.id}/question/${data.questions[0].id}`,
-      search: "?mode=practice&order=chronological",
-    });
-    render(<MockQuestionWithRouterAndHistory history={history} />);
-
-    //click the previous question button
-    const buttonElement = screen.getByTestId("previous-question-button");
-    user.click(buttonElement);
-
-    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfLastElementInTestArray}`);
-  });
-
-  //Expect the url to change to first element in array when clicking the to first Question Button
-  it("should go to the first url in array when clicking the to first Question Button", () => {
-    const history = createMemoryHistory();
-    history.push(`/module/${data.id}/question/${data.questions[1].id}?mode=practice&order=chronological`); //data.questions[1].id === "qID-2"
-
-    render(<MockQuestionWithRouterAndHistory history={history} />);
-
-    //Click the to first Question Button
-    const toFirstQuestionButton = screen.getByTestId("first-question-button");
-    user.click(toFirstQuestionButton);
-
-    const idOfFirstElementInTestArray = data.questions[0].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfFirstElementInTestArray}`);
-  });
-
-  //Expect the url to change to the last element in array when clicking the to last Question Button
-  it("should go to the last url in array when clicking the to last Question Button", () => {
-    const history = createMemoryHistory();
-    history.push(`/module/${data.id}/question/${data.questions[0].id}?mode=practice&order=chronological`);
-    render(<MockQuestionWithRouterAndHistory history={history} />);
-
-    //Click the to last Question Button
-    const toLastQuestionButton = screen.getByTestId("last-question-button");
-    user.click(toLastQuestionButton);
-
-    const idOfLastElementInTestArray = data.questions[data.questions.length - 1].id;
-    expect(history.location.pathname).toBe(`/module/${data.id}/question/${idOfLastElementInTestArray}`);
-  });
-
-  //Expect to next question to be not the same url as current one
-
-  //Expect Navigation (input)
-
-  //Unit test in multiple choice that only one is checked / multiple Choice if clicking on one resets it
-  //Expect reveal button to work
-  //Expect the (navigation) arrow to be not visible
-  //Test Scroll (custom hook has been called one time)
 });

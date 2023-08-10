@@ -1,7 +1,7 @@
 //Import React
-import { StrictMode } from "react";
-import ReactDOM from "react-dom";
-import { Route, Switch } from "react-router-dom";
+import React, { StrictMode, Suspense } from "react";
+import ReactDOM from "react-dom/client";
+import { Route, Routes } from "react-router-dom";
 import { Router } from "./components/Router/Router";
 
 //Import Css
@@ -10,11 +10,10 @@ import "./index.css";
 //Import Pages
 import Home from "./pages/index";
 
-import { TutorialsPage } from "./pages/tutorials";
+//import { TutorialsPage } from "./pages/tutorials";
 import { ContributePage } from "./pages/contribute";
 import { ThanksPage } from "./pages/thanks";
 import { NewsPage } from "./pages/news";
-import { SettingsPage } from "./pages/settings";
 
 import { LegalNoticePage } from "./pages/legal-notice";
 import { PrivacyPage } from "./pages/privacy";
@@ -27,46 +26,68 @@ import { AllQuestionsPage } from "./pages/module/all-questions/index";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { Footer } from "./components/Footer/Footer";
 import { CustomToastContainer } from "./components/toast/toast";
+import { ErrorBoundary } from "react-error-boundary";
 
 //Context
 import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";
+import { CircularTailSpinner } from "./components/Spinner";
 
-//Web vitals
-import reportWebVitals from "./reportWebVitals";
+// Lazy load pages
+const TutorialsPage = React.lazy(() => import("./pages/tutorials"));
+const SettingsPage = React.lazy(() => import("./pages/settings"));
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+
+root.render(
   <StrictMode>
     <Router>
       <Sidebar />
       <ScrollToTop />
       <main>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/tutorials' component={TutorialsPage} />
-          <Route exact path='/contribute' component={ContributePage} />
-          <Route exact path='/thanks' component={ThanksPage} />
-          <Route exact path='/news' component={NewsPage} />
-          <Route exact path='/settings' component={SettingsPage} />
-          <Route exact path='/legal-notice' component={LegalNoticePage} />
-          <Route exact path='/privacy' component={PrivacyPage} />
-          <Route exact path='/module/:moduleID' component={ModulePage} />
-          <Route exact path='/module/:moduleID/all-questions' component={AllQuestionsPage} />
-          <QuestionIdsProvider>
-            <Route exact path='/module/:moduleID/question/:questionID' component={QuestionPage} />
-          </QuestionIdsProvider>
-        </Switch>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route
+            path='/tutorials'
+            element={
+              <ErrorBoundary fallback={<p>Failed to load.</p>}>
+                <Suspense fallback={<CircularTailSpinner />}>
+                  <TutorialsPage />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
+          <Route path='/contribute' element={<ContributePage />} />
+          <Route path='/thanks' element={<ThanksPage />} />
+          <Route path='/news' element={<NewsPage />} />
+          <Route
+            path='/settings'
+            element={
+              <ErrorBoundary fallback={<p>Failed to load.</p>}>
+                <Suspense fallback={<CircularTailSpinner />}>
+                  <SettingsPage />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
+          <Route path='/legal-notice' element={<LegalNoticePage />} />
+          <Route path='/privacy' element={<PrivacyPage />} />
+          <Route path='/module/:moduleID' element={<ModulePage />} />
+          <Route path='/module/:moduleID/all-questions' element={<AllQuestionsPage />} />
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <QuestionPage />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <Footer />
       <CustomToastContainer />
     </Router>
-  </StrictMode>,
-  document.getElementById("root")
+  </StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

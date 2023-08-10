@@ -1,6 +1,5 @@
-import React, { useState, useCallback, useLayoutEffect, useEffect } from "react";
-import { useHistory, useParams, useLocation } from "react-router-dom";
-import packageJSON from "../../../package.json";
+import React, { useState, useCallback, useLayoutEffect, useSyncExternalStore } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 //Components
 import { GridCards } from "../GridCards/GridCards";
@@ -10,6 +9,7 @@ import { QuestionEditor } from "../QuestionEditor/QuestionEditor";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
 import { ModuleNotFound } from "./ModuleNotFound";
+import MenuItem from "@mui/material/MenuItem";
 
 //Icons
 import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
@@ -33,6 +33,8 @@ import {
 } from "../Question/components/Actions/BookmarkQuestion";
 import { IQuestion } from "../Question/useQuestion";
 
+import { ModuleEditor } from "../ModuleEditor";
+
 //TODO
 // - test if no saved questions but then imported => should enable export
 
@@ -45,7 +47,6 @@ export interface IModule {
   questions: IQuestion[];
 }
 
-//TODO move this outside
 interface LocationState {
   name: string | undefined;
 }
@@ -53,59 +54,22 @@ interface LocationState {
 //Component
 export const Module = () => {
   //Access state of link
-  const location = useLocation<LocationState>();
+  const location = useLocation();
 
-  //useState
-  //const [module, setModule] = useState<IModule | {}>({});
-  const [moduleName, setModuleName] = useState(location.state?.name);
-  const [error, setError] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const locationState = location.state as LocationState;
 
-  //History
-  let history = useHistory();
-
-  //Params
+  //Access params
   const { moduleID } = useParams<{ moduleID: string }>();
 
-  /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the the home modules. */
-  useEffect(() => {
-    if (!location.state?.name) {
-      // fetch from localStorage
-      const moduleNameFromStorage = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${moduleID}`))?.name;
+  // Get modulename from passed link state or localStorage
+  const { moduleName, error } = useModuleName(locationState?.name, moduleID);
 
-      // if there is a module found with the id, update the moduleName state else show error
-      if (moduleNameFromStorage) {
-        setModuleName(moduleNameFromStorage);
-      } else {
-        setError(true);
-      }
-    }
+  const [showModal, setShowModal] = useState(false);
 
-    return () => {
-      setModuleName("");
-    };
-  }, [moduleID, location.state?.name]);
+  const [showModuleEditor, setShowModuleEditor] = useState(false);
 
-  //TODO remove this with v0.5
-  useEffect(() => {
-    const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem(moduleID);
-
-    if (Array.isArray(bookmarkedLocalStorageItem) && !bookmarkedLocalStorageItem?.compatibility) {
-      localStorage.setItem(
-        `repeatio-marked-${moduleID}`,
-        JSON.stringify({
-          id: moduleID,
-          type: "marked",
-          compatibility: packageJSON.version,
-          questions: bookmarkedLocalStorageItem,
-        })
-      );
-    }
-
-    return () => {
-      //second
-    };
-  }, [moduleID]);
+  //Navigate (previously history)
+  let navigate = useNavigate();
 
   /*EVENTS*/
   //Train with all questions in chronological order starting at the first question
@@ -114,7 +78,7 @@ export const Module = () => {
 
     // Navigate to first question if there are questions in the module else show warning
     if (questions !== undefined && questions.length >= 1) {
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${questions[0].id}`,
         search: "?mode=practice&order=chronological",
       });
@@ -132,7 +96,7 @@ export const Module = () => {
       const shuffledQuestions = shuffleArray([...questions]);
 
       //setFilteredQuestions(shuffledQuestions);
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${shuffledQuestions[0].id}`,
         search: "?mode=practice&order=random",
       });
@@ -209,10 +173,10 @@ export const Module = () => {
     },
     {
       title: "Module Info",
-      disabled: true,
+      disabled: false,
       description: "",
       icon: <AiOutlineEdit />,
-      bottom: [<ButtonElement key='info' buttonText='View' />],
+      bottom: [<ButtonElement key='info' buttonText='Edit' handleClick={() => setShowModuleEditor(true)} />],
     },
   ];
 
@@ -220,12 +184,9 @@ export const Module = () => {
     return <ModuleNotFound />;
   }
 
-  // TODO: Add Suspense with react 18 <Spinner />
-  //
-
   //JSX
   return (
-    <div id={moduleName}>
+    <div id={moduleName ?? moduleID}>
       <SiteHeading title={`${moduleName} (${moduleID})`} />
       <GridCards>
         {moduleCards.map((card) => {
@@ -245,17 +206,63 @@ export const Module = () => {
           );
         })}
       </GridCards>
-      {showModal && <QuestionEditor handleModalClose={handleModalClose} mode={"create"} />}
+      <QuestionEditor handleModalClose={handleModalClose} mode={"create"} showModal={showModal} />
+      <ModuleEditor
+        handleModalClose={() => setShowModuleEditor(false)}
+        mode='edit'
+        moduleId={moduleID}
+        showModal={showModuleEditor}
+      />
     </div>
   );
+};
+
+// Subscribe to any custom storage events (should be triggered if user edits module)
+function subscribe(onSettingsChange: () => void) {
+  window.addEventListener("storageEvent", onSettingsChange);
+
+  return () => window.removeEventListener("storageEvent", onSettingsChange);
+}
+
+// Return localStorage module
+function getSnapShot(key: string | undefined) {
+  if (typeof key === "undefined" || key === null) return;
+
+  return localStorage.getItem(`repeatio-module-${key}`);
+}
+
+// Custom hook to get the module name based on locationStateName and moduleId
+const useModuleName = (locationStateName: LocationState["name"], moduleId: string | undefined) => {
+  const module = useSyncExternalStore(subscribe, () => getSnapShot(moduleId));
+
+  // Check if locationStateName is provided
+  if (locationStateName) {
+    // Return locationStateName as moduleName
+    return { moduleName: locationStateName };
+  } else if (module) {
+    /* Refetching the module name if the property is not passed by the router. This is the case when the user directly navigates to the module without navigating through the home modules. */
+    const parsedModule = parseJSON<IModule>(module);
+
+    // Check if parsedModule is valid
+    if (typeof parsedModule !== "undefined" && parsedModule !== null) {
+      // Return parsedModule's name as moduleName
+      return { moduleName: parsedModule.name };
+    } else {
+      // Return an error flag indicating invalid parsedModule
+      return { error: true };
+    }
+  } else {
+    // Return an error flag indicating no module found
+    return { error: true };
+  }
 };
 
 //Display bottom of BookmarkedQuestions
 const BookmarkedQuestionsBottom = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  //History
-  let history = useHistory();
+  //Navigate (previously history)
+  let navigate = useNavigate();
 
   //Params
   const { moduleID } = useParams<IParams>();
@@ -433,7 +440,7 @@ const BookmarkedQuestionsBottom = () => {
 
     if (validId) {
       //Navigate to question component
-      history.push({
+      navigate({
         pathname: `/module/${moduleID}/question/${validId}`,
         search: "?mode=bookmarked&order=chronological",
       });
@@ -455,21 +462,20 @@ const BookmarkedQuestionsBottom = () => {
   );
 };
 
-const ImportBookmarkedQuestions = ({
-  handleChange,
-}: {
+interface IImportBookmarkedQuestions {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
-}) => {
+}
+
+const ImportBookmarkedQuestions: React.FC<IImportBookmarkedQuestions> = ({ handleChange }) => {
   return (
-    <li className='MuiMenuItem-root'>
+    <MenuItem className='MuiMenuItem-root' disableRipple disableGutters sx={{ padding: "0" }}>
       <label
         htmlFor='file-upload'
-        className='MuiMenuItem-root'
         style={{
-          minHeight: "48px",
           padding: "6px 16px",
           display: "flex",
           alignItems: "center",
+          cursor: "pointer",
         }}
       >
         <TbFileImport />
@@ -483,6 +489,6 @@ const ImportBookmarkedQuestions = ({
         accept='.json'
         onChange={handleChange}
       />
-    </li>
+    </MenuItem>
   );
 };

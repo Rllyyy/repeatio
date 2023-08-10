@@ -1,0 +1,37 @@
+.add-line-circle:hover {
+  transform: scale(1.1);
+  border-color: var(--custom-prime-color);
+}
+
+.line-container:hover circle {
+  r: 9;
+}
+
+.line-container circle:focus {
+  outline: none;
+}
+
+.line-container circle:focus-visible {
+  r: 9;
+  outline: 2px solid red;
+  border-radius: 2px;
+  outline-offset: 3px;
+}
+
+.add-line-circle {
+  border-color: rgb(150, 150, 150);
+}
+
+.editor-ext-match-left.highlight-editor-left-circles .add-line-circle,
+.editor-ext-match-right.highlight-editor-right-circles .add-line-circle {
+  border-color: rgb(122, 122, 245);
+}
+
+.editor-ext-match-left.highlight-editor-left-circles .add-line-circle:hover,
+.editor-ext-match-right.highlight-editor-right-circles .add-line-circle:hover {
+  border-color: var(--custom-prime-color);
+}
+
+.add-line-circle.editor-highlight-circle {
+  border-color: rgb(122, 122, 245);
+}

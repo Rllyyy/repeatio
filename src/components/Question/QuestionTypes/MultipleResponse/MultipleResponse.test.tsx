@@ -2,6 +2,10 @@ import { screen, render, cleanup } from "@testing-library/react";
 import { MultipleResponse } from "./MultipleResponse";
 import user from "@testing-library/user-event";
 
+declare var it: jest.It;
+declare var describe: jest.Describe;
+declare const expect: jest.Expect;
+
 //Mocks
 const options = [
   {
@@ -17,8 +21,6 @@ const options = [
   },
 ];
 
-const mockSetAnswerCorrect = jest.fn();
-const mockSetShowAnswer = jest.fn();
 const mockUseRef = jest.fn(); //Might not be allowed for a ref but for now the ref isn't being tested
 
 //React-markdown and rehype-raw use ES6 but jest uses ES5

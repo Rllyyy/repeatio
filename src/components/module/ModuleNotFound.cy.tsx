@@ -1,28 +1,57 @@
 /// <reference types="cypress" />
 
 import { UserModulesList } from "./ModuleNotFound";
-import { Router } from "react-router-dom";
-import { createMemoryHistory } from "history";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { ModulePage } from "../../pages/module/module";
 
 import "../../index.css";
+import { ScrollToTop } from "../../utils/ScrollToTop";
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 
 //Setup Component with Router
 const MockUserModulesListWithRouter = () => {
-  const history = createMemoryHistory();
-  const route = "/module/test";
-  history.push(route);
-
   return (
-    <Router history={history}>
-      <div className='module-not-found'>
-        <UserModulesList />
-      </div>
-    </Router>
+    <MemoryRouter initialEntries={[`/module/test`]}>
+      <Routes>
+        <Route
+          path='/module/:moduleID'
+          element={
+            <div className='module-not-found'>
+              <UserModulesList />
+            </div>
+          }
+        />
+      </Routes>
+    </MemoryRouter>
   );
 };
+
+const MockModulePageWithRouter = () => {
+  return (
+    <MemoryRouter initialEntries={[`/module/test`]}>
+      <ScrollToTop />
+      <main style={{ marginTop: 0 }}>
+        <Routes>
+          <Route path='/module/:moduleID' element={<ModulePage />} />
+        </Routes>
+      </main>
+    </MemoryRouter>
+  );
+};
+
+describe("<ModuleNotFound />", () => {
+  it("should navigate to the existing module on click", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    cy.mount(<MockModulePageWithRouter />);
+
+    cy.contains("a", "Cypress Fixture Module (cypress_1)").click();
+
+    cy.contains("h1", "Cypress Fixture Module (cypress_1)").should("exist");
+  });
+});
 
 describe("Test order of Modules in QuestionNotFound component", () => {
   it("should order the existing user modules in alphabetical order on initial render", () => {
@@ -35,7 +64,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "Z Module",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 
@@ -50,7 +79,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "B Module",
       type: "module",
       lang: "en",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: [],
     };
 

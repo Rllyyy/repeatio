@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 import { parseJSON } from "../../../../utils/parseJSON";
@@ -32,7 +32,7 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
   const { search } = useLocation();
 
   //Access History
-  let history = useHistory();
+  let navigate = useNavigate();
 
   //Access Module
   const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
@@ -73,14 +73,14 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
       console.error("ID is not in data.questionIds");
     } else if (indexInContextQuestionsIds >= 1 && questionIds.length >= 2) {
       // Navigate to previous item in array if not at the beginning (0)
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds - 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
           new URLSearchParams(search).get("order") || "chronological"
         }`,
       });
     } else if (indexInContextQuestionsIds === 0 && questionIds.length >= 2) {
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}/question/${questionIds?.[indexInContextQuestionsIds + 1]}`,
         search: `?mode=${new URLSearchParams(search).get("mode") || "practice"}&order=${
           new URLSearchParams(search).get("order") || "chronological"
@@ -89,7 +89,7 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
     } else {
       /* Push to Module overview if there are no questions left in the current context */
       /* //TODO: in the future this could point to ".../all-questions" but there should be a message like "0 Questions"*/
-      history.push({
+      navigate({
         pathname: `/module/${params.moduleID}`,
       });
     }

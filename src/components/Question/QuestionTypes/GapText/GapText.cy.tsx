@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { MemoryRouter, Route } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { QuestionIdsProvider } from "../../../module/questionIdsContext";
 import { Question } from "../../Question";
 import { GapText } from "./GapText";
@@ -24,6 +24,31 @@ describe("GapText", () => {
     cy.mount(<GapText options={options} formDisabled={false} />);
     cy.get("input").should("have.length", 3);
     cy.contains("strong", "three").should("exist");
+  });
+
+  it("should render text and gap in the same line", () => {
+    const options = {
+      text: "This should be one []",
+      correctGapValues: [["line"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+    cy.get(".question-gap-text").invoke("height").should("be.lessThan", 60);
+  });
+
+  it("should keep the value of the previous gaps if writing into a new gap", () => {
+    const options = {
+      text: "[] two **three**. One [] three. One two []",
+      correctGapValues: [["One"], ["two"], ["three"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input#input-0").type("One");
+    cy.get("input#input-1").type("Two");
+
+    // Assert that the value on the input is still present
+    cy.get("input#input-0").should("have.value", "One");
   });
 
   it("should render multiple gaps and display input", () => {
@@ -57,8 +82,11 @@ describe("GapText", () => {
     };
 
     cy.mount(<GapText options={options} formDisabled={false} />);
-    cy.get("body").tab().focused().type("One").should("have.value", "One");
-    cy.get("input[value='One']").tab().focused().type("two").should("have.value", "two");
+
+    cy.get("input#input-0").type("One").realPress("Tab").realType("two", { delay: 1 });
+
+    // Assert that the input has the correct value
+    cy.get("input#input-1").should("have.value", "two");
   });
 
   it("should not show error if there is no text and no correctGapValues", () => {
@@ -240,9 +268,16 @@ const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) =
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=practice&order=chronological`]}>
       <main style={{ marginTop: 0 }}>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
     </MemoryRouter>
   );
@@ -287,6 +322,11 @@ describe("Gap Text component inside Question component", () => {
 
     //Check to type again
     cy.get("input#input-0").type("first").should("have.value", "first");
+
+    // Click on the body to update the value
+    cy.get("body").click();
+
+    // Submit the question
     cy.get("button[type='submit']").click();
 
     cy.contains("Yes, that's correct!");
@@ -370,11 +410,34 @@ describe("Gap Text component inside Question component", () => {
     // Check correct answer
     cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
 
+    // Click on the body to update the value
+    cy.get("body").click();
+
     // Submit question
     cy.get("button[type='submit']").click();
 
     // Check correction
     cy.contains("Yes, that's correct!").should("exist");
+  });
+
+  it("should reset the border to gray after submit if navigating by 'navigation skip'", () => {
+    cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
+    // Type into the input
+    cy.get("input#input-0").type("false", { delay: 2 });
+
+    // Submit question
+    cy.get("button[type='submit']").click();
+
+    // Click show navigation button that just exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("button[aria-label='Navigate to next Question']").click();
+
+    cy.get("input#input-0").should("have.css", "border", "1px solid rgb(180, 180, 180)");
   });
 
   context("Question correction on submit", () => {
@@ -383,8 +446,13 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("third");
+
       cy.get("input#input-1").type("contains");
+
       cy.get("input#input-2").type("one");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -401,6 +469,9 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-0").type("third");
       cy.get("input#input-1").type("contains");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -414,6 +485,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct values using "1"
       cy.get("input#input-0").type("1");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -426,6 +500,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct values using "one"
       cy.get("input#input-0").type("one");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -433,11 +510,23 @@ describe("Gap Text component inside Question component", () => {
       cy.contains("Yes, that's correct!");
     });
 
+    it("should show the answer as correct if there is no gap", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-11' />);
+      cy.get("button[aria-label='Check Question']").click();
+
+      // Assert that the answer is correct
+      cy.get("section.question-correction.answer-correct").should("exist");
+      cy.contains("Yes, that's correct!").should("exist");
+    });
+
     it("should show question correction after submit even if answer was correct", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
 
       // Type correct input
       cy.get("input#input-0").type("first");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -463,6 +552,9 @@ describe("Gap Text component inside Question component", () => {
       // Type incorrect value
       cy.get("input#input-0").type("false");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit question
       cy.get("button[type='submit']").click();
 
@@ -470,11 +562,37 @@ describe("Gap Text component inside Question component", () => {
       cy.contains("No, that's false!").should("exist");
     });
 
+    it("should trim the values and show the answer as correct", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-3' />);
+
+      cy.get("input#input-0").type(" third"); // Add a blank space at the beginning
+      cy.get("input#input-1").type("contains "); // Add a space at the end
+      cy.get("input#input-2").type("1 "); // Choose the second correct value
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
+      // Click on the body to update the value
+      cy.get("body").click();
+
+      // Submit question
+      cy.get("button[type='submit']").click();
+
+      cy.contains("Yes, that's correct!").should("exist");
+
+      cy.get("input#input-0").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+      cy.get("input#input-1").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(0, 128, 0)");
+    });
+
     it("should show question correction after submit if answer was incorrect", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-1' />);
 
       // Type correct input
       cy.get("input#input-0").type("last");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();
@@ -489,11 +607,17 @@ describe("Gap Text component inside Question component", () => {
 
       cy.get("input#input-0").type("second");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       cy.get("button[type='submit']").click().click();
 
       cy.get("input#input-0").type("third").should("have.value", "third");
       cy.get("input#input-1").type("contains", { delay: 2 }).should("have.value", "contains");
       cy.get("input#input-2").type("1").should("have.value", "1");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       cy.get("button[type='submit']").click();
       cy.contains("Yes, that's correct!").should("exist");
@@ -504,6 +628,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type into the input
       cy.get("input#input-0").type("first", { delay: 2 });
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit the question
       cy.get("button[aria-label='Check Question']").click();
@@ -527,6 +654,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct answer
       cy.get("input#input-0").type("second", { delay: 2 }).should("have.value", "second");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.contains("This is the title of the second question").click();
+
       // Submit question
       cy.get("button[type='submit']").click();
 
@@ -541,6 +671,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct input
       cy.get("input#input-0").type("first");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -553,6 +686,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type incorrect answer
       cy.get("input#input-0").type("last");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // submit Question
       cy.get("button[type='submit']").click();
@@ -582,7 +718,10 @@ describe("Gap Text component inside Question component", () => {
       cy.get("input#input-1").type("multiple");
 
       // Type incorrect value
-      cy.get("input#input-2").type("false");
+      cy.get("input#input-2").type("one");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // submit Question
       cy.get("button[type='submit']").click();
@@ -590,7 +729,7 @@ describe("Gap Text component inside Question component", () => {
       // Assert that the the border changes to green or red on the input elements
       cy.get("input#input-0").should("have.css", "border", "1px solid rgb(255, 0, 0)");
       cy.get("input#input-1").should("have.css", "border", "1px solid rgb(255, 0, 0)");
-      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(255, 0, 0)");
+      cy.get("input#input-2").should("have.css", "border", "1px solid rgb(0, 128, 0)");
 
       // Assert that the given answer is incorrect
       cy.contains("No, that's false!").should("exist");
@@ -602,6 +741,9 @@ describe("Gap Text component inside Question component", () => {
       // Type incorrect input
       cy.get("input#input-0").type("false");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -610,6 +752,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type correct input
       cy.get("input#input-0").type("first");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit question
       cy.get("button[type='submit']").click();
@@ -624,6 +769,9 @@ describe("Gap Text component inside Question component", () => {
       // Type correct input
       cy.get("input#input-0").type("first");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -632,6 +780,9 @@ describe("Gap Text component inside Question component", () => {
 
       // Type incorrect input
       cy.get("input#input-0").type("incorrect");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
 
       // Submit question
       cy.get("button[type='submit']").click();
@@ -642,6 +793,12 @@ describe("Gap Text component inside Question component", () => {
   });
 
   context("Markdown and HTML elements", () => {
+    it("should render line break", () => {
+      cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-12' />);
+      // Assert that the line break worked
+      cy.get(".question-gap-text").invoke("height").should("be.greaterThan", 60);
+    });
+
     it("should render list", () => {
       cy.mount(<RenderQuestionWithRouter moduleID='gap_text' questionID='gt-5' />);
 
@@ -670,6 +827,9 @@ describe("Gap Text component inside Question component", () => {
       cy.contains("Text below table").should("be.visible");
       cy.contains("strong", "table").should("exist");
 
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.get(".question-data").click();
+
       // Submit Question
       cy.get("button[type='submit']").click();
 
@@ -682,9 +842,12 @@ describe("Gap Text component inside Question component", () => {
 
       // Assert that the table is in view and the values get rendered
       cy.get("table").should("exist").and("be.visible");
-      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 180);
-      cy.get("td .input-wrapper").find("input").type("work").should("have.value", "work");
+      cy.get(".question-gap-text").invoke("height").should("be.lessThan", 130);
+      cy.get("td").find("input").type("work").should("have.value", "work");
       cy.contains("em", "italic");
+
+      // Click the dom to trigger lose of focus on input and rerender of component
+      cy.contains("This is the title of the eight question with table").click();
 
       // Submit Question
       cy.get("button[type='submit']").click();

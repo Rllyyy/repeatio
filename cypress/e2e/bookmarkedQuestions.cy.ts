@@ -5,7 +5,6 @@ import {
   getBookmarkedQuestionsFromModule,
   IBookmarkedQuestions,
 } from "../../src/components/Question/components/Actions/BookmarkQuestion";
-import { parseJSON } from "../../src/utils/parseJSON";
 
 /* ------------------------------------Bookmark in Module Overview ------------------------------ */
 describe("Test usage of bookmarked Questions in module overview", () => {
@@ -84,7 +83,7 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     const bookmarkedFile = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["invalid-id", "qID-1", "also-invalid"],
     };
 
@@ -101,6 +100,40 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     cy.get("@consoleWarn").should("be.calledWithMatch", "Couldn't find the following ids: invalid-id, also-invalid");
 
     cy.contains("1/1 Questions").should("exist");
+  });
+
+  it("should redirect to module if all bookmarked questions get unsaved and the practice mode changes", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Start practicing with bookmarked questions
+    cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
+
+    // Remove the bookmarked questions
+    cy.get("button[aria-label='Unsave Question']").click();
+    cy.get("button[aria-label='Navigate to next Question']").click();
+    cy.get("button[aria-label='Unsave Question']").click();
+
+    // Click shuffle button
+    cy.get("button[aria-label='Enable shuffle'").click();
+
+    // Assert the correct redirect to the module overview
+    cy.url().should("match", /.*module\/cypress_1(?![\w\/])/);
+  });
+
+  it("should redirect to a bookmarked question if the question gets unsaved and the user clicks the shuffle button", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Start practicing with bookmarked questions
+    cy.get("article[data-cy='Bookmarked Questions']").contains("button", "Start").click();
+
+    cy.get("button[aria-label='Unsave Question']").click();
+
+    cy.get("button[aria-label='Enable shuffle'").click();
+
+    cy.contains("ID: qID-3").should("exist");
+    cy.url().should("include", "/module/cypress_1/question/qID-3?mode=bookmarked&order=random");
   });
 });
 
@@ -247,7 +280,7 @@ describe("Test import of bookmarked Questions", () => {
   });
 
   it("should add items to the localStorage if there are no old items in the localStorage before", () => {
-    cy.clearLocalStorage();
+    cy.clearLocalStorage("repeatio-marked-cypress_1");
 
     cy.get("article[data-cy='Bookmarked Questions']").find("button.popover-button").click();
 
@@ -304,7 +337,7 @@ describe("Test deletion of bookmarked Questions", () => {
     cy.contains("li", "Delete")
       .click()
       .should(() => {
-        expect(localStorage.getItem("repeatio-marked-cypress_1")).to.be.null;
+        expect(localStorage.getItem("repeatio-marked-cypress_1")).to.equal(null);
       });
 
     //Check with ui
@@ -326,30 +359,6 @@ describe("Test deletion of bookmarked Questions", () => {
   });
 });
 
-/* ----------------------------------------- v0.4 Transform ------------------------------------ */
-//TODO remove this when developing v0.5
-describe("Transform from Bookmark to v0.4 Test", () => {
-  it("should replace v0.3 bookmark file structure with new v0.4 in localStorage onMount", () => {
-    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
-    localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(["qID-1", "qID-3"]));
-
-    // Assert that the old bookmarked item was added to the localStorage
-    cy.get("body").should(() => {
-      const bookmarkedItemsOldFileStructure = parseJSON<string[]>(localStorage.getItem("repeatio-marked-cypress_1"));
-      expect(bookmarkedItemsOldFileStructure).to.deep.equal(["qID-1", "qID-3"]);
-    });
-
-    cy.visit("module/cypress_1").should(() => {
-      const bookmarkedLocalStorageItem = getBookmarkedLocalStorageItem("cypress_1");
-
-      expect(bookmarkedLocalStorageItem?.id).to.equal("cypress_1");
-      expect(bookmarkedLocalStorageItem?.type).to.equal("marked");
-      expect(bookmarkedLocalStorageItem?.compatibility).to.equal("0.4.0");
-      expect(bookmarkedLocalStorageItem?.questions).to.deep.equal(["qID-1", "qID-3"]);
-    });
-  });
-});
-
 /* --------------------------------------------- HELPERS ---------------------------------------- */
 /**
  * Build and return a bookmark JSON file
@@ -360,7 +369,7 @@ export function buildBookmarkFile(moduleID: "cypress_1" | (string & {}), questio
   const fileContent = {
     id: moduleID,
     type: "marked",
-    compatibility: "0.4.0",
+    compatibility: "0.5.0",
     questions: questions,
   };
 

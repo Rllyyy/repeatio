@@ -1,9 +1,10 @@
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useQuestionNavigation } from "./components/QuestionNavigation/QuestionNavigation";
 import { parseJSON } from "../../utils/parseJSON";
 import { shuffleArray } from "../../utils/shuffleArray";
 import { addExampleModuleToLocalStorage, isExampleModuleAdded } from "../Home/helpers";
+import { toast } from "react-toastify";
 
 //Context
 import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsContext";
@@ -19,7 +20,7 @@ import { IExtendedMatch } from "./QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IModule } from "../module/module";
 import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
-import { toast } from "react-toastify";
+import { IExtendedMatchTemp } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/ExtendedMatchEditor";
 
 export type TAnswerOptions =
   | IMultipleChoice[]
@@ -28,6 +29,7 @@ export type TAnswerOptions =
   | IGapTextDropdown
   | IGapTextWithTempText
   | IExtendedMatch
+  | IExtendedMatchTemp
   | undefined;
 
 export interface IQuestion {
@@ -61,8 +63,8 @@ export const useQuestion = () => {
   //params
   const params = useParams<IParams>();
 
-  //History
-  let history = useHistory();
+  //Navigate
+  let navigate = useNavigate();
 
   //Custom hooks
   const { navigateToNextQuestion } = useQuestionNavigation();
@@ -113,9 +115,9 @@ export const useQuestion = () => {
     //Find the correct question in the moduleData context
     const moduleJson = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
 
-    const question = moduleJson?.questions.find((question) => question.id === params.questionID);
+    const questionFromStorage = moduleJson?.questions.find((question) => question.id === params.questionID);
 
-    setQuestion(question);
+    setQuestion(questionFromStorage);
   }, [params.moduleID, params.questionID]);
 
   /* Set context, question and set Module example if needed */
@@ -142,7 +144,7 @@ export const useQuestion = () => {
 
       if (order !== "chronological" && order !== "random") {
         console.warn(`${order} is not a valid argument for order! Redirecting to chronological.`);
-        history.push({
+        navigate({
           pathname: `/module/${params.moduleID}/question/${params.questionID}`,
           search: `?mode=${mode}&order=chronological`,
         });
@@ -176,7 +178,6 @@ export const useQuestion = () => {
           }
           break;
         case "bookmarked":
-          // TODO only add to bookmarkedIds if the id exists in BookmarkQuestions
           let bookmarkedIds = parseJSON<IBookmarkedQuestions>(
             localStorage.getItem(`repeatio-marked-${params.moduleID}`)
           )?.questions;
@@ -186,8 +187,25 @@ export const useQuestion = () => {
 
             // Should only happen if the user navigates with the url to ?mode=bookmarked
             if (currentIndex <= -1) {
-              toast.error("The current question is not bookmarked!");
-              return;
+              if (bookmarkedIds.length >= 1 && !!bookmarkedIds[0]) {
+                navigate(
+                  {
+                    pathname: `/module/${params.moduleID}/question/${bookmarkedIds[0]}`,
+                    search: `?mode=bookmarked&order=${order}`,
+                  },
+                  { replace: true }
+                );
+
+                toast.warn(
+                  "The previous question is no longer bookmarked! Redirected to first question in bookmarked questions."
+                );
+                return;
+              } else {
+                //navigate home
+                navigate(`/module/${params.moduleID}`);
+                toast.warn("Question is no longer bookmarked");
+                return;
+              }
             }
 
             // Get an array of all question IDs from the module in local storage
@@ -236,14 +254,15 @@ export const useQuestion = () => {
               console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
             }
           } else {
-            console.warn("Found 0 bookmarked questions");
+            toast.warn("Found 0 bookmarked questions");
+            navigate(`/module/${params.moduleID}`);
           }
 
           break;
         default:
           console.warn(`${mode} is not a valid argument for mode! Redirecting to practice.`);
 
-          history.push({
+          navigate({
             pathname: `/module/${params.moduleID}/question/${params.questionID}`,
             search: `?mode=practice&order=${order}`,
           });
@@ -251,9 +270,11 @@ export const useQuestion = () => {
       }
     }
 
-    fetchQuestion();
-    setLoading(false);
-  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, history, fetchQuestion]);
+    if (questionIds?.length > 0) {
+      fetchQuestion();
+      setLoading(false);
+    }
+  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, navigate, fetchQuestion]);
 
   /* UseEffects */
   useEffect(() => {
@@ -262,6 +283,7 @@ export const useQuestion = () => {
     return () => {
       setQuestion({} as IQuestion);
       setLoading(true);
+      setShowAnswer(false);
     };
   }, [params.questionID, fetchAndSetQuestions]);
 

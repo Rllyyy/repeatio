@@ -9,7 +9,7 @@ import { CustomToastContainer } from "../../../toast/toast";
 import { parseJSON } from "../../../../utils/parseJSON";
 
 // Router
-import { Route, MemoryRouter } from "react-router-dom";
+import { Route, MemoryRouter, Routes } from "react-router-dom";
 
 // css
 import "../../../../index.css";
@@ -36,9 +36,16 @@ const RenderWithRouter: React.FC<IRenderWithRouter> = ({ moduleID, questionID, m
   return (
     <MemoryRouter initialEntries={[`/module/${moduleID}/question/${questionID}?mode=${mode}&order=${order}`]}>
       <main>
-        <QuestionIdsProvider>
-          <Route path='/module/:moduleID/question/:questionID' component={Question} />
-        </QuestionIdsProvider>
+        <Routes>
+          <Route
+            path='/module/:moduleID/question/:questionID'
+            element={
+              <QuestionIdsProvider>
+                <Question />
+              </QuestionIdsProvider>
+            }
+          />
+        </Routes>
       </main>
       <CustomToastContainer />
     </MemoryRouter>
@@ -105,7 +112,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -138,7 +145,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -171,7 +178,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -204,7 +211,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -234,7 +241,7 @@ describe("Delete a Question", () => {
     //Setup localStorage
     const localStorageItem = {
       id: "cypress_1",
-      compatibility: "0.4.0",
+      compatibility: "0.5.0",
       type: "marked",
       questions: ["qID-1"],
     };

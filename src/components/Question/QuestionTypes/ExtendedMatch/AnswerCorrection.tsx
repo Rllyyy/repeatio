@@ -1,5 +1,5 @@
-////@ts-nocheck
-import { useState, useEffect, useRef, createRef, RefObject } from "react";
+import { useState, useEffect, useRef } from "react";
+import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 //Markdown
 import ReactMarkdown from "react-markdown";
@@ -10,7 +10,7 @@ import remarkGfm from "remark-gfm";
 import "katex/dist/katex.min.css";
 
 //Components
-import { Canvas } from "./Canvas";
+import { SVGElement } from "./ExtendedMatch";
 
 // Interfaces
 import { IExtendedMatch } from "./ExtendedMatch";
@@ -24,8 +24,6 @@ interface IExtendedMatchAnswerCorrectionProps {
   correctMatches: IExtendedMatch["correctMatches"];
   shuffledLeftOptions: IExtendedMatch["leftSide"];
   shuffledRightOptions: IExtendedMatch["rightSide"];
-  left: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
-  right: React.MutableRefObject<RefObject<HTMLButtonElement>[] | null | undefined>;
 }
 
 //Component
@@ -33,32 +31,25 @@ export const AnswerCorrection = ({
   correctMatches,
   shuffledLeftOptions,
   shuffledRightOptions,
-  left,
-  right,
 }: IExtendedMatchAnswerCorrectionProps) => {
   //useState
   const [correctLines, setCorrectLines] = useState<IExtendedMatchLineCorrection[]>([]);
 
   //useRef
-  const leftCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(left?.current?.map(() => createRef()));
-  const rightCorrection = useRef<RefObject<HTMLDivElement>[] | null | undefined>(
-    right?.current?.map(() => createRef())
-  );
+  //Refs
+  const left = useRef<Array<HTMLDivElement | null>>([]);
+  const right = useRef<Array<HTMLDivElement | null>>([]);
 
   //Update the correct lines array
   useEffect(() => {
-    const newCorrectMatches = correctMatches.map((item) => {
-      //Find left item
-      const resultLeft = leftCorrection.current?.find((obj) => obj.current?.getAttribute("data-ident") === item.left);
-
-      const resultRight = rightCorrection.current?.find(
-        (obj) => obj.current?.getAttribute("data-ident") === item.right
-      );
-
-      return { left: resultLeft?.current, right: resultRight?.current };
+    const newCorrectMatches = correctMatches?.map((item) => {
+      return {
+        left: left.current[item.left as keyof IExtendedMatchLineCorrection["left"]],
+        right: right.current[item.right as keyof IExtendedMatchLineCorrection["right"]],
+      };
     });
 
-    setCorrectLines([...newCorrectMatches]);
+    setCorrectLines([...(newCorrectMatches || [])]);
 
     return () => {
       setCorrectLines([]);
@@ -68,40 +59,44 @@ export const AnswerCorrection = ({
   return (
     <div className='extended-match-grid-solution'>
       <div className={`ext-match-left-side`}>
-        {shuffledLeftOptions.map((item, index) => {
+        {shuffledLeftOptions?.map((item) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
               <ReactMarkdown
                 className='ext-match-element-text'
                 children={text}
+                linkTarget='_blank'
+                transformLinkUri={normalizeLinkUri}
                 rehypePlugins={[rehypeRaw, rehypeKatex]}
                 remarkPlugins={[remarkGfm, remarkMath]}
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={leftCorrection.current?.[index]}
+                ref={(el) => (left.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
                 data-ident={id}
               />
             </div>
           );
         })}
       </div>
-      <Canvas lines={correctLines} />
+      <SVGElement lines={correctLines} mode='static' />
       <div className={`ext-match-right-side`}>
-        {shuffledRightOptions.map((item, index) => {
+        {shuffledRightOptions?.map((item) => {
           const { text, id } = item;
           return (
             <div className='ext-match-element' key={`ext-match-element-${id}`}>
               <ReactMarkdown
                 className='ext-match-element-text'
                 children={text}
+                linkTarget='_blank'
+                transformLinkUri={normalizeLinkUri}
                 rehypePlugins={[rehypeRaw, rehypeKatex]}
                 remarkPlugins={[remarkMath]}
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={rightCorrection.current?.[index]}
+                ref={(el) => (right.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
                 data-ident={id}
               />
             </div>
