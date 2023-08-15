@@ -27,6 +27,7 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import { Footer } from "./components/Footer/Footer";
 import { CustomToastContainer } from "./components/toast/toast";
 import { ErrorBoundary } from "react-error-boundary";
+import { SuspenseWithErrorBoundary } from "./components/SuspenseWithErrorBoundary";
 
 //Context
 import { QuestionIdsProvider } from "./components/module/questionIdsContext";
@@ -52,11 +53,9 @@ root.render(
           <Route
             path='/tutorials'
             element={
-              <ErrorBoundary fallback={<p>Failed to load.</p>}>
-                <Suspense fallback={<CircularTailSpinner />}>
-                  <TutorialsPage />
-                </Suspense>
-              </ErrorBoundary>
+              <SuspenseWithErrorBoundary>
+                <TutorialsPage />
+              </SuspenseWithErrorBoundary>
             }
           />
           <Route path='/contribute' element={<ContributePage />} />
