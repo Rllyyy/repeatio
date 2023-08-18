@@ -1,5 +1,5 @@
 import { Module } from "../../components/module/module";
 
-export const ModulePage = () => {
+export default function ModulePage() {
   return <Module />;
-};
+}

@@ -60,9 +60,7 @@ const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, resetErrorBo
   //JSX
   return (
     <div className={styles.error}>
-      <p style={{ /* fontSize: "medium", */ color: "#4b5563", fontWeight: 500, fontSize: "larger" }}>
-        Something went Wrong!
-      </p>
+      <p style={{ color: "#4b5563", fontWeight: 500, fontSize: "larger" }}>Something went Wrong!</p>
       <h1 className={styles["error-heading"]}>
         {error.name}: {error.message}
       </h1>
@@ -103,7 +101,7 @@ const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, resetErrorBo
         </Link>
         {/* Refresh page */}
         <button type='button' onClick={refreshPage} className={styles["error-actions"]}>
-          <MdRefresh size={24} /* strokeWidth={1} */ />
+          <MdRefresh size={24} />
           <span>Reload Page</span>
         </button>
         {/* Create Issue on GitHub */}

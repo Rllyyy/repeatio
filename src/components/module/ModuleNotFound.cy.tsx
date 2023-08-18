@@ -2,7 +2,7 @@
 
 import { UserModulesList } from "./ModuleNotFound";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ModulePage } from "../../pages/module/module";
+import ModulePage from "../../pages/module";
 
 import "../../index.css";
 import { ScrollToTop } from "../../utils/ScrollToTop";

@@ -1,6 +1,6 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 
-export const NewsPage = () => {
+export default function NewsPage() {
   return (
     <>
       <SiteHeading title='News' />
@@ -10,4 +10,4 @@ export const NewsPage = () => {
       </p>
     </>
   );
-};
+}

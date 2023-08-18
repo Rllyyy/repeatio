@@ -1,6 +1,6 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 
-export const ThanksPage = () => {
+export default function ThanksPage() {
   return (
     <>
       <SiteHeading title='Thanks' />
@@ -10,4 +10,4 @@ export const ThanksPage = () => {
       </p>
     </>
   );
-};
+}

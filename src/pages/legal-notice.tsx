@@ -1,6 +1,6 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 
-export const LegalNoticePage = () => {
+export default function LegalNoticePage() {
   return (
     <div>
       <SiteHeading title='Impressum' />
@@ -30,4 +30,4 @@ export const LegalNoticePage = () => {
       </a>
     </div>
   );
-};
+}

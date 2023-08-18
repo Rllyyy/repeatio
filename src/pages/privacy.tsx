@@ -1,7 +1,7 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 import "../components/Privacy/Privacy.css";
 
-export const PrivacyPage = () => {
+export default function PrivacyPage() {
   return (
     <div className='privacy'>
       <SiteHeading title='Datenschutzerklärung' />
@@ -369,4 +369,4 @@ export const PrivacyPage = () => {
       </div>
     </div>
   );
-};
+}

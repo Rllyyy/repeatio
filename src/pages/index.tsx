@@ -8,7 +8,7 @@ import { SortButton } from "../components/Home/ModuleSortButton";
 import "../components/Home/Home.css";
 import { useSetting } from "../hooks/useSetting";
 
-const Home = () => {
+export default function Home() {
   const [sort, setSort] = useSetting("moduleSort", "Name (ascending)");
 
   return (
@@ -22,6 +22,4 @@ const Home = () => {
       <Modules sort={sort} />
     </>
   );
-};
-
-export default Home;
+}
