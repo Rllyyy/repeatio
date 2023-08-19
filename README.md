@@ -1,7 +1,7 @@
 <div align="center">
   <!-- Icon -->
   <a href="https://www.repeatio.de">
-    <img src=".github/images/brain.svg" height="75" alt="repeatio icon showing a brain"/>
+    <img src=".github/Docs/assets/images/brain.svg" height="75" alt="repeatio icon showing a brain"/>
   </a>
   
   <!-- Text -->
@@ -12,7 +12,7 @@
   
   <!-- Mockup -->
   <a href="https://www.repeatio.de">
-    <img src=".github/images/3-mobile.png" width="600px" alt="Mockup of repeatio">
+    <img src=".github/Docs/assets/images/3-mobile.png" width="600px" alt="Mockup of repeatio">
   </a>
 </div>
 
