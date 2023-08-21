@@ -1,22 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
+
+    <!-- Open Graph Tags -->
     <meta property="og:title" content="repeatio - Eine interaktive Lernplattform" />
     <meta property="og:site_name" content="repeatio.de" />
-    <meta property="og:description" content="Keine Lust mehr mit Excel-Listen zu lernen? Mit repeatio kannst du Fragen interaktiv lernen und dich so auf Klausuren besser vorbereiten." />
-    <meta property="og:image" content="https://raw.githubusercontent.com/Rllyyy/repeatio/main/.github/Docs/assets/images/brain.jpg" />
+    <meta
+      property="og:description"
+      content="Keine Lust mehr mit Excel-Listen zu lernen? Mit repeatio kannst du Fragen interaktiv lernen und dich so auf Klausuren besser vorbereiten."
+    />
     <meta property="og:url" content="https://repeatio.de" />
     <meta property="og:type" content="website" />
+    <meta name="description" content="Practice and memorize task fast and efficiently with repeatio." />
+
+    <!-- Default image -->
     <meta
-      name="description"
-      content="Practice and memorize task fast and efficiently with repeatio."
+      property="og:image"
+      content="https://raw.githubusercontent.com/Rllyyy/repeatio/main/.github/Docs/assets/images/brain.jpg"
     />
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://netlify-cdp-loader.netlify.app; style-src 'self' 'unsafe-inline'; base-uri 'self'; img-src 'self' https://* http://*;  font-src 'self' data:; frame-src https://www.youtube-nocookie.com;" />
+    <meta property="og:image:width" content="640" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:type" content="image/png" />
+
+    <!-- WhatsApp preview image (WhatsApp takes the last og:image for its share) -->
+    <!-- TODO change the release value -->
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/Rllyyy/repeatio/release-v0.6/.github/Docs/assets/images/brain-whats-app.png"
+    />
+    <meta property="og:image:width" content="400" />
+    <meta property="og:image:height" content="400" />
+
+    <!-- Content-Security-Policy -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://netlify-cdp-loader.netlify.app; style-src 'self' 'unsafe-inline'; base-uri 'self'; img-src 'self' https://* http://*;  font-src 'self' data:; frame-src https://www.youtube-nocookie.com;"
+    />
     <!-- <link rel="apple-touch-icon" href="/logo192.png" /> -->
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -25,6 +48,7 @@
     <link rel="manifest" href="/manifest.json" />
     <title>repeatio</title>
   </head>
+
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
