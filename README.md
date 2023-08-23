@@ -24,37 +24,6 @@
 
 ## [:clapper: Watch the Tutorial](https://youtu.be/Rqsy0nL4WK8)
 
-## Browser Support
-
-### Desktop
-
-|               |      Chrome       |       Edge        |     Safari      |      Firefox      |       Opera       | Internet Explorer | Electron (Developers only) |
-| :-----------: | :---------------: | :---------------: | :-------------: | :---------------: | :---------------: | :---------------: | :------------------------: |
-|  Performance  | :1st_place_medal: | :1st_place_medal: | :grey_question: | :1st_place_medal: | :3rd_place_medal: |        :x:        |     :1st_place_medal:      |
-| Functionality | :1st_place_medal: |  :grey_question:  | :grey_question: | :2nd_place_medal: | :1st_place_medal: |        :x:        |     :3rd_place_medal:      |
-
-<!--Firefox not perfect because: window.showSaveFilePicker is not supported + :has() not supported-->
-<!--Opera ok because modal performance-->
-
-### Mobile
-
-|               |      Chrome       |      Edge       |      Safari       |      Firefox      |      Opera      | Samsung Internet |
-| :-----------: | :---------------: | :-------------: | :---------------: | :---------------: | :-------------: | :--------------: |
-|  Performance  | :2nd_place_medal: | :grey_question: | :3rd_place_medal: | :3rd_place_medal: | :grey_question: |       :x:        |
-| Functionality | :1st_place_medal: | :grey_question: | :3rd_place_medal: | :1st_place_medal: | :grey_question: |       :x:        |
-
-<!--Firefox not perfect because html validation is not supported, :has() not supported-->
-
-### Legend
-
-|       Emoji       | Value       |
-| :---------------: | ----------- |
-| :1st_place_medal: | Excellent   |
-| :2nd_place_medal: | Very good   |
-| :3rd_place_medal: | Ok          |
-|  :grey_question:  | Unknown     |
-|        :x:        | Unsupported |
-
 ## Module
 
 ### Create a new Module
