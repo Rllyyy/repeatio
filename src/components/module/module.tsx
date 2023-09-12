@@ -212,6 +212,7 @@ export const Module = () => {
         mode='edit'
         moduleId={moduleID}
         showModal={showModuleEditor}
+        navigateOnSuccess={true}
       />
     </div>
   );

@@ -8,7 +8,7 @@ import { FC, PropsWithChildren } from "react";
 //MaterialUI
 import { styled } from "@mui/material/styles";
 import Menu, { MenuProps } from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import MenuItem, { type MenuItemProps } from "@mui/material/MenuItem";
 
 //Icons
 import { HiDotsVertical } from "react-icons/hi";
@@ -112,7 +112,7 @@ export const PopoverMenu: FC<PropsWithChildren<IPopoverMenu>> = ({ anchorEl, han
 };
 
 /* -------------------------------------- POPOVER MENU ITEM ------------------------------------- */
-interface IPopoverMenuItem {
+interface IPopoverMenuItem extends Omit<MenuItemProps, "onClick"> {
   handleClick: () => void | Promise<void>;
   text: string;
   icon: JSX.Element;

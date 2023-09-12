@@ -35,7 +35,14 @@ const MockModuleEditorWithRouter = ({ moduleId }: { moduleId: Required<IParams["
         <Routes>
           <Route
             path='/module/:moduleId'
-            element={<ModuleEditorForm moduleId={moduleId} handleModalClose={handleModalCloseSpy} mode='edit' />}
+            element={
+              <ModuleEditorForm
+                moduleId={moduleId}
+                handleModalClose={handleModalCloseSpy}
+                mode='edit'
+                navigateOnSuccess={true}
+              />
+            }
           />
         </Routes>
       </main>
@@ -256,6 +263,4 @@ describe("<ModuleEditor />", () => {
         expect(localStorageItem?.type).to.equal("module");
       });
   });
-
-  // update bookmark item
 });

@@ -183,7 +183,7 @@ function DisplayImportOrCreateComponent({
   }
 
   if (component === "create") {
-    return <ModuleEditorForm handleModalClose={handleModalClose} mode='create' />;
+    return <ModuleEditorForm handleModalClose={handleModalClose} mode='create' navigateOnSuccess={false} />;
   }
 
   if (component === "import") {

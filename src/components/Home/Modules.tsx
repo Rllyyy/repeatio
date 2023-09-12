@@ -8,10 +8,12 @@ import { Card, LinkElement } from "../Card/Card";
 import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { CircularTailSpinner } from "../Spinner";
 import { ProgressPie } from "../Card/ProgressPie";
+import { ModuleEditor } from "../ModuleEditor";
 
 //Icons
 import { TbFileExport } from "react-icons/tb";
 import { BiTrash } from "react-icons/bi";
+import { MdOutlineEdit } from "react-icons/md";
 
 //Functions
 import { saveFile } from "../../utils/saveFile";
@@ -34,7 +36,16 @@ interface IModules {
 //Component
 export const Modules: React.FC<IModules> = ({ sort }) => {
   const { modules, loading } = useAllModules(sort);
-  const { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose } = useHomePopover();
+  const {
+    handleExport,
+    handleDelete,
+    handlePopoverButtonClick,
+    anchorEl,
+    handlePopoverClose,
+    showModuleEditor,
+    handleOpenEditor,
+    setShowModuleEditor,
+  } = useHomePopover();
 
   //Display loading spinner while component loads
   //TODO switch to suspense maybe (react 18)
@@ -75,9 +86,17 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
         })}
       </AnimatePresence>
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
-        <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} />
-        <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />
+        <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} aria-label='Delete Module' />
+        <PopoverMenuItem handleClick={handleOpenEditor} text='Edit' icon={<MdOutlineEdit />} aria-label='Edit Module' />
+        <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} aria-label='Export Module' />
       </PopoverMenu>
+      <ModuleEditor
+        mode='edit'
+        moduleId={showModuleEditor}
+        showModal={!!showModuleEditor}
+        handleModalClose={() => setShowModuleEditor(null)}
+        navigateOnSuccess={false}
+      />
     </GridCards>
   );
 };
@@ -130,6 +149,7 @@ const useAllModules = (sort: TModuleSortOption) => {
 //Hook to use the functions inside the Popover component
 const useHomePopover = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [showModuleEditor, setShowModuleEditor] = useState<IModule["id"] | null>(null);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {
@@ -183,5 +203,25 @@ const useHomePopover = () => {
     handlePopoverClose();
   };
 
-  return { handleExport, handleDelete, handlePopoverButtonClick, anchorEl, handlePopoverClose };
+  // Handle opening of module editor
+  const handleOpenEditor = () => {
+    // Close popover
+    handlePopoverClose();
+
+    // Get module id update showModuleEditor state to id
+    const moduleID = anchorEl?.getAttribute("data-target");
+    if (typeof moduleID === "undefined") return;
+    setShowModuleEditor(moduleID);
+  };
+
+  return {
+    handleExport,
+    handleDelete,
+    handlePopoverButtonClick,
+    anchorEl,
+    handlePopoverClose,
+    showModuleEditor,
+    setShowModuleEditor,
+    handleOpenEditor,
+  } as const;
 };

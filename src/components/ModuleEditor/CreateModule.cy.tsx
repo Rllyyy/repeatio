@@ -26,7 +26,7 @@ function MockCreateModuleComponent() {
     <MemoryRouter>
       <main style={{ marginTop: 0 }}>
         <div className='import-create-module' style={{ backgroundColor: "white" }}>
-          <ModuleEditorForm handleModalClose={handleModalCloseSpy} mode='create' />
+          <ModuleEditorForm handleModalClose={handleModalCloseSpy} mode='create' navigateOnSuccess={false} />
         </div>
         <CustomToastContainer />
       </main>

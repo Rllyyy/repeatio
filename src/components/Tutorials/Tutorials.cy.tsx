@@ -52,7 +52,7 @@ describe("<Tutorials />", () => {
     cy.get("form").parent().invoke("outerHeight").should("be.greaterThan", 390);
   });
 
-  it.only("should use the 16 / 9 ratio on bigger screens", () => {
+  it("should use the 16 / 9 ratio on bigger screens", () => {
     cy.viewport(800, 800);
     cy.mount(<Tutorials />);
 

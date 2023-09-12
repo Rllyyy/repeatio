@@ -121,169 +121,177 @@ export const useQuestion = () => {
   }, [params.moduleID, params.questionID]);
 
   /* Set context, question and set Module example if needed */
-  const fetchAndSetQuestions = useCallback(async () => {
-    if (params.questionID === undefined) {
-      return;
-    }
-
-    /* setExampleModule if it hasn't been added before */
-    if (params.moduleID === "types_1" && (questionIds?.length ?? 0) === 0) {
-      // Get settings from localStorage
-      const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
-
-      /* Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render) */
-      if (!isExampleModuleAdded(settings)) {
-        await addExampleModuleToLocalStorage(settings);
-      }
-    }
-
-    /* Set context if it is empty */
-    if ((questionIds?.length ?? 0) <= 0 && params.moduleID) {
-      const mode = new URLSearchParams(search).get("mode");
-      const order = new URLSearchParams(search).get("order");
-
-      if (order !== "chronological" && order !== "random") {
-        console.warn(`${order} is not a valid argument for order! Redirecting to chronological.`);
-        navigate({
-          pathname: `/module/${params.moduleID}/question/${params.questionID}`,
-          search: `?mode=${mode}&order=chronological`,
-        });
+  const fetchAndSetQuestions = useCallback(
+    async (signal: AbortSignal) => {
+      if (params.questionID === undefined) {
+        return;
       }
 
-      switch (mode) {
-        case "practice":
-          const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+      /* setExampleModule if it hasn't been added before */
+      if (params.moduleID === "types_1" && (questionIds?.length ?? 0) === 0) {
+        // Get settings from localStorage
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
 
-          let ids = module?.questions.map((question) => question.id);
+        /* Add example module to localStorage if it isn't there and the user hasn't removed it (first ever render) */
+        if (!isExampleModuleAdded(settings)) {
+          await addExampleModuleToLocalStorage(settings, signal);
+        }
+      }
 
-          if (ids) {
-            // Randomize the array but keep the first element the same
-            if (order === "random") {
-              // get index of current id
-              const currentIndex = ids.indexOf(params.questionID);
+      /* Set context if it is empty */
+      if ((questionIds?.length ?? 0) <= 0 && params.moduleID) {
+        const mode = new URLSearchParams(search).get("mode");
+        const order = new URLSearchParams(search).get("order");
 
-              // Remove the id from the array
-              ids.splice(currentIndex, 1);
-
-              // Shuffle the array
-              ids = shuffleArray(ids);
-
-              // Add the current question id in front of the array so it equals the currently viewed question
-              ids.unshift(params.questionID);
-            }
-
-            setQuestionIds([...ids]);
-          } else {
-            toast.error("Module doesn't exist");
-          }
-          break;
-        case "bookmarked":
-          let bookmarkedIds = parseJSON<IBookmarkedQuestions>(
-            localStorage.getItem(`repeatio-marked-${params.moduleID}`)
-          )?.questions;
-
-          if (bookmarkedIds) {
-            const currentIndex = bookmarkedIds.indexOf(params.questionID);
-
-            // Should only happen if the user navigates with the url to ?mode=bookmarked
-            if (currentIndex <= -1) {
-              if (bookmarkedIds.length >= 1 && !!bookmarkedIds[0]) {
-                navigate(
-                  {
-                    pathname: `/module/${params.moduleID}/question/${bookmarkedIds[0]}`,
-                    search: `?mode=bookmarked&order=${order}`,
-                  },
-                  { replace: true }
-                );
-
-                toast.warn(
-                  "The previous question is no longer bookmarked! Redirected to first question in bookmarked questions."
-                );
-                return;
-              } else {
-                //navigate home
-                navigate(`/module/${params.moduleID}`);
-                toast.warn("Question is no longer bookmarked");
-                return;
-              }
-            }
-
-            // Get an array of all question IDs from the module in local storage
-            const moduleQuestionIds = parseJSON<IModule>(
-              localStorage.getItem(`repeatio-module-${params.moduleID}`)
-            )?.questions.reduce((acc: string[], question) => {
-              acc.push(question.id);
-              return acc;
-            }, []);
-
-            if (!moduleQuestionIds) return;
-            // Find all valid and invalid IDs in bookmarkedQuestionsIDs and log a warning for each invalid one
-            let { validIds, invalidIds } = bookmarkedIds.reduce(
-              (
-                acc: { validIds: IBookmarkedQuestions["questions"]; invalidIds: IBookmarkedQuestions["questions"] },
-                id
-              ) => {
-                if (moduleQuestionIds?.includes(id)) {
-                  acc.validIds?.push(id);
-                } else {
-                  acc.invalidIds?.push(id);
-                }
-                return acc;
-              },
-              { validIds: [], invalidIds: [] }
-            );
-
-            if (order === "random" && validIds) {
-              // Remove the id from the array
-              validIds.splice(currentIndex, 1);
-
-              // Shuffle the array
-              validIds = shuffleArray(validIds);
-
-              // Add the current question id in front of the array so it equals the currently viewed question
-              validIds.unshift(params.questionID);
-            }
-
-            // Update the context if there are any valid ids
-            if (validIds && validIds.length >= 1) {
-              setQuestionIds([...validIds]);
-            }
-
-            // Show warning that includes every id that wasn't found
-            if (invalidIds && invalidIds?.length >= 1) {
-              console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
-            }
-          } else {
-            toast.warn("Found 0 bookmarked questions");
-            navigate(`/module/${params.moduleID}`);
-          }
-
-          break;
-        default:
-          console.warn(`${mode} is not a valid argument for mode! Redirecting to practice.`);
-
+        if (order !== "chronological" && order !== "random") {
+          console.warn(`${order} is not a valid argument for order! Redirecting to chronological.`);
           navigate({
             pathname: `/module/${params.moduleID}/question/${params.questionID}`,
-            search: `?mode=practice&order=${order}`,
+            search: `?mode=${mode}&order=chronological`,
           });
-          break;
-      }
-    }
+        }
 
-    if (questionIds?.length > 0) {
-      fetchQuestion();
-      setLoading(false);
-    }
-  }, [params.questionID, params.moduleID, questionIds, search, setQuestionIds, navigate, fetchQuestion]);
+        switch (mode) {
+          case "practice":
+            const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${params.moduleID}`));
+
+            let ids = module?.questions.map((question) => question.id);
+
+            if (ids) {
+              // Randomize the array but keep the first element the same
+              if (order === "random") {
+                // get index of current id
+                const currentIndex = ids.indexOf(params.questionID);
+
+                // Remove the id from the array
+                ids.splice(currentIndex, 1);
+
+                // Shuffle the array
+                ids = shuffleArray(ids);
+
+                // Add the current question id in front of the array so it equals the currently viewed question
+                ids.unshift(params.questionID);
+              }
+
+              setQuestionIds([...ids]);
+            } else {
+              toast.error("Module doesn't exist");
+            }
+            break;
+          case "bookmarked":
+            let bookmarkedIds = parseJSON<IBookmarkedQuestions>(
+              localStorage.getItem(`repeatio-marked-${params.moduleID}`)
+            )?.questions;
+
+            if (bookmarkedIds) {
+              const currentIndex = bookmarkedIds.indexOf(params.questionID);
+
+              // Should only happen if the user navigates with the url to ?mode=bookmarked
+              if (currentIndex <= -1) {
+                if (bookmarkedIds.length >= 1 && !!bookmarkedIds[0]) {
+                  navigate(
+                    {
+                      pathname: `/module/${params.moduleID}/question/${bookmarkedIds[0]}`,
+                      search: `?mode=bookmarked&order=${order}`,
+                    },
+                    { replace: true }
+                  );
+
+                  toast.warn(
+                    "The previous question is no longer bookmarked! Redirected to first question in bookmarked questions."
+                  );
+                  return;
+                } else {
+                  //navigate home
+                  navigate(`/module/${params.moduleID}`);
+                  toast.warn("Question is no longer bookmarked");
+                  return;
+                }
+              }
+
+              // Get an array of all question IDs from the module in local storage
+              const moduleQuestionIds = parseJSON<IModule>(
+                localStorage.getItem(`repeatio-module-${params.moduleID}`)
+              )?.questions.reduce((acc: string[], question) => {
+                acc.push(question.id);
+                return acc;
+              }, []);
+
+              if (!moduleQuestionIds) return;
+              // Find all valid and invalid IDs in bookmarkedQuestionsIDs and log a warning for each invalid one
+              let { validIds, invalidIds } = bookmarkedIds.reduce(
+                (
+                  acc: { validIds: IBookmarkedQuestions["questions"]; invalidIds: IBookmarkedQuestions["questions"] },
+                  id
+                ) => {
+                  if (moduleQuestionIds?.includes(id)) {
+                    acc.validIds?.push(id);
+                  } else {
+                    acc.invalidIds?.push(id);
+                  }
+                  return acc;
+                },
+                { validIds: [], invalidIds: [] }
+              );
+
+              if (order === "random" && validIds) {
+                // Remove the id from the array
+                validIds.splice(currentIndex, 1);
+
+                // Shuffle the array
+                validIds = shuffleArray(validIds);
+
+                // Add the current question id in front of the array so it equals the currently viewed question
+                validIds.unshift(params.questionID);
+              }
+
+              // Update the context if there are any valid ids
+              if (validIds && validIds.length >= 1) {
+                setQuestionIds([...validIds]);
+              }
+
+              // Show warning that includes every id that wasn't found
+              if (invalidIds && invalidIds?.length >= 1) {
+                console.warn(`Couldn't find the following ids: ${invalidIds.join(", ")} `);
+              }
+            } else {
+              toast.warn("Found 0 bookmarked questions");
+              navigate(`/module/${params.moduleID}`);
+            }
+
+            break;
+          default:
+            console.warn(`${mode} is not a valid argument for mode! Redirecting to practice.`);
+
+            navigate({
+              pathname: `/module/${params.moduleID}/question/${params.questionID}`,
+              search: `?mode=practice&order=${order}`,
+            });
+            break;
+        }
+      }
+
+      if (questionIds?.length > 0) {
+        fetchQuestion();
+        setLoading(false);
+      }
+    },
+    [params.questionID, params.moduleID, questionIds, search, setQuestionIds, navigate, fetchQuestion]
+  );
 
   /* UseEffects */
   useEffect(() => {
-    fetchAndSetQuestions();
+    // Define abort controller
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    fetchAndSetQuestions(signal);
 
     return () => {
       setQuestion({} as IQuestion);
       setLoading(true);
       setShowAnswer(false);
+      controller.abort();
     };
   }, [params.questionID, fetchAndSetQuestions]);
 

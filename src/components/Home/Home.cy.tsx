@@ -10,6 +10,7 @@ import { CustomToastContainer } from "../toast/toast";
 import { TSettings } from "../../utils/types";
 import { IModule } from "../module/module";
 import { ISettings } from "../../hooks/useSetting";
+import { IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
@@ -17,14 +18,16 @@ declare const expect: Chai.ExpectStatic;
 
 const MockModulesWithRouter = () => {
   return (
-    <MemoryRouter>
-      <main style={{ minHeight: "100vh", marginTop: 0 }}>
-        <Routes>
-          <Route path='/' element={<Home />} />
-        </Routes>
-        <CustomToastContainer />
-      </main>
-    </MemoryRouter>
+    <div id='root'>
+      <MemoryRouter>
+        <main style={{ minHeight: "100vh", marginTop: 0 }}>
+          <Routes>
+            <Route path='/' element={<Home />} />
+          </Routes>
+          <CustomToastContainer />
+        </main>
+      </MemoryRouter>
+    </div>
   );
 };
 
@@ -121,6 +124,8 @@ describe("Module sort", () => {
     cy.contains("button", "Sort").click();
     cy.contains("Name (descending)").click();
 
+    cy.wait(300);
+
     // get order of all items
     cy.get("article")
       .then((modules) => modules.get().map((module) => module.getAttribute("data-cy")))
@@ -146,6 +151,8 @@ describe("Module sort", () => {
 
     cy.contains("button", "Sort").click();
     cy.contains("ID (ascending)").click();
+
+    cy.wait(300);
 
     // get order of all items
     cy.get("article")
@@ -396,6 +403,79 @@ describe("Module deletion", () => {
 
     //Expect toast to show up
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
+  });
+});
+
+/* Module edit */
+describe("Module Edit", () => {
+  it("should open the <EditModule /> component", () => {
+    cy.mount(<MockModulesWithRouter />);
+    cy.get("button.popover-button").click();
+    cy.get("li[aria-label='Edit Module']").click();
+    cy.get(".ReactModal__Content--after-open").should("be.visible");
+  });
+
+  it("should update the module id in the module overview", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-cypress_1']").find("button.popover-button").click();
+    cy.get("li[aria-label='Edit Module']").click();
+
+    cy.get("input#module-editor-id-input").clear().type("changed");
+
+    cy.get("button[type='submit']").click();
+
+    cy.get("article[data-cy='module-changed']").should("exist");
+    cy.get("article").should("have.length", 2);
+  });
+
+  it("should update the module in the localStorage", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-cypress_1']").find("button.popover-button").click();
+    cy.get("li[aria-label='Edit Module']").click();
+
+    cy.get("input#module-editor-id-input").clear().type("changed", { delay: 2 });
+    cy.get("input#module-editor-name-input").clear().type("name-changed", { delay: 2 });
+    cy.get("select#module-editor-language-select").select("German");
+
+    cy.get("button[type='submit']")
+      .click()
+      .should(() => {
+        const module = parseJSON<IModule>(localStorage.getItem("repeatio-module-changed"));
+
+        // Assert that the module exists
+        expect(module).not.to.equal(null);
+
+        // Assert that the id, name and language changed
+        expect(module?.id).to.equal("changed");
+        expect(module?.name).to.equal("name-changed");
+        expect(module?.lang).to.equal("de");
+      });
+  });
+
+  it("should update the bookmarked localStorage items on id change", () => {
+    cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1']").find("button.popover-button").click();
+    cy.get("li[aria-label='Edit Module']").click();
+
+    cy.get("input#module-editor-id-input").clear().type("changed", { delay: 2 });
+
+    cy.get("button[type='submit']")
+      .click()
+      .should(() => {
+        const module = parseJSON<IBookmarkedQuestions>(localStorage.getItem("repeatio-marked-changed"));
+
+        // Assert that the module exists
+        expect(module).not.to.equal(null);
+
+        // Assert that the id changed
+        expect(module?.id).to.equal("changed");
+      });
   });
 });
 
