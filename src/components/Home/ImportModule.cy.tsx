@@ -57,7 +57,7 @@ describe("Importing a Module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.5.0");
+        expect(localStorageItem?.compatibility).to.equal("0.6.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
   });
@@ -150,7 +150,7 @@ describe("Importing a Module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.5.0");
+        expect(localStorageItem?.compatibility).to.equal("0.6.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
   });
@@ -195,7 +195,7 @@ describe("Importing a Module", () => {
       name: "Local Storage Item 1",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 
@@ -260,7 +260,7 @@ describe("Importing a Module", () => {
       name: "File 1",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 
@@ -362,7 +362,7 @@ describe("Importing a Module", () => {
       name: "This module was replaced by cypress",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 
@@ -445,7 +445,7 @@ describe("Importing a Module", () => {
       name: "File 1",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 
@@ -463,7 +463,7 @@ describe("Importing a Module", () => {
       name: "File 2",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 

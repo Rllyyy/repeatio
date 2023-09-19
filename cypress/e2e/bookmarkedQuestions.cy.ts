@@ -83,7 +83,7 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     const bookmarkedFile = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: ["invalid-id", "qID-1", "also-invalid"],
     };
 
@@ -369,7 +369,7 @@ export function buildBookmarkFile(moduleID: "cypress_1" | (string & {}), questio
   const fileContent = {
     id: moduleID,
     type: "marked",
-    compatibility: "0.5.0",
+    compatibility: "0.6.0",
     questions: questions,
   };
 

@@ -72,7 +72,7 @@ const data: IModule = {
   name: "TestModule",
   type: "module",
   lang: "lat",
-  compatibility: "0.5.0",
+  compatibility: "0.6.0",
   questions: mockFilteredQuestions,
 };
 
