@@ -124,7 +124,7 @@
     "@types/react-modal": "^3.16.0",
     "@types/wicg-file-system-access": "^2020.9.6",
     "@vitejs/plugin-react": "^4.0.4",
-    "electron": "^18.3.7",
+    "electron": "^22.3.25",
     "electron-builder": "^23.6.0",
     "eslint": "^8.46.0",
     "eslint-config-react-app": "^7.0.1",
