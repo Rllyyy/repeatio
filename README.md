@@ -16,7 +16,7 @@
   </a>
 </div>
 
-> **Warning**
+> [!WARNING]  
 >
 > - **Regularly** backup your data by **exporting** your modules and bookmarked questions!
 > - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
@@ -44,7 +44,7 @@
 3. Finally click on `Add`
 4. The new module will appear in the `Module Overview` and can be viewed by clicking on `View >`
 
-> **Warning**  
+> [!WARNING]  
 > If the module already exist in your modules it will be completely overwritten with the imported module!
 
 ### Export a Module
@@ -98,7 +98,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 2. Fill in the required fields ([Learn more](#question-editor) about the Question Editor)
 3. Click on `Update`
 
-> **Note**  
+> [!NOTE]  
 > On mobile you may have to first extend the bottom of the navigation
 
 ### Question Editor
@@ -423,10 +423,10 @@ Text outside list
     </tr>
   </table>
 
-> **Warning**  
+> [!WARNING]  
 > To exit a list in markdown you have to add a blank line between the list and the following content or add two to blank spaces at the end of the last list item
 
-> **Note**  
+> [!NOTE]  
 > Unordered list in markdown can use asterisks (<code>*</code>), minuses (<code>-</code>) or pluses (<code>+</code>).
 
 </details>
@@ -492,7 +492,7 @@ Text outside table
     </tr>
   </table>
 
-> **Note**  
+> [!NOTE]  
 > Use the following syntax below the heading to align items in a markdown table:
 >
 > - left (| :------- |) is optional as it is identical to | ------- |
@@ -566,7 +566,7 @@ This text is unaffected
   </tr>
 </table>
 
-> **Note**  
+> [!NOTE]  
 > Using html elements may overwrite the default styling!
 
 </details>
@@ -606,7 +606,7 @@ $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
 To delete a question click on the trash icon.  
 ![Bookmark](./.github/Docs/assets/images/delete-question.png)
 
-> **Warning**  
+> [!WARNING]  
 > There is no undo functionality and no confirm dialog. The question will be deleted immediately!  
 
 ## Bookmarked Questions
@@ -684,7 +684,7 @@ git clone https://github.com/Rllyyy/repeatio.git
 yarn install
 ```
 
-> **Note**  
+> [!NOTE]  
 > You may need to install yarn first.
 
 </details>
