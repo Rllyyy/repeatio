@@ -49,7 +49,7 @@ export const SuspenseWithErrorBoundary: React.FC<PropsWithChildren<ISuspenseWith
   );
 };
 
-const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
+export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   const navigate = useNavigate();
 
   // Reload page

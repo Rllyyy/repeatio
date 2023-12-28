@@ -24,6 +24,7 @@ import { QuestionIdsProvider } from "./components/module/questionIdsContext";
 
 //Import functions
 import { ScrollToTop } from "./utils/ScrollToTop";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Lazy load pages
 const TutorialsPage = React.lazy(() => import("./pages/tutorials"));
@@ -35,6 +36,9 @@ const NewsPage = React.lazy(() => import("./pages/news"));
 const LegalNoticePage = React.lazy(() => import("./pages/legal-notice"));
 const PrivacyPage = React.lazy(() => import("./pages/privacy"));
 const AllQuestionsPage = React.lazy(() => import("./pages/module/all-questions"));
+
+// Create react-query client
+const queryClient = new QueryClient();
 
 // Define root element
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -77,9 +81,11 @@ root.render(
           <Route
             path='/news'
             element={
-              <SuspenseWithErrorBoundary>
-                <NewsPage />
-              </SuspenseWithErrorBoundary>
+              <QueryClientProvider client={queryClient}>
+                <SuspenseWithErrorBoundary>
+                  <NewsPage />
+                </SuspenseWithErrorBoundary>
+              </QueryClientProvider>
             }
           />
           <Route
