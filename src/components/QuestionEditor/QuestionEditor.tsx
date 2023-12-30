@@ -9,6 +9,7 @@ import { CustomModal } from "../CustomModal/CustomModal";
 import { AnswerOptionsEditor } from "./AnswerOptionsEditor/AnswerOptionsEditor";
 import TextareaAutoSize from "react-textarea-autosize";
 import { toast } from "react-toastify";
+import LabelWithAsterisk from "../common/LabelWithAsterisk";
 
 //CSS
 import "./QuestionEditor.css";
@@ -367,7 +368,7 @@ export const Form: React.FC<EditForm | CreateForm> = (props) => {
       />
       {/* Question Answer*/}
       <div className='modal-question-answer'>
-        <label htmlFor='editor'>Answer</label>
+        <LabelWithAsterisk htmlFor='editor'>Answer</LabelWithAsterisk>
         <AnswerOptionsEditor
           questionType={question.type}
           answerValues={question.answerOptions}
@@ -580,7 +581,9 @@ const EditorFormInput: React.FC<IEditorFormInput> = ({
 
   return (
     <div className={`modal-question-${labelTextLowerCase}`}>
-      <label htmlFor={`modal-question-${labelTextLowerCase}-input`}>{labelText}</label>
+      <LabelWithAsterisk htmlFor={`modal-question-${labelTextLowerCase}-input`} showAsterisk={Boolean(props.required)}>
+        {labelText}
+      </LabelWithAsterisk>
       <input
         name={labelTextLowerCase}
         type={type}
@@ -639,7 +642,7 @@ const EditorFormSelect = ({
 
   return (
     <div className='modal-question-type'>
-      <label htmlFor='modal-question-type-select'>Type</label>
+      <LabelWithAsterisk htmlFor='modal-question-type-select'>Type</LabelWithAsterisk>
       <select
         className={`${typeErrors ? "is-invalid" : "is-valid"}`}
         id='modal-question-type-select'

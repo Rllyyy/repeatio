@@ -10,6 +10,7 @@ import { parseJSON } from "../../utils/parseJSON";
 // Components
 import { FixedModal } from "../CustomModal/FixedModal";
 import { toast } from "react-toastify";
+import LabelWithAsterisk from "../common/LabelWithAsterisk";
 
 // css
 import styles from "./index.module.css";
@@ -184,7 +185,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
     <form className={styles["module-editor"]} onSubmit={handleSubmit(formSubmit)}>
       {/* Module ID */}
       <div className='module-editor-id'>
-        <label htmlFor='module-editor-id-input'>ID</label>
+        <LabelWithAsterisk htmlFor='module-editor-id-input'>ID</LabelWithAsterisk>
         <input
           type='text'
           id='module-editor-id-input'
@@ -203,7 +204,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
       </div>
       {/* Module Name */}
       <div className='module-editor-name'>
-        <label htmlFor='module-editor-name-input'>Name</label>
+        <LabelWithAsterisk htmlFor='module-editor-name-input'>Name</LabelWithAsterisk>
         <input
           type='text'
           id='module-editor-name-input'
@@ -222,7 +223,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
       </div>
       {/* Module language */}
       <div className='module-editor-language'>
-        <label htmlFor='module-editor-language-select'>Language</label>
+        <LabelWithAsterisk htmlFor='module-editor-language-select'>Language</LabelWithAsterisk>
         <select
           id='module-editor-language-select'
           {...register("lang")}
