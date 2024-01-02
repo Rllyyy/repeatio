@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /*
 =============== 
 Variables
@@ -39,7 +43,9 @@ https://google-webfonts-helper.herokuapp.com/fonts
   font-weight: 300;
   src: url("/fonts/roboto-v27-latin-300.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("/fonts/roboto-v27-latin-300.woff2") format("woff2"),
+  src:
+    local(""),
+    url("/fonts/roboto-v27-latin-300.woff2") format("woff2"),
     /* Super Modern Browsers */ url("/fonts/roboto-v27-latin-300.woff") format("woff"),
     /* Modern Browsers */ url("/fonts/roboto-v27-latin-300.ttf") format("truetype"),
     /* Safari, Android, iOS */ url("/fonts/roboto-v27-latin-300.svg#Roboto") format("svg");
@@ -54,7 +60,9 @@ https://google-webfonts-helper.herokuapp.com/fonts
   font-weight: 400;
   src: url("/fonts/roboto-v27-latin-regular.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("/fonts/roboto-v27-latin-regular.woff2") format("woff2"),
+  src:
+    local(""),
+    url("/fonts/roboto-v27-latin-regular.woff2") format("woff2"),
     /* Super Modern Browsers */ url("/fonts/roboto-v27-latin-regular.woff") format("woff"),
     /* Modern Browsers */ url("/fonts/roboto-v27-latin-regular.ttf") format("truetype"),
     /* Safari, Android, iOS */ url("/fonts/roboto-v27-latin-regular.svg#Roboto") format("svg");
@@ -69,7 +77,9 @@ https://google-webfonts-helper.herokuapp.com/fonts
   font-weight: 500;
   src: url("/fonts/roboto-v27-latin-500.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("/fonts/roboto-v27-latin-500.woff2") format("woff2"),
+  src:
+    local(""),
+    url("/fonts/roboto-v27-latin-500.woff2") format("woff2"),
     /* Super Modern Browsers */ url("/fonts/roboto-v27-latin-500.woff") format("woff"),
     /* Modern Browsers */ url("/fonts/roboto-v27-latin-500.ttf") format("truetype"),
     /* Safari, Android, iOS */ url("/fonts/roboto-v27-latin-500.svg#Roboto") format("svg");
@@ -84,7 +94,9 @@ https://google-webfonts-helper.herokuapp.com/fonts
   font-weight: 700;
   src: url("/fonts/roboto-v27-latin-700.eot");
   /* IE9 Compat Modes */
-  src: local(""), url("/fonts/roboto-v27-latin-700.woff2") format("woff2"),
+  src:
+    local(""),
+    url("/fonts/roboto-v27-latin-700.woff2") format("woff2"),
     /* Super Modern Browsers */ url("/fonts/roboto-v27-latin-700.woff") format("woff"),
     /* Modern Browsers */ url("/fonts/roboto-v27-latin-700.ttf") format("truetype"),
     /* Safari, Android, iOS */ url("/fonts/roboto-v27-latin-700.svg#Roboto") format("svg");
@@ -216,7 +228,9 @@ a {
 /* Remove the default blue background color on mobile chrome if choosing autocomplete value  */
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
-  transition: background-color 600000s 0s, color 600000s 0s;
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
 }
 
 input[data-autocompleted] {
