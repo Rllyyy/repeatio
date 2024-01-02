@@ -164,35 +164,38 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
       const lastItemIndex = (options?.correctMatches?.length ?? 0) - 1;
 
       // Loop through each item in the array using reduce
-      options.correctMatches = (options.correctMatches || []).reduce((accumulator, item, currentIndex) => {
-        // Check if this is the last item in the array
-        if (currentIndex === lastItemIndex) {
-          // Find the index of the item we want to update
-          const index = options?.correctMatches?.findIndex((otherItem) => {
-            return (
-              otherItem.right?.id.split("add-line-")[1] === lastLine?.right?.id.split("add-line-")[1] &&
-              otherItem.left?.id.split("add-line-")[1] === id
-            );
-          });
+      options.correctMatches = (options.correctMatches || []).reduce(
+        (accumulator, item, currentIndex) => {
+          // Check if this is the last item in the array
+          if (currentIndex === lastItemIndex) {
+            // Find the index of the item we want to update
+            const index = options?.correctMatches?.findIndex((otherItem) => {
+              return (
+                otherItem.right?.id.split("add-line-")[1] === lastLine?.right?.id.split("add-line-")[1] &&
+                otherItem.left?.id.split("add-line-")[1] === id
+              );
+            });
 
-          // If the item is already at the beginning of the array, don't modify it
-          if (index === 0) {
-            // Don't add anything to the accumulator
-            console.warn("Line already exists");
+            // If the item is already at the beginning of the array, don't modify it
+            if (index === 0) {
+              // Don't add anything to the accumulator
+              console.warn("Line already exists");
+            } else {
+              // Create a copy of the item with the 'left' property updated
+              const updatedItem = { ...item, left: circle };
+              // Add the updated item to the accumulator
+              accumulator?.push(updatedItem);
+            }
           } else {
-            // Create a copy of the item with the 'left' property updated
-            const updatedItem = { ...item, left: circle };
-            // Add the updated item to the accumulator
-            accumulator?.push(updatedItem);
+            // This is not the last item in the array, so add it to the accumulator unchanged
+            accumulator?.push(item);
           }
-        } else {
-          // This is not the last item in the array, so add it to the accumulator unchanged
-          accumulator?.push(item);
-        }
 
-        // Return the accumulator for the next iteration
-        return accumulator;
-      }, [] as IExtendedMatchTemp["correctMatches"]);
+          // Return the accumulator for the next iteration
+          return accumulator;
+        },
+        [] as IExtendedMatchTemp["correctMatches"]
+      );
 
       // Deselect the clicked element and remove the highlight from the opposite side
       setHighlightSelectedCircle(null);
@@ -254,35 +257,38 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
 
       // This part ensures that no duplicate lines are added
       // Loop through each item in the array using reduce
-      options.correctMatches = (options.correctMatches || []).reduce((accumulator, item, currentIndex) => {
-        // Check if this is the last item in the array
-        if (currentIndex === lastItemIndex) {
-          // Find the index of the item we want to update
-          const index = options?.correctMatches?.findIndex((otherItem) => {
-            return (
-              otherItem.left?.id.split("add-line-")[1] === lastLine?.left?.id.split("add-line-")[1] &&
-              otherItem.right?.id.split("add-line-")[1] === id
-            );
-          });
+      options.correctMatches = (options.correctMatches || []).reduce(
+        (accumulator, item, currentIndex) => {
+          // Check if this is the last item in the array
+          if (currentIndex === lastItemIndex) {
+            // Find the index of the item we want to update
+            const index = options?.correctMatches?.findIndex((otherItem) => {
+              return (
+                otherItem.left?.id.split("add-line-")[1] === lastLine?.left?.id.split("add-line-")[1] &&
+                otherItem.right?.id.split("add-line-")[1] === id
+              );
+            });
 
-          // If the item is already at the beginning of the array, don't modify it
-          if ((index ?? 0) >= 0) {
-            // Don't add anything to the accumulator
-            console.warn("Line already exists");
+            // If the item is already at the beginning of the array, don't modify it
+            if ((index ?? 0) >= 0) {
+              // Don't add anything to the accumulator
+              console.warn("Line already exists");
+            } else {
+              // Create a copy of the item with the 'right' property updated
+              const updatedItem = { ...item, right: circle };
+              // Add the updated item to the accumulator
+              accumulator?.push(updatedItem);
+            }
           } else {
-            // Create a copy of the item with the 'right' property updated
-            const updatedItem = { ...item, right: circle };
-            // Add the updated item to the accumulator
-            accumulator?.push(updatedItem);
+            // This is not the last item in the array, so add it to the accumulator unchanged
+            accumulator?.push(item);
           }
-        } else {
-          // This is not the last item in the array, so add it to the accumulator unchanged
-          accumulator?.push(item);
-        }
 
-        // Return the accumulator for the next iteration
-        return accumulator;
-      }, [] as IExtendedMatchTemp["correctMatches"]);
+          // Return the accumulator for the next iteration
+          return accumulator;
+        },
+        [] as IExtendedMatchTemp["correctMatches"]
+      );
 
       // Deselect the clicked element and remove the highlight from the opposite side
       setHighlightSelectedCircle(null);
@@ -478,6 +484,7 @@ const AddElementButton: React.FC<IAddElementButton> = ({ side, handleElementAdd 
   return (
     <button
       type='button'
+      className='bg-gray-100 hover:bg-gray-200 duration-100'
       style={{
         border: "1px solid lightgray",
         fontSize: "24px",
@@ -485,6 +492,7 @@ const AddElementButton: React.FC<IAddElementButton> = ({ side, handleElementAdd 
         cursor: "pointer",
         marginRight: side === "right" ? "30px" : undefined,
         marginLeft: side === "left" ? "30px" : undefined,
+        lineHeight: "normal",
       }}
       onClick={handleElementAdd}
       id={`add-${side}-element`}
