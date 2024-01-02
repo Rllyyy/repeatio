@@ -124,6 +124,7 @@
     "@babel/preset-env": "^7.22.10",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
+    "@tailwindcss/typography": "^0.5.10",
     "@tanstack/eslint-plugin-query": "^5.14.6",
     "@types/d3-ease": "^3.0.0",
     "@types/lodash": "^4.14.196",
