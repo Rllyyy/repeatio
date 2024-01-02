@@ -3,11 +3,11 @@ import "../components/Privacy/Privacy.css";
 
 export default function PrivacyPage() {
   return (
-    <div className='privacy'>
+    <div className='flex flex-col justify-center items-center w-full max-w-screen-lg my-1 mx-auto'>
       <SiteHeading title='Datenschutzerklärung' />
-      <div className='content'>
-        <h2 style={{ marginTop: "1.5rem" }}>1. Datenschutz auf einen Blick</h2>
-        <h3 style={{ marginTop: ".5rem" }}>Allgemeine Hinweise</h3>
+      <div className='prose pb-10 max-w-full prose-ul:list-outside'>
+        <h2 className='mt-6'>1. Datenschutz auf einen Blick</h2>
+        <h3>Allgemeine Hinweise</h3>
         <p>
           Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten
           passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich
@@ -15,7 +15,7 @@ export default function PrivacyPage() {
           diesem Text aufgeführten Datenschutzerklärung.
         </p>
         <h3>Datenerfassung auf dieser Website</h3>
-        <h4 style={{ marginTop: ".4rem" }}>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</h4>
+        <h4>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</h4>
         <p>
           Die Datenverarbeitung auf dieser Website erfolgt einerseits durch den Websitebetreiber und andererseits durch
           den Hoster (Netlify Inc.). Die Kontaktdaten des Websitebetreibers können Sie dem Abschnitt "Hinweis zur
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
         </p>
         <p>Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit an uns wenden.</p>
         <h2>2. Hosting</h2>
-        <h3 style={{ marginTop: ".5rem" }}>Externes Hosting</h3>
+        <h3>Externes Hosting</h3>
         <p>
           Diese Website wird bei einem externen Dienstleister Netlify gehostet (Hoster). Die personenbezogenen Daten,
           die auf dieser Website erfasst werden, werden auf den Servern des Hosters in Log Files gespeichert. Hierbei
@@ -80,7 +80,6 @@ export default function PrivacyPage() {
           erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.
         </p>
         <p>Wir setzen folgenden Hoster ein:</p>
-        <br />
         <p>
           Netlify, Inc., <br />
           44 Montgomery Street, Suite 300, <br />
@@ -90,7 +89,7 @@ export default function PrivacyPage() {
           <a href='https://www.netlify.com/gdpr-ccpa/'>https://www.netlify.com/gdpr-ccpa/</a>
         </p>
         <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
-        <h3 style={{ marginTop: ".5rem" }}>Datenschutz</h3>
+        <h3>Datenschutz</h3>
         <p>
           Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre
           personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser
@@ -109,20 +108,18 @@ export default function PrivacyPage() {
         </p>
         <h3>Hinweis zur verantwortlichen Stelle</h3>
         <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
-        <br />
-        <div className='info'>
+        <div className='prose-p:my-0.5 select-none'>
           <p>Niklas Fischer</p>
-          <div id='loc'>
+          <div className='select-none flex'>
             <span>Lottbeker Weg</span>
-            <span>4</span>
-            <span>2</span>
+            <span className='opacity-0'>4</span>
+            <span className='order-4'>2</span>
             <span>6</span>
-            <span>7</span>
+            <span className='hidden'>7</span>
           </div>
           <p>22397 Hamburg</p>
           <p>E-Mail: contact@repeatio.de</p>
         </div>
-        <br />
         <p>
           Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über
           die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten (z. B. Namen, E-Mail-Adressen o. Ä.)
@@ -261,7 +258,7 @@ export default function PrivacyPage() {
           Dritten mitgelesen werden.
         </p>
         <h2>4. Datenerfassung auf dieser Website</h2>
-        <h3 style={{ marginTop: ".5rem" }}>Cookies</h3>
+        <h3>Cookies</h3>
         <p>
           Unsere Internetseiten verwenden so genannte "Cookies". Cookies sind kleine Textdateien und richten auf Ihrem
           Endgerät keinen Schaden an. Sie werden entweder vorübergehend für die Dauer einer Sitzung (Session-Cookies)
@@ -319,7 +316,7 @@ export default function PrivacyPage() {
           gesetzliche Aufbewahrungsfristen - bleiben unberührt.
         </p>
         <h2>5. Plugins und Tools</h2>
-        <h3 style={{ marginTop: ".5rem" }}>YouTube mit erweitertem Datenschutz</h3>
+        <h3>YouTube mit erweitertem Datenschutz</h3>
         <p>
           Diese Website bindet Videos der YouTube ein. Betreiber der Seiten ist die Google Ireland Limited ("Google"),
           Gordon House, Barrow Street, Dublin 4, Irland.
@@ -362,7 +359,6 @@ export default function PrivacyPage() {
           </a>
           .
         </p>
-        <br />
         <p>
           Quelle: <a href='https://www.e-recht24.de'>https://www.e-recht24.de</a>
         </p>
