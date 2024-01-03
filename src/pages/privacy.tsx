@@ -3,9 +3,9 @@ import "../components/Privacy/Privacy.css";
 
 export default function PrivacyPage() {
   return (
-    <div className='flex flex-col justify-center items-center w-full max-w-screen-lg my-1 mx-auto'>
+    <div className='flex flex-col items-center justify-center w-full max-w-screen-lg mx-auto my-1'>
       <SiteHeading title='Datenschutzerklärung' />
-      <div className='prose pb-10 max-w-full prose-ul:list-outside'>
+      <div className='max-w-full pb-10 prose prose-ul:list-outside'>
         <h2 className='mt-6'>1. Datenschutz auf einen Blick</h2>
         <h3>Allgemeine Hinweise</h3>
         <p>
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
         <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
         <div className='prose-p:my-0.5 select-none'>
           <p>Niklas Fischer</p>
-          <div className='select-none flex'>
+          <div className='flex select-none'>
             <span>Lottbeker Weg</span>
             <span className='opacity-0'>4</span>
             <span className='order-4'>2</span>
