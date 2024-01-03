@@ -23,7 +23,7 @@ export const Card: FC<PropsWithChildren<ICard>> = memo(
     return (
       <motion.article className={`card ${disabled ? "disabled " : "active"}`} {...props}>
         <div className='card-title-info-wrapper' style={type === "module" ? { paddingRight: "10px" } : {}}>
-          <h2 className='card-title'>{title}</h2>
+          <h2 className='card-title font-bold'>{title}</h2>
           <p className='card-description'>{description}</p>
         </div>
         <div className='svg-wrapper' style={type === "module-card" ? { padding: "12px", marginTop: "-12px" } : {}}>

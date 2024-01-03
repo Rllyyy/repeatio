@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import svgrPlugin from "vite-plugin-svgr";
 import eslint from "vite-plugin-eslint";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,5 +14,10 @@ export default defineConfig({
   },
   build: {
     outDir: "build", // Changed output folder, like in CRA
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
 });
