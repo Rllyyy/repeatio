@@ -30,7 +30,7 @@ describe("Test deletion of module", () => {
 
     //Toast and console.log
     cy.get(".Toastify").contains("Deleted module cypress_1!");
-    cy.get("@consoleLog").should("be.calledWithMatch", /\[.*\] Deleted module cypress_1\!/);
+    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Deleted module cypress_1\!/);
 
     //Module should no longer exist/be visible in list of modules
     cy.contains("Cypress Fixture Module (cypress_1)").should("not.exist");

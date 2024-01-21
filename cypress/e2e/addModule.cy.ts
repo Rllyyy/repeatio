@@ -98,7 +98,7 @@ describe("Test importing a new module", () => {
     cy.get("form.import-module").contains("button", "Import").click({ force: true });
 
     //Regex match consoleError (brackets include current time so that needs to be escaped)
-    cy.get("@consoleLog").should("be.calledWithMatch", /\[.*\] Imported cypress_1.*/);
+    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Imported cypress_1.*/);
 
     //Click on link inside toast
     cy.get(".Toastify").find("a").click();
