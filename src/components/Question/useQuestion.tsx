@@ -14,13 +14,14 @@ import { IMultipleChoice } from "./QuestionTypes/MultipleChoice/MultipleChoice";
 import { IMultipleResponse } from "./QuestionTypes/MultipleResponse/MultipleResponse";
 import { IGapText } from "./QuestionTypes/GapText/GapText";
 import { IGapTextDropdown } from "./QuestionTypes/GapTextDropdown/GapTextDropdown";
-import { IParams, TSettings } from "../../utils/types";
+import { IParams } from "../../utils/types";
 import { IForwardRefFunctions } from "./QuestionTypes/types";
 import { IExtendedMatch } from "./QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { IGapTextWithTempText } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/GapTextEditor";
 import { IModule } from "../module/module";
 import { IBookmarkedQuestions } from "./components/Actions/BookmarkQuestion";
 import { IExtendedMatchTemp } from "../QuestionEditor/AnswerOptionsEditor/QuestionTypes/ExtendedMatchEditor";
+import { TSettings } from "@hooks/useSetting";
 
 export type TAnswerOptions =
   | IMultipleChoice[]

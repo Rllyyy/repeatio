@@ -2,5 +2,6 @@
   "expanded": false,
   "addedExampleModule": true,
   "moduleSort": "ID (ascending)",
-  "embedYoutubeVideos": true
+  "embedYoutubeVideos": true,
+  "showTooltips": true
 }
