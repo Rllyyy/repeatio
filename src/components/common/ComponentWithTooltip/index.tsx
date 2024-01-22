@@ -47,11 +47,11 @@ const useTooltip = () => {
 
   try {
     // Try to parse the value as JSON and validate it with the settings schema.
-    const parsedSettings = settingsSchema.safeParse(JSON.parse(value));
+    const parsedSettings = settingsSchema.parse(JSON.parse(value));
 
     // If the parsing and validation were successful, return the parsed data.
     // Otherwise, default to true.
-    return parsedSettings.success ? parsedSettings.data.showTooltips : true;
+    return parsedSettings.showTooltips !== false;
   } catch (error) {
     // If an error occurred while parsing the JSON or validating the data,
     // log the error and default to true.

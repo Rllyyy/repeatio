@@ -20,6 +20,7 @@ import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 //Interfaces
 import { IParams, ISearchParams } from "../../../../utils/types";
 import { IModule } from "../../../module/module";
+import { TSettings } from "@hooks/useSetting";
 
 //Mocha for typescript
 declare var it: Mocha.TestFunction;
@@ -338,8 +339,52 @@ describe("Delete a Question", () => {
 
     cy.contains("ID: qID-2").should("be.visible");
   });
-});
 
-/* //TODO
- - Add test to allow user to delete the last question in the current context 
-*/
+  it("should show a tooltip if a user hovers over the delete button", () => {
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("body").realClick();
+
+    // Hoover over the delete button
+    cy.get("button[aria-label='Delete Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+  });
+
+  it("should not show the tooltip if the user has the setting disabled", () => {
+    const settings: TSettings = {
+      expanded: false,
+      addedExampleModule: true,
+      moduleSort: "ID (ascending)",
+      embedYoutubeVideos: true,
+      showTooltips: false,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings, null, "\t"));
+
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("body").realClick();
+
+    // Hoover over the delete button
+    cy.get("button[aria-label='Delete Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("not.exist");
+  });
+});

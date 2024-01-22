@@ -7,6 +7,7 @@ import { TBookmarkedQuestionID } from "./BookmarkQuestion";
 //Icons
 import { BiShuffle } from "react-icons/bi";
 import { BsDot } from "react-icons/bs";
+import { ComponentWithTooltip } from "@components/common/ComponentWithTooltip";
 
 interface IShuffleButton {
   disabled: boolean;
@@ -39,28 +40,33 @@ export const ShuffleQuestionsButton: React.FC<IShuffleButton> = ({ disabled, mod
   };
 
   return (
-    <button
-      onClick={handleShuffleClick}
-      type='button'
-      style={{ position: "relative" }}
-      role='switch'
-      aria-label={order === "chronological" ? "Enable shuffle" : "Disable shuffle"}
-      aria-checked={order === "random"}
-      disabled={disabled}
+    <ComponentWithTooltip
+      id='shuffle-questions-tooltip'
+      tooltipText={order === "chronological" ? "Enable Shuffle" : "Disable Shuffle"}
     >
-      <BiShuffle style={{ color: order === "random" ? "var(--custom-prime-color)" : undefined, padding: 2 }} />
-      {order === "random" && (
-        <BsDot
-          style={{
-            padding: "4px",
-            position: "absolute",
-            bottom: "0",
-            left: "50%",
-            transform: "translate(-55%, 40%)",
-            color: "var(--custom-prime-color)",
-          }}
-        />
-      )}
-    </button>
+      <button
+        onClick={handleShuffleClick}
+        type='button'
+        style={{ position: "relative" }}
+        role='switch'
+        aria-label={order === "chronological" ? "Enable shuffle" : "Disable shuffle"}
+        aria-checked={order === "random"}
+        disabled={disabled}
+      >
+        <BiShuffle style={{ color: order === "random" ? "var(--custom-prime-color)" : undefined, padding: 2 }} />
+        {order === "random" && (
+          <BsDot
+            style={{
+              padding: "4px",
+              position: "absolute",
+              bottom: "0",
+              left: "50%",
+              transform: "translate(-55%, 40%)",
+              color: "var(--custom-prime-color)",
+            }}
+          />
+        )}
+      </button>
+    </ComponentWithTooltip>
   );
 };
