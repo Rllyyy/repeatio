@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { Tutorials } from ".";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
 import "../../index.css";
 import { parseJSON } from "../../utils/parseJSON";
@@ -18,7 +18,7 @@ describe("<Tutorials />", () => {
     cy.contains("button", "I understand")
       .click()
       .should(() => {
-        const settings = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         //const localStorageItem = JSON.parse(localStorage.getItem("youtube-consent") as string);
         expect(settings?.embedYoutubeVideos).to.equal(true);
       });

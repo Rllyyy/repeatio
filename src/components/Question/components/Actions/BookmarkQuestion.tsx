@@ -4,6 +4,9 @@ import packageJSON from "../../../../../package.json";
 //functions
 import { parseJSON } from "../../../../utils/parseJSON";
 
+// Components
+import { ComponentWithTooltip } from "@components/common/ComponentWithTooltip";
+
 //Icons
 import { MdBookmarkAdd, MdBookmarkRemove } from "react-icons/md";
 
@@ -48,21 +51,26 @@ export const BookmarkQuestion = ({ questionID, moduleID, disabled, ...props }: I
 
   //JSX
   return (
-    <button
-      type='button'
-      className='bookmark-question-button'
-      aria-label={isBookmarked ? "Unsave Question" : "Save Question"}
-      onClick={onBookmarkClick}
-      disabled={disabled}
-      {...props}
+    <ComponentWithTooltip
+      id='bookmark-question-tooltip'
+      tooltipText={isBookmarked ? "Unsave Question" : "Save Question"}
     >
-      {/* Decide which button to display */}
-      {isBookmarked ? (
-        <MdBookmarkRemove className='bookmark-remove' data-testid='bookmark-remove' />
-      ) : (
-        <MdBookmarkAdd className='bookmark-add' data-testid='bookmark-add' />
-      )}
-    </button>
+      <button
+        type='button'
+        className='bookmark-question-button'
+        aria-label={isBookmarked ? "Unsave Question" : "Save Question"}
+        onClick={onBookmarkClick}
+        disabled={disabled}
+        {...props}
+      >
+        {/* Decide which button to display */}
+        {isBookmarked ? (
+          <MdBookmarkRemove className='bookmark-remove' data-testid='bookmark-remove' />
+        ) : (
+          <MdBookmarkAdd className='bookmark-add' data-testid='bookmark-add' />
+        )}
+      </button>
+    </ComponentWithTooltip>
   );
 };
 

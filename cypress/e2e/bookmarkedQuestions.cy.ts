@@ -345,7 +345,7 @@ describe("Test deletion of bookmarked Questions", () => {
     cy.contains("Found 0 bookmarked questions for this module!");
 
     cy.contains(`Deleted bookmarked questions for "cypress_1"!`);
-    cy.get("@consoleLog").should("be.calledWithMatch", /\[.*\] Deleted bookmarked questions for "cypress_1"\!/);
+    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Deleted bookmarked questions for "cypress_1"!/);
   });
 
   it("should show error if trying to delete bookmarked questions but 0 questions are defined", () => {
@@ -354,7 +354,7 @@ describe("Test deletion of bookmarked Questions", () => {
     cy.contains(`Failed to delete the bookmarked questions for "cypress_1" because there are 0 questions saved!`);
     cy.get("@consoleError").should(
       "be.calledWithMatch",
-      /\[.*\] Failed to delete the bookmarked questions for "cypress_1" because there are 0 questions saved\!/
+      /\[.*\] Failed to delete the bookmarked questions for "cypress_1" because there are 0 questions saved!/
     );
   });
 });

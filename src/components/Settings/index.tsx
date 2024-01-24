@@ -4,16 +4,17 @@ import { version } from "../../../package.json";
 import styles from "./settings.module.css";
 import { CircularBarsSpinner } from "../Spinner";
 import { parseJSON } from "../../utils/parseJSON";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 import { downloadZip } from "client-zip";
 import { saveFile } from "../../utils/saveFile";
 import { Switch } from "./Switch";
 
-const defaultSettings: Required<ISettings> = {
+const defaultSettings: Required<TSettings> = {
   addedExampleModule: false,
   expanded: true,
   moduleSort: "Name (ascending)",
   embedYoutubeVideos: false,
+  showTooltips: true,
 };
 
 export const Settings = () => {
@@ -21,7 +22,7 @@ export const Settings = () => {
 
   const [settings, setSettings] = useSettings(defaultSettings);
 
-  const handleUpdateSettings = <K extends keyof ISettings>(name: K, value: ISettings[K]) => {
+  const handleUpdateSettings = <K extends keyof TSettings>(name: K, value: TSettings[K]) => {
     setSettings((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -83,6 +84,13 @@ export const Settings = () => {
             </label>
             <Switch value={settings?.expanded} callback={handleUpdateSettings} name='expanded' />
             <p className={styles.settingDescription}>Expand the sidebar.</p>
+          </div>
+          <div className={styles.categoryItem}>
+            <label htmlFor='switch-expanded' className={styles.settingName}>
+              Show Tooltips
+            </label>
+            <Switch value={settings?.showTooltips} callback={handleUpdateSettings} name='showTooltips' />
+            <p className={styles.settingDescription}>Show a tooltip on elements</p>
           </div>
         </form>
       </div>
@@ -370,15 +378,15 @@ async function downloadAllFiles() {
   link.remove();
 }
 
-const useSettings = (defaultSettings: Required<ISettings>) => {
+const useSettings = (defaultSettings: Required<TSettings>) => {
   const localStorageValue = useSyncExternalStore(subscribe, getSnapShot);
 
-  const res = parseJSON<ISettings>(localStorageValue);
+  const res = parseJSON<TSettings>(localStorageValue);
 
   // Merge settings
-  const value: Required<NonNullable<ISettings>> = Object.assign({}, defaultSettings, res);
+  const value: Required<NonNullable<TSettings>> = Object.assign({}, defaultSettings, res);
 
-  const setValue = (newValue: ISettings | ((prev: ISettings) => ISettings)) => {
+  const setValue = (newValue: TSettings | ((prev: TSettings) => TSettings)) => {
     const updatedSettings = typeof newValue === "function" ? newValue(value) : newValue;
 
     localStorage.setItem("repeatio-settings", JSON.stringify(updatedSettings, null, "\t"));

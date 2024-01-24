@@ -6,6 +6,7 @@ import { RiFileEditLine } from "react-icons/ri";
 
 // Components
 import { QuestionEditor } from "../../../QuestionEditor/QuestionEditor";
+import { ComponentWithTooltip } from "@components/common/ComponentWithTooltip";
 
 // Interfaces
 import { IQuestion, TUseQuestion } from "../../useQuestion";
@@ -41,9 +42,11 @@ export const EditQuestion = ({
 
   return (
     <>
-      <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
-        <RiFileEditLine />
-      </button>
+      <ComponentWithTooltip id='edit-question-tooltip' tooltipText='Edit Question'>
+        <button type='button' onClick={() => setShowModal(true)} disabled={disabled} aria-label='Edit Question'>
+          <RiFileEditLine />
+        </button>
+      </ComponentWithTooltip>
       {prevQuestion && (
         <QuestionEditor
           showModal={showModal}

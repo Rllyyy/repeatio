@@ -7,9 +7,8 @@ import { parseJSON } from "../../utils/parseJSON";
 import { CustomToastContainer } from "../toast/toast";
 
 // Interfaces / Types
-import { TSettings } from "../../utils/types";
 import { IModule } from "../module/module";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "@hooks/useSetting";
 import { IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
 
 declare var it: Mocha.TestFunction;
@@ -216,7 +215,7 @@ describe("Module sort", () => {
   });
 
   it("should update the sort settings in the localStorage on sort change", () => {
-    const settings: ISettings = {
+    const settings: TSettings = {
       expanded: true,
     };
 
@@ -231,7 +230,7 @@ describe("Module sort", () => {
     cy.contains("ID (descending)")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.moduleSort).to.equal("ID (descending)");
         expect(localStorageItem?.expanded).to.equal(true);
