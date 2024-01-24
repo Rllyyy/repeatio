@@ -1,6 +1,4 @@
-import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
-import { fetchModuleFromFileSystem } from "../../utils/fetchModuleFromFileSystem";
 import { parseJSON } from "../../utils/parseJSON";
 import { toast } from "react-toastify";
 
@@ -80,14 +78,7 @@ export function isExampleModuleAdded(settings: TSettings | null | undefined): bo
  */
 export async function addExampleModuleToLocalStorage(settings: TSettings | null | undefined, signal: AbortSignal) {
   // Fetch the example module data from the public folder
-  let exampleModuleData: IModule | undefined;
-
-  if (isElectron()) {
-    exampleModuleData = await fetchModuleFromFileSystem();
-  } else {
-  }
-
-  exampleModuleData = await fetchModuleFromPublicFolder(signal);
+  let exampleModuleData = await fetchModuleFromPublicFolder(signal);
   // Check if the example module data was retrieved successfully
   if (exampleModuleData) {
     // Update the localStorage with the module data
