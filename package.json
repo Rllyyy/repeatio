@@ -54,8 +54,8 @@
   },
   "scripts": {
     "start-react": "vite",
-    "build-react": "set \"INLINE_RUNTIME_CHUNK=false\" && vite build",
-    "build": "set \"INLINE_RUNTIME_CHUNK=false\" && vite build",
+    "build-react": "vite build",
+    "build": "vite build",
     "start": "vite",
     "lint": "eslint src",
     "serve": "vite preview",
