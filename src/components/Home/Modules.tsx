@@ -27,7 +27,7 @@ import {
 
 //Interfaces and Types
 import { IModule } from "../module/module";
-import { TSettings } from "../../utils/types";
+import { TSettings } from "@hooks/useSetting";
 import { TModuleSortOption } from "./ModuleSortButton";
 
 interface IModules {

@@ -17,6 +17,7 @@ import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 
 // Interfaces
 import { IParams } from "../../../../utils/types";
+import { TSettings } from "@hooks/useSetting";
 
 //Setup mocha for Typescript
 declare var it: Mocha.TestFunction;
@@ -119,7 +120,6 @@ describe("Bookmark a Question", () => {
   it("should remove a question from the bookmarked localStorage if clicking on the remove button but preserve the rest of the localStorage item", () => {
     cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
 
-    //TODO add normal version
     cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
     //cy.mount(<RenderQuestionWithRouter moduleID={"types_1"} questionID={"qID-1"} />); //uncomment this if you want to see the whole question component
 
@@ -179,5 +179,65 @@ describe("Bookmark a Question", () => {
   it("should disable bookmark question if the questionID is invalid", () => {
     cy.mount(<RenderQuestionWithRouter moduleID={"types_1"} questionID={"qID-20"} />);
     cy.get(".bookmark-question-button").should("be.disabled");
+  });
+
+  it("should show a 'Save Question' tooltip if when hovering over the bookmark button", () => {
+    cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
+
+    cy.get("body").realClick();
+
+    // Hoover over the save button
+    cy.get("button[aria-label='Save Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+    cy.contains("Save Question").should("exist");
+  });
+
+  it("should show 'Unsave Question' tooltip if the question is bookmarked", () => {
+    localStorage.setItem(
+      "repeatio-marked-types_1",
+      JSON.stringify({ id: "types_1", compatibility: "0.6.0", questions: ["qID-1"] })
+    );
+
+    cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
+
+    cy.get("body").realClick();
+
+    // Hoover over the unsave button
+    cy.get("button[aria-label='Unsave Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+    cy.contains("Unsave Question").should("exist");
+  });
+
+  it("should not show the tooltip if the user has the setting disabled", () => {
+    const settings: TSettings = {
+      expanded: false,
+      addedExampleModule: true,
+      moduleSort: "ID (ascending)",
+      embedYoutubeVideos: true,
+      showTooltips: false,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings, null, "\t"));
+
+    cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("body").realClick();
+
+    // Hoover over the delete button
+    cy.get("button[aria-label='Save Question']").realHover();
+
+    // Assert that the tooltip does not exist
+    cy.contains("Save Question").should("not.exist");
   });
 });

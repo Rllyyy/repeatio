@@ -15,6 +15,7 @@ import "../../../../index.css";
 import { IParams, ISearchParams } from "../../../../utils/types";
 import { IModule } from "../../../module/module";
 import { parseJSON } from "../../../../utils/parseJSON";
+import { TSettings } from "@hooks/useSetting";
 
 //Mocha for typescript
 declare var it: Mocha.TestFunction;
@@ -223,5 +224,60 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"invalid"} mode='practice' order='chronological' />);
 
     cy.get("button[aria-label='Enable shuffle']").should("be.disabled");
+  });
+
+  it("should show 'Enable Shuffle' tooltip if the user hovers over the button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Mount Component with initial random question order
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    cy.get("body").realClick();
+
+    cy.get("button[aria-label='Enable shuffle']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+    cy.contains("Enable Shuffle").should("exist");
+  });
+
+  it("should show 'Disable Shuffle' tooltip if the user hovers over the button", () => {
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Mount Component with initial random question order
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='random' />);
+
+    cy.get("body").realClick();
+
+    cy.get("button[aria-label='Disable shuffle']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+    cy.contains("Disable Shuffle").should("exist");
+  });
+
+  it("should not show the tooltip if the user has the setting disabled", () => {
+    const settings: TSettings = {
+      expanded: false,
+      addedExampleModule: true,
+      moduleSort: "ID (ascending)",
+      embedYoutubeVideos: true,
+      showTooltips: false,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings, null, "\t"));
+
+    cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+
+    // Mount Component with initial random question order
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='random' />);
+
+    cy.get("body").realClick();
+
+    cy.get("button[aria-label='Disable shuffle']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("not.exist");
+    cy.contains("Disable Shuffle").should("not.exist");
   });
 });

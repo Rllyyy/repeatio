@@ -15,7 +15,13 @@
     "paths": {
       "@cypress/react": [
         "../lib"
-      ]
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
     }
   },
   "include": [

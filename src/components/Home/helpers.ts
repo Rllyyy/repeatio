@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 // Interfaces + types
 import { IModule } from "../module/module";
 import { IFile } from "./ImportModule";
-import { TSettings } from "../../utils/types";
+import { TSettings } from "@hooks/useSetting";
 import { TModuleSortOption } from "./ModuleSortButton";
 
 /**

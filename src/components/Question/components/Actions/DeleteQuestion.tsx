@@ -12,6 +12,9 @@ import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questio
 //Icons
 import { BiTrash } from "react-icons/bi";
 
+//Components
+import { ComponentWithTooltip } from "@components/common/ComponentWithTooltip";
+
 //Interfaces/Types
 import { IParams } from "../../../../utils/types";
 import { IQuestion, TUseQuestion } from "../../useQuestion";
@@ -119,8 +122,10 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
 
   //JSX
   return (
-    <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question' {...props}>
-      <BiTrash />
-    </button>
+    <ComponentWithTooltip id='delete-question-tooltip' tooltipText='Delete Question'>
+      <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question' {...props}>
+        <BiTrash />
+      </button>
+    </ComponentWithTooltip>
   );
 };

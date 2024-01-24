@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { Settings } from ".";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
 import "../../index.css";
 import { parseJSON } from "../../utils/parseJSON";
@@ -50,7 +50,7 @@ describe("<Settings />", () => {
         .parent()
         .click()
         .should(() => {
-          const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+          const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
           expect(localStorageItem?.embedYoutubeVideos).to.equal(true);
         });
     });
@@ -95,12 +95,13 @@ describe("<Settings />", () => {
         .parent()
         .click()
         .should(() => {
-          const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+          const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
           expect(localStorageItem).to.deep.eq({
             addedExampleModule: true,
             expanded: false,
             moduleSort: "ID (ascending)",
             embedYoutubeVideos: false,
+            showTooltips: true,
           });
         });
     });
@@ -169,6 +170,7 @@ describe("<Settings />", () => {
           addedExampleModule: true,
           moduleSort: "ID (ascending)",
           embedYoutubeVideos: true,
+          showTooltips: true,
         });
       });
     });
