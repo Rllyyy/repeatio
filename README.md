@@ -692,13 +692,7 @@ yarn install
 <details>
   <summary><b>Start local server</b></summary>
 
-**Just Website (recommended):**
-
-```bash
-yarn start-react
-```
-
-**Website and Electron:**
+**Website**
 
 ```bash
 yarn start
@@ -751,12 +745,6 @@ yarn test --watchAll
   <summary><b>Build</b></summary>
 
 **Build website:**
-
-```bash
-yarn build-react
-```
-
-**Build Electron:**
 
 ```bash
 yarn build

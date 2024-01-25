@@ -4,9 +4,7 @@
   "description": "Learn, repeat and memorize tasks with repeatio.",
   "author": "Niklas Fischer",
   "private": true,
-  "main": "public/electron.js",
   "dependencies": {
-    "@electron/remote": "^2.0.10",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.2.0",
@@ -29,11 +27,8 @@
     "cypress": "^12.17.3",
     "cypress-real-events": "^1.10.0",
     "dompurify": "^3.0.5",
-    "electron-devtools-installer": "^3.2.0",
-    "electron-is-dev": "^2.0.0",
     "file-saver": "^2.0.5",
     "framer-motion": "10.15.1",
-    "is-electron": "^2.2.2",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-circular-progressbar": "^2.1.0",
@@ -55,62 +50,17 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "typescript": "^5.1.6",
-    "wait-on": "^7.0.1",
     "zod": "^3.21.4"
-  },
-  "build": {
-    "appId": "repeatio",
-    "productName": "repeatio",
-    "files": [
-      "build/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    },
-    "extraResources": [
-      "build/data.json"
-    ],
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "build/icon.ico"
-    },
-    "nsis": {
-      "oneClick": "false",
-      "uninstallDisplayName": "repeatio-uninstaller",
-      "license": "LICENSE",
-      "deleteAppDataOnUninstall": true,
-      "allowToChangeInstallationDirectory": false,
-      "allowElevation": true
-    },
-    "mac": {
-      "target": "tar.gz"
-    },
-    "linux": {
-      "category": "Utils",
-      "packageCategory": "utils",
-      "maintainer": "Niklas Fischer",
-      "asar": true,
-      "target": [
-        "deb",
-        "tar.xz"
-      ],
-      "synopsis": "Learn faster with repeatio"
-    }
   },
   "scripts": {
     "start-react": "vite",
-    "build-react": "set \"INLINE_RUNTIME_CHUNK=false\" && vite build",
-    "build": "yarn pre-build-electron && yarn build-react && electron-builder && yarn post-build-electron",
-    "start": "concurrently -k \"cross-env BROWSER=none yarn start-react\" \"wait-on http://localhost:3000 && electron .\"",
+    "build-react": "vite build",
+    "build": "vite build",
+    "start": "vite",
     "lint": "eslint src",
     "serve": "vite preview",
     "test": "jest",
-    "test:cy": "yarn cypress open",
-    "pre-build-electron": "cd src/utils && node electronPreBuild.mjs",
-    "post-build-electron": "cd src/utils && node electronPostBuild.mjs"
+    "test:cy": "yarn cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -133,8 +83,6 @@
     "@types/wicg-file-system-access": "^2020.9.6",
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.16",
-    "electron": "^18.3.7",
-    "electron-builder": "^23.6.0",
     "eslint": "^8.46.0",
     "eslint-config-react-app": "^7.0.1",
     "identity-obj-proxy": "^3.0.0",

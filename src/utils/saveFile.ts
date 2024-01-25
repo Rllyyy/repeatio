@@ -1,6 +1,5 @@
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
-import isElectron from "is-electron";
 
 export type TSaveFile = {
   file: string;
@@ -10,8 +9,8 @@ export type TSaveFile = {
 
 //Download a file as json to user selected location or downloads folder
 export async function saveFile({ file, name, showSuccessToast = true }: TSaveFile) {
-  //Cypress/Electron don't support the filePicker API
-  if ((window as any).Cypress || isElectron()) {
+  //Cypress doesn't support the filePicker API
+  if ((window as any).Cypress) {
     const blob = new Blob([file], { type: "application/json" });
     saveAs(blob, `${name}.json`);
 

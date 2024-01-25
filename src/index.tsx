@@ -1,8 +1,7 @@
 //Import React
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { Route, Routes } from "react-router-dom";
-import { Router } from "./components/Router/Router";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 //Import Css
 import "./index.css";
@@ -45,7 +44,7 @@ const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)
 
 root.render(
   <StrictMode>
-    <Router>
+    <BrowserRouter>
       <Sidebar />
       <ScrollToTop />
       <main>
@@ -133,6 +132,6 @@ root.render(
       </main>
       <Footer />
       <CustomToastContainer />
-    </Router>
+    </BrowserRouter>
   </StrictMode>
 );
