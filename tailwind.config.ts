@@ -31,4 +31,4 @@ export default {
   future: {
     hoverOnlyWhenSupported: true,
   },
-} as Config;
+} satisfies Config;

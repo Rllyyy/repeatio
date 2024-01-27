@@ -11,6 +11,14 @@ export const settingsSchema = z.object({
   showTooltips: z.boolean().optional(),
 });
 
+export const defaultSettings: Required<TSettings> = {
+  addedExampleModule: false,
+  expanded: true,
+  moduleSort: "Name (ascending)",
+  embedYoutubeVideos: false,
+  showTooltips: true,
+};
+
 export type TSettings = z.infer<typeof settingsSchema>;
 
 /**

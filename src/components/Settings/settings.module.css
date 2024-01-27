@@ -52,28 +52,9 @@
   font-size: 14px;
   font-weight: 600;
 
-  transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
-}
-
-.deleteButton {
-  position: relative;
-
-  cursor: pointer;
-
-  grid-row: 1 / span 3;
-  grid-column: 2;
-  height: auto;
-  justify-self: center;
-  align-self: center;
-  padding: 8px 16px;
-  background-color: rgb(247, 242, 242);
-  color: rgb(168, 6, 6);
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: 600;
-
-  transition: color 0.1s ease-in-out, background 0.1s ease-in-out;
+  transition:
+    color 0.1s ease-in-out,
+    background 0.1s ease-in-out;
 }
 
 .exportModulesIncludeBookmarkedFiles {
@@ -83,21 +64,9 @@
   gap: 8px;
 }
 
-.deleteModulesIncludeBookmarkedFiles {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  gap: 8px;
-}
-
 @media screen and (hover: hover) and (pointer: fine) {
   .exportButton:hover {
     background-color: var(--custom-prime-color);
-    color: white;
-  }
-
-  .deleteButton:hover {
-    background-color: darkred;
     color: white;
   }
 }

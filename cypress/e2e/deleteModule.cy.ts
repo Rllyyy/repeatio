@@ -18,10 +18,10 @@ describe("Test deletion of module", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.contains("Cypress Fixture Module (cypress_1)").should("exist");
 
-    //Click delete module button
+    //Click delete module button and confirm it
     cy.get("article[data-cy='module-cypress_1']").find("button.popover-button").click();
-    cy.get("ul.MuiList-root")
-      .contains("Delete")
+    cy.get("ul.MuiList-root").contains("Delete").click();
+    cy.contains("button", "Delete Module")
       .click()
       .should(() => {
         //Delete from localStorage
@@ -30,7 +30,7 @@ describe("Test deletion of module", () => {
 
     //Toast and console.log
     cy.get(".Toastify").contains("Deleted module cypress_1!");
-    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Deleted module cypress_1\!/);
+    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Deleted module cypress_1!/);
 
     //Module should no longer exist/be visible in list of modules
     cy.contains("Cypress Fixture Module (cypress_1)").should("not.exist");
@@ -46,14 +46,15 @@ describe("Test deletion of module", () => {
     //remove item from localStorage so it can't be found to simulate not existing file
     cy.clearLocalStorage("repeatio-module-cypress_1");
 
-    //Click on export
+    //Click on delete button and confirm it
     cy.get(".MuiList-root").contains("Delete").click({ force: true });
+    cy.contains("button", "Delete Module").click();
 
     //Expect toast to show up
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
     cy.get("@consoleError").should(
       "be.calledWithMatch",
-      /\[.*\] Couldn't find the file repeatio\-module\-cypress_1 in the localStorage\!/
+      /\[.*\] Couldn't find the file repeatio-module-cypress_1 in the localStorage!/
     );
   });
 });

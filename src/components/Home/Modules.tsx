@@ -29,6 +29,7 @@ import {
 import { IModule } from "../module/module";
 import { TSettings } from "@hooks/useSetting";
 import { TModuleSortOption } from "./ModuleSortButton";
+import { DeleteConfirmationModal } from "@components/CustomModal/DeleteConfirmationModal";
 
 interface IModules {
   sort: TModuleSortOption;
@@ -45,6 +46,8 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
     showModuleEditor,
     handleOpenEditor,
     setShowModuleEditor,
+    setShowDeletionConfirmModal,
+    showDeletionConfirmModal,
   } = useHomePopover();
 
   //Display loading spinner while component loads
@@ -86,7 +89,15 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
         })}
       </AnimatePresence>
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
-        <PopoverMenuItem handleClick={handleDelete} text='Delete' icon={<BiTrash />} aria-label='Delete Module' />
+        <PopoverMenuItem
+          handleClick={() => {
+            setShowDeletionConfirmModal(anchorEl?.getAttribute("data-target"));
+            handlePopoverClose();
+          }}
+          text='Delete'
+          icon={<BiTrash />}
+          aria-label='Delete Module'
+        />
         <PopoverMenuItem handleClick={handleOpenEditor} text='Edit' icon={<MdOutlineEdit />} aria-label='Edit Module' />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} aria-label='Export Module' />
       </PopoverMenu>
@@ -96,6 +107,14 @@ export const Modules: React.FC<IModules> = ({ sort }) => {
         showModal={!!showModuleEditor}
         handleModalClose={() => setShowModuleEditor(null)}
         navigateOnSuccess={false}
+      />
+      <DeleteConfirmationModal
+        showModal={!!showDeletionConfirmModal}
+        title='Delete Module?'
+        message='Are you sure you want to delete this Module? This action cannot be undone.'
+        deleteButtonText='Delete Module'
+        onConfirmDelete={() => handleDelete({ moduleID: showDeletionConfirmModal })}
+        handleCloseModal={() => setShowDeletionConfirmModal(null)}
       />
     </GridCards>
   );
@@ -150,6 +169,7 @@ const useAllModules = (sort: TModuleSortOption) => {
 const useHomePopover = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [showModuleEditor, setShowModuleEditor] = useState<IModule["id"] | null>(null);
+  const [showDeletionConfirmModal, setShowDeletionConfirmModal] = useState<IModule["id"] | null | undefined>(null);
 
   //Reset anchor if component unmounts
   useLayoutEffect(() => {
@@ -169,9 +189,9 @@ const useHomePopover = () => {
   };
 
   //Handle deletion of module
-  const handleDelete = () => {
+  const handleDelete = ({ moduleID }: { moduleID: IModule["id"] | undefined | null }) => {
     //Get id of module by custom attribute
-    const moduleID = anchorEl?.getAttribute("data-target");
+    //const moduleID = anchorEl?.getAttribute("data-target");
 
     //Check if item is in localStorage
     const itemInStorage = Object.keys(localStorage).includes(`repeatio-module-${moduleID}`);
@@ -185,6 +205,7 @@ const useHomePopover = () => {
       toast.error(`Couldn't find the file repeatio-module-${moduleID} in the localStorage!`);
     }
     handlePopoverClose();
+    setShowDeletionConfirmModal(null);
   };
 
   //Handle the export of module
@@ -223,5 +244,7 @@ const useHomePopover = () => {
     showModuleEditor,
     setShowModuleEditor,
     handleOpenEditor,
+    showDeletionConfirmModal,
+    setShowDeletionConfirmModal,
   } as const;
 };
