@@ -261,7 +261,11 @@ describe("Question deletion", () => {
   it("should redirect to module overview if all questions in the current context get deleted", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.visit("/module/cypress_1/question/qID-1?mode=practice");
-    cy.get("button[aria-label='Delete Question']").click().click().click().click().click().click();
+
+    for (let i = 0; i < 6; i++) {
+      cy.get("button[aria-label='Delete Question']").click();
+      cy.contains("button", "Delete Question").click();
+    }
 
     // Assert that the url changed to the module overview
     cy.url().should("include", "module/cypress_1");

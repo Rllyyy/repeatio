@@ -324,6 +324,62 @@ describe("Add Module modal", () => {
 
 /* Module Deletion */
 describe("Module deletion", () => {
+  it("should open the module deletion confirm modal when clicking on delete", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1'").find("button.popover-button").click();
+    cy.get("ul.MuiList-root").contains("Delete").click();
+
+    cy.get(".ReactModal__Content--after-open").should("exist");
+    cy.contains("h2", "Delete Module?").should("exist");
+  });
+
+  it("should close the popover after when opening the deletion confirm modal", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1'").find("button.popover-button").click();
+    cy.get("ul.MuiList-root").contains("Delete").click();
+
+    cy.get(".MuiPaper-root").should("not.exist");
+  });
+
+  it("should close the DeletionConfirmModal when clicking cancel", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1'").find("button.popover-button").click();
+    cy.get("ul.MuiList-root").contains("Delete").click();
+    cy.get("button").contains("Cancel").click();
+
+    // Assert that the modal is closed
+    cy.contains("h2", "Delete Module?").should("not.exist");
+    cy.get(".ReactModal__Content--after-open").should("not.exist");
+  });
+
+  it("should close the DeletionConfirmModal when clicking on the X button", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1'").find("button.popover-button").click();
+    cy.get("ul.MuiList-root").contains("Delete").click();
+    cy.get("button[aria-label='Close Modal']").click();
+
+    // Assert that the modal is closed
+    cy.contains("h2", "Delete Module?").should("not.exist");
+    cy.get(".ReactModal__Content--after-open").should("not.exist");
+  });
+
+  it("should close the module deletion confirm modal when clicking on delete after deletion", () => {
+    cy.mount(<MockModulesWithRouter />);
+
+    cy.get("article[data-cy='module-types_1'").find("button.popover-button").click();
+    cy.get("ul.MuiList-root").contains("Delete").click();
+
+    cy.get("button").contains("Delete Module").click();
+
+    // Assert that the modal is closed
+    cy.contains("h2", "Delete Module?").should("not.exist");
+    cy.get(".ReactModal__Content--after-open").should("not.exist");
+  });
+
   it("should remove a module from the overview if it gets deleted", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
@@ -332,6 +388,7 @@ describe("Module deletion", () => {
     cy.get("article[data-cy='module-gap_text'").scrollIntoView().find("button.popover-button").click();
 
     cy.get("ul.MuiList-root").contains("Delete").click();
+    cy.get("button").contains("Delete Module").click();
 
     // Assert that the element is deleted and there are just 2 modules left
     cy.get("article[data-cy='module-gap_text").should("not.exist");
@@ -347,8 +404,10 @@ describe("Module deletion", () => {
 
     //Click delete module button
     cy.get("article[data-cy='module-cypress_1']").find("button.popover-button").click();
-    cy.get("ul.MuiList-root")
-      .contains("Delete")
+    cy.get("ul.MuiList-root").contains("Delete").click();
+
+    cy.get("button")
+      .contains("Delete Module")
       .click()
       .should(() => {
         //Delete from localStorage
@@ -370,8 +429,10 @@ describe("Module deletion", () => {
 
     //Click delete module button
     cy.get("article[data-cy='module-types_1']").find("button.popover-button").click();
-    cy.get("ul.MuiList-root")
-      .contains("Delete")
+    cy.get("ul.MuiList-root").contains("Delete").click();
+
+    cy.get("button")
+      .contains("Delete Module")
       .click()
       .should(() => {
         const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-types_1`));
@@ -397,8 +458,9 @@ describe("Module deletion", () => {
     //remove item from localStorage so it can't be found to simulate not existing file
     cy.clearLocalStorage("repeatio-module-cypress_1");
 
-    //Click on export
+    //Delete module
     cy.get(".MuiList-root").contains("Delete").click({ force: true });
+    cy.get("button").contains("Delete Module").click();
 
     //Expect toast to show up
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
