@@ -1,68 +1,19 @@
-import { useState, useSyncExternalStore } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import { version } from "../../../package.json";
 
 import styles from "./settings.module.css";
-import { CircularBarsSpinner } from "../Spinner";
 import { parseJSON } from "../../utils/parseJSON";
-import { TSettings } from "../../hooks/useSetting";
+import { TSettings, defaultSettings } from "../../hooks/useSetting";
 import { downloadZip } from "client-zip";
 import { saveFile } from "../../utils/saveFile";
 import { Switch } from "./Switch";
-
-const defaultSettings: Required<TSettings> = {
-  addedExampleModule: false,
-  expanded: true,
-  moduleSort: "Name (ascending)",
-  embedYoutubeVideos: false,
-  showTooltips: true,
-};
+import { DeleteAllFiles, DeleteAllModules, DeleteBookmarkedFiles, DeleteSettings } from "./DangerZoneSettings";
 
 export const Settings = () => {
-  const [loading, setLoading] = useState<string | null>(null);
-
   const [settings, setSettings] = useSettings(defaultSettings);
 
   const handleUpdateSettings = <K extends keyof TSettings>(name: K, value: TSettings[K]) => {
     setSettings((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleLocalStorageDelete = () => {
-    // Delete all localStorage items starting with "repeatio-"
-    // Could also use localStorage.clear but this would delete all items in the localStorage for this url which is annoying for development where the url is often localhost:3000
-    Object.keys(localStorage)
-      .filter((key) => key.startsWith("repeatio-"))
-      .forEach((key) => {
-        localStorage.removeItem(key);
-      });
-
-    window.dispatchEvent(new StorageEvent("settings-event"));
-  };
-
-  const handleDeleteBookmarkedFiles = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setLoading(e.currentTarget.name);
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    Object.keys(localStorage)
-      .filter((key) => key.startsWith("repeatio-marked-"))
-      .forEach((key) => {
-        localStorage.removeItem(key);
-      });
-
-    window.dispatchEvent(new StorageEvent("settings-event"));
-
-    setLoading(null);
-  };
-
-  const handleDeleteSettings = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setLoading(e.currentTarget.name);
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    localStorage.removeItem("repeatio-settings");
-    window.dispatchEvent(new StorageEvent("settings-event"));
-
-    setLoading(null);
   };
 
   const handleSettingsExport = async () => {
@@ -86,7 +37,7 @@ export const Settings = () => {
             <p className={styles.settingDescription}>Expand the sidebar.</p>
           </div>
           <div className={styles.categoryItem}>
-            <label htmlFor='switch-expanded' className={styles.settingName}>
+            <label htmlFor='switch-showTooltips' className={styles.settingName}>
               Show Tooltips
             </label>
             <Switch value={settings?.showTooltips} callback={handleUpdateSettings} name='showTooltips' />
@@ -165,71 +116,21 @@ export const Settings = () => {
         {/* Delete  */}
         <div className={styles.categoryItemsWrapper}>
           {/* Delete all files */}
-          <form className={styles.categoryItem}>
-            <p className={styles.settingName}>Delete all files</p>
-            <button
-              className={styles.deleteButton}
-              type='button'
-              onClick={handleLocalStorageDelete}
-              aria-label='Delete all files'
-            >
-              Delete
-            </button>
-            <p className={styles.settingDescription}>
-              Delete all local files including modules, bookmarked questions and settings. This action can not be
-              undone.
-            </p>
-          </form>
+          <DeleteAllFiles />
           {/* Delete all Modules (and bookmarked files) */}
-          <DeleteAllModules loading={loading === "delete-all-modules"} setLoading={setLoading} />
+          <DeleteAllModules />
           {/* Delete bookmarked files */}
-          <form className={styles.categoryItem}>
-            <p className={styles.settingName}>Delete bookmarked files</p>
-            <button
-              className={styles.deleteButton}
-              type='button'
-              aria-label='Delete all bookmarked files'
-              onClick={handleDeleteBookmarkedFiles}
-              name='delete-bookmarked-files'
-            >
-              <span style={{ color: loading === "delete-bookmarked-files" ? "transparent" : "", fontSize: "inherit" }}>
-                Delete
-              </span>
-              {loading === "delete-bookmarked-files" && <CircularBarsSpinner size='m' />}
-            </button>
-            <p className={styles.settingDescription}>
-              Delete files containing the ids of the bookmarked questions. This action can not be undone.
-            </p>
-          </form>
+          <DeleteBookmarkedFiles />
           {/* Delete settings */}
-          <form className={styles.categoryItem}>
-            <p className={styles.settingName}>Delete settings</p>
-            <button
-              className={styles.deleteButton}
-              type='button'
-              aria-label='Delete settings'
-              onClick={handleDeleteSettings}
-              name='delete-settings'
-            >
-              <span style={{ color: loading === "delete-settings" ? "transparent" : "", fontSize: "inherit" }}>
-                Delete
-              </span>
-              {loading === "delete-settings" && <CircularBarsSpinner size='m' />}
-            </button>
-            <p className={styles.settingDescription}>
-              Delete settings file and reset all settings to their default values
-            </p>
-          </form>
+          <DeleteSettings />
         </div>
       </div>
-      <p style={{ color: "var(--custom-border-color-darker)", fontSize: "16px", marginTop: "60px" }}>
-        Version: {version}
-      </p>
+      <p className='mt-8 mb-4 text-base text-slate-700'>Version: {version}</p>
     </>
   );
 };
 
-const ExportAllModules = () => {
+export const ExportAllModules = () => {
   const [checked, setChecked] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -283,69 +184,8 @@ const ExportAllModules = () => {
           checked={checked}
           onChange={() => setChecked(!checked)}
         />
-        <label style={{ fontSize: "1rem", color: "#616161" }} htmlFor='export-modules-include-bookmarked'>
+        <label className='text-base text-slate-600' htmlFor='export-modules-include-bookmarked'>
           Include bookmarked question files
-        </label>
-      </div>
-    </form>
-  );
-};
-
-interface IDeleteAllModules {
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-const DeleteAllModules: React.FC<IDeleteAllModules> = ({ loading, setLoading }) => {
-  const [checked, setChecked] = useState(true);
-
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
-    e.preventDefault();
-
-    setLoading((e.nativeEvent.submitter as HTMLButtonElement)?.name);
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    if (checked) {
-      Object.keys(localStorage)
-        .filter((key) => key.startsWith("repeatio-module-") || key.startsWith("repeatio-marked-"))
-        .forEach((key) => {
-          localStorage.removeItem(key);
-        });
-    } else {
-      Object.keys(localStorage)
-        .filter((key) => key.startsWith("repeatio-module-"))
-        .forEach((key) => {
-          localStorage.removeItem(key);
-        });
-    }
-
-    setLoading(null);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className={styles.categoryItem}>
-      <p className={styles.settingName}>Delete modules</p>
-      <button
-        className={styles.deleteButton}
-        type='submit'
-        aria-label={`${checked ? "Delete all modules and bookmarked files" : "Delete all modules"}`}
-        name='delete-all-modules'
-      >
-        <span style={{ color: loading ? "transparent" : "", fontSize: "inherit" }}>Delete</span>
-        {loading && <CircularBarsSpinner size='m' />}
-      </button>
-      <p className={styles.settingDescription}>Delete all modules. This action can not be undone.</p>
-      <div className={styles.deleteModulesIncludeBookmarkedFiles}>
-        <input
-          type='checkbox'
-          id='deleteBookmarkedFilesWithModules'
-          checked={checked}
-          onChange={() => setChecked(!checked)}
-          aria-label='Also delete the bookmarked files'
-        />
-        <label style={{ fontSize: "1rem", color: "#616161" }} htmlFor='deleteBookmarkedFilesWithModules'>
-          Delete bookmarked questions file
         </label>
       </div>
     </form>
