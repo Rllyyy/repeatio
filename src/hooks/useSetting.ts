@@ -17,7 +17,7 @@ export const defaultSettings: Required<TSettings> = {
   moduleSort: "Name (ascending)",
   embedYoutubeVideos: false,
   showTooltips: true,
-};
+} as const;
 
 export type TSettings = z.infer<typeof settingsSchema>;
 
@@ -25,9 +25,9 @@ export type TSettings = z.infer<typeof settingsSchema>;
  * Custom hook for managing settings with localStorage synchronization.
  * @returns A tuple containing the current value and a function to update the value inside the localStorage
  */
-export const useSetting = <K extends keyof TSettings>(key: K, defaultValue: Required<NonNullable<TSettings[K]>>) => {
+export const useSetting = <K extends keyof TSettings>(key: K) => {
   // Get the current value from the localStorage or use the default value
-  const value = useSyncExternalStore(subscribe, () => getSnapShot(key)) ?? defaultValue;
+  const value = useSyncExternalStore(subscribe, () => getSnapShot(key)) ?? defaultSettings[key];
 
   // Update the value in localStorage and trigger storage event
   const setValue = (newValue: Required<NonNullable<TSettings[K]>>) => {

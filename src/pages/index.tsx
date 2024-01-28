@@ -9,7 +9,7 @@ import "../components/Home/Home.css";
 import { useSetting } from "../hooks/useSetting";
 
 export default function Home() {
-  const [sort, setSort] = useSetting("moduleSort", "Name (ascending)");
+  const [sort, setSort] = useSetting("moduleSort");
 
   return (
     <>

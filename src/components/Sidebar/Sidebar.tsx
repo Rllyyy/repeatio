@@ -19,7 +19,7 @@ export type TExpandSidebar = {
 //Sidebar Component
 export const Sidebar = () => {
   // Only save the state of the sidebar to the localStorage on desktop and not on mobile.
-  const [expandedDesktop, setExpandedDesktop] = useSetting("expanded", true);
+  const [expandedDesktop, setExpandedDesktop] = useSetting("expanded");
   const [expandedMobile, setExpandedMobile] = useState(false);
 
   const isMobile = useSyncExternalStore(subscribeToResize, () => window.innerWidth <= 650);
