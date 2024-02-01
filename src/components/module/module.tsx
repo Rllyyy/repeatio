@@ -10,6 +10,7 @@ import { PopoverButton, PopoverMenu, PopoverMenuItem } from "../Card/Popover";
 import { toast } from "react-toastify";
 import { ModuleNotFound } from "./ModuleNotFound";
 import MenuItem from "@mui/material/MenuItem";
+import { DeleteConfirmationModal } from "@components/CustomModal/DeleteConfirmationModal";
 
 //Icons
 import { AiOutlineBook, AiOutlineEdit } from "react-icons/ai";
@@ -261,6 +262,7 @@ const useModuleName = (locationStateName: LocationState["name"], moduleId: strin
 //Display bottom of BookmarkedQuestions
 const BookmarkedQuestionsBottom = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [showDeletionConfirmation, setShowDeletionConfirmation] = useState(false);
 
   //Navigate (previously history)
   let navigate = useNavigate();
@@ -285,6 +287,20 @@ const BookmarkedQuestionsBottom = () => {
     setAnchorEl(null);
   };
 
+  const handlePopoverDeleteBookmarkedQuestions = () => {
+    const bookmarkedQuestionsIDs = getBookmarkedQuestionsFromModule(moduleID);
+
+    if (bookmarkedQuestionsIDs) {
+      setShowDeletionConfirmation(true);
+    } else {
+      toast.warn("Found 0 bookmarked questions for this module!", {
+        autoClose: 10000,
+      });
+    }
+
+    handlePopoverClose();
+  };
+
   const handleBookmarkedDelete = () => {
     //Get item from storage
     const itemInStorage = Object.keys(localStorage).includes(`repeatio-marked-${moduleID}`);
@@ -298,6 +314,7 @@ const BookmarkedQuestionsBottom = () => {
       toast.error(`Failed to delete the bookmarked questions for "${moduleID}" because there are 0 questions saved!`);
     }
     handlePopoverClose();
+    setShowDeletionConfirmation(false);
   };
 
   //Export saved questions from localStorage
@@ -338,7 +355,6 @@ const BookmarkedQuestionsBottom = () => {
     }
 
     //If bookmarked file has old file structure (just array) show error
-    //TODO
     if (Array.isArray(importedBookmarkedFile)) {
       //Notify user that import is false file structure
       toast.error("Failed to import because the file does not contain the correct file structure!");
@@ -455,10 +471,18 @@ const BookmarkedQuestionsBottom = () => {
       <ButtonElement key='saved-questions' buttonText='Start' handleClick={onBookmarkedQuestionsClick} />
       <PopoverButton handleClick={handlePopoverButtonClick} />
       <PopoverMenu anchorEl={anchorEl} handlePopoverClose={handlePopoverClose}>
-        <PopoverMenuItem handleClick={handleBookmarkedDelete} text='Delete' icon={<BiTrash />} />
+        <PopoverMenuItem handleClick={handlePopoverDeleteBookmarkedQuestions} text='Delete' icon={<BiTrash />} />
         <PopoverMenuItem handleClick={handleExport} text='Export' icon={<TbFileExport />} />
         <ImportBookmarkedQuestions handleChange={handleFileImportChange} />
       </PopoverMenu>
+      <DeleteConfirmationModal
+        showModal={showDeletionConfirmation}
+        deleteButtonText='Remove bookmarked Questions'
+        handleCloseModal={() => setShowDeletionConfirmation(false)}
+        message='Are you sure you want to remove all bookmarks for this module? Note that the questions themselves will not be deleted. This action cannot be undone!'
+        onConfirmDelete={handleBookmarkedDelete}
+        title='Remove bookmarked Questions?'
+      />
     </>
   );
 };
