@@ -16,6 +16,12 @@ export default {
           },
         },
       }),
+      colors: {
+        prime: "rgb(90, 90, 245)",
+        secondary: "rgb(40, 42, 57)",
+        tertiary: "rgb(245, 245, 245)",
+        "prime-dark": "rgb(63, 63, 219)",
+      },
     },
     screens: {
       sm: "640px",
