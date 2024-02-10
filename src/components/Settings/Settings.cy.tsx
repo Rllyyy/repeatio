@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { Settings } from ".";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
 import "../../index.css";
 import { parseJSON } from "../../utils/parseJSON";
@@ -50,7 +50,7 @@ describe("<Settings />", () => {
         .parent()
         .click()
         .should(() => {
-          const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+          const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
           expect(localStorageItem?.embedYoutubeVideos).to.equal(true);
         });
     });
@@ -95,12 +95,13 @@ describe("<Settings />", () => {
         .parent()
         .click()
         .should(() => {
-          const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+          const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
           expect(localStorageItem).to.deep.eq({
             addedExampleModule: true,
             expanded: false,
             moduleSort: "ID (ascending)",
             embedYoutubeVideos: false,
+            showTooltips: true,
           });
         });
     });
@@ -169,6 +170,7 @@ describe("<Settings />", () => {
           addedExampleModule: true,
           moduleSort: "ID (ascending)",
           embedYoutubeVideos: true,
+          showTooltips: true,
         });
       });
     });
@@ -181,8 +183,14 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
-      cy.get("button[aria-label='Delete all files']")
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
+
+      cy.get("button[aria-label='Delete all Files']").click();
+      cy.contains("button", "Delete all Files")
         .click()
         .should(() => {
           //Delete from localStorage
@@ -197,8 +205,15 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
-      cy.get("button[aria-label='Delete all modules and bookmarked files']")
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
+
+      cy.get("button[aria-label='Delete all modules and bookmarked files']").click();
+
+      cy.contains("button", "Delete all Modules")
         .click()
         .should(() => {
           //Delete from localStorage
@@ -213,14 +228,20 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
 
       // Uncheck
       cy.contains("label", "Delete bookmarked questions file").click();
 
       cy.get("input[type='checkbox'][id='deleteBookmarkedFilesWithModules']").should("not.be.checked");
 
-      cy.get("button[aria-label='Delete all modules']")
+      cy.get("button[aria-label='Delete all modules']").click();
+
+      cy.contains("button", "Delete all Modules")
         .click()
         .should(() => {
           //Delete from localStorage
@@ -235,12 +256,18 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
 
       cy.get("button[aria-label='Delete all modules and bookmarked files']").click();
 
+      cy.contains("button", "Delete all Modules").click();
+
       cy.get("button[name='delete-all-modules']").find("svg").should("exist");
-      cy.get("button[name='delete-all-modules']").find("span").should("have.css", "color", "rgb(168, 6, 6)");
+      cy.get("button[name='delete-all-modules']").find("span").should("have.css", "color", "rgb(185, 28, 28)");
       cy.get("button[name='delete-all-modules']").find("svg").should("not.exist");
     });
 
@@ -249,9 +276,15 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
 
-      cy.get("button[aria-label='Delete all bookmarked files']")
+      cy.get("button[aria-label='Delete Bookmarked Files']").click();
+
+      cy.contains("button", "Delete Bookmarked Files")
         .click()
         .should(() => {
           //Delete from localStorage
@@ -266,8 +299,15 @@ describe("<Settings />", () => {
       cy.fixtureToLocalStorage("repeatio-marked-cypress_1.json");
       cy.fixtureToLocalStorage("repeatio-settings.json");
 
-      cy.mount(<Settings />);
-      cy.get("button[aria-label='Delete settings']")
+      cy.mount(
+        <div id='root' style={{ display: "block" }}>
+          <Settings />
+        </div>
+      );
+
+      cy.get("button[aria-label='Delete Settings']").click();
+
+      cy.contains("button", "Delete Settings")
         .click()
         .should(() => {
           //Delete from localStorage
@@ -282,7 +322,7 @@ describe("<Settings />", () => {
     it("should display the current version", () => {
       cy.mount(<Settings />);
 
-      cy.contains("Version: 0.5.0").should("exist");
+      cy.contains("Version: 0.6.0").should("exist");
     });
   });
 });

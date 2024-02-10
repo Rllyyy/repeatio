@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 
 import { parseJSON } from "../../utils/parseJSON";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
 import "../../index.css";
 
@@ -100,7 +100,7 @@ describe("<Sidebar />", () => {
     cy.get("button.hamburger")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.expanded).to.equal(false);
       });
@@ -109,7 +109,7 @@ describe("<Sidebar />", () => {
     cy.get("button.hamburger")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.expanded).to.equal(true);
       });
@@ -122,7 +122,7 @@ describe("<Sidebar />", () => {
   });
 
   it("should minimize the navbar on initial mount if the user has this settings configured on desktop", () => {
-    const settings: ISettings = {
+    const settings: TSettings = {
       expanded: true,
     };
 
@@ -140,7 +140,7 @@ describe("<Sidebar />", () => {
     cy.get("button.hamburger")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).to.equal(null);
       });
 
@@ -148,7 +148,7 @@ describe("<Sidebar />", () => {
     cy.get("button.hamburger")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).to.equal(null);
       });
   });

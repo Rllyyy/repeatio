@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { Tutorials } from ".";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
 import "../../index.css";
 import { parseJSON } from "../../utils/parseJSON";
@@ -18,7 +18,7 @@ describe("<Tutorials />", () => {
     cy.contains("button", "I understand")
       .click()
       .should(() => {
-        const settings = parseJSON<ISettings>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         //const localStorageItem = JSON.parse(localStorage.getItem("youtube-consent") as string);
         expect(settings?.embedYoutubeVideos).to.equal(true);
       });
@@ -52,7 +52,7 @@ describe("<Tutorials />", () => {
     cy.get("form").parent().invoke("outerHeight").should("be.greaterThan", 390);
   });
 
-  it.only("should use the 16 / 9 ratio on bigger screens", () => {
+  it("should use the 16 / 9 ratio on bigger screens", () => {
     cy.viewport(800, 800);
     cy.mount(<Tutorials />);
 

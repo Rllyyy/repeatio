@@ -74,7 +74,7 @@ function logToConsole({ type, data, content }: TLogToConsole) {
   //Dependent on the toast type, log corresponding message
   switch (type) {
     case toast.TYPE.SUCCESS:
-      console.log(messageWithTime);
+      console.info(messageWithTime);
       break;
     case toast.TYPE.ERROR:
       console.error(messageWithTime);
@@ -86,7 +86,7 @@ function logToConsole({ type, data, content }: TLogToConsole) {
       console.info(messageWithTime);
       break;
     case toast.TYPE.DEFAULT:
-      console.log(messageWithTime);
+      console.info(messageWithTime);
       break;
     default:
       throw new Error("Toast type not defined!");

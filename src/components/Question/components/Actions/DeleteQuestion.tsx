@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
@@ -12,10 +12,14 @@ import { IQuestionIdsContext, QuestionIdsContext } from "../../../module/questio
 //Icons
 import { BiTrash } from "react-icons/bi";
 
+//Components
+import { ComponentWithTooltip } from "@components/common/ComponentWithTooltip";
+
 //Interfaces/Types
 import { IParams } from "../../../../utils/types";
 import { IQuestion, TUseQuestion } from "../../useQuestion";
 import { IModule } from "../../../module/module";
+import { DeleteConfirmationModal } from "@components/CustomModal/DeleteConfirmationModal";
 
 interface IDeleteQuestion
   extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
@@ -33,6 +37,9 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
 
   //Access History
   let navigate = useNavigate();
+
+  // Show deletion confirm modal
+  const [showModal, setShowModal] = useState(false);
 
   //Access Module
   const { questionIds, setQuestionIds } = useContext<IQuestionIdsContext>(QuestionIdsContext);
@@ -115,12 +122,33 @@ export const DeleteQuestion = ({ questionID, disabled, handleResetQuestionCompon
       //Remove localStorage item
       localStorage.removeItem(`repeatio-marked-${params.moduleID}`);
     }
+
+    // Close modal
+    setShowModal(false);
   };
 
   //JSX
   return (
-    <button type='button' onClick={handleDelete} disabled={disabled} aria-label='Delete Question' {...props}>
-      <BiTrash />
-    </button>
+    <>
+      <ComponentWithTooltip id='delete-question-tooltip' tooltipText='Delete Question'>
+        <button
+          type='button'
+          onClick={() => setShowModal(true)}
+          disabled={disabled}
+          aria-label='Delete Question'
+          {...props}
+        >
+          <BiTrash />
+        </button>
+      </ComponentWithTooltip>
+      <DeleteConfirmationModal
+        deleteButtonText='Delete Question'
+        showModal={showModal}
+        title='Delete Question?'
+        message='Are you sure you want to delete this Question? This action cannot be undone.'
+        onConfirmDelete={handleDelete}
+        handleCloseModal={() => setShowModal(false)}
+      />
+    </>
   );
 };

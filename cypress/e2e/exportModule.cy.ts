@@ -35,7 +35,7 @@ describe("Test related to exporting a file from the localStorage", () => {
 
     //Expect toast to show up
     cy.get(".Toastify").contains(`Downloaded module as "repeatio-module-types_1.json"`);
-    cy.get("@consoleLog").should("be.calledWithMatch", /\[.*\] Downloaded module as "repeatio-module-types_1.json"/);
+    cy.get("@consoleInfo").should("be.calledWithMatch", /\[.*\] Downloaded module as "repeatio-module-types_1.json"/);
 
     //Read file
     const downloadedFilename = path.join(downloadsFolder, "repeatio-module-types_1.json");
@@ -59,7 +59,7 @@ describe("Test related to exporting a file from the localStorage", () => {
 
     //Expect toast to show up
     cy.get(".Toastify").contains(`Downloaded module as "repeatio-module-cypress_1.json"`);
-    cy.get("@consoleLog").should(
+    cy.get("@consoleInfo").should(
       "be.calledWithMatch",
       /\[.*\] Downloaded module as "repeatio\-module\-cypress_1.json"/
     );

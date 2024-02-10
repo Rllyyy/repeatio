@@ -31,7 +31,7 @@ export const Tutorials = () => {
 };
 
 const Video = () => {
-  const [hasConsent, setHasConsent] = useSetting("embedYoutubeVideos", false);
+  const [hasConsent, setHasConsent] = useSetting("embedYoutubeVideos");
 
   return (
     <>

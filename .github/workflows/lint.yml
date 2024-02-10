@@ -24,3 +24,6 @@ jobs:
 
       - name: Check TypeScript errors with ESLint
         run: yarn eslint --ext .ts,.tsx src/
+
+      - name: Check TypeScript errors
+        run: yarn tsc --noEmit

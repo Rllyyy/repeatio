@@ -14,6 +14,9 @@ module.exports = {
   // Use moduleNameMapper to mock CSS and LESS imports during Jest tests with "identity-obj-proxy".
   moduleNameMapper: {
     "\\.(css|less)$": "identity-obj-proxy",
+    "^@src/(.*)": "<rootDir>/src/$1",
+    "^@components/(.*)": "<rootDir>/src/components/$1",
+    "^@hooks/(.*)": "<rootDir>/src/hooks/$1",
   },
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped

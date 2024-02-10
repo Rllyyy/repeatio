@@ -1,29 +1,41 @@
 import { useSyncExternalStore } from "react";
-import { TModuleSortOption } from "../components/Home/ModuleSortButton";
+import { moduleSortOptions } from "../components/Home/ModuleSortButton";
 import { parseJSON } from "../utils/parseJSON";
+import { z } from "zod";
 
-export interface ISettings {
-  addedExampleModule?: boolean;
-  expanded?: boolean;
-  moduleSort?: TModuleSortOption;
-  embedYoutubeVideos?: boolean;
-}
+export const settingsSchema = z.object({
+  addedExampleModule: z.boolean().optional(),
+  expanded: z.boolean().optional(),
+  moduleSort: z.enum(moduleSortOptions).optional(),
+  embedYoutubeVideos: z.boolean().optional(),
+  showTooltips: z.boolean().optional(),
+});
+
+export const defaultSettings: Required<TSettings> = {
+  addedExampleModule: false,
+  expanded: true,
+  moduleSort: "Name (ascending)",
+  embedYoutubeVideos: false,
+  showTooltips: true,
+} as const;
+
+export type TSettings = z.infer<typeof settingsSchema>;
 
 /**
  * Custom hook for managing settings with localStorage synchronization.
  * @returns A tuple containing the current value and a function to update the value inside the localStorage
  */
-export const useSetting = <K extends keyof ISettings>(key: K, defaultValue: Required<NonNullable<ISettings[K]>>) => {
+export const useSetting = <K extends keyof TSettings>(key: K) => {
   // Get the current value from the localStorage or use the default value
-  const value = useSyncExternalStore(subscribe, () => getSnapShot(key)) ?? defaultValue;
+  const value = useSyncExternalStore(subscribe, () => getSnapShot(key)) ?? defaultSettings[key];
 
   // Update the value in localStorage and trigger storage event
-  const setValue = (newValue: Required<NonNullable<ISettings[K]>>) => {
+  const setValue = (newValue: Required<NonNullable<TSettings[K]>>) => {
     // Get the current settings from localStorage
     const localStorageValue = localStorage.getItem("repeatio-settings");
 
     // Parse the json
-    const value = parseJSON<ISettings>(localStorageValue);
+    const value = parseJSON<TSettings>(localStorageValue);
 
     // Update the value in the settings
     const updatedSettings = {
@@ -47,12 +59,12 @@ function subscribe(onSettingsChange: () => void) {
   return () => window.removeEventListener("settings-event", onSettingsChange);
 }
 
-function getSnapShot<K extends keyof ISettings>(key: K): ISettings[K] {
+function getSnapShot<K extends keyof TSettings>(key: K): TSettings[K] {
   // Get the settings from the localStorage
   const localStorageItem = localStorage.getItem("repeatio-settings");
 
   // Parse json data
-  const data = parseJSON<ISettings>(localStorageItem);
+  const data = parseJSON<TSettings>(localStorageItem);
 
   // Return the value for the corresponding key
   return data?.[key];

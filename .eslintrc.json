@@ -1,3 +1,23 @@
 {
-  "extends": "react-app"
+  "extends": [
+    "react-app",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
+  ],
+  "plugins": [
+    "@tanstack/query",
+    "@tanstack/eslint-plugin-query"
+  ],
+  "rules": {
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error",
+          "info",
+          "table"
+        ]
+      }
+    ]
+  }
 }

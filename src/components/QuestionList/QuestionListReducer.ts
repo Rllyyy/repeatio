@@ -1,12 +1,15 @@
+import { UniqueIdentifier } from "@dnd-kit/core";
 import { parseJSON } from "../../utils/parseJSON";
 import { IParams } from "../../utils/types";
 import { IModule } from "../module/module";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export enum ActionTypes {
   FETCH = "FETCH",
   RESET = "RESET",
   MOVE_DOWN = "MOVE_DOWN",
   MOVE_UP = "MOVE_UP",
+  MOVE = "MOVE",
 }
 
 interface IActionFetch {
@@ -18,6 +21,14 @@ interface IActionFetch {
 
 interface IActionReset {
   type: ActionTypes.RESET;
+}
+
+interface IActionMove {
+  type: ActionTypes.MOVE;
+  payload: {
+    activeId: UniqueIdentifier;
+    overId: UniqueIdentifier;
+  };
 }
 
 interface IActionMoveUp {
@@ -33,7 +44,7 @@ interface IActionMoveDown {
   };
 }
 
-type IAction = IActionFetch | IActionReset | IActionMoveDown | IActionMoveUp;
+type IAction = IActionFetch | IActionReset | IActionMoveDown | IActionMoveUp | IActionMove;
 
 interface IReducerState {
   questions: IModule["questions"];
@@ -51,9 +62,8 @@ export function reducer(state: IReducerState = defaultState, action: IAction) {
   switch (action.type) {
     // Get the questions from the localStorage
     case ActionTypes.FETCH:
-      const questions = parseJSON<IModule>(
-        localStorage.getItem(`repeatio-module-${action.payload.moduleId}`)
-      )?.questions;
+      const questions = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${action.payload.moduleId}`))
+        ?.questions;
 
       if (questions) {
         return {
@@ -72,6 +82,19 @@ export function reducer(state: IReducerState = defaultState, action: IAction) {
     // Reset to the default state (used by the useEffect unmounting)
     case ActionTypes.RESET:
       return defaultState;
+
+    case ActionTypes.MOVE:
+      const { activeId, overId } = action.payload;
+
+      let reorderedQuestions = [...state.questions];
+
+      const oldIndex = state.questions.findIndex((question) => question.id === activeId);
+      const newIndex = state.questions.findIndex((question) => question.id === overId);
+
+      return {
+        ...state,
+        questions: arrayMove(reorderedQuestions, oldIndex, newIndex),
+      };
 
     // Move a question up
     case ActionTypes.MOVE_UP:

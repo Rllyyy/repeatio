@@ -20,6 +20,7 @@ import { getBookmarkedLocalStorageItem } from "./BookmarkQuestion";
 //Interfaces
 import { IParams, ISearchParams } from "../../../../utils/types";
 import { IModule } from "../../../module/module";
+import { TSettings } from "@hooks/useSetting";
 
 //Mocha for typescript
 declare var it: Mocha.TestFunction;
@@ -57,7 +58,7 @@ describe("Delete a Question", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
   });
 
-  it("should delete a question and navigate to the next question (mode=practice & order=chronological)", () => {
+  it("should open the DeleteConfirmationModal when clicking on the delete Button", () => {
     // Mount Component
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
@@ -69,7 +70,67 @@ describe("Delete a Question", () => {
     });
 
     // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    cy.get("button[aria-label='Delete Question']").click();
+
+    // Assert that the modal is visible
+    cy.get(".ReactModal__Content--after-open").should("exist").and("be.visible");
+    cy.contains("h2", "Delete Question?").should("exist");
+  });
+
+  it("should close the DeleteConfirmationModal when clicking on Cancel button", () => {
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click delete button
+    cy.get("button[aria-label='Delete Question']").click();
+
+    cy.contains("button", "Cancel").click();
+
+    // Assert that the modal is visible
+    cy.get(".ReactModal__Content--after-open").should("not.exist");
+    cy.contains("h2", "Delete Question?").should("not.exist");
+  });
+
+  it("should close the DeleteConfirmationModal after deleting the question", () => {
+    // Mount Component
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question").click();
+
+    // Assert that the modal is not visible
+    cy.get(".ReactModal__Content--after-open").should("not.exist");
+    cy.contains("h2", "Delete Question?").should("not.exist");
+  });
+
+  it("should delete a question and navigate to the next question (mode=practice & order=chronological)", () => {
+    // Mount Component
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${"cypress_1"}`));
@@ -90,8 +151,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm the deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         const module = parseJSON<IModule>(localStorage.getItem(`repeatio-module-${"cypress_1"}`));
@@ -112,7 +174,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -125,8 +187,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         //Check that only one question was deleted from the localStorage
@@ -145,7 +208,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -158,8 +221,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         /* Check that only one question was deleted from the localStorage */
@@ -178,7 +242,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -191,8 +255,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         /* Check that only one question was deleted from the localStorage */
@@ -211,7 +276,7 @@ describe("Delete a Question", () => {
     const localStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: ["qID-2", "qID-1"],
     };
 
@@ -224,8 +289,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         const localStorageItem = getBookmarkedLocalStorageItem("cypress_1");
@@ -241,7 +307,7 @@ describe("Delete a Question", () => {
     //Setup localStorage
     const localStorageItem = {
       id: "cypress_1",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       type: "marked",
       questions: ["qID-1"],
     };
@@ -255,8 +321,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Click delete button
-    cy.get("button[aria-label='Delete Question']")
+    // Click delete button and confirm deletion
+    cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question")
       .click()
       .should(() => {
         const localStorageItem = getBookmarkedLocalStorageItem("cypress_1");
@@ -280,8 +347,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Delete Question
+    // Delete Question and confirm deletion
     cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question").click();
 
     // Assert that the radio button is not selected and is enabled
     cy.get("input[value='option-0']").should("not.be.selected").and("be.enabled");
@@ -306,8 +374,9 @@ describe("Delete a Question", () => {
       }
     });
 
-    // Delete Question
+    // Delete Question and confirm deletion
     cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question").click();
 
     // Assert that the correction is no longer visible
     cy.get("section.question-correction").should("not.exist");
@@ -333,13 +402,59 @@ describe("Delete a Question", () => {
     // Scroll to the end the question
     cy.get("label.MuiFormControlLabel-root").last().scrollIntoView();
 
-    // Delete Question
+    // Delete Question and confirm deletion
     cy.get("button[aria-label='Delete Question']").click();
+    cy.contains("button", "Delete Question").click();
 
+    // Assert that the question is at the top of the page
     cy.contains("ID: qID-2").should("be.visible");
   });
-});
 
-/* //TODO
- - Add test to allow user to delete the last question in the current context 
-*/
+  it("should show a tooltip if a user hovers over the delete button", () => {
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("body").realClick();
+
+    // Hoover over the delete button
+    cy.get("button[aria-label='Delete Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("be.visible");
+  });
+
+  it("should not show the tooltip if the user has the setting disabled", () => {
+    const settings: TSettings = {
+      expanded: false,
+      addedExampleModule: true,
+      moduleSort: "ID (ascending)",
+      embedYoutubeVideos: true,
+      showTooltips: false,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings, null, "\t"));
+
+    cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
+
+    // Click show navigation button that only exists on small displays
+    cy.get("body").then((body) => {
+      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+        cy.get("button[aria-label='Show Navigation']").click();
+      }
+    });
+
+    cy.get("body").realClick();
+
+    // Hoover over the delete button
+    cy.get("button[aria-label='Delete Question']").realHover();
+
+    // Assert that the tooltip is visible
+    cy.get(".react-tooltip").should("not.exist");
+  });
+});

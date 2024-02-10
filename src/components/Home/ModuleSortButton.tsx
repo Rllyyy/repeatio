@@ -4,7 +4,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
 
-const moduleSortOptions = ["Name (ascending)", "Name (descending)", "ID (ascending)", "ID (descending)"] as const;
+export const moduleSortOptions = [
+  "Name (ascending)",
+  "Name (descending)",
+  "ID (ascending)",
+  "ID (descending)",
+] as const;
 
 export type TModuleSortOption = (typeof moduleSortOptions)[number];
 

@@ -1,7 +1,7 @@
 <div align="center">
   <!-- Icon -->
   <a href="https://www.repeatio.de">
-    <img src=".github/images/brain.svg" height="75" alt="repeatio icon showing a brain"/>
+    <img src=".github/Docs/assets/images/brain.svg" height="75" alt="repeatio icon showing a brain"/>
   </a>
   
   <!-- Text -->
@@ -12,48 +12,17 @@
   
   <!-- Mockup -->
   <a href="https://www.repeatio.de">
-    <img src=".github/images/3-mobile.png" width="600px" alt="Mockup of repeatio">
+    <img src=".github/Docs/assets/images/3-mobile.png" width="600px" alt="Mockup of repeatio">
   </a>
 </div>
 
-> **Warning**
+> [!WARNING]  
 >
 > - **Regularly** backup your data by **exporting** your modules and bookmarked questions!
 > - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
 > - Some UI elements are currently not working (e.g. module progress)!  
 
 ## [:clapper: Watch the Tutorial](https://youtu.be/Rqsy0nL4WK8)
-
-## Browser Support
-
-### Desktop
-
-|               |      Chrome       |       Edge        |     Safari      |      Firefox      |       Opera       | Internet Explorer | Electron (Developers only) |
-| :-----------: | :---------------: | :---------------: | :-------------: | :---------------: | :---------------: | :---------------: | :------------------------: |
-|  Performance  | :1st_place_medal: | :1st_place_medal: | :grey_question: | :1st_place_medal: | :3rd_place_medal: |        :x:        |     :1st_place_medal:      |
-| Functionality | :1st_place_medal: |  :grey_question:  | :grey_question: | :2nd_place_medal: | :1st_place_medal: |        :x:        |     :3rd_place_medal:      |
-
-<!--Firefox not perfect because: window.showSaveFilePicker is not supported + :has() not supported-->
-<!--Opera ok because modal performance-->
-
-### Mobile
-
-|               |      Chrome       |      Edge       |      Safari       |      Firefox      |      Opera      | Samsung Internet |
-| :-----------: | :---------------: | :-------------: | :---------------: | :---------------: | :-------------: | :--------------: |
-|  Performance  | :2nd_place_medal: | :grey_question: | :3rd_place_medal: | :3rd_place_medal: | :grey_question: |       :x:        |
-| Functionality | :1st_place_medal: | :grey_question: | :3rd_place_medal: | :1st_place_medal: | :grey_question: |       :x:        |
-
-<!--Firefox not perfect because html validation is not supported, :has() not supported-->
-
-### Legend
-
-|       Emoji       | Value       |
-| :---------------: | ----------- |
-| :1st_place_medal: | Excellent   |
-| :2nd_place_medal: | Very good   |
-| :3rd_place_medal: | Ok          |
-|  :grey_question:  | Unknown     |
-|        :x:        | Unsupported |
 
 ## Module
 
@@ -75,7 +44,7 @@
 3. Finally click on `Add`
 4. The new module will appear in the `Module Overview` and can be viewed by clicking on `View >`
 
-> **Warning**  
+> [!WARNING]  
 > If the module already exist in your modules it will be completely overwritten with the imported module!
 
 ### Export a Module
@@ -129,7 +98,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 2. Fill in the required fields ([Learn more](#question-editor) about the Question Editor)
 3. Click on `Update`
 
-> **Note**  
+> [!NOTE]  
 > On mobile you may have to first extend the bottom of the navigation
 
 ### Question Editor
@@ -454,10 +423,10 @@ Text outside list
     </tr>
   </table>
 
-> **Warning**  
+> [!WARNING]  
 > To exit a list in markdown you have to add a blank line between the list and the following content or add two to blank spaces at the end of the last list item
 
-> **Note**  
+> [!NOTE]  
 > Unordered list in markdown can use asterisks (<code>*</code>), minuses (<code>-</code>) or pluses (<code>+</code>).
 
 </details>
@@ -523,7 +492,7 @@ Text outside table
     </tr>
   </table>
 
-> **Note**  
+> [!NOTE]  
 > Use the following syntax below the heading to align items in a markdown table:
 >
 > - left (| :------- |) is optional as it is identical to | ------- |
@@ -597,7 +566,7 @@ This text is unaffected
   </tr>
 </table>
 
-> **Note**  
+> [!NOTE]  
 > Using html elements may overwrite the default styling!
 
 </details>
@@ -637,7 +606,7 @@ $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
 To delete a question click on the trash icon.  
 ![Bookmark](./.github/Docs/assets/images/delete-question.png)
 
-> **Warning**  
+> [!WARNING]  
 > There is no undo functionality and no confirm dialog. The question will be deleted immediately!  
 
 ## Bookmarked Questions
@@ -715,7 +684,7 @@ git clone https://github.com/Rllyyy/repeatio.git
 yarn install
 ```
 
-> **Note**  
+> [!NOTE]  
 > You may need to install yarn first.
 
 </details>
@@ -723,13 +692,7 @@ yarn install
 <details>
   <summary><b>Start local server</b></summary>
 
-**Just Website (recommended):**
-
-```bash
-yarn start-react
-```
-
-**Website and Electron:**
+**Website**
 
 ```bash
 yarn start
@@ -782,12 +745,6 @@ yarn test --watchAll
   <summary><b>Build</b></summary>
 
 **Build website:**
-
-```bash
-yarn build-react
-```
-
-**Build Electron:**
 
 ```bash
 yarn build

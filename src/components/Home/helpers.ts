@@ -1,13 +1,11 @@
-import isElectron from "is-electron";
 import { fetchModuleFromPublicFolder } from "../../utils/fetchModuleFromPublicFolder";
-import { fetchModuleFromFileSystem } from "../../utils/fetchModuleFromFileSystem";
 import { parseJSON } from "../../utils/parseJSON";
 import { toast } from "react-toastify";
 
 // Interfaces + types
 import { IModule } from "../module/module";
 import { IFile } from "./ImportModule";
-import { TSettings } from "../../utils/types";
+import { TSettings } from "@hooks/useSetting";
 import { TModuleSortOption } from "./ModuleSortButton";
 
 /**
@@ -78,16 +76,9 @@ export function isExampleModuleAdded(settings: TSettings | null | undefined): bo
  * Adds the example module data to local storage and updates the settings to indicate that the module has been added.
  * @param {TSettings | null | undefined} settings - The current settings object retrieved from local storage.
  */
-export async function addExampleModuleToLocalStorage(settings: TSettings | null | undefined) {
+export async function addExampleModuleToLocalStorage(settings: TSettings | null | undefined, signal: AbortSignal) {
   // Fetch the example module data from the public folder
-  let exampleModuleData: IModule | undefined;
-
-  if (isElectron()) {
-    exampleModuleData = await fetchModuleFromFileSystem();
-  } else {
-    exampleModuleData = await fetchModuleFromPublicFolder();
-  }
-
+  let exampleModuleData = await fetchModuleFromPublicFolder(signal);
   // Check if the example module data was retrieved successfully
   if (exampleModuleData) {
     // Update the localStorage with the module data

@@ -1,6 +1,6 @@
 import { SiteHeading } from "../components/SiteHeading/SiteHeading";
 
-export const ContributePage = () => {
+export default function ContributePage() {
   return (
     <>
       <SiteHeading title='Contribute' />
@@ -10,4 +10,4 @@ export const ContributePage = () => {
       </p>
     </>
   );
-};
+}

@@ -10,6 +10,7 @@ import { parseJSON } from "../../utils/parseJSON";
 // Components
 import { FixedModal } from "../CustomModal/FixedModal";
 import { toast } from "react-toastify";
+import LabelWithAsterisk from "../common/LabelWithAsterisk";
 
 // css
 import styles from "./index.module.css";
@@ -23,18 +24,30 @@ type ModuleEditorProps = {
   handleModalClose: () => void;
   mode: "edit" | "create";
   showModal: boolean;
-  moduleId: Required<IParams["moduleID"]>;
+  moduleId: IParams["moduleID"] | null;
+  navigateOnSuccess: boolean;
 };
 
-export const ModuleEditor: React.FC<ModuleEditorProps> = ({ handleModalClose, mode, showModal, moduleId }) => {
+export const ModuleEditor: React.FC<ModuleEditorProps> = ({
+  handleModalClose,
+  mode,
+  showModal,
+  moduleId,
+  navigateOnSuccess,
+}) => {
   return (
     <FixedModal showModal={showModal} handleModalClose={handleModalClose} title='Edit Module'>
-      <ModuleEditorForm moduleId={moduleId} handleModalClose={handleModalClose} mode={mode} />
+      <ModuleEditorForm
+        moduleId={moduleId}
+        handleModalClose={handleModalClose}
+        mode={mode}
+        navigateOnSuccess={navigateOnSuccess}
+      />
     </FixedModal>
   );
 };
 
-function getValues(moduleId: IParams["moduleID"]) {
+function getValues(moduleId: IParams["moduleID"] | null) {
   // Get module from localStorage
   const module = localStorage.getItem(`repeatio-module-${moduleId}`);
   const moduleJSON = parseJSON<IModuleSchema>(module);
@@ -70,11 +83,12 @@ function getDefaultValues() {
 
 interface IModuleEditorFormBasicProps {
   handleModalClose: () => void;
+  navigateOnSuccess: boolean;
 }
 
 interface IModuleEditorFormEdit extends IModuleEditorFormBasicProps {
   mode: "edit";
-  moduleId: IParams["moduleID"];
+  moduleId: IParams["moduleID"] | null;
 }
 
 interface IModuleEditorFormCreate extends IModuleEditorFormBasicProps {
@@ -130,7 +144,6 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
 
       //Update localeStorage and tell the window that a new storage event occurred
       localStorage.setItem(`repeatio-module-${data.id}`, JSON.stringify(data, null, "\t"));
-      //window.dispatchEvent(new Event("storageEvent"));
 
       // Update bookmarked localStorage
       const oldValue = localStorage.getItem(`repeatio-marked-${props.moduleId}`);
@@ -145,7 +158,9 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
         localStorage.setItem(`repeatio-marked-${data.id}`, JSON.stringify({ ...value, id: data.id }, null, "\t"));
       }
 
-      navigate(`/module/${data.id}`, { replace: true, state: { name: data.name } });
+      if (props.navigateOnSuccess) navigate(`/module/${data.id}`, { replace: true, state: { name: data.name } });
+
+      window.dispatchEvent(new Event("storage"));
     } else {
       //Update localeStorage and tell the window that a new storage event occurred
       localStorage.setItem(`repeatio-module-${data.id}`, JSON.stringify(data, null, "\t"));
@@ -170,7 +185,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
     <form className={styles["module-editor"]} onSubmit={handleSubmit(formSubmit)}>
       {/* Module ID */}
       <div className='module-editor-id'>
-        <label htmlFor='module-editor-id-input'>ID</label>
+        <LabelWithAsterisk htmlFor='module-editor-id-input'>ID</LabelWithAsterisk>
         <input
           type='text'
           id='module-editor-id-input'
@@ -189,7 +204,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
       </div>
       {/* Module Name */}
       <div className='module-editor-name'>
-        <label htmlFor='module-editor-name-input'>Name</label>
+        <LabelWithAsterisk htmlFor='module-editor-name-input'>Name</LabelWithAsterisk>
         <input
           type='text'
           id='module-editor-name-input'
@@ -208,7 +223,7 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
       </div>
       {/* Module language */}
       <div className='module-editor-language'>
-        <label htmlFor='module-editor-language-select'>Language</label>
+        <LabelWithAsterisk htmlFor='module-editor-language-select'>Language</LabelWithAsterisk>
         <select
           id='module-editor-language-select'
           {...register("lang")}

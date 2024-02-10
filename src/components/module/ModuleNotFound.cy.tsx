@@ -2,7 +2,7 @@
 
 import { UserModulesList } from "./ModuleNotFound";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ModulePage } from "../../pages/module/module";
+import ModulePage from "../../pages/module";
 
 import "../../index.css";
 import { ScrollToTop } from "../../utils/ScrollToTop";
@@ -64,7 +64,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "Z Module",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 
@@ -79,7 +79,7 @@ describe("Test order of Modules in QuestionNotFound component", () => {
       name: "B Module",
       type: "module",
       lang: "en",
-      compatibility: "0.5.0",
+      compatibility: "0.6.0",
       questions: [],
     };
 

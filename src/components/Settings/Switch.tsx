@@ -1,13 +1,13 @@
 import ReactSwitch from "react-switch";
-import { ISettings } from "../../hooks/useSetting";
+import { TSettings } from "../../hooks/useSetting";
 
-interface ISwitch<K extends keyof ISettings> {
+interface ISwitch<K extends keyof TSettings> {
   value: boolean;
-  callback: (name: K, value: ISettings[K]) => void;
+  callback: (name: K, value: TSettings[K]) => void;
   name: K;
 }
 
-export const Switch: React.FC<ISwitch<keyof ISettings>> = ({ value, callback, name }) => {
+export const Switch: React.FC<ISwitch<keyof TSettings>> = ({ value, callback, name }) => {
   return (
     <ReactSwitch
       checked={value}

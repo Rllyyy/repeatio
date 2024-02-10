@@ -26,8 +26,6 @@ export const FixedModal: React.FC<PropsWithChildren<IFixedModal>> = ({
         overlay: { position: "fixed", inset: "0px", backgroundColor: "rgba(0, 0, 0, 0.6)" },
         content: {
           position: "absolute",
-          /* margin: "40px", */
-          /* inset: "40px", */
           border: "1px solid rgb(204, 204, 204)",
           background: "rgb(255, 255, 255)",
           overflow: "auto",
@@ -41,8 +39,6 @@ export const FixedModal: React.FC<PropsWithChildren<IFixedModal>> = ({
           transform: "translate(-50%, -50%)",
           height: "90%",
           maxHeight: "700px",
-          /* maxHeight: "90vh", */
-          /* minHeight: "600px", */
           display: "grid",
           gridTemplateColumns: "1fr max-content",
           rowGap: "20px",
@@ -51,12 +47,14 @@ export const FixedModal: React.FC<PropsWithChildren<IFixedModal>> = ({
       }}
     >
       <h1 className='modal-title'>{title}</h1>
-      <button type='button' className={styles["close-modal-btn"]} aria-label="Close Edit Modal" onClick={handleModalClose}>
+      <button
+        type='button'
+        className={styles["close-modal-btn"]}
+        aria-label='Close Edit Modal'
+        onClick={handleModalClose}
+      >
         <IoClose style={{ height: "30px", width: "30px" }} />
       </button>
-      {/*  <div className='title-close-wrapper'></div> */}
-      {/* <div className='line' /> */}
-      {/*  <hr /> */}
       <div className='modal-content' style={{ gridColumn: "1 / span 2" }}>
         {children}
       </div>

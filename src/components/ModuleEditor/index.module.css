@@ -35,6 +35,9 @@
 }
 
 .module-editor-btn {
+  all: unset;
+  box-sizing: border-box;
+
   position: relative;
   display: inline-flex;
   align-items: center;
