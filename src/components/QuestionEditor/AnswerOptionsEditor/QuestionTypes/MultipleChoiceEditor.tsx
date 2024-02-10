@@ -125,6 +125,14 @@ export const MultipleChoiceEditor = ({
               key={id}
               name='FormControl'
               value={id}
+              sx={{
+                "& .MuiFormControlLabel-asterisk": {
+                  display: "none",
+                },
+                "& .MuiStack-root": {
+                  width: "100%",
+                },
+              }}
               control={
                 <Radio
                   className='formControlLabel-radio'
