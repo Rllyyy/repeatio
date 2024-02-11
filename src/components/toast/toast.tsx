@@ -33,7 +33,6 @@ export const CustomToastContainer = () => {
       autoClose={8000}
       hideProgressBar={false}
       newestOnTop={false}
-      closeOnClick={false}
       rtl={false}
       pauseOnFocusLoss
       draggable
@@ -73,19 +72,19 @@ function logToConsole({ type, data, content }: TLogToConsole) {
 
   //Dependent on the toast type, log corresponding message
   switch (type) {
-    case toast.TYPE.SUCCESS:
+    case "success":
       console.info(messageWithTime);
       break;
-    case toast.TYPE.ERROR:
+    case "error":
       console.error(messageWithTime);
       break;
-    case toast.TYPE.WARNING:
+    case "warning":
       console.warn(messageWithTime);
       break;
-    case toast.TYPE.INFO:
+    case "info":
       console.info(messageWithTime);
       break;
-    case toast.TYPE.DEFAULT:
+    case "default":
       console.info(messageWithTime);
       break;
     default:
