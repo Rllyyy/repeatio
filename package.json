@@ -26,8 +26,8 @@
     "@types/react-router-dom": "^5.3.3",
     "client-zip": "^2.4.4",
     "cross-env": "^7.0.3",
-    "cypress": "^12.17.3",
-    "cypress-real-events": "^1.10.0",
+    "cypress": "^13.6.4",
+    "cypress-real-events": "^1.11.0",
     "dompurify": "^3.0.5",
     "file-saver": "^2.0.5",
     "framer-motion": "10.15.1",
@@ -58,7 +58,7 @@
   "scripts": {
     "start-react": "vite",
     "build-react": "vite build",
-    "build": "set \"VITE_CJS_TRACE=true\" && vite build",
+    "build": "vite build",
     "start": "vite",
     "lint": "eslint src",
     "serve": "vite preview",
@@ -84,7 +84,7 @@
     "@types/lodash": "^4.14.202",
     "@types/react-modal": "^3.16.3",
     "@types/wicg-file-system-access": "^2023.10.4",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.46.0",
     "eslint-config-react-app": "^7.0.1",
@@ -94,9 +94,9 @@
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.1.1",
-    "vite": "^5.1.1",
+    "vite": "^4.5.2",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-svgr": "^4.2.0",
+    "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.3.1"
   }
 }
