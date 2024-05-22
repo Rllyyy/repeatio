@@ -16,7 +16,7 @@ describe("NewsPage", () => {
   });
 
   it("should render the news in the correct order", () => {
-    cy.get("article").first().contains("h2", "repeatio - v0.5").should("exist");
+    cy.get("article").first().contains("h2", "repeatio - v0.6").should("exist");
     cy.get("article").last().contains("h2", "repeatio - v0.1").should("exist");
   });
 });
