@@ -322,7 +322,7 @@ describe("<Settings />", () => {
     it("should display the current version", () => {
       cy.mount(<Settings />);
 
-      cy.contains("Version: 0.6.0").should("exist");
+      cy.contains("Version: 0.7.0").should("exist");
     });
   });
 });

@@ -305,7 +305,7 @@ export function buildBookmarkFile(moduleID: "cypress_1" | (string & {}), questio
   const fileContent = {
     id: moduleID,
     type: "marked",
-    compatibility: "0.6.0",
+    compatibility: "0.7.0",
     questions: questions,
   };
 

@@ -8,7 +8,7 @@ This file documents the structure of a module inside the localStorage. If you ar
   "name": "Module Name",
   "type": "module",
   "lang": "en",
-  "compatibility": "0.6.0",
+  "compatibility": "0.7.0",
   "questions": [
     {
       "id": "MOD01-1",

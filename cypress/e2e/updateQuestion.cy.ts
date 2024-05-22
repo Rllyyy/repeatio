@@ -153,13 +153,10 @@ describe("Updating a question using the Question editor", () => {
         const questions = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions;
 
         //Create new array with just ids
-        const ids = questions?.reduce(
-          (acc, { id }) => {
-            acc.push(id);
-            return acc;
-          },
-          [] as Array<IQuestion["id"]>
-        );
+        const ids = questions?.reduce((acc, { id }) => {
+          acc.push(id);
+          return acc;
+        }, [] as Array<IQuestion["id"]>);
 
         expect(ids).to.include("updated-id-1").and.to.have.length(6);
       });
@@ -170,7 +167,7 @@ describe("Updating a question using the Question editor", () => {
     const newBookmarkLocalStorageItem = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.6.0",
+      compatibility: "0.7.0",
       questions: ["qID-1", "qID-6"],
     };
 

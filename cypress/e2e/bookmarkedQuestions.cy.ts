@@ -77,7 +77,7 @@ describe("Test usage of bookmarked Questions in module overview", () => {
     const bookmarkedFile = {
       id: "cypress_1",
       type: "marked",
-      compatibility: "0.6.0",
+      compatibility: "0.7.0",
       questions: ["invalid-id", "qID-1", "also-invalid"],
     };
 

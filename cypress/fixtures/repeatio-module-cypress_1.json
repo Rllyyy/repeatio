@@ -3,7 +3,7 @@
   "name": "Cypress Fixture Module",
   "type": "module",
   "lang": "en",
-  "compatibility": "0.6.0",
+  "compatibility": "0.7.0",
   "questions": [
     {
       "id": "qID-1",
@@ -81,18 +81,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "A gap text question can have multiple []. A semicolon separates the [] words for one gap. When answering a question the user has to use the correct spelling because spelling mistakes are [] tolerated.",
-        "correctGapValues": [
-          [
-            "gaps"
-          ],
-          [
-            "correct",
-            "right"
-          ],
-          [
-            "not"
-          ]
-        ]
+        "correctGapValues": [["gaps"], ["correct", "right"], ["not"]]
       }
     },
     {
@@ -106,22 +95,12 @@
         "dropdowns": [
           {
             "id": "select-0",
-            "options": [
-              "Dropdown",
-              "Pickup",
-              "empty"
-            ],
+            "options": ["Dropdown", "Pickup", "empty"],
             "correct": "Dropdown"
           },
           {
             "id": "select-1",
-            "options": [
-              "0%",
-              "25%",
-              "50%",
-              "75%",
-              "100%"
-            ],
+            "options": ["0%", "25%", "50%", "75%", "100%"],
             "correct": "50%"
           }
         ]
@@ -181,22 +160,12 @@
         "dropdowns": [
           {
             "id": "select-0",
-            "options": [
-              "1.8 Mio",
-              "1.5 Mio",
-              "2.9 Mio",
-              "2 Tsd."
-            ],
+            "options": ["1.8 Mio", "1.5 Mio", "2.9 Mio", "2 Tsd."],
             "correct": "1.8 Mio"
           },
           {
             "id": "select-1",
-            "options": [
-              "1.8 Mio",
-              "1.5 Mio",
-              "2.9 Mio",
-              "2 Tsd."
-            ],
+            "options": ["1.8 Mio", "1.5 Mio", "2.9 Mio", "2 Tsd."],
             "correct": "1.5 Mio"
           }
         ]

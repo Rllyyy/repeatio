@@ -3,7 +3,7 @@
   "name": "Test multiple response question type",
   "type": "module",
   "lang": "en",
-  "compatibility": "0.6.0",
+  "compatibility": "0.7.0",
   "questions": [
     {
       "id": "mr-1",

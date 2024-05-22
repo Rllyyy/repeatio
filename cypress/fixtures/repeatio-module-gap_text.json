@@ -3,7 +3,7 @@
   "name": "Test gap-text question type",
   "type": "module",
   "lang": "en",
-  "compatibility": "0.6.0",
+  "compatibility": "0.7.0",
   "questions": [
     {
       "id": "gt-1",
@@ -13,11 +13,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This is the [] question",
-        "correctGapValues": [
-          [
-            "first"
-          ]
-        ]
+        "correctGapValues": [["first"]]
       }
     },
     {
@@ -28,11 +24,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This is the [] question",
-        "correctGapValues": [
-          [
-            "second"
-          ]
-        ]
+        "correctGapValues": [["second"]]
       }
     },
     {
@@ -43,18 +35,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This is the [] question. It [] multiple gaps. Even gaps that have more than [] correct answer.",
-        "correctGapValues": [
-          [
-            "third"
-          ],
-          [
-            "contains"
-          ],
-          [
-            "one",
-            "1"
-          ]
-        ]
+        "correctGapValues": [["third"], ["contains"], ["one", "1"]]
       }
     },
     {
@@ -65,13 +46,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "[] + 1 = 2",
-        "correctGapValues": [
-          [
-            "1",
-            "one",
-            "One"
-          ]
-        ]
+        "correctGapValues": [["1", "one", "One"]]
       }
     },
     {
@@ -82,11 +57,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": " - This is a []\n - at the beginning\n\n This should not be a list item",
-        "correctGapValues": [
-          [
-            "list"
-          ]
-        ]
+        "correctGapValues": [["list"]]
       }
     },
     {
@@ -97,11 +68,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "Render this:\n - This is a []\n - at the beginning\n\n This should not be a list item",
-        "correctGapValues": [
-          [
-            "list"
-          ]
-        ]
+        "correctGapValues": [["list"]]
       }
     },
     {
@@ -112,11 +79,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This is a table\n | This | table |\n|------|------|\n| should   | []   |\n\nText below **table**",
-        "correctGapValues": [
-          [
-            "work"
-          ]
-        ]
+        "correctGapValues": [["work"]]
       }
     },
     {
@@ -127,11 +90,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "<table><tr><th>This</th><th>table</th></tr><tr><td>should</td><td>[]</td></tr></table>\n\n This should be _italic_",
-        "correctGapValues": [
-          [
-            "work"
-          ]
-        ]
+        "correctGapValues": [["work"]]
       }
     },
     {
@@ -142,11 +101,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "                                    Should not break with a lot of white-spaces.\n             Hey []",
-        "correctGapValues": [
-          [
-            "yeah"
-          ]
-        ]
+        "correctGapValues": [["yeah"]]
       }
     },
     {
@@ -157,11 +112,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "[] should be a gap here and here is a:\n - List",
-        "correctGapValues": [
-          [
-            "There"
-          ]
-        ]
+        "correctGapValues": [["There"]]
       }
     },
     {
@@ -182,11 +133,7 @@
       "help": "Fill in the blanks.",
       "answerOptions": {
         "text": "This text has a gap in the\n[]",
-        "correctGapValues": [
-          [
-            "line"
-          ]
-        ]
+        "correctGapValues": [["line"]]
       }
     }
   ]

@@ -159,7 +159,7 @@ describe("<ModuleEditor />", () => {
     cy.get("#module-editor-id-input").should("have.value", "cypress_1");
     cy.get("#module-editor-name-input").should("have.value", "Cypress Fixture Module");
     cy.get("#module-editor-language-select").should("have.value", "en");
-    cy.get("#module-editor-compatibility-input").should("have.value", "0.6.0");
+    cy.get("#module-editor-compatibility-input").should("have.value", "0.7.0");
   });
 
   it("should update the module editor values on Change", () => {
@@ -188,7 +188,7 @@ describe("<ModuleEditor />", () => {
         expect(localStorageItem?.id).to.equal("updated_id");
         expect(localStorageItem?.name).to.equal("Updated Name");
         expect(localStorageItem?.lang).to.equal("de");
-        expect(localStorageItem?.compatibility).to.equal("0.6.0");
+        expect(localStorageItem?.compatibility).to.equal("0.7.0");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.questions).to.have.length(6);
       });
@@ -212,7 +212,7 @@ describe("<ModuleEditor />", () => {
         expect(localStorageItem?.id).to.equal("cypress_1");
         expect(localStorageItem?.name).to.equal("Updated Name");
         expect(localStorageItem?.lang).to.equal("de");
-        expect(localStorageItem?.compatibility).to.equal("0.6.0");
+        expect(localStorageItem?.compatibility).to.equal("0.7.0");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.questions).to.have.length(6);
       });

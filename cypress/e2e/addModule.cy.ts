@@ -70,7 +70,7 @@ describe("Test importing a new module", () => {
         expect(localStorageItem?.name).to.equal("Cypress Fixture Module");
         expect(localStorageItem?.type).to.equal("module");
         expect(localStorageItem?.lang).to.equal("en");
-        expect(localStorageItem?.compatibility).to.equal("0.6.0");
+        expect(localStorageItem?.compatibility).to.equal("0.7.0");
         expect(localStorageItem?.questions).to.have.length(6);
       });
 
