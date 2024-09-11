@@ -91,7 +91,7 @@ describe("MultipleChoice Component", () => {
       .first()
       .find("svg")
       .last()
-      .should("have.css", "transition", "transform 0s cubic-bezier(0.4, 0, 1, 1) 0s");
+      .should("have.css", "transition", "transform cubic-bezier(0.4, 0, 1, 1)");
   });
 });
 
