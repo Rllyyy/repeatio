@@ -78,7 +78,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@tailwindcss/typography": "^0.5.10",
-    "@tanstack/eslint-plugin-query": "^5.20.1",
+    "@tanstack/eslint-plugin-query": "^5.52.3",
     "@types/d3-ease": "^3.0.2",
     "@types/lodash": "^4.14.202",
     "@types/react-modal": "^3.16.3",
