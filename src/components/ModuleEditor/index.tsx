@@ -58,11 +58,11 @@ function getValues(moduleId: IParams["moduleID"] | null) {
     //return moduleJSON as IModuleSchema;
   } else {
     console.error("Failed to fetch module");
-    const obj: Omit<IModuleSchema, "lang"> & { lang: string } = {
+    const obj: IModuleSchema = {
       id: "",
       name: "",
       type: "module",
-      lang: "",
+      lang: "" as "en" | "de",
       compatibility: packageJson.version,
       questions: [],
     };
@@ -70,12 +70,12 @@ function getValues(moduleId: IParams["moduleID"] | null) {
   }
 }
 
-function getDefaultValues() {
+function getDefaultValues(): IModuleSchema {
   return {
     id: "",
     name: "",
     type: "module",
-    lang: "",
+    lang: "" as "en" | "de",
     compatibility: packageJson.version,
     questions: [],
   };
