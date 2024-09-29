@@ -129,7 +129,7 @@ type ErrorBoundarySharedProps = {
   onError?: (
     error: Error,
     info: {
-      componentStack: string;
+      componentStack: string | null | undefined;
     }
   ) => void;
   onReset?: (

@@ -58,7 +58,7 @@ function getValues(moduleId: IParams["moduleID"] | null) {
     //return moduleJSON as IModuleSchema;
   } else {
     console.error("Failed to fetch module");
-    const obj: IModuleSchema = {
+    const obj: Omit<IModuleSchema, "lang"> & { lang: string } = {
       id: "",
       name: "",
       type: "module",
