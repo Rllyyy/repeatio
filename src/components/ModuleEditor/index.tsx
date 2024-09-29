@@ -62,7 +62,7 @@ function getValues(moduleId: IParams["moduleID"] | null) {
       id: "",
       name: "",
       type: "module",
-      lang: "",
+      lang: "" as "en" | "de",
       compatibility: packageJson.version,
       questions: [],
     };
@@ -70,12 +70,12 @@ function getValues(moduleId: IParams["moduleID"] | null) {
   }
 }
 
-function getDefaultValues() {
+function getDefaultValues(): IModuleSchema {
   return {
     id: "",
     name: "",
     type: "module",
-    lang: "",
+    lang: "" as "en" | "de",
     compatibility: packageJson.version,
     questions: [],
   };

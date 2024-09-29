@@ -35,7 +35,7 @@ export const moduleEditorSchema = z.object({
   /* Language */
   lang: z
     .string()
-    .nonempty({ message: "Select a language for the module." })
+    .min(1, { message: "Select a language for the module." })
     .refine(langIsValid, { message: "Language is invalid. Please report this issue at contact@repeatio.de" }),
 
   /* Compatibility */

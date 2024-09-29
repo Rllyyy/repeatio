@@ -1,4 +1,4 @@
-import { PropsWithChildren, Suspense, SuspenseProps } from "react";
+import { ErrorInfo, PropsWithChildren, Suspense, SuspenseProps } from "react";
 import { ErrorBoundary, ErrorBoundaryProps, FallbackProps } from "react-error-boundary";
 import { CircularTailSpinner } from "../Spinner";
 import { Link, useNavigate } from "react-router-dom";
@@ -125,13 +125,8 @@ export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, reset
 };
 
 // This type is from react-error-boundary but doesn't get exported
-type ErrorBoundarySharedProps = {
-  onError?: (
-    error: Error,
-    info: {
-      componentStack: string;
-    }
-  ) => void;
+type ErrorBoundarySharedProps = PropsWithChildren<{
+  onError?: (error: Error, info: ErrorInfo) => void;
   onReset?: (
     details:
       | {
@@ -145,7 +140,7 @@ type ErrorBoundarySharedProps = {
         }
   ) => void;
   resetKeys?: any[];
-};
+}>;
 
 /* const LoadingComponent = () => {
   throw new Promise(() => {});
