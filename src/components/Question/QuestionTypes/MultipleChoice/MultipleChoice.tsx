@@ -15,6 +15,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import rehypeExternalLinks from "rehype-external-links";
 import "katex/dist/katex.min.css";
 
 // Import css
@@ -99,11 +100,10 @@ export const MultipleChoice = forwardRef<IForwardRefFunctions, MultipleChoiceCom
                 return (
                   <li className='correction-multipleChoice-list-item' key={item.id}>
                     <ReactMarkdown
-                      linkTarget='_blank'
-                      transformLinkUri={normalizeLinkUri}
                       children={item.text}
-                      rehypePlugins={[rehypeRaw, rehypeKatex]}
-                      remarkPlugins={[remarkGfm, remarkMath]}
+                      urlTransform={normalizeLinkUri}
+                      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                      remarkPlugins={[remarkMath, remarkGfm]}
                     />
                   </li>
                 );
@@ -158,10 +158,9 @@ export const MultipleChoice = forwardRef<IForwardRefFunctions, MultipleChoiceCom
                     <Typography component={"span"} className='formControlLabel-typography'>
                       <ReactMarkdown
                         children={option.text}
-                        rehypePlugins={[rehypeRaw, rehypeKatex]}
-                        remarkPlugins={[remarkGfm, remarkMath]}
-                        linkTarget='_blank'
-                        transformLinkUri={normalizeLinkUri}
+                        urlTransform={normalizeLinkUri}
+                        rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                        remarkPlugins={[remarkMath, remarkGfm]}
                       />
                     </Typography>
                   }

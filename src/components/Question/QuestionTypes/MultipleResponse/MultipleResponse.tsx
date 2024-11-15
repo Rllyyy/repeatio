@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
+import rehypeExternalLinks from "rehype-external-links";
 import "katex/dist/katex.min.css";
 
 //Material UI
@@ -119,10 +120,9 @@ export const MultipleResponse = forwardRef<IForwardRefFunctions, MultipleRespons
                   <li className='correction-multipleResponse-list-item' key={item.id}>
                     <ReactMarkdown
                       children={item.text}
-                      linkTarget='_blank'
-                      transformLinkUri={normalizeLinkUri}
-                      rehypePlugins={[rehypeRaw, rehypeKatex]}
-                      remarkPlugins={[remarkGfm, remarkMath]}
+                      urlTransform={normalizeLinkUri}
+                      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                      remarkPlugins={[remarkMath, remarkGfm]}
                     />
                   </li>
                 );
@@ -176,11 +176,10 @@ export const MultipleResponse = forwardRef<IForwardRefFunctions, MultipleRespons
                   label={
                     <Typography component={"span"} className={`formControlLabel-typography`}>
                       <ReactMarkdown
-                        linkTarget='_blank'
-                        transformLinkUri={normalizeLinkUri}
                         children={option.text}
-                        rehypePlugins={[rehypeRaw, rehypeKatex]}
-                        remarkPlugins={[remarkGfm, remarkMath]}
+                        urlTransform={normalizeLinkUri}
+                        rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                        remarkPlugins={[remarkMath, remarkGfm]}
                       />
                     </Typography>
                   }

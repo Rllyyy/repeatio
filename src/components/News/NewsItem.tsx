@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGemoji from "remark-gemoji";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeExternalLinks from "rehype-external-links";
 
 export const NewsItem: React.FC<{ item: TNewsItem }> = ({ item }) => {
   const cleanName = item.name.replace(/ /g, "").replace(/\./g, "_").toLowerCase();
@@ -32,9 +33,8 @@ export const NewsItem: React.FC<{ item: TNewsItem }> = ({ item }) => {
         <ReactMarkdown
           className='max-w-full prose prose-ul:list-outside prose-h2:text-xl prose-a:no-underline prose-a:text-indigo-600 hover:prose-a:text-indigo-800 prose-li:text-base prose-code:bg-gray-200 prose-code:rounded prose-code:p-0.5'
           remarkPlugins={[remarkGfm, remarkGemoji]}
-          rehypePlugins={[rehypeRaw]}
-          linkTarget='_blank'
-          transformLinkUri={normalizeLinkUri}
+          rehypePlugins={[rehypeRaw, [rehypeExternalLinks, { target: "_blank" }]]}
+          urlTransform={normalizeLinkUri}
         >
           {item.body}
         </ReactMarkdown>

@@ -12,6 +12,7 @@ import rehypeRaw from "rehype-raw";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
+import rehypeExternalLinks from "rehype-external-links";
 import "katex/dist/katex.min.css";
 
 //Import CSS
@@ -238,12 +239,12 @@ export const QuestionTitle: React.FC<IQuestionTitle> = ({ title }) => {
   return (
     <ReactMarkdown
       className='question-title'
-      children={title}
-      linkTarget='_blank'
-      transformLinkUri={normalizeLinkUri}
-      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      urlTransform={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
       remarkPlugins={[remarkMath, remarkGfm]}
-    />
+    >
+      {title}
+    </ReactMarkdown>
   );
 };
 
@@ -268,12 +269,12 @@ const QuestionTypeHelp: React.FC<IQuestionTypeHelp> = ({ help }) => {
   return (
     <ReactMarkdown
       className='question-type-help'
-      children={help}
-      linkTarget='_blank'
-      transformLinkUri={normalizeLinkUri}
-      rehypePlugins={[rehypeRaw, rehypeKatex]}
+      urlTransform={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
       remarkPlugins={[remarkMath, remarkGfm]}
-    />
+    >
+      {help}
+    </ReactMarkdown>
   );
 };
 

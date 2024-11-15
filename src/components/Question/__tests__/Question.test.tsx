@@ -140,6 +140,10 @@ jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
+jest.mock("rehype-external-links", () => (props: IProps) => {
+  return <p className='rehype-external-links-mock'>{props.children}</p>;
+});
+
 //Override the default useSize hook
 jest.mock("../../../hooks/useSize.ts", () => ({
   useSize: () => ({ x: 10, y: 15, width: 917, height: 44, top: 15, right: 527, bottom: 59, left: 10 }),

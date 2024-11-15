@@ -6,6 +6,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
+import rehypeExternalLinks from "rehype-external-links";
 import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 import { forbiddenTags, forbiddenAttributes } from "../blockedTagsAttributes";
 import { IGapTextDropdown } from "./GapTextDropdown";
@@ -26,10 +27,9 @@ function textWithBlanks(text: string, dropdowns: IGapTextDropdown["dropdowns"]):
   const htmlString = ReactDOMServer.renderToString(
     <ReactMarkdown
       children={text}
-      linkTarget='_blank'
-      transformLinkUri={normalizeLinkUri}
-      rehypePlugins={[rehypeRaw, rehypeKatex]}
-      remarkPlugins={[remarkGfm, remarkMath]}
+      urlTransform={normalizeLinkUri}
+      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+      remarkPlugins={[remarkMath, remarkGfm]}
     />
   );
 
