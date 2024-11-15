@@ -9,6 +9,7 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import rehypeExternalLinks from "rehype-external-links";
 import "katex/dist/katex.min.css";
 
 //Component
@@ -26,10 +27,9 @@ export const AnswerCorrection = ({
     const htmlString = ReactDOMServer.renderToString(
       <ReactMarkdown
         children={text}
-        linkTarget='_blank'
-        transformLinkUri={normalizeLinkUri}
-        rehypePlugins={[rehypeRaw, rehypeKatex]}
-        remarkPlugins={[remarkGfm, remarkMath]}
+        urlTransform={normalizeLinkUri}
+        rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+        remarkPlugins={[remarkMath, remarkGfm]}
       />
     );
 

@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm";
+import rehypeExternalLinks from "rehype-external-links";
 import "katex/dist/katex.min.css";
 
 //Import Components
@@ -358,10 +359,9 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 <ReactMarkdown
                   className='ext-match-element-text'
                   children={text}
-                  linkTarget='_blank'
-                  transformLinkUri={normalizeLinkUri}
-                  rehypePlugins={[rehypeRaw, rehypeKatex]}
-                  remarkPlugins={[remarkGfm, remarkMath]}
+                  urlTransform={normalizeLinkUri}
+                  rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                  remarkPlugins={[remarkMath, remarkGfm]}
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
@@ -386,10 +386,9 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 <ReactMarkdown
                   className='ext-match-element-text'
                   children={text}
-                  linkTarget='_blank'
-                  transformLinkUri={normalizeLinkUri}
-                  rehypePlugins={[rehypeRaw, rehypeKatex]}
-                  remarkPlugins={[remarkGfm, remarkMath]}
+                  urlTransform={normalizeLinkUri}
+                  rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+                  remarkPlugins={[remarkMath, remarkGfm]}
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
