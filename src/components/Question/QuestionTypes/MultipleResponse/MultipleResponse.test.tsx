@@ -51,6 +51,10 @@ jest.mock("rehype-katex", () => (props: IProps) => {
   return <p className='rehype-katex-mock'>{props.children}</p>;
 });
 
+jest.mock("rehype-external-links", () => (props: IProps) => {
+  return <p className='rehype-external-links-mock'>{props.children}</p>;
+});
+
 const MockMultipleResponse = ({ disabled }: { disabled: boolean }) => {
   return <MultipleResponse options={options} formDisabled={disabled} ref={mockUseRef} />;
 };
