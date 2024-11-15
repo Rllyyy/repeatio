@@ -71,6 +71,7 @@ describe("Bookmark a Question", () => {
     /* cy.fixtureToLocalStorage("repeatio-marked-types_1.json");
     cy.mount(<RenderWithRouter moduleID={"types_1"} questionID={"qID-1"} />); */
     cy.viewport(1000, 500);
+    cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
   });
 
   it("should create localStorage item if new bookmarked item is the first in module ", () => {

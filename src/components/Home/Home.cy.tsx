@@ -31,6 +31,10 @@ const MockModulesWithRouter = () => {
 };
 
 describe("Modules (Home) component", () => {
+  beforeEach(() => {
+    cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
+  });
+
   it("should render modules from the localStorage", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
@@ -71,6 +75,10 @@ describe("Modules (Home) component", () => {
 
 /* Module sort */
 describe("Module sort", () => {
+  beforeEach(() => {
+    cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
+  });
+
   it("should default select the sort by name (ascending)", () => {
     cy.mount(<MockModulesWithRouter />);
 
@@ -324,6 +332,10 @@ describe("Add Module modal", () => {
 
 /* Module Deletion */
 describe("Module deletion", () => {
+  beforeEach(() => {
+    cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
+  });
+
   it("should open the module deletion confirm modal when clicking on delete", () => {
     cy.mount(<MockModulesWithRouter />);
 
@@ -469,6 +481,10 @@ describe("Module deletion", () => {
 
 /* Module edit */
 describe("Module Edit", () => {
+  beforeEach(() => {
+    cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
+  });
+
   it("should open the <EditModule /> component", () => {
     cy.mount(<MockModulesWithRouter />);
     cy.get("button.popover-button").click();

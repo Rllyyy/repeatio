@@ -1,6 +1,6 @@
-import viteConfig from "./vite.config";
 import { defineConfig } from "cypress";
 import { rmdir, existsSync } from "fs";
+import path from "path";
 
 export default defineConfig({
   e2e: {
@@ -17,7 +17,19 @@ export default defineConfig({
       framework: "react",
       bundler: "vite",
       viteConfig: {
-        ...viteConfig,
+        server: {
+          host: true,
+          port: 3000,
+        },
+        build: {
+          outDir: "build", // Changed output folder, like in CRA
+        },
+        resolve: {
+          alias: {
+            "@components": path.resolve(__dirname, "src/components"),
+            "@hooks": path.resolve(__dirname, "src/hooks"),
+          },
+        },
       },
     },
     setupNodeEvents(on, config) {
@@ -28,7 +40,9 @@ export default defineConfig({
   },
 });
 
-function deleteFolder(folderName: string): Promise<string> {
+// Fuck cypress and their slow ass adoptation
+
+function deleteFolder(folderName) {
   return new Promise((resolve, reject) => {
     if (existsSync(folderName)) {
       rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {
