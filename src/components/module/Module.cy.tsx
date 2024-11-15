@@ -2,7 +2,7 @@
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { IModule, Module } from "./module";
 import { CustomToastContainer } from "@components/toast/toast";
-import { parseJSON } from "src/utils/parseJSON";
+import { parseJSON } from "../../utils/parseJSON";
 import { IBookmarkedQuestions } from "@components/Question/components/Actions/BookmarkQuestion";
 
 import "../../index.css";
