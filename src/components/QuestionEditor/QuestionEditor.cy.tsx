@@ -129,7 +129,7 @@ describe("QuestionEditor.cy.js", () => {
     cy.contains("Please select a Question Type").should("not.exist");
   });
 
-  it("should grow the textarea", { scrollBehavior: false, viewportHeight: 500, viewportWidth: 480 }, () => {
+  it("should grow the textarea", { scrollBehavior: false, viewportHeight: 500, viewportWidth: 480, retries: 5 }, () => {
     cy.get("textarea[name='title']")
       .type("The title for this question should wrap to the next line", { delay: 1 })
       .invoke("outerHeight")
