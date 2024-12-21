@@ -42,7 +42,7 @@ export default defineConfig({
   },
 });
 
-function deleteFolder(folderName) {
+function deleteFolder(folderName: string) {
   return new Promise((resolve, reject) => {
     if (existsSync(folderName)) {
       rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {
