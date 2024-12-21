@@ -10,9 +10,11 @@ export default defineConfig({
       });
     },
     baseUrl: "http://localhost:3000",
+    defaultBrowser: "chrome",
   },
 
   component: {
+    defaultBrowser: "chrome",
     devServer: {
       framework: "react",
       bundler: "vite",
@@ -40,9 +42,7 @@ export default defineConfig({
   },
 });
 
-// Fuck cypress and their slow ass adoptation
-
-function deleteFolder(folderName) {
+function deleteFolder(folderName: string) {
   return new Promise((resolve, reject) => {
     if (existsSync(folderName)) {
       rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {

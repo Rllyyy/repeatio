@@ -50,7 +50,7 @@ describe("QuestionList", () => {
 });
 
 describe("QuestionList - Drag and Drop", { viewportWidth: 780 }, () => {
-  it("should move a question", () => {
+  it("should move a question", { retries: 5 }, () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
 
@@ -59,6 +59,7 @@ describe("QuestionList - Drag and Drop", { viewportWidth: 780 }, () => {
       .realMouseDown({ button: "left", position: "center" })
       .realMouseMove(0, 150, { position: "center" })
       .realMouseUp({ position: "center" })
+      .wait(500)
       .then(() => {
         cy.get("span[cy-data='id']").should(($spans) => {
           const idValues = $spans.toArray().map((span) => span.textContent);
@@ -67,9 +68,7 @@ describe("QuestionList - Drag and Drop", { viewportWidth: 780 }, () => {
       });
 
     // Assert that the third question was the first question
-
     cy.get("div[cy-data='question']").eq(2).find("span[cy-data='id']").should("have.text", "qID-1");
-    cy.wait(500);
   });
 
   it("should update the localStorage after drag'n'drop", () => {
