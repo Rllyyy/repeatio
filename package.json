@@ -76,7 +76,7 @@
     "@babel/core": "^7.27.1",
     "@babel/plugin-syntax-flow": "^7.27.1",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
-    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-env": "7.27.1",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@tailwindcss/typography": "^0.5.16",
