@@ -3,6 +3,7 @@ import { rmdir, existsSync } from "fs";
 import path from "path";
 
 export default defineConfig({
+  projectId: "fdc7av",
   e2e: {
     setupNodeEvents(on, config) {
       on("task", {

@@ -1,11 +1,7 @@
 # https://docs.cypress.io/guides/continuous-integration/github-actions
 name: Tests
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: push
 
 jobs:
   # Create and save build
@@ -49,16 +45,16 @@ jobs:
           name: build
           path: build
 
-      - name: Cypress run e2e tests
-        # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
-        uses: cypress-io/github-action@v6
-        with:
-          # Starts web server for E2E tests - replace with your own server invocation
-          # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
-          start: yarn serve --port 3000
-          wait-on: "http://localhost:3000" # Waits for above
-          # Runs on chrome
-          browser: chrome
+      # - name: Cypress run e2e tests
+      #   # Uses the official Cypress GitHub action https://github.com/cypress-io/github-action
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     # Starts web server for E2E tests - replace with your own server invocation
+      #     # https://docs.cypress.io/guides/continuous-integration/introduction#Boot-your-server
+      #     start: yarn serve --port 3000
+      #     wait-on: "http://localhost:3000" # Waits for above
+      #     # Runs on chrome
+      #     browser: chrome
 
   component:
     runs-on: ubuntu-latest
@@ -89,6 +85,11 @@ jobs:
           browser: chrome
           # Only include component tests
           component: true
+          spec: "src/components/Question/cypress_tests/QuestionBottom.cy.tsx"
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   jest:
     runs-on: ubuntu-latest

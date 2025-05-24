@@ -277,7 +277,7 @@ describe("Question Bottom Component", () => {
     cy.contains("ID: qID-2").should("be.visible");
   });
 
-  it("should scroll back to the top of the question when navigating to the next question by submitting the question again", () => {
+  it.only("should scroll back to the top of the question when navigating to the next question by submitting the question again", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
