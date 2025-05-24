@@ -89,6 +89,10 @@ jobs:
           browser: chrome
           # Only include component tests
           component: true
+          record: false
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   jest:
     runs-on: ubuntu-latest
