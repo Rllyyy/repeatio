@@ -294,7 +294,9 @@ describe("Question Bottom Component", () => {
 
     // Check question and navigate to next question
     cy.get("button[aria-label='Check Question']").click();
+    cy.wait(1000); // Wait for the question to be checked
     cy.get("button[aria-label='Next Question']").click();
+    cy.wait(1000); // Wait for the question to be checked
 
     // Assert that the question scrolled back to the top
     cy.contains("ID: qID-2").should("be.visible");
