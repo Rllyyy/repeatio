@@ -226,7 +226,7 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
     cy.get("button[aria-label='Enable shuffle']").should("be.disabled");
   });
 
-  it.only("should show 'Enable Shuffle' tooltip if the user hovers over the button", () => {
+  it("should show 'Enable Shuffle' tooltip if the user hovers over the button", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     // Mount Component with initial random question order
@@ -241,7 +241,7 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
     cy.contains("Enable Shuffle").should("exist");
   });
 
-  it.only("should show 'Disable Shuffle' tooltip if the user hovers over the button", () => {
+  it("should show 'Disable Shuffle' tooltip if the user hovers over the button", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
 
     // Mount Component with initial random question order
