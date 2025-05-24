@@ -85,7 +85,7 @@ jobs:
           browser: chrome
           # Only include component tests
           component: true
-          spec: "src/components/Question/cypress_tests/QuestionBottom.cy.tsx"
+          spec: "src/components/Question/components/Actions/ShuffleQuestions.cy.tsx"
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

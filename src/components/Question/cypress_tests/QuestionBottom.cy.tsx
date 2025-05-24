@@ -277,7 +277,7 @@ describe("Question Bottom Component", () => {
     cy.contains("ID: qID-2").should("be.visible");
   });
 
-  it.only("should scroll back to the top of the question when navigating to the next question by submitting the question again", () => {
+  it("should scroll back to the top of the question when navigating to the next question by submitting the question again", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(
       <RenderComponentWithRouter
@@ -294,9 +294,8 @@ describe("Question Bottom Component", () => {
 
     // Check question and navigate to next question
     cy.get("button[aria-label='Check Question']").click();
-    cy.wait(1000); // Wait for the question to be checked
     cy.get("button[aria-label='Next Question']").click();
-    cy.wait(1000); // Wait for the question to be checked
+    cy.wait(1000); //Fixes flaky test
 
     // Assert that the question scrolled back to the top
     cy.contains("ID: qID-2").should("be.visible");
