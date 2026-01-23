@@ -51,7 +51,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("div[aria-label='Element right-1']").should("exist");
   });
 
-  it.only("should keep the width of the add element buttons", { browser: "chrome" }, () => {
+  it("should keep the width of the add element buttons", { browser: "chrome" }, () => {
     cy.get("button#add-left-element").should("have.css", "width", "154.28125px");
     cy.get("button#add-right-element").should("have.css", "width", "154.28125px").click();
 
@@ -112,7 +112,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("textarea[id='textarea-right-0']").type("First element").should("have.value", "First element");
   });
 
-  it("add a line between two elements and update the module", () => {
+  it.only("add a line between two elements and update the module", { browser: "chrome" }, () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.get("input[name='id']").type("simple-extended-match", { delay: 2 });
 
@@ -167,7 +167,8 @@ describe("ExtendedMatchEditor", () => {
       });
   });
 
-  it("should add a diagonal line between two elements", () => {
+  it.only("should add a diagonal line between two elements", () => {
+    cy.viewport(500, 500);
     cy.get("button[aria-label='Add left element']").click().click();
     cy.get("button[aria-label='Add right element']").click();
 
