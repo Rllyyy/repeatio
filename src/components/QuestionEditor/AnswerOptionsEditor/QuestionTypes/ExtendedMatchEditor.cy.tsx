@@ -112,7 +112,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("textarea[id='textarea-right-0']").type("First element").should("have.value", "First element");
   });
 
-  it.only("add a line between two elements and update the module", { browser: "chrome" }, () => {
+  it("add a line between two elements and update the module", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.get("input[name='id']").type("simple-extended-match", { delay: 2 });
 
@@ -133,7 +133,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-0_right-0_line-editor").should("have.attr", "x1", "0");
     cy.get("line#left-0_right-0_line-editor").should("have.attr", "y1", "18.5");
 
-    cy.get("line#left-0_right-0_line-editor").should("have.attr", "x2", "61.421875");
+    cy.get("line#left-0_right-0_line-editor").should("have.attr", "x2", "61.4375");
     cy.get("line#left-0_right-0_line-editor").should("have.attr", "y2", "18.5");
 
     cy.contains("button", "Add")
@@ -167,8 +167,7 @@ describe("ExtendedMatchEditor", () => {
       });
   });
 
-  it.only("should add a diagonal line between two elements", () => {
-    cy.viewport(500, 500);
+  it("should add a diagonal line between two elements", () => {
     cy.get("button[aria-label='Add left element']").click().click();
     cy.get("button[aria-label='Add right element']").click();
 
@@ -180,7 +179,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "x1", "0");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y1", "61.5");
 
-    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.421875");
+    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.4375");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y2", "18.5");
   });
 
@@ -266,7 +265,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "x1", "0");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y1", "61.5");
 
-    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.421875");
+    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.4375");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y2", "18.5");
   });
 
@@ -293,7 +292,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "x1", "0");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y1", "61.5");
 
-    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.421875");
+    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "61.4375");
     cy.get("line#left-1_right-0_line-editor").should("have.attr", "y2", "32");
   });
 
@@ -309,7 +308,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-2_right-1_line-editor").should("have.attr", "x1", "0");
     cy.get("line#left-2_right-1_line-editor").should("have.attr", "y1", "104.5");
 
-    cy.get("line#left-2_right-1_line-editor").should("have.attr", "x2", "61.421875");
+    cy.get("line#left-2_right-1_line-editor").should("have.attr", "x2", "61.4375");
     cy.get("line#left-2_right-1_line-editor").should("have.attr", "y2", "18.5");
   });
 
@@ -325,7 +324,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("line#left-2_right-1_line-editor")
       .should("have.attr", "x1", "0")
       .and("have.attr", "y1", "104.5")
-      .and("have.attr", "x2", "61.421875")
+      .and("have.attr", "x2", "61.4375")
       .and("have.attr", "y2", "88.5");
   });
 
@@ -341,9 +340,9 @@ describe("ExtendedMatchEditor", () => {
 
     cy.viewport(800, 500);
 
-    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "102.578125").and("have.attr", "y2", "18.5");
+    cy.get("line#left-1_right-0_line-editor").should("have.attr", "x2", "102.5625").and("have.attr", "y2", "18.5");
 
-    cy.get("line#left-0_right-0_line-editor").should("have.attr", "x2", "102.578125").and("have.attr", "y2", "18.5");
+    cy.get("line#left-0_right-0_line-editor").should("have.attr", "x2", "102.5625").and("have.attr", "y2", "18.5");
   });
 
   it("should remove the correct line onClick", () => {
@@ -419,7 +418,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("button[id='add-line-left-1']").click();
     cy.get("button[id='add-line-right-0']").click();
 
-    cy.get("circle").should("have.attr", "cx", "30.7109375").and("have.attr", "cy", "40");
+    cy.get("circle").should("have.attr", "cx", "30.71875").and("have.attr", "cy", "40");
   });
 
   it("should center remove line circle after another element is removed", () => {
@@ -431,7 +430,7 @@ describe("ExtendedMatchEditor", () => {
 
     cy.get("button[aria-label='Remove element right-0']").click();
 
-    cy.get("circle").should("have.attr", "cx", "30.7109375").and("have.attr", "cy", "61.5");
+    cy.get("circle").should("have.attr", "cx", "30.71875").and("have.attr", "cy", "61.5");
   });
 
   it("should add a line if its the first line (left point first)", () => {
