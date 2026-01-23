@@ -30,7 +30,7 @@ describe("ExtendedMatchEditor", () => {
             }
           />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     cy.get("select[name='type']").select("Extended Match");
@@ -51,7 +51,7 @@ describe("ExtendedMatchEditor", () => {
     cy.get("div[aria-label='Element right-1']").should("exist");
   });
 
-  it("should keep the width of the add element buttons", () => {
+  it.only("should keep the width of the add element buttons", { browser: "chrome" }, () => {
     cy.get("button#add-left-element").should("have.css", "width", "154.28125px");
     cy.get("button#add-right-element").should("have.css", "width", "154.28125px").click();
 

@@ -1,11 +1,7 @@
 # https://docs.cypress.io/guides/continuous-integration/github-actions
 name: Tests
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: [push, pull_request]
 
 jobs:
   # Create and save build
