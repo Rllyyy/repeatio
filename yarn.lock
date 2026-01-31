@@ -2301,10 +2301,10 @@
   dependencies:
     postcss-selector-parser "6.0.10"
 
-"@tanstack/eslint-plugin-query@^5.91.3":
-  version "5.91.3"
-  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.91.3.tgz#4788f5ff6c69212a3c059b2a6b5ee1b56e5660d5"
-  integrity sha512-5GMGZMYFK9dOvjpdedjJs4hU40EdPuO2AjzObQzP7eOSsikunCfrXaU3oNGXSsvoU9ve1Z1xQZZuDyPi0C1M7Q==
+"@tanstack/eslint-plugin-query@^5.91.4":
+  version "5.91.4"
+  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.91.4.tgz#b12f35280379aef0787074932ad698fd9bc621cc"
+  integrity sha512-8a+GAeR7oxJ5laNyYBQ6miPK09Hi18o5Oie/jx8zioXODv/AUFLZQecKabPdpQSLmuDXEBPKFh+W5DKbWlahjQ==
   dependencies:
     "@typescript-eslint/utils" "^8.48.0"
 
@@ -3122,13 +3122,13 @@ attr-accept@^2.2.4:
   resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.4.tgz#e28749d5975732586aea03c8912e2d0f1d1d77e7"
   integrity sha512-2pA6xFIbdTUDCAwjN8nQwI+842VwzbDUXO2IYlpPXQIORgKnavorcr4Ce3rwh+zsNg9zK7QPsdvDj3Lum4WX4w==
 
-autoprefixer@^10.4.23:
-  version "10.4.23"
-  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.23.tgz#c6aa6db8e7376fcd900f9fd79d143ceebad8c4e6"
-  integrity sha512-YYTXSFulfwytnjAPlw8QHncHJmlvFKtczb8InXaAx9Q0LbfDnfEYDE55omerIJKihhmU61Ft+cAOSzQVaBUmeA==
+autoprefixer@^10.4.24:
+  version "10.4.24"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.24.tgz#2c29595f3abd820a79976a609d0bf40eecf212fb"
+  integrity sha512-uHZg7N9ULTVbutaIsDRoUkoS8/h3bdsmVJYZ5l3wv8Cp/6UIIoRDm90hZ+BwxUj/hGBEzLxdHNSKuFpn8WOyZw==
   dependencies:
     browserslist "^4.28.1"
-    caniuse-lite "^1.0.30001760"
+    caniuse-lite "^1.0.30001766"
     fraction.js "^5.3.4"
     picocolors "^1.1.1"
     postcss-value-parser "^4.2.0"
@@ -3463,10 +3463,10 @@ camelcase@^6.2.0:
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-6.3.0.tgz"
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
-caniuse-lite@^1.0.30001759, caniuse-lite@^1.0.30001760:
-  version "1.0.30001761"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001761.tgz#4ca4c6e3792b24e8e2214baa568fc0e43de28191"
-  integrity sha512-JF9ptu1vP2coz98+5051jZ4PwQgd2ni8A+gYSN7EA7dPKIMf0pDlSUxhdmVOaV3/fYK5uWBkgSXJaRLr4+3A6g==
+caniuse-lite@^1.0.30001759, caniuse-lite@^1.0.30001766:
+  version "1.0.30001766"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001766.tgz#b6f6b55cb25a2d888d9393104d14751c6a7d6f7a"
+  integrity sha512-4C0lfJ0/YPjJQHagaE9x2Elb69CIqEPZeG0anQt9SIvIoOH4a4uaRl73IavyO+0qZh6MDLH//DrXThEYKHkmYA==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -7575,10 +7575,10 @@ react-dom@^18.3.1:
     loose-envify "^1.1.0"
     scheduler "^0.23.2"
 
-react-dropzone@^14.3.8:
-  version "14.3.8"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.3.8.tgz#a7eab118f8a452fe3f8b162d64454e81ba830582"
-  integrity sha512-sBgODnq+lcA4P296DY4wacOZz3JFpD99fp+hb//iBO2HHnyeZU3FwWyXJ6salNpqQdsZrgMrotuko/BdJMV8Ug==
+react-dropzone@^14.4.0:
+  version "14.4.0"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.4.0.tgz#87c30b830fa5f78193065412b65feffa9619f7b8"
+  integrity sha512-8VvsHqg9WGAr+wAnP0oVErK5HOwAoTOzRsxLPzbBXrtXtFfukkxMyuvdI/lJ+5OxtsrzmvWE5Eoo3Y4hMsaxpA==
   dependencies:
     attr-accept "^2.2.4"
     file-selector "^2.1.0"
