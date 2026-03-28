@@ -2301,24 +2301,24 @@
   dependencies:
     postcss-selector-parser "6.0.10"
 
-"@tanstack/eslint-plugin-query@^5.91.5":
-  version "5.91.5"
-  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.91.5.tgz#881ed6831cab2a823f2f4e76fe0f2386de86bf6a"
-  integrity sha512-4pqgoT5J+ntkyOoBtnxJu8LYRj3CurfNe92fghJw66mI7pZijKmOulM32Wa48cyVzGtgiuQ2o5KWC9LJVXYcBQ==
+"@tanstack/eslint-plugin-query@^5.95.2":
+  version "5.95.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.95.2.tgz#3d110a98fb8d48243db3d7c4ac7eb9ae0093d407"
+  integrity sha512-EYUFRaqjBep4EHMPpZR12sXP7Kr5qv9iDIlq93NfbhHwhITaW6Txu3ROO6dLFz5r84T8p+oZXBG77pa2Wuok7A==
   dependencies:
     "@typescript-eslint/utils" "^8.48.0"
 
-"@tanstack/query-core@5.91.2":
-  version "5.91.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.91.2.tgz#d83825a928aa49ded38d3910f05284178cce89d3"
-  integrity sha512-Uz2pTgPC1mhqrrSGg18RKCWT/pkduAYtxbcyIyKBhw7dTWjXZIzqmpzO2lBkyWr4hlImQgpu1m1pei3UnkFRWw==
+"@tanstack/query-core@5.95.2":
+  version "5.95.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-5.95.2.tgz#9e3299d0c1c8785dd9e3d0cac1993e45f35113f2"
+  integrity sha512-o4T8vZHZET4Bib3jZ/tCW9/7080urD4c+0/AUaYVpIqOsr7y0reBc1oX3ttNaSW5mYyvZHctiQ/UOP2PfdmFEQ==
 
-"@tanstack/react-query@^5.91.3":
-  version "5.91.3"
-  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.91.3.tgz#7fa7d728badbc6372dfd1ff3030da876c8113a56"
-  integrity sha512-D8jsCexxS5crZxAeiH6VlLHOUzmHOxeW5c11y8rZu0c34u/cy18hUKQXA/gn1Ila3ZIFzP+Pzv76YnliC0EtZQ==
+"@tanstack/react-query@^5.95.2":
+  version "5.95.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-5.95.2.tgz#7daf77342a4e374c22fad88bb98ea13fc19ae086"
+  integrity sha512-/wGkvLj/st5Ud1Q76KF1uFxScV7WeqN1slQx5280ycwAyYkIPGaRZAEgHxe3bjirSd5Zpwkj6zNcR4cqYni/ZA==
   dependencies:
-    "@tanstack/query-core" "5.91.2"
+    "@tanstack/query-core" "5.95.2"
 
 "@testing-library/dom@^9.0.0":
   version "9.2.0"
@@ -7584,10 +7584,10 @@ react-error-boundary@^4.1.2:
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-react-hook-form@^7.71.2:
-  version "7.71.2"
-  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.71.2.tgz#a5f1d2b855be9ecf1af6e74df9b80f54beae7e35"
-  integrity sha512-1CHvcDYzuRUNOflt4MOq3ZM46AronNJtQ1S7tnX6YN4y72qhgiUItpacZUAQ0TyWYci3yz1X+rXaSxiuEm86PA==
+react-hook-form@^7.72.0:
+  version "7.72.0"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.72.0.tgz#995a655b894249fd8798f36383e43f55ed66ae25"
+  integrity sha512-V4v6jubaf6JAurEaVnT9aUPKFbNtDgohj5CIgVGyPHvT9wRx5OZHVjz31GsxnPNI278XMu+ruFz+wGOscHaLKw==
 
 react-icons@^5.6.0:
   version "5.6.0"
