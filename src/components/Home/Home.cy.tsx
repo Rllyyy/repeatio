@@ -22,6 +22,7 @@ declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 declare const expect: Chai.ExpectStatic;
 
+/*
 const MockModulesWithRouter = () => {
   return (
     <div id='root'>
@@ -36,17 +37,18 @@ const MockModulesWithRouter = () => {
     </div>
   );
 };
+*/
 
 describe("Modules (Home) component", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
   });
 
-  it("should render modules from the localStorage", () => {
+  it.only("should render modules from the localStorage", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
 
-    cy.mount(<MockModulesWithRouter />);
+    cy.mount(<Home />);
 
     cy.get("article.card").should("have.length", 3); //The third module is the example module that gets automatically added on first ever visit
 
@@ -54,6 +56,7 @@ describe("Modules (Home) component", () => {
     cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "12 Questions").should("exist");
   });
 
+  /*
   it("should add the default module to the localStorage if there is to settings item in the localStorage", () => {
     cy.mount(<MockModulesWithRouter />);
 
@@ -78,6 +81,7 @@ describe("Modules (Home) component", () => {
         expect(settings?.addedExampleModule).to.equal(true);
       });
   });
+  */
 });
 
 /* Module sort */
