@@ -7,9 +7,9 @@ import { parseJSON } from "../../utils/parseJSON";
 import { CustomToastContainer } from "../toast/toast";
 
 // Interfaces / Types
-import { IModule } from "../module/module";
-import { TSettings } from "@hooks/useSetting";
-import { IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
+import { type IModule } from "../module/module";
+import { type TSettings } from "@hooks/useSetting";
+import { type IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
