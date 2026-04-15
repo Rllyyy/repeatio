@@ -18,8 +18,6 @@ describe("Vite warmup", () => {
   });
 });
 
-/*
-
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 declare const expect: Chai.ExpectStatic;
@@ -81,7 +79,6 @@ describe("Modules (Home) component", () => {
       });
   });
 });
-*/
 
 /* Module sort */
 /*
