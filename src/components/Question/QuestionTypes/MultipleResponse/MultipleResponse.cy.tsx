@@ -203,8 +203,8 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
     cy.get("button[aria-label='Retry Question']").click();
 
     // Get the elements that had the outline after the submit and assert that they have no outline
-    cy.contains("This is the correct multiple response value").should("have.css", "outlineWidth", "0px");
-    cy.contains("This is another correct multiple response value").should("have.css", "outlineWidth", "0px");
+    cy.contains("This is the correct multiple response value").should("not.have.css", "outline-style", "solid");
+    cy.contains("This is another correct multiple response value").should("not.have.css", "outline-style", "solid");
   });
 
   it("should randomize the options after retry click", { retries: 10 }, () => {
@@ -414,12 +414,12 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
       cy.get("label[data-testid='formControlLabel-option-0']").should(
         "have.css",
         "outline",
-        "rgb(0, 128, 0) solid 1px"
+        "rgb(0, 128, 0) solid 1px",
       );
       cy.get("label[data-testid='formControlLabel-option-3']").should(
         "have.css",
         "outline",
-        "rgb(0, 128, 0) solid 1px"
+        "rgb(0, 128, 0) solid 1px",
       );
     });
   });

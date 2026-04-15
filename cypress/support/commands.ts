@@ -27,8 +27,7 @@
 //To enable tabbing in cypress: https://github.com/dmtrKovalenko/cypress-real-events
 import "cypress-real-events";
 
-// React 18
-import { mount } from "cypress/react18";
+import { mount } from "cypress/react";
 
 type Fixtures =
   | "repeatio-module-gap_text.json"
@@ -55,7 +54,7 @@ declare global {
       mount: typeof mount;
       setSelection: (
         query: string | { anchorQuery: string; anchorOffset?: number; focusQuery?: string; focusOffset?: number },
-        endQuery?: string
+        endQuery?: string,
       ) => Chainable<HTMLElement>;
       // Can't get this to work without subject and Chainable<JQuery<HTMLElement>>
       selection: (subject?: any, fn?: (element: JQuery<HTMLElement>) => void) => any;
@@ -132,7 +131,7 @@ Cypress.Commands.add(
 
     cy.document().trigger("selectionchange");
     return cy.wrap(subject);
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -141,7 +140,7 @@ Cypress.Commands.add(
   (
     subject: HTMLElement,
     query: string | { anchorQuery: string; anchorOffset?: number; focusQuery?: string; focusOffset?: number },
-    endQuery?: string
+    endQuery?: string,
   ) => {
     return cy.wrap(subject).selection(($el: JQuery<HTMLElement>) => {
       const el = $el[0];
@@ -190,7 +189,7 @@ Cypress.Commands.add(
         if (textNode && focusNode) setBaseAndExtent(textNode!, anchorOffset || 0, focusNode, focusOffset);
       }
     });
-  }
+  },
 );
 
 // Low level command reused by `setCursorBefore` and `setCursorAfter`, equal to `setCursorAfter`

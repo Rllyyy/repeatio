@@ -194,7 +194,7 @@ describe("Multiple Choice component inside Question component", () => {
     cy.get("button[aria-label='Retry Question']").click();
 
     // Get the element that had the outline after the submit and assert that it has no outline
-    cy.get("label[data-testid='option-0']").should("have.css", "outlineWidth", "0px");
+    cy.get("label[data-testid='option-0']").should("not.have.css", "outline-style", "solid");
   });
 
   it("should randomize the options after retry click", { retries: 10 }, () => {
