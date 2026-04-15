@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-/*
 import Home from "../../pages/index";
 import "../../index.css";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -11,6 +10,15 @@ import { CustomToastContainer } from "../toast/toast";
 import { type IModule } from "../module/module";
 // import { type TSettings } from "@hooks/useSetting";
 import { type IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
+
+describe("Vite warmup", () => {
+  it("always passes", () => {
+    // cy.mount(<Home />);
+    expect(true).to.equal(true);
+  });
+});
+
+/*
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
