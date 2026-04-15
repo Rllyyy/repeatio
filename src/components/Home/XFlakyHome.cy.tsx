@@ -8,21 +8,13 @@ import { CustomToastContainer } from "../toast/toast";
 
 // Interfaces / Types
 import { type IModule } from "../module/module";
-// import { type TSettings } from "@hooks/useSetting";
+import { type TSettings } from "@hooks/useSetting";
 import { type IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
-
-// describe("Vite warmup", () => {
-//   it("always passes", () => {
-//     // cy.mount(<Home />);
-//     expect(true).to.equal(true);
-//   });
-// });
 
 declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 declare const expect: Chai.ExpectStatic;
 
-/*
 const MockModulesWithRouter = () => {
   return (
     <div id='root'>
@@ -37,7 +29,6 @@ const MockModulesWithRouter = () => {
     </div>
   );
 };
-*/
 
 describe("Modules (Home) component", () => {
   beforeEach(() => {
@@ -56,14 +47,13 @@ describe("Modules (Home) component", () => {
     cy.get("article[data-cy='module-gap_text'").scrollIntoView().contains("p", "12 Questions").should("exist");
   });
 
-  /*
   it("should add the default module to the localStorage if there is to settings item in the localStorage", () => {
     cy.mount(<MockModulesWithRouter />);
 
     cy.get("article.card")
       .should("have.length", 1)
       .should(() => {
-        const settings = parseJSON<any>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);
       });
   });
@@ -77,15 +67,13 @@ describe("Modules (Home) component", () => {
     cy.get("article.card")
       .should("not.exist")
       .should(() => {
-        const settings = parseJSON<any>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);
       });
   });
-  */
 });
 
 /* Module sort */
-/*
 describe("Module sort", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -235,7 +223,7 @@ describe("Module sort", () => {
   });
 
   it("should update the sort settings in the localStorage on sort change", () => {
-    const settings: any = {
+    const settings: TSettings = {
       expanded: true,
     };
 
@@ -250,7 +238,7 @@ describe("Module sort", () => {
     cy.contains("ID (descending)")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<any>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.moduleSort).to.equal("ID (descending)");
         expect(localStorageItem?.expanded).to.equal(true);
@@ -281,10 +269,7 @@ describe("Module sort", () => {
   });
 });
 
-*/
-
 /* Add Module Modal */
-/*
 describe("Add Module modal", () => {
   it("should show modal if clicking on the 'Add Module' button", () => {
     cy.viewport(500, 500);
@@ -344,10 +329,8 @@ describe("Add Module modal", () => {
     cy.get("div.ReactModal__Content--after-open").should("not.exist");
   });
 });
-*/
 
 /* Module Deletion */
-/*
 describe("Module deletion", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -495,10 +478,8 @@ describe("Module deletion", () => {
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
   });
 });
-*/
 
 /* Module edit */
-/*
 describe("Module Edit", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -574,6 +555,5 @@ describe("Module Edit", () => {
       });
   });
 });
-*/
 
 // TODO maybe implement the tests from deleteModule.cy.ts and exportModule.cy.ts into here ??
