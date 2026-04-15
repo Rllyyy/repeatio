@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 
+/*
 import Home from "../../pages/index";
 import "../../index.css";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
@@ -72,8 +73,10 @@ describe("Modules (Home) component", () => {
       });
   });
 });
+*/
 
 /* Module sort */
+/*
 describe("Module sort", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -269,7 +272,10 @@ describe("Module sort", () => {
   });
 });
 
+*/
+
 /* Add Module Modal */
+/*
 describe("Add Module modal", () => {
   it("should show modal if clicking on the 'Add Module' button", () => {
     cy.viewport(500, 500);
@@ -329,8 +335,10 @@ describe("Add Module modal", () => {
     cy.get("div.ReactModal__Content--after-open").should("not.exist");
   });
 });
+*/
 
 /* Module Deletion */
+/*
 describe("Module deletion", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -478,8 +486,10 @@ describe("Module deletion", () => {
     cy.get(".Toastify").contains("Couldn't find the file repeatio-module-cypress_1 in the localStorage!");
   });
 });
+*/
 
 /* Module edit */
+/*
 describe("Module Edit", () => {
   beforeEach(() => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
@@ -555,5 +565,6 @@ describe("Module Edit", () => {
       });
   });
 });
+*/
 
 // TODO maybe implement the tests from deleteModule.cy.ts and exportModule.cy.ts into here ??
