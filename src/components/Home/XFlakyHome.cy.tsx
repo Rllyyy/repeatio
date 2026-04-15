@@ -35,11 +35,11 @@ describe("Modules (Home) component", () => {
     cy.intercept("GET", "/data.json", { fixture: "../../public/data.json" }).as("getData");
   });
 
-  it.only("should render modules from the localStorage", () => {
+  it("should render modules from the localStorage", () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.fixtureToLocalStorage("repeatio-module-gap_text.json");
 
-    cy.mount(<Home />);
+    cy.mount(<MockModulesWithRouter />);
 
     cy.get("article.card").should("have.length", 3); //The third module is the example module that gets automatically added on first ever visit
 
