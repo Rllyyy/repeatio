@@ -8,7 +8,7 @@ import { CustomToastContainer } from "../toast/toast";
 
 // Interfaces / Types
 import { type IModule } from "../module/module";
-import { type TSettings } from "@hooks/useSetting";
+// import { type TSettings } from "@hooks/useSetting";
 import { type IBookmarkedQuestions } from "../Question/components/Actions/BookmarkQuestion";
 
 declare var it: Mocha.TestFunction;
@@ -53,7 +53,7 @@ describe("Modules (Home) component", () => {
     cy.get("article.card")
       .should("have.length", 1)
       .should(() => {
-        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<any>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);
       });
   });
@@ -67,7 +67,7 @@ describe("Modules (Home) component", () => {
     cy.get("article.card")
       .should("not.exist")
       .should(() => {
-        const settings = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        const settings = parseJSON<any>(localStorage.getItem("repeatio-settings"));
         expect(settings?.addedExampleModule).to.equal(true);
       });
   });
@@ -223,7 +223,7 @@ describe("Module sort", () => {
   });
 
   it("should update the sort settings in the localStorage on sort change", () => {
-    const settings: TSettings = {
+    const settings: any = {
       expanded: true,
     };
 
@@ -238,7 +238,7 @@ describe("Module sort", () => {
     cy.contains("ID (descending)")
       .click()
       .should(() => {
-        const localStorageItem = parseJSON<TSettings>(localStorage.getItem("repeatio-settings"));
+        const localStorageItem = parseJSON<any>(localStorage.getItem("repeatio-settings"));
         expect(localStorageItem).not.to.equal(null);
         expect(localStorageItem?.moduleSort).to.equal("ID (descending)");
         expect(localStorageItem?.expanded).to.equal(true);
