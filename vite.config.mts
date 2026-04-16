@@ -11,6 +11,9 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
+    warmup: {
+      clientFiles: ["cypress/support/component.ts", "src/**/*.cy.ts"],
+    },
   },
   build: {
     outDir: "build", // Changed output folder, like in CRA
