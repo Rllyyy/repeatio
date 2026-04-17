@@ -1,6 +1,7 @@
 import { defineConfig } from "cypress";
 import { rmdir, existsSync } from "fs";
 import path from "path";
+import { optimizeDeps } from "vite";
 
 export default defineConfig({
   projectId: "fdc7av",
@@ -25,6 +26,9 @@ export default defineConfig({
           port: 3000,
           warmup: {
             clientFiles: ["cypress/support/component.ts", "src/**/*.cy.ts"],
+          },
+          optimizeDeps: {
+            force: true,
           },
         },
         build: {
