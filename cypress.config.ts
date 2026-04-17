@@ -1,10 +1,10 @@
 import { defineConfig } from "cypress";
 import { rmdir, existsSync } from "fs";
 import path from "path";
-import { optimizeDeps } from "vite";
 
 export default defineConfig({
   projectId: "fdc7av",
+  allowCypressEnv: false,
   e2e: {
     setupNodeEvents(on, config) {
       on("task", {
