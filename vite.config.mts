@@ -24,9 +24,4 @@ export default defineConfig({
       "@hooks": path.resolve(__dirname, "src/hooks"),
     },
   },
-  optimizeDeps: {
-    exclude: ["@mui/material"],
-    include: ["hoist-non-react-statics", "prop-types", "react-is"],
-    needsInterop: ["hoist-non-react-statics", "prop-types", "react-is"],
-  },
 } satisfies UserConfig);

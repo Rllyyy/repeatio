@@ -28,7 +28,9 @@ export default defineConfig({
             clientFiles: ["cypress/support/component.ts", "src/**/*.cy.ts"],
           },
           optimizeDeps: {
-            force: true,
+            exclude: ["@mui/material"],
+            include: ["hoist-non-react-statics", "prop-types", "react-is"],
+            needsInterop: ["hoist-non-react-statics", "prop-types", "react-is"],
           },
         },
         build: {
