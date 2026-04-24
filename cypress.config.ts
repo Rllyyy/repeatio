@@ -16,6 +16,7 @@ export default defineConfig({
   },
 
   component: {
+    retries: { runMode: 2, openMode: 0 },
     defaultBrowser: "chrome",
     devServer: {
       framework: "react",
