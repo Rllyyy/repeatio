@@ -169,7 +169,12 @@ describe("Question Component", () => {
     localStorage.setItem("repeatio-module-question-test", JSON.stringify(module, null, "\t"));
 
     cy.mount(
-      <MockQuestionWithRouter mode='practice' moduleID='question-test' order='chronological' questionID='id-not-found' />,
+      <MockQuestionWithRouter
+        mode='practice'
+        moduleID='question-test'
+        order='chronological'
+        questionID='id-not-found'
+      />,
     );
 
     cy.contains("Question not found!").should("exist");
