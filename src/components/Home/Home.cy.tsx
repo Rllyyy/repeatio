@@ -83,7 +83,7 @@ describe("Module sort", () => {
     cy.mount(<MockModulesWithRouter />);
 
     cy.contains("button", "Sort").click();
-    cy.contains("Name (ascending)").should("exist").and("be.selected");
+    cy.contains("Name (ascending)").should("exist").and("have.class", "Mui-selected");
   });
 
   it("should change the selected sort on click", () => {
@@ -93,7 +93,7 @@ describe("Module sort", () => {
     cy.contains("ID (ascending)").click();
 
     cy.contains("button", "Sort").click();
-    cy.contains("ID (ascending)").should("be.selected");
+    cy.contains("ID (ascending)").should("have.class", "Mui-selected");
   });
 
   it("should default sort the modules by name ascending", () => {

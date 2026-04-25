@@ -1,5 +1,14 @@
-import { useState, useCallback, forwardRef, useImperativeHandle, useLayoutEffect, useMemo } from "react";
-import ReactDOMServer from "react-dom/server";
+import {
+  useState,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  createContext,
+  useContext,
+  useLayoutEffect,
+} from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, ComponentPropsWithoutRef } from "react";
 import DOMPurify from "dompurify";
 import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
 import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
@@ -32,14 +41,49 @@ interface IGapTextProps extends IQuestionTypeComponent {
   options: IGapText;
 }
 
-//HELP
-//The code in this Component may seem a bit odd.
-//The reason for this weirdness is that it mixes JSON, MarkDown, HTML and JSX so it can use Markdown for syntax like tables, strong, ...
-//The Component gets the JSON string, exports it to Markdown and then to HTML (with ReactDOMServer)
-//Then an input element gets inserted into where the gaps "[]" are.
-//Because ReactDOMServer.renderToString ignores onChange handlers these events have to be added by the useLayoutEffect
-//At the end I just have to say this: Is it fast? no. Is it logical? no. Does it work? YES
-//Feel free to update the code but this is honestly the best I can come up with atm that supports Markdown elements (tables, styling, ...) and user set input elements.
+interface IGapTextContext {
+  inputValues: string[];
+  updateInput: (index: number, value: string) => void;
+  onKeyDownPreventSubmit: (event: ReactKeyboardEvent<HTMLInputElement>) => void;
+  formDisabled: boolean;
+  correctGapValues?: Array<Array<string>>;
+}
+
+const GapTextContext = createContext<IGapTextContext | null>(null);
+
+const useGapTextContext = () => {
+  const context = useContext(GapTextContext);
+  if (!context) {
+    throw new Error("GapTextContext is missing. Make sure GapText wraps its content in the provider.");
+  }
+  return context;
+};
+
+type GapInputProps = ComponentPropsWithoutRef<"input"> & { node?: unknown; "data-index"?: string | number };
+
+const GapInput = (props: GapInputProps) => {
+  const { inputValues, updateInput, onKeyDownPreventSubmit, formDisabled, correctGapValues } = useGapTextContext();
+  const rawIndex = props["data-index"] as string | number | undefined;
+  const index = Number(rawIndex);
+  const currentValue = inputValues[index] ?? "";
+  const isCorrect = formDisabled && correctGapValues?.[index]?.includes(currentValue);
+  const statusClass = formDisabled ? (isCorrect ? "gap--correct" : "gap--incorrect") : "";
+
+  return (
+    <input
+      className={["gap", statusClass, props.className].filter(Boolean).join(" ")}
+      id={`input-${index}`}
+      type='text'
+      autoCapitalize='off'
+      autoComplete='off'
+      spellCheck={false}
+      value={currentValue}
+      onChange={(event) => updateInput(index, event.target.value)}
+      onKeyDown={onKeyDownPreventSubmit}
+      disabled={formDisabled}
+    />
+  );
+};
 
 //Component
 export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ options, formDisabled }, ref) => {
@@ -47,107 +91,42 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
   const [inputValues, setInputValues] = useState<string[]>([]);
 
   //Memo text so it hopefully doesn't get recalculated on every render
-  const memoedText = useMemo(() => textWithBlanks(options.text), [options.text]);
+  const memoedText = useMemo(
+    () =>
+      DOMPurify.sanitize(options.text, {
+        FORBID_TAGS: forbiddenTags,
+        FORBID_ATTR: forbiddenAttributes,
+      }),
+    [options.text],
+  );
 
   /* Functions */
   //Update the input where the input index is equal to the inputValues index
-  const updateInput = useCallback(
-    (e: Event) => {
-      const newInputValue = inputValues.map((value, index) => {
-        // Update the value of the array if the index of the id is equal to the index to the inputValues array element
-        if (index === parseInt((e.target as HTMLInputElement)?.getAttribute("id")!.split("-")[1])) {
-          return (e.target as HTMLInputElement).value;
-        } else {
-          return value;
-        }
-      });
-
-      // Update the state
-      setInputValues([...newInputValue]);
-    },
-    [inputValues]
-  );
+  const updateInput = useCallback((index: number, value: string) => {
+    setInputValues((prevValues) => {
+      const nextValues = [...prevValues];
+      nextValues[index] = value;
+      return nextValues;
+    });
+  }, []);
 
   //Prevent the form submission when entering "Enter" on an input element
-  const onKeyDownPreventSubmit = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  const onKeyDownPreventSubmit = useCallback((event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
     }
   }, []);
 
-  /* UseLayoutEffects */
+  /* Effects */
   //Create array with x amount of empty input values and reset
   useLayoutEffect(() => {
-    setInputValues(Array(options?.correctGapValues?.length).fill(""));
+    const gapCount = options?.correctGapValues?.length ?? 0;
+    setInputValues(Array(gapCount).fill(""));
 
     return () => {
       setInputValues([]);
     };
   }, [options.correctGapValues]);
-
-  //Attack events to the inputs
-  useLayoutEffect(() => {
-    // Get the number of of gaps
-    const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
-
-    // Return from function if there are no elements found
-    if (inputElements === undefined || inputElements.length === 0) return;
-
-    // Loop through
-    for (let index = 0; index < inputElements.length; index++) {
-      const input = inputElements[index];
-
-      if (!input) return;
-
-      // Set the value of the input
-      input.setAttribute("value", inputValues[index] || "");
-
-      // attach handleChange function
-      // One could change this to eventListener "input", but don't forget to also remove this event in the return function!
-      input.addEventListener("change", updateInput);
-
-      // attach function to prevent form submission on enter click
-      input.addEventListener("keydown", onKeyDownPreventSubmit);
-
-      if (formDisabled) {
-        // disable the input
-        input.disabled = true;
-
-        //  Add green or red border if the form was submitted (and is therefor disabled)
-        if (options.correctGapValues?.[index]?.includes(inputValues[index])) {
-          input.style.borderColor = "green";
-        } else {
-          input.style.borderColor = "red";
-        }
-      } else {
-        // enable the input
-        input.disabled = false;
-      }
-    }
-
-    return () => {
-      // Get the number of of gaps
-      const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
-
-      // Guards if there are no elements
-      if (inputElements === undefined || inputElements.length === 0) {
-        return;
-      }
-
-      // Remove event listeners from each gap
-      for (let index = 0; index < inputElements.length; index++) {
-        const input = inputElements[index];
-
-        if (!input) return;
-
-        // Remove event listeners
-        input.removeEventListener("change", updateInput);
-        input.removeEventListener("keydown", onKeyDownPreventSubmit);
-        input.removeAttribute("style");
-        input.disabled = false;
-      }
-    };
-  }, [inputValues, updateInput, options.correctGapValues, onKeyDownPreventSubmit, formDisabled]);
 
   //Imperative Handle so the parent can interact with this child
   useImperativeHandle(
@@ -163,7 +142,7 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
         //Check if every gap correlates with the correct value from the gap array and return true/false to question form
         return (
           options.correctGapValues?.every((gapArray: string[], index: number) =>
-            gapArray?.includes(trimmedInputValues[index])
+            gapArray?.includes(trimmedInputValues[index]),
           ) ?? true
         );
       },
@@ -176,69 +155,149 @@ export const GapText = forwardRef<IForwardRefFunctions, IGapTextProps>(({ option
       //Reset User selection
       resetSelection() {
         //return empty string for every input value in the array
-        setInputValues(Array(inputValues.length).fill(""));
-
-        const inputElements = document.getElementsByClassName("gap") as HTMLCollectionOf<HTMLInputElement>;
-
-        for (let index = 0; index < inputElements.length; index++) {
-          const input = inputElements[index];
-
-          if (!input) return;
-
-          input.value = "";
-
-          // Remove the style from the html to reset to the border color that is set by css
-          input.removeAttribute("style");
-        }
+        setInputValues((prevValues) => Array(prevValues.length).fill(""));
       },
 
       //Trigger a useEffect (rerender) by increasing a state value
       resetAndShuffleOptions() {
         this.resetSelection();
       },
-    })
+    }),
   );
 
   //JSX
-  return <div className='question-gap-text' dangerouslySetInnerHTML={{ __html: memoedText }} />;
+  const markdownComponents = useMemo(() => {
+    const Anchor = (props: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => {
+      const { target, children, ...rest } = props;
+      return <a {...rest}>{children}</a>;
+    };
+
+    return {
+      a: Anchor,
+      gap: GapInput,
+    };
+  }, []);
+
+  const markdownContent = useMemo(
+    () => (
+      <ReactMarkdown
+        children={memoedText}
+        urlTransform={normalizeLinkUri}
+        rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+        remarkPlugins={[remarkMath, remarkGfm, remarkGapText]}
+        disallowedElements={forbiddenTags}
+        components={markdownComponents}
+      />
+    ),
+    [memoedText, markdownComponents],
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      inputValues,
+      updateInput,
+      onKeyDownPreventSubmit,
+      formDisabled,
+      correctGapValues: options.correctGapValues,
+    }),
+    [inputValues, updateInput, onKeyDownPreventSubmit, formDisabled, options.correctGapValues],
+  );
+
+  return (
+    <div className='question-gap-text'>
+      <GapTextContext.Provider value={contextValue}>{markdownContent}</GapTextContext.Provider>
+    </div>
+  );
 });
 
 /**
- * @summary Render the json string in markdown and return html nodes with a marker where the input should be inserted
+ * @summary Render the json string in markdown and return nodes with a marker where the input should be inserted
  */
-function textWithBlanks(text: string): string {
-  //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
-  //remarkGfm draws markdown tables
-  const htmlString = ReactDOMServer.renderToString(
-    <ReactMarkdown
-      children={text}
-      urlTransform={normalizeLinkUri}
-      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
-      remarkPlugins={[remarkMath, remarkGfm]}
-    />
-  );
+function remarkGapText() {
+  return (tree: any) => {
+    let gapIndex = 0;
+    const nextGapMarker = () => {
+      const marker = `<gap data-index='${gapIndex}'></gap>`;
+      gapIndex += 1;
+      return marker;
+    };
 
-  //Split the html notes where the input should be inserted
-  const htmlStringSplit = htmlString.split("[]");
+    const replaceHtmlGaps = (value: string) => {
+      let result = "";
+      let buffer = "";
+      let inTag = false;
 
-  //Insert the input marker between the array elements but not at the end
-  const htmlWithGaps = htmlStringSplit
-    .map((line, index) => {
-      if (index < htmlStringSplit.length - 1) {
-        return line.concat(
-          `<input class='gap' id='input-${index}' key='input-${index}' type='text' autocapitalize='off' autocomplete='off' spellcheck='false' />`
-        );
-      } else {
-        return line;
+      for (let index = 0; index < value.length; index += 1) {
+        const char = value[index];
+
+        if (char === "<") {
+          if (!inTag) {
+            result += buffer.replace(/\[\]/g, nextGapMarker);
+            buffer = "";
+          }
+          inTag = true;
+          result += char;
+          continue;
+        }
+
+        if (char === ">") {
+          inTag = false;
+          result += char;
+          continue;
+        }
+
+        if (inTag) {
+          result += char;
+        } else {
+          buffer += char;
+        }
       }
-    })
-    .join("");
 
-  //return htmlWithGaps;
+      if (!inTag && buffer) {
+        result += buffer.replace(/\[\]/g, nextGapMarker);
+      }
 
-  // Sanitize the result
-  return DOMPurify.sanitize(htmlWithGaps, {
-    FORBID_TAGS: forbiddenTags,
-    FORBID_ATTR: forbiddenAttributes,
-  });
+      return result;
+    };
+
+    const visitNode = (node: any) => {
+      if (!node || !node.children) return;
+
+      const nextChildren: any[] = [];
+
+      for (const child of node.children) {
+        if (child?.type === "html" && typeof child.value === "string") {
+          child.value = replaceHtmlGaps(child.value);
+          nextChildren.push(child);
+          continue;
+        }
+
+        if (child?.type === "text" && typeof child.value === "string") {
+          const parts = child.value.split("[]");
+          if (parts.length > 1) {
+            for (let index = 0; index < parts.length; index += 1) {
+              const part = parts[index];
+              if (part) {
+                nextChildren.push({ type: "text", value: part });
+              }
+              if (index < parts.length - 1) {
+                nextChildren.push({ type: "html", value: nextGapMarker() });
+              }
+            }
+            continue;
+          }
+        }
+
+        if (child?.children && child.type !== "code" && child.type !== "inlineCode" && child.type !== "html") {
+          visitNode(child);
+        }
+
+        nextChildren.push(child);
+      }
+
+      node.children = nextChildren;
+    };
+
+    visitNode(tree);
+  };
 }

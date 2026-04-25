@@ -161,7 +161,7 @@ describe("Bookmark a Question", () => {
     //Setup localStorage with one item (qID-1)
     localStorage.setItem(
       "repeatio-marked-types_1",
-      JSON.stringify({ id: "types_1", compatibility: "0.6.0", questions: ["qID-1"] })
+      JSON.stringify({ id: "types_1", compatibility: "0.6.0", questions: ["qID-1"] }),
     );
 
     //Render just the button, uncomment the below to see the question component (but takes 5x time longer)
@@ -188,7 +188,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the save button
-    cy.get("button[aria-label='Save Question']").realHover();
+    cy.get("button[aria-label='Save Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -198,7 +198,7 @@ describe("Bookmark a Question", () => {
   it("should show 'Unsave Question' tooltip if the question is bookmarked", () => {
     localStorage.setItem(
       "repeatio-marked-types_1",
-      JSON.stringify({ id: "types_1", compatibility: "0.6.0", questions: ["qID-1"] })
+      JSON.stringify({ id: "types_1", compatibility: "0.6.0", questions: ["qID-1"] }),
     );
 
     cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
@@ -206,7 +206,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the unsave button
-    cy.get("button[aria-label='Unsave Question']").realHover();
+    cy.get("button[aria-label='Unsave Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -227,8 +227,8 @@ describe("Bookmark a Question", () => {
     cy.mount(<RenderBookmarkButtonWithRouter moduleID={"types_1"} questionID={"qID-1"} />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -236,7 +236,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Save Question']").realHover();
+    cy.get("button[aria-label='Save Question']").trigger("mouseover");
 
     // Assert that the tooltip does not exist
     cy.contains("Save Question").should("not.exist");

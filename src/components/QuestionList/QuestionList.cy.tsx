@@ -54,12 +54,37 @@ describe("QuestionList - Drag and Drop", { viewportWidth: 780 }, () => {
     cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
     cy.mount(<QuestionListWithRouter moduleID='cypress_1' />);
 
+    // cypress-real-events currently fail realMove (https://github.com/dmtrKovalenko/cypress-real-events/pull/756)
     cy.get("#question-qID-1")
       .find("button[cy-data='drag-handle']")
-      .realMouseDown({ button: "left", position: "center" })
-      .realMouseMove(0, 150, { position: "center" })
-      .realMouseUp({ position: "center" })
-      .wait(500)
+      .trigger("pointerdown", {
+        pointerId: 1,
+        button: 0,
+        buttons: 1,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 76,
+      })
+      .trigger("pointermove", {
+        pointerId: 1,
+        button: 0,
+        buttons: 1,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 240,
+      })
+      .trigger("pointerup", {
+        pointerId: 1,
+        button: 0,
+        buttons: 0,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 240,
+      })
+      .wait(600)
       .then(() => {
         cy.get("span[cy-data='id']").should(($spans) => {
           const idValues = $spans.toArray().map((span) => span.textContent);
@@ -77,12 +102,36 @@ describe("QuestionList - Drag and Drop", { viewportWidth: 780 }, () => {
 
     cy.get("#question-qID-5")
       .find("button[cy-data='drag-handle']")
-      .realMouseDown({ button: "left", position: "center" })
-      .realMouseMove(0, -150, { position: "center" })
-      .realMouseUp({ position: "center" })
+      .trigger("pointerdown", {
+        pointerId: 1,
+        button: 0,
+        buttons: 1,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 428,
+      })
+      .trigger("pointermove", {
+        pointerId: 1,
+        button: 0,
+        buttons: 1,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 252,
+      })
+      .trigger("pointerup", {
+        pointerId: 1,
+        button: 0,
+        buttons: 0,
+        isPrimary: true,
+        pointerType: "mouse",
+        clientX: 41,
+        clientY: 252,
+      })
       .should(() => {
         const questionIds = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"))?.questions.map(
-          (question) => question.id
+          (question) => question.id,
         );
         expect(questionIds).to.deep.equal(["qID-1", "qID-2", "qID-5", "qID-3", "qID-4", "qID-6"]);
       });

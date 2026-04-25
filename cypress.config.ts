@@ -4,6 +4,7 @@ import path from "path";
 
 export default defineConfig({
   projectId: "fdc7av",
+  allowCypressEnv: false,
   e2e: {
     setupNodeEvents(on, config) {
       on("task", {

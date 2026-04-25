@@ -55,6 +55,14 @@
   cursor: not-allowed;
 }
 
+.question-gap-text input.gap--correct {
+  border-color: green;
+}
+
+.question-gap-text input.gap--incorrect {
+  border-color: red;
+}
+
 /* CSS for the correction box displayed in the question component */
 .correction-gap-text {
   font-size: 18px;

@@ -32,7 +32,6 @@ import { QuestionIdsContext, IQuestionIdsContext } from "../module/questionIdsCo
 
 //Hooks
 import { useQuestion } from "./useQuestion";
-import { useSize } from "../../hooks/useSize";
 
 //SVG
 import { BiCheck } from "react-icons/bi";
@@ -43,6 +42,7 @@ import { MdNavigateNext } from "react-icons/md";
 //Interfaces
 import { IParams } from "../../utils/types";
 import { IQuestion, TUseQuestion } from "./useQuestion";
+import { useElementSize } from "@mantine/hooks";
 
 //Main Question Component
 export const Question: React.FC<{}> = () => {
@@ -152,20 +152,16 @@ export const QuestionBottom: React.FC<IQuestionBottom> = ({
   //URL params
   const { moduleID } = useParams<IParams>();
 
-  //Refs
-  const questionBottomRef = useRef(null);
-
-  //Custom Hook
-  const size = useSize(questionBottomRef);
+  const { ref: questionBottomRef, width } = useElementSize();
 
   //At 800 px collapse the navbar so the buttons and navigation are stacked
   useLayoutEffect(() => {
-    if (size && size?.width > 650) {
+    if (width > 650) {
       setCollapsedActionsNav(false);
-    } else if (size && size?.width <= 650) {
+    } else if (width <= 650) {
       setCollapsedActionsNav(true);
     }
-  }, [size?.width, size, setCollapsedActionsNav]);
+  }, [width, setCollapsedActionsNav]);
 
   return (
     <div className={`question-bottom ${collapsedActionsNav ? "collapsed" : "expanded"}`} ref={questionBottomRef}>

@@ -1,7 +1,7 @@
-import ReactDOMServer from "react-dom/server";
-import DOMPurify from "dompurify";
 import { forbiddenAttributes, forbiddenTags } from "../blockedTagsAttributes";
 import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
+import { visit } from "unist-util-visit";
+import type { Node } from "unist";
 
 //React Markdown
 import ReactMarkdown from "react-markdown";
@@ -20,45 +20,90 @@ export const AnswerCorrection = ({
   text: string;
   correctGapValues?: Array<Array<string>>;
 }) => {
-  const textWithBlanks = () => {
-    //Render the json string in markdown and return html nodes
-    //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
-    //remarkGfm draws markdown tables
-    const htmlString = ReactDOMServer.renderToString(
+  //JSX
+  return (
+    <div className='correction-gap-text'>
       <ReactMarkdown
         children={text}
         urlTransform={normalizeLinkUri}
-        rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
+        rehypePlugins={[
+          rehypeRaw,
+          rehypeKatex,
+          [rehypeExternalLinks, { target: "_blank" }],
+          [rehypeGapCorrection, correctGapValues],
+          rehypeBlockForbidden,
+        ]}
         remarkPlugins={[remarkMath, remarkGfm]}
       />
-    );
-
-    //Split the html notes where the input should be inserted
-    const htmlStringSplit = htmlString.split("[]");
-
-    //Insert the input marker between the array elements but not at the end
-    const htmlWithCorrection = htmlStringSplit
-      .map((line, index) => {
-        if (index < htmlStringSplit.length - 1) {
-          const concatenatedValues = concatValues(correctGapValues?.[index]);
-          return line.concat(`<span class='correct-gap-value'>${concatenatedValues}</span>`);
-        } else {
-          return line;
-        }
-      })
-      .join("");
-
-    // Sanitize the result
-    return DOMPurify.sanitize(htmlWithCorrection, {
-      FORBID_TAGS: forbiddenTags,
-      FORBID_ATTR: forbiddenAttributes,
-    });
-  };
-  //JSX
-  return <div className='correction-gap-text' dangerouslySetInnerHTML={{ __html: textWithBlanks() }} />;
+    </div>
+  );
 };
 
 // Concat the values with a semicolon, fallback to empty string if no value given
 function concatValues(values?: Array<string>) {
   return values?.join("; ") || " ";
+}
+
+function rehypeGapCorrection(correctGapValues?: Array<Array<string>>) {
+  return (tree: Node) => {
+    let gapIndex = 0;
+    visit(tree, "text", (node: any, index: number | null, parent: any) => {
+      if (!parent || typeof index !== "number" || !node.value.includes("[]")) {
+        return;
+      }
+
+      const parts = node.value.split("[]");
+      const newNodes: any[] = [];
+
+      parts.forEach((part: string, partIndex: number) => {
+        if (part) {
+          newNodes.push({ type: "text", value: part });
+        }
+
+        if (partIndex < parts.length - 1) {
+          const concatenatedValues = concatValues(correctGapValues?.[gapIndex]);
+          gapIndex += 1;
+          newNodes.push({
+            type: "element",
+            tagName: "span",
+            properties: { className: ["correct-gap-value"] },
+            children: [{ type: "text", value: concatenatedValues }],
+          });
+        }
+      });
+
+      parent.children.splice(index, 1, ...newNodes);
+      return index + newNodes.length;
+    });
+  };
+}
+
+function rehypeBlockForbidden() {
+  const forbiddenTagsSet = new Set(forbiddenTags);
+  const forbiddenAttributesSet = new Set(forbiddenAttributes.map(normalizeAttributeName));
+
+  return (tree: Node) => {
+    visit(tree, "element", (node: any, index: number | null, parent: any) => {
+      if (!parent || typeof index !== "number") {
+        return;
+      }
+
+      if (forbiddenTagsSet.has(node.tagName)) {
+        parent.children.splice(index, 1);
+        return index;
+      }
+
+      if (node.properties) {
+        Object.keys(node.properties).forEach((key) => {
+          if (forbiddenAttributesSet.has(normalizeAttributeName(key))) {
+            delete node.properties[key];
+          }
+        });
+      }
+    });
+  };
+}
+
+function normalizeAttributeName(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }

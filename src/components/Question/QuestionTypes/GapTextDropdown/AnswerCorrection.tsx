@@ -1,55 +1,95 @@
-import DOMPurify from "dompurify";
 import "katex/dist/katex.min.css";
-import ReactDOMServer from "react-dom/server";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeExternalLinks from "rehype-external-links";
+import { visit } from "unist-util-visit";
+import type { Node } from "unist";
 import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 import { forbiddenTags, forbiddenAttributes } from "../blockedTagsAttributes";
 import { IGapTextDropdown } from "./GapTextDropdown";
 
 export const AnswerCorrection = ({ text, dropdowns }: IGapTextDropdown) => {
   return (
-    <div
-      className='correction-gap-text-with-dropdown'
-      dangerouslySetInnerHTML={{ __html: textWithBlanks(text, dropdowns) }}
-    />
+    <div className='correction-gap-text-with-dropdown'>
+      <ReactMarkdown
+        children={text}
+        urlTransform={normalizeLinkUri}
+        rehypePlugins={[
+          rehypeRaw,
+          rehypeKatex,
+          [rehypeExternalLinks, { target: "_blank" }],
+          [rehypeDropdownCorrection, dropdowns],
+          rehypeBlockForbidden,
+        ]}
+        remarkPlugins={[remarkMath, remarkGfm]}
+      />
+    </div>
   );
 };
 
-function textWithBlanks(text: string, dropdowns: IGapTextDropdown["dropdowns"]): string {
-  //Render the json string in markdown and return html nodes
-  //rehype-raw allows the passing of html elements from the json file (when the users set a <p> text for example)
-  //remarkGfm draws markdown tables
-  const htmlString = ReactDOMServer.renderToString(
-    <ReactMarkdown
-      children={text}
-      urlTransform={normalizeLinkUri}
-      rehypePlugins={[rehypeRaw, rehypeKatex, [rehypeExternalLinks, { target: "_blank" }]]}
-      remarkPlugins={[remarkMath, remarkGfm]}
-    />
-  );
-
-  //Split the html notes where the input should be inserted
-  const htmlStringSplit = htmlString.split("[]");
-
-  //Insert the input marker between the array elements but not at the end
-  const htmlWithCorrection = htmlStringSplit
-    .map((line, index) => {
-      if (index < htmlStringSplit.length - 1) {
-        return line.concat(`<span class='correct-dropdown-value'>${dropdowns?.[index].correct}</span>`);
-      } else {
-        return line;
+function rehypeDropdownCorrection(dropdowns: IGapTextDropdown["dropdowns"]) {
+  return (tree: Node) => {
+    let gapIndex = 0;
+    visit(tree, "text", (node: any, index: number | null, parent: any) => {
+      if (!parent || typeof index !== "number" || !node.value.includes("[]")) {
+        return;
       }
-    })
-    .join("");
 
-  // Sanitize the result
-  return DOMPurify.sanitize(htmlWithCorrection, {
-    FORBID_TAGS: forbiddenTags,
-    FORBID_ATTR: forbiddenAttributes,
-  });
+      const parts = node.value.split("[]");
+      const newNodes: any[] = [];
+
+      parts.forEach((part: string, partIndex: number) => {
+        if (part) {
+          newNodes.push({ type: "text", value: part });
+        }
+
+        if (partIndex < parts.length - 1) {
+          const dropdownValue = dropdowns?.[gapIndex]?.correct || " ";
+          gapIndex += 1;
+          newNodes.push({
+            type: "element",
+            tagName: "span",
+            properties: { className: ["correct-dropdown-value"] },
+            children: [{ type: "text", value: dropdownValue }],
+          });
+        }
+      });
+
+      parent.children.splice(index, 1, ...newNodes);
+      return index + newNodes.length;
+    });
+  };
+}
+
+function rehypeBlockForbidden() {
+  const forbiddenTagsSet = new Set(forbiddenTags);
+  const forbiddenAttributesSet = new Set(forbiddenAttributes.map(normalizeAttributeName));
+
+  return (tree: Node) => {
+    visit(tree, "element", (node: any, index: number | null, parent: any) => {
+      if (!parent || typeof index !== "number") {
+        return;
+      }
+
+      if (forbiddenTagsSet.has(node.tagName)) {
+        parent.children.splice(index, 1);
+        return index;
+      }
+
+      if (node.properties) {
+        Object.keys(node.properties).forEach((key) => {
+          if (forbiddenAttributesSet.has(normalizeAttributeName(key))) {
+            delete node.properties[key];
+          }
+        });
+      }
+    });
+  };
+}
+
+function normalizeAttributeName(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "");
 }

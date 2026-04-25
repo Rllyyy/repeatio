@@ -1,4 +1,5 @@
 import { forwardRef, useRef, useLayoutEffect, useState, useImperativeHandle, useCallback } from "react";
+import { useElementSize } from "@mantine/hooks";
 
 //Import ReactMarkdown
 import ReactMarkdown from "react-markdown";
@@ -22,7 +23,6 @@ import { normalizeLinkUri } from "../../../../utils/normalizeLinkUri";
 
 // Interfaces
 import { IForwardRefFunctions, IQuestionTypeComponent } from "../types";
-import { useSize } from "../../../../hooks/useSize";
 
 //I am really not proud of this component :/ and refactor it for a future release
 //Each line in the svg is an object in the lines array
@@ -171,7 +171,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       //Update the state
       setLines(() => [...updatedLines]);
     },
-    [lines, formDisabled]
+    [lines, formDisabled],
   );
 
   //EventHandler when the user clicks the right circles
@@ -253,7 +253,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
       //Update lines array
       setLines(() => [...updatedLines]);
     },
-    [lines, formDisabled]
+    [lines, formDisabled],
   );
 
   const handleLineRemove = (e: React.SyntheticEvent) => {
@@ -367,7 +367,9 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === id && "highlight-single-circle"
                   }`}
-                  ref={(el) => (left.current[id as keyof IExtendedMatchLine["left"]] = el)}
+                  ref={(el) => {
+                    left.current[id as keyof IExtendedMatchLine["left"]] = el;
+                  }}
                   data-ident={id}
                   type='button'
                   onClick={updateLeftLine}
@@ -394,7 +396,9 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
                     highlightSelectedCircle === id && "highlight-single-circle"
                   }`}
-                  ref={(el) => (right.current[id as keyof IExtendedMatchLine["right"]] = el)}
+                  ref={(el) => {
+                    right.current[id as keyof IExtendedMatchLine["right"]] = el;
+                  }}
                   data-ident={id}
                   type='button'
                   onClick={updateRightLine}
@@ -429,9 +433,7 @@ interface ISVGStatic {
 type ISVGElement = ISVGDrawable | ISVGStatic;
 
 export const SVGElement: React.FC<ISVGElement> = (props) => {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const svgSize = useSize(svgRef as React.MutableRefObject<HTMLElement | null>);
-  const svgWidth = svgSize?.width;
+  const { ref: svgRef, width: svgWidth } = useElementSize();
 
   const color = props.mode === "static" ? "gray" : props.formDisabled ? "gray" : "black";
 
