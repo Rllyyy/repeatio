@@ -144,17 +144,20 @@ describe("GapTextDropdown Component", () => {
 
   it("should update the select value onChange", () => {
     cy.mount(<GapTextDropdown options={defaultMockOptions} formDisabled={false} />);
-    cy.get("select#select-0").select("Gap").should("have.value", "Gap");
+    cy.get("select#select-0").select("Gap");
+    cy.get("select#select-0").should("have.value", "Gap");
   });
 
   it("should handle changeEvent on select element", () => {
     cy.mount(<GapTextDropdown options={defaultMockOptions} formDisabled={false} />);
 
     // Test second select first
-    cy.get("select#select-1").select("Gap Text With Dropdown").should("have.value", "Gap Text With Dropdown");
+    cy.get("select#select-1").select("Gap Text With Dropdown");
+    cy.get("select#select-1").should("have.value", "Gap Text With Dropdown");
 
     // Assert that first select has correct value after change event
-    cy.get("select#select-0").select("Gap").should("have.value", "Gap");
+    cy.get("select#select-0").select("Gap");
+    cy.get("select#select-0").should("have.value", "Gap");
   });
 
   it("should render the same order of options after selection ", () => {
@@ -232,8 +235,10 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
 
     // Select values
-    cy.get("select#select-0").select("Gap Text with Dropdown").should("have.value", "Gap Text with Dropdown");
-    cy.get("select#select-1").select("fixture").should("have.value", "fixture");
+    cy.get("select#select-0").select("Gap Text with Dropdown");
+    cy.get("select#select-0").should("have.value", "Gap Text with Dropdown");
+    cy.get("select#select-1").select("fixture");
+    cy.get("select#select-1").should("have.value", "fixture");
 
     // Click reset button
     cy.get("button[aria-label='Reset Question']").click();
@@ -279,8 +284,10 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.mount(<RenderQuestionWithRouter moduleID='gap_text_dropdown' questionID='gtd-1' />);
 
     // Select values
-    cy.get("select#select-0").select("Gap Text with Dropdown").should("have.value", "Gap Text with Dropdown");
-    cy.get("select#select-1").select("fixture").should("have.value", "fixture");
+    cy.get("select#select-0").select("Gap Text with Dropdown");
+    cy.get("select#select-0").should("have.value", "Gap Text with Dropdown");
+    cy.get("select#select-1").select("fixture");
+    cy.get("select#select-1").should("have.value", "fixture");
 
     //Submit Question and click retry button
     cy.get("button[type='submit']").click();
@@ -374,6 +381,7 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       });
 
     // Assert that element is still interactive
+    cy.get("select#select-0").select("second");
     cy.get("select#select-0").select("second").should("have.value", "second");
   });
 
@@ -384,8 +392,8 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.get("select#select-0").select("Gap Text");
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -397,7 +405,8 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.get("select#select-0").should("have.value", "");
 
     // Check correct answer
-    cy.get("select#select-0").select("second").should("have.value", "second");
+    cy.get("select#select-0").select("second");
+    cy.get("select#select-0").should("have.value", "second");
 
     // Submit question
     cy.get("button[type='submit']").click();
@@ -416,8 +425,8 @@ describe("Gap Text with Dropdown component inside Question component", () => {
     cy.get("button[type='submit']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -520,8 +529,8 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       cy.get("button[aria-label='Check Question']").click();
 
       // Click show navigation button that just exists on small displays
-      cy.get("body").then((body) => {
-        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+      cy.window().then((win) => {
+        if (win.innerWidth <= 650) {
           cy.get("button[aria-label='Show Navigation']").click();
         }
       });
@@ -549,8 +558,8 @@ describe("Gap Text with Dropdown component inside Question component", () => {
       cy.get("select#select-0").select("second");
 
       // Click show navigation button that only exists on small displays
-      cy.get("body").then((body) => {
-        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+      cy.window().then((win) => {
+        if (win.innerWidth <= 650) {
           cy.get("button[aria-label='Show Navigation']").click();
         }
       });

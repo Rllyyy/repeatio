@@ -202,8 +202,8 @@ describe("Check order when editing a existing question", () => {
     });
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -234,8 +234,8 @@ describe("Check order when editing a existing question", () => {
     });
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -265,8 +265,8 @@ describe("Check order when editing a existing question", () => {
       .each(($item) => originalLeftSideOrder.push($item.text()));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -290,9 +290,9 @@ describe("Test editing question and evaluate immediate change in question", () =
     cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='chronological' />);
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
-        cy.get("button[aria-label='Show Navigation']").click();
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
+        cy.get("button[aria-label='Show Navigation']").should("be.visible").click();
       }
     });
 
@@ -318,12 +318,11 @@ describe("Test editing question and evaluate immediate change in question", () =
     cy.mount(<MockQuestionWithRouter questionID='qID-1' mode='practice' moduleID='cypress_1' order='random' />);
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
-
     // Click edit button
     cy.get("button[aria-label='Edit Question']").click();
 
@@ -349,8 +348,8 @@ describe("Test editing question and evaluate immediate change in question", () =
     cy.get("button[aria-label='Check Question']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -805,7 +804,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
       cy.get("input[name='id']").type("test-id");
       cy.get("textarea#editor-gap-text-textarea").type(
         `Here is a "quote"\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside ["gaps"]`,
-        { delay: 2 }
+        { delay: 2 },
       );
 
       cy.contains("button", "Add")
@@ -815,7 +814,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
 
           const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
           expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-            `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`
+            `Here is a „quote“\nBut quotes inside html should work <p style="color: green">fine</p>.\nBut there is no need to replace quotes inside []`,
           );
 
           expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`"gaps"`]]);
@@ -828,7 +827,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
 
       cy.get("textarea#editor-gap-text-textarea").type(
         `Here is a 'apostrophe' that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside ['apostrophe']`,
-        { delay: 2 }
+        { delay: 2 },
       );
 
       cy.contains("button", "Add")
@@ -838,7 +837,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
 
           const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
           expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-            `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`
+            `Here is a ‘apostrophe‘ that should be replaced. But apostrophe inside html is <p style='color: green'>fine</p>. But there is no need to replace quotes inside []`,
           );
 
           expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`'apostrophe'`]]);
@@ -851,7 +850,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
 
       cy.get("textarea#editor-gap-text-textarea").type(
         `"Here are quotation marks" but not here. Apostrophes ' outside "or ' inside should not change this pattern". This should [render]`,
-        { delay: 2 }
+        { delay: 2 },
       );
 
       cy.contains("button", "Add")
@@ -861,7 +860,7 @@ describe("Test AnswerOptionsEditor inside QuestionEditor", () => {
 
           const addedQuestion = questions?.find((question: { id: string }) => question.id === "test-id");
           expect((addedQuestion?.answerOptions as IGapText)?.text).to.eq(
-            `„Here are quotation marks“ but not here. Apostrophes ‘ outside „or ‘ inside should not change this pattern“. This should []`
+            `„Here are quotation marks“ but not here. Apostrophes ‘ outside „or ‘ inside should not change this pattern“. This should []`,
           );
 
           expect((addedQuestion?.answerOptions as IGapText)?.correctGapValues).to.deep.eq([[`render`]]);
@@ -1047,7 +1046,7 @@ describe("Test QuestionEditor.jsx onSubmit errors", () => {
       //Check error handling
       cy.get("input[name='id']").should("have.class", "is-invalid");
       cy.contains(
-        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`
+        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`,
       ).should("exist");
     });
 
@@ -1152,13 +1151,13 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
     it("should show error if using not allowed characters in id after submit and clear errors if valid id is typed into input", () => {
       cy.get("input[name='id']").clear().type("#+!$%&/()=?").should("have.class", "is-invalid");
       cy.contains(
-        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`
+        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`,
       ).should("exist");
 
       //Type valid input
       cy.get("input[name='id']").clear().type("new-id").should("have.class", "is-valid");
       cy.contains(
-        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`
+        `The id contains non allowed characters ("#", "+", "!", "$", "%", "&", "/", "(", ")", "=", "?")`,
       ).should("not.exist");
 
       //Expect the submit button to work
@@ -1170,13 +1169,13 @@ describe("Test QuestionEditor.cy.js onChange errors after submit", () => {
     it("should show error if id contains spaces after submit and clear error after valid id is passed", () => {
       cy.get("input[name='id']").clear().type("id with blanks").should("have.class", "is-invalid");
       cy.contains(`The id has to be one word! Use hyphens ("-") to concat the word (e.g. id-with-blanks).`).should(
-        "exist"
+        "exist",
       );
 
       //Type valid input
       cy.get("input[name='id']").clear().type("new-id").should("have.class", "is-valid");
       cy.contains(`The id has to be one word! Use hyphens ("-") to concat the word (e.g. id-with-blanks).`).should(
-        "not.exist"
+        "not.exist",
       );
 
       //Expect the submit button to work

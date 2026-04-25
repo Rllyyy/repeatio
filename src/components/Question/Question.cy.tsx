@@ -72,7 +72,7 @@ describe("Question Component", () => {
     localStorage.setItem("repeatio-module-one-question", JSON.stringify(module, null, "\t"));
 
     cy.mount(
-      <MockQuestionWithRouter mode='practice' moduleID='one-question' order='chronological' questionID='qID-1' />
+      <MockQuestionWithRouter mode='practice' moduleID='one-question' order='chronological' questionID='qID-1' />,
     );
 
     cy.contains("Just one option").click();
@@ -94,8 +94,8 @@ describe("Question Component", () => {
     cy.get("button[aria-label='Check Question']").click();
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });

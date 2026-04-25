@@ -473,8 +473,8 @@ describe("Extended Match component inside Question component", () => {
     cy.get(".ext-match-element-circle[data-ident='left-1']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -503,8 +503,8 @@ describe("Extended Match component inside Question component", () => {
     cy.get(".ext-match-element-circle[data-ident='right-0']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -525,8 +525,8 @@ describe("Extended Match component inside Question component", () => {
     cy.get(".ext-match-element-circle[data-ident='left-1']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -735,8 +735,8 @@ describe("Extended Match component inside Question component", () => {
       cy.get("button[type='submit']").click();
 
       // Click show navigation button that just exists on small displays
-      cy.get("body").then((body) => {
-        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+      cy.window().then((win) => {
+        if (win.innerWidth <= 650) {
           cy.get("button[aria-label='Show Navigation']").click();
         }
       });

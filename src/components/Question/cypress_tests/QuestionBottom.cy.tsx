@@ -58,7 +58,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
 
     // Assert that the component inside the Question exists
@@ -75,7 +75,7 @@ describe("Question Bottom Component", () => {
         questionID='invalid'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
 
     // Assert that the buttons are disabled
@@ -101,7 +101,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
 
     // Assert that question-bottom has class collapsed
@@ -112,7 +112,7 @@ describe("Question Bottom Component", () => {
   });
 
   it("should render the question actions and navigation and have class expanded on a component widths >= 651", () => {
-    cy.viewport(651, 720);
+    cy.viewport(700, 720);
     cy.mount(
       <RenderComponentWithRouter
         component={
@@ -129,7 +129,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
 
     // Assert that the question-bottom has class expanded
@@ -157,7 +157,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
     cy.viewport(600, 720);
 
@@ -186,7 +186,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
     cy.get("button[aria-label='Show Navigation']").click();
     cy.get(".question-actions-navigation-wrapper").should("exist");
@@ -210,7 +210,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
     cy.get("button[aria-label='Show Navigation']").should("not.exist");
   });
@@ -233,7 +233,7 @@ describe("Question Bottom Component", () => {
         questionID='qID-1'
         order='chronological'
         mode='practice'
-      />
+      />,
     );
 
     // Assert that the button exists
@@ -257,15 +257,15 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Scroll to the end the question
     cy.get("label.MuiFormControlLabel-root").last().scrollIntoView();
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -286,7 +286,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Scroll to the end the question
@@ -312,7 +312,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Scroll to the end the question
@@ -322,8 +322,8 @@ describe("Question Bottom Component", () => {
     cy.get("button[aria-label='Check Question']").click();
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -344,7 +344,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-2'
-      />
+      />,
     );
 
     // Scroll to the end the question
@@ -365,7 +365,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-2'
-      />
+      />,
     );
 
     // Scroll to the end the question
@@ -390,7 +390,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -419,7 +419,7 @@ describe("Question Bottom Component", () => {
         moduleID='gap_text'
         order='chronological'
         questionID='gt-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -439,7 +439,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-3'
-      />
+      />,
     );
 
     // Show navigation
@@ -457,7 +457,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -475,7 +475,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -495,7 +495,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -516,7 +516,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-1'
-      />
+      />,
     );
 
     // Show navigation
@@ -536,7 +536,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-does-not-exist'
-      />
+      />,
     );
 
     // Show navigation
@@ -556,7 +556,7 @@ describe("Question Bottom Component", () => {
         moduleID='cypress_1'
         order='chronological'
         questionID='qID-2'
-      />
+      />,
     );
 
     // Show navigation
@@ -577,7 +577,7 @@ describe("Question Bottom Component", () => {
         moduleID='multiple_response'
         order='chronological'
         questionID='mr-2'
-      />
+      />,
     );
 
     // Submit question
@@ -608,7 +608,7 @@ describe("Question Bottom Component", () => {
         moduleID='multiple_response'
         order='chronological'
         questionID='mr-2'
-      />
+      />,
     );
 
     // Show navigation

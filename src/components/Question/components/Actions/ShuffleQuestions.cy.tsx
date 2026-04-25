@@ -55,13 +55,6 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
     // Mount Component with initial random question order
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='random' />);
 
-    // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
-        cy.get("button[aria-label='Show Navigation']").click();
-      }
-    });
-
     cy.get("button[aria-label='Disable shuffle']").should("exist").and("have.attr", "aria-checked", "true");
   });
 
@@ -109,13 +102,6 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
     // Mount Component with initial chronological question order
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
-    // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
-        cy.get("button[aria-label='Show Navigation']").click();
-      }
-    });
-
     let initialQuestionIdsOrder: string[] | undefined = [];
     const ids: string[] = [];
 
@@ -124,7 +110,7 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
       .then(() => {
         // get the initial order of the ids from the local Storage
         initialQuestionIdsOrder = parseJSON<IModule>(localStorage.getItem(`repeatio-module-cypress_1`))?.questions.map(
-          (question) => question.id
+          (question) => question.id,
         );
       })
       .then(() => {
@@ -150,13 +136,6 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
 
     // Mount Component with initial random question order
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-2"} mode='practice' order='random' />);
-
-    // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
-        cy.get("button[aria-label='Show Navigation']").click();
-      }
-    });
 
     cy.get("button[aria-label='Disable shuffle']").click();
 
