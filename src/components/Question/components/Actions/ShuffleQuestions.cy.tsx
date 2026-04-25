@@ -253,7 +253,7 @@ describe("Shuffle Questions", { viewportHeight: 800, viewportWidth: 900 }, () =>
 
     cy.get("body").realClick();
 
-    cy.get("button[aria-label='Disable shuffle']").realHover();
+    cy.get("button[aria-label='Disable shuffle']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("not.exist");

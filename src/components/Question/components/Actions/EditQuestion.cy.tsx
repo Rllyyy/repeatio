@@ -74,7 +74,7 @@ describe("Edit Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the edit button
-    cy.get("button[aria-label='Edit Question']").realHover();
+    cy.get("button[aria-label='Edit Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -104,7 +104,7 @@ describe("Edit Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the edit button
-    cy.get("button[aria-label='Edit Question']").realHover();
+    cy.get("button[aria-label='Edit Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("not.exist");

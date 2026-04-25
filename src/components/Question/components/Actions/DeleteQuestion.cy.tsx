@@ -423,7 +423,7 @@ describe("Delete a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Delete Question']").realHover();
+    cy.get("button[aria-label='Delete Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -452,7 +452,7 @@ describe("Delete a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Delete Question']").realHover();
+    cy.get("button[aria-label='Delete Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("not.exist");
