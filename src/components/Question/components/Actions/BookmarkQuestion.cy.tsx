@@ -188,7 +188,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the save button
-    cy.get("button[aria-label='Save Question']").realHover();
+    cy.get("button[aria-label='Save Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -206,7 +206,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the unsave button
-    cy.get("button[aria-label='Unsave Question']").realHover();
+    cy.get("button[aria-label='Unsave Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -236,7 +236,7 @@ describe("Bookmark a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Save Question']").realHover();
+    cy.get("button[aria-label='Save Question']").trigger("mouseover");
 
     // Assert that the tooltip does not exist
     cy.contains("Save Question").should("not.exist");

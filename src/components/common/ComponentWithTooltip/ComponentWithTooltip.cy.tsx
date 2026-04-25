@@ -29,7 +29,12 @@ describe("ComponentWithTooltip", () => {
   });
 
   it("should show the tooltip if the user has showTooltips enabled", () => {
-    cy.fixtureToLocalStorage("repeatio-settings.json");
+    const settings: TSettings = {
+      showTooltips: true,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings));
+
     cy.mount(<Component />);
 
     cy.get("body").realClick();

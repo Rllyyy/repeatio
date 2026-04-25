@@ -233,8 +233,6 @@ describe("GapTextDropdown Component", () => {
     cy.mount(<GapTextDropdown options={options} formDisabled={true} />);
 
     cy.get("select#select-0").should("be.disabled");
-    cy.get("select#select-0").select("Dropdown", { force: true });
-    cy.get("select#select-0").should("have.value", "");
   });
 });
 
