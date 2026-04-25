@@ -77,6 +77,16 @@ describe("Multiple Response component", () => {
     cy.get("input[value='option-0']").should("be.checked");
   });
 
+  it("should toggle selection off if clicking on the text again", () => {
+    cy.mount(<MultipleResponse options={defaultMockOptions} formDisabled={false} />);
+
+    cy.contains("This is the correct multiple response value").click();
+    cy.get("input[value='option-0']").should("be.checked");
+
+    cy.contains("This is the correct multiple response value").click();
+    cy.get("input[value='option-0']").should("not.be.checked");
+  });
+
   it("should select multiple elements if clicking on checkbox ", () => {
     cy.mount(<MultipleResponse options={defaultMockOptions} formDisabled={false} />);
 

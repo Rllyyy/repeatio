@@ -142,6 +142,28 @@ describe("GapTextDropdown Component", () => {
     cy.get("option").should("have.length", 8);
   });
 
+  it("should have 10 options when two dropdowns provide 8 values plus 2 empty ones", () => {
+    const options = {
+      text: "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
+      dropdowns: [
+        {
+          id: "select-0",
+          options: ["Dropdown", "Pickup", "empty"],
+          correct: "Dropdown",
+        },
+        {
+          id: "select-1",
+          options: ["0%", "25%", "50%", "75%", "100%"],
+          correct: "50%",
+        },
+      ],
+    };
+
+    cy.mount(<GapTextDropdown options={options} formDisabled={false} />);
+
+    cy.get("option").should("have.length", 10);
+  });
+
   it("should update the select value onChange", () => {
     cy.mount(<GapTextDropdown options={defaultMockOptions} formDisabled={false} />);
     cy.get("select#select-0").select("Gap");
@@ -194,6 +216,25 @@ describe("GapTextDropdown Component", () => {
     cy.get("select").each(($el) => {
       expect($el).to.have.prop("disabled", true);
     });
+  });
+
+  it("should not allow changing select value when disabled", () => {
+    const options = {
+      text: "Possible values for each gap can be selected from a []-list.",
+      dropdowns: [
+        {
+          id: "select-0",
+          options: ["Dropdown", "Pickup", "empty"],
+          correct: "Dropdown",
+        },
+      ],
+    };
+
+    cy.mount(<GapTextDropdown options={options} formDisabled={true} />);
+
+    cy.get("select#select-0").should("be.disabled");
+    cy.get("select#select-0").select("Dropdown", { force: true });
+    cy.get("select#select-0").should("have.value", "");
   });
 });
 

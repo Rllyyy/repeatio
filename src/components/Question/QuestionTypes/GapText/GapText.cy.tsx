@@ -230,6 +230,17 @@ describe("GapText", () => {
     cy.get("input").each(($el) => expect($el).to.be.disabled);
   });
 
+  it("should enable inputs when not disabled", () => {
+    const options = {
+      text: "[] two three. One [] three. One two [].",
+      correctGapValues: [["One"], ["two"], ["three"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input").each(($el) => expect($el).to.be.enabled);
+  });
+
   it("should render markdown element in first line", () => {
     const options = {
       text: "1. List [] \n 2. Another item",

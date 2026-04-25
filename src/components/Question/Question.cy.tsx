@@ -41,6 +41,139 @@ const MockQuestionWithRouter: React.FC<IMockQuestionWithRouter> = ({ moduleID, q
 };
 
 describe("Question Component", () => {
+  it("should render question id, title, points, and help", () => {
+    const module = {
+      id: "question-test",
+      name: "Question Test Module",
+      type: "module",
+      lang: "en",
+      compatibility: "0.6.0",
+      questions: [
+        {
+          id: "qID-1",
+          title: "This is a question for the test suite",
+          points: 5,
+          type: "multiple-choice",
+          help: "Choose the correct answer(s) please.",
+          answerOptions: [
+            {
+              id: "option-1",
+              text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+              isCorrect: true,
+            },
+            { id: "option-2", text: "Lorem ipsum dolor sit amet consectetur adipisicing.", isCorrect: false },
+          ],
+        },
+        {
+          id: "qID-2",
+          title: "This is the second question for the test suite",
+          points: 5,
+          type: "multiple-response",
+          help: "Choose the correct answer(s).",
+          answerOptions: [
+            {
+              id: "option-1",
+              text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+              isCorrect: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    localStorage.setItem("repeatio-module-question-test", JSON.stringify(module, null, "\t"));
+
+    cy.mount(
+      <MockQuestionWithRouter mode='practice' moduleID='question-test' order='chronological' questionID='qID-1' />,
+    );
+
+    cy.contains("ID: qID-1").should("exist");
+    cy.contains("This is a question for the test suite").should("exist");
+    cy.contains("5 Points").should("exist");
+    cy.contains("Choose the correct answer(s) please.").should("exist");
+  });
+
+  it("should render question with id qID-2 when params match", () => {
+    const module = {
+      id: "question-test",
+      name: "Question Test Module",
+      type: "module",
+      lang: "en",
+      compatibility: "0.6.0",
+      questions: [
+        {
+          id: "qID-1",
+          title: "This is a question for the test suite",
+          points: 5,
+          type: "multiple-choice",
+          help: "Choose the correct answer(s) please.",
+          answerOptions: [
+            {
+              id: "option-1",
+              text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+              isCorrect: true,
+            },
+          ],
+        },
+        {
+          id: "qID-2",
+          title: "This is the second question for the test suite",
+          points: 5,
+          type: "multiple-response",
+          help: "Choose the correct answer(s).",
+          answerOptions: [
+            {
+              id: "option-1",
+              text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+              isCorrect: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    localStorage.setItem("repeatio-module-question-test", JSON.stringify(module, null, "\t"));
+
+    cy.mount(
+      <MockQuestionWithRouter mode='practice' moduleID='question-test' order='chronological' questionID='qID-2' />,
+    );
+
+    cy.contains("ID: qID-2").should("exist");
+  });
+
+  it("should render Question Not Found when id is missing", () => {
+    const module = {
+      id: "question-test",
+      name: "Question Test Module",
+      type: "module",
+      lang: "en",
+      compatibility: "0.6.0",
+      questions: [
+        {
+          id: "qID-1",
+          title: "This is a question for the test suite",
+          points: 5,
+          type: "multiple-choice",
+          help: "Choose the correct answer(s) please.",
+          answerOptions: [
+            {
+              id: "option-1",
+              text: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas voluptatibus quibusdam magnam.",
+              isCorrect: true,
+            },
+          ],
+        },
+      ],
+    };
+
+    localStorage.setItem("repeatio-module-question-test", JSON.stringify(module, null, "\t"));
+
+    cy.mount(
+      <MockQuestionWithRouter mode='practice' moduleID='question-test' order='chronological' questionID='id-not-found' />,
+    );
+
+    cy.contains("Question not found!").should("exist");
+  });
   it("should reset the question on any navigation if there is just one question in the current context", () => {
     // Setup module
     const module = {
