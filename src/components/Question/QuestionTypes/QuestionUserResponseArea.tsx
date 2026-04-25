@@ -8,7 +8,7 @@ import { ExtendedMatch, IExtendedMatch } from "./ExtendedMatch/ExtendedMatch";
 // Interfaces
 import { IQuestion } from "../useQuestion";
 import { IForwardRefFunctions } from "./types";
-import { isValidElement, PropsWithChildren, ReactElement } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 
 interface IQuestionUserResponseAreaProps {
   type: IQuestion["type"];

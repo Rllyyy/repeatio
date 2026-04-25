@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 //Components
 import { CustomModal } from "../CustomModal/CustomModal";
