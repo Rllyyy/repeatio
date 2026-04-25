@@ -8,7 +8,7 @@ import { ExtendedMatch, IExtendedMatch } from "./ExtendedMatch/ExtendedMatch";
 // Interfaces
 import { IQuestion } from "../useQuestion";
 import { IForwardRefFunctions } from "./types";
-import { PropsWithChildren } from "react";
+import { isValidElement, PropsWithChildren, ReactElement } from "react";
 
 interface IQuestionUserResponseAreaProps {
   type: IQuestion["type"];
@@ -56,25 +56,22 @@ export const QuestionUserResponseArea = ({
   );
 };
 
+type SwitchChild = ReactElement<{ name: IQuestion["type"] }>;
+
 interface ISwitchProps {
   questionType: IQuestion["type"];
-  children: React.ReactElement[];
+  children: SwitchChild[];
 }
 
-//Switch to find the matching question type
 const Switch: React.FC<PropsWithChildren<ISwitchProps>> = ({ questionType, children }) => {
-  //Return the empty component if question type is undefined
   if (questionType === undefined) {
     throw new Error("Question Type not defined!");
   }
 
-  //Find the question type
-  const child = children?.find((child) => child.props.name === questionType);
+  const child = children.find((child) => child.props.name === questionType);
 
-  //Return child component (see QuestionUserResponse inside the Switch) if it's not undefined
   if (child !== undefined) {
     return child;
-  } else {
-    throw new Error(`Couldn't find ${questionType} `);
   }
+  throw new Error(`Couldn't find ${questionType} `);
 };

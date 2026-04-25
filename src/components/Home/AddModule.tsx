@@ -6,7 +6,7 @@ import { ImportModule } from "./ImportModule";
 import { ModuleEditorForm } from "../ModuleEditor";
 
 //hooks
-import { useSize } from "../../hooks/useSize";
+import { useElementSize } from "@mantine/hooks";
 
 //CSS
 import "./AddModule.css";
@@ -45,17 +45,16 @@ type TComponent = "create" | "import" | null;
  */
 function ComponentChooser({ handleModalClose }: { handleModalClose: () => void }) {
   const [currentComponent, setCurrentComponent] = useState<TComponent>(null);
-  const controllerRef = useRef<HTMLDivElement | null>(null);
 
-  const controllerSize = useSize(controllerRef);
+  const { ref: controllerRef, width: controllerWidth } = useElementSize();
 
   const smallDisplay = useMemo(() => {
-    if (controllerSize && controllerSize?.width <= 570) {
+    if (controllerWidth <= 570) {
       return true;
     } else {
       return false;
     }
-  }, [controllerSize]);
+  }, [controllerWidth]);
 
   // Update the current displayed component to
   function updateComponent(e: React.ChangeEvent<HTMLInputElement>) {
@@ -102,12 +101,7 @@ function ComponentChooser({ handleModalClose }: { handleModalClose: () => void }
             gridTemplateColumns: "repeat(auto-fit, minmax(min(120px, 100%), 1fr))",
             justifyContent: "space-between",
             /* gap: if (size >=609px) 30px elseif (size >=268) 20px else 10px */
-            gap:
-              controllerSize && controllerSize?.width >= 609
-                ? "25%"
-                : controllerSize && controllerSize?.width >= 260
-                ? "20px"
-                : "10px",
+            gap: controllerWidth >= 609 ? "25%" : controllerWidth >= 260 ? "20px" : "10px",
           }}
         >
           <RadioOption component={currentComponent} optionName='create' smallDisplay={smallDisplay} />

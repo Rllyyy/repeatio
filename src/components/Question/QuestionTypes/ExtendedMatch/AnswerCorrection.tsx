@@ -73,7 +73,9 @@ export const AnswerCorrection = ({
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={(el) => (left.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
+                ref={(el) => {
+                  left.current[id as keyof IExtendedMatchLineCorrection["left"]] = el;
+                }}
                 data-ident={id}
               />
             </div>
@@ -95,7 +97,9 @@ export const AnswerCorrection = ({
               />
               <div
                 className='ext-match-element-circle circle-disabled'
-                ref={(el) => (right.current[id as keyof IExtendedMatchLineCorrection["left"]] = el)}
+                ref={(el) => {
+                  right.current[id as keyof IExtendedMatchLineCorrection["left"]] = el;
+                }}
                 data-ident={id}
               />
             </div>
