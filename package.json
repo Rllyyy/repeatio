@@ -59,7 +59,6 @@
     "start": "vite",
     "lint": "eslint src",
     "serve": "vite preview",
-    "test": "jest",
     "test:cy": "yarn cypress open"
   },
   "eslintConfig": {
