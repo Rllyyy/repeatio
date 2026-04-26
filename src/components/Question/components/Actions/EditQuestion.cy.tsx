@@ -5,7 +5,7 @@ import { QuestionIdsProvider } from "@components/module/questionIdsContext";
 import { Question } from "@components/Question/Question";
 
 // types
-import { IParams, ISearchParams } from "src/utils/types";
+import { IParams, ISearchParams } from "../../../../utils/types";
 import { TSettings } from "@hooks/useSetting";
 
 // css
