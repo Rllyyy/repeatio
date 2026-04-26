@@ -3,7 +3,7 @@ import "../components/Privacy/Privacy.css";
 
 export default function PrivacyPage() {
   return (
-    <div className='flex flex-col items-center justify-center w-full max-w-screen-lg mx-auto my-1'>
+    <div className='flex flex-col items-center justify-center w-full max-w-(--breakpoint-lg) mx-auto my-1'>
       <SiteHeading title='Datenschutzerklärung' />
       <div className='max-w-full pb-10 prose prose-ul:list-outside'>
         <h2 className='mt-6'>1. Datenschutz auf einen Blick</h2>

@@ -3,10 +3,11 @@ import react from "@vitejs/plugin-react";
 import svgrPlugin from "vite-plugin-svgr";
 import eslint from "vite-plugin-eslint";
 import path from "path";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), svgrPlugin(), eslint()],
+  plugins: [react(), svgrPlugin(), eslint(), tailwindcss()],
   server: {
     host: true,
     port: 3000,
