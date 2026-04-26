@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { ToastContainer, Slide, toast, TypeOptions, ToastContent } from "react-toastify";
 
 //css
-import "react-toastify/dist/ReactToastify.css";
 import "./toast.css";
 
 /* 
@@ -63,7 +62,7 @@ function logToConsole({ type, data, content }: TLogToConsole) {
     toastMessage = data;
   } else {
     throw new Error(
-      `data or content prop must be a string!\n Did you pass JSX to the toast and forgot to declare the data attribute?\n If you see this message and are not a developer, please create a new issue at https://github.com/Rllyyy/repeatio/issues `
+      `data or content prop must be a string!\n Did you pass JSX to the toast and forgot to declare the data attribute?\n If you see this message and are not a developer, please create a new issue at https://github.com/Rllyyy/repeatio/issues `,
     );
   }
 

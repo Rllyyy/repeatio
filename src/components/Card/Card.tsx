@@ -32,7 +32,7 @@ export const Card: FC<PropsWithChildren<ICard>> = memo(
         <div className='card-bottom'>{children}</div>
       </motion.article>
     );
-  }
+  },
 );
 
 /* ----------------------------------------- LINK -------------------------------------------- */
@@ -56,8 +56,10 @@ export const LinkElement: React.FC<ILinkElement> = ({ linkTo, linkAriaLabel, lin
 };
 
 /* ----------------------------------- BUTTON (Start, View, etc.) ------------------------------- */
-interface IButtonElement
-  extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+interface IButtonElement extends React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> {
   buttonText: string;
   handleClick?: () => void;
 }

@@ -105,22 +105,17 @@ export const ModuleEditorForm: React.FC<IModuleEditorForm> = (props) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(
-      moduleEditorSchema.refine(
-        (data) => {
-          // Check if the module id already exists when creating a new module
-          if (props.mode === "create") {
-            return isNotDuplicate(data.id);
-          }
+      moduleEditorSchema.superRefine((data, ctx) => {
+        const shouldCheckDuplicate = props.mode === "create" || (props.mode === "edit" && props.moduleId !== data.id);
 
-          // Check if the id already exists if changing the id
-          if (props.mode === "edit" && props.moduleId !== data.id) {
-            return isNotDuplicate(data.id);
-          }
-
-          return true;
-        },
-        (data) => ({ path: ["id"], message: `ID of module ("${data.id}") already exists!` })
-      )
+        if (shouldCheckDuplicate && !isNotDuplicate(data.id)) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["id"],
+            message: `ID of module ("${data.id}") already exists!`,
+          });
+        }
+      }),
     ),
     // although this isn't an async function, there a type errors if using just the anonymous function
     defaultValues: props.mode === "edit" ? async () => getValues(props.moduleId) : async () => getDefaultValues(),
@@ -279,7 +274,7 @@ interface ICreateSuccessMessage {
 
 const CreateSuccessMessage: React.FC<ICreateSuccessMessage> = ({ id, name }) => {
   return (
-    <>
+    <div>
       <p>
         Successfully created{" "}
         <b>
@@ -290,6 +285,6 @@ const CreateSuccessMessage: React.FC<ICreateSuccessMessage> = ({ id, name }) => 
         .
       </p>
       <p>Click on the ID to view the module.</p>
-    </>
+    </div>
   );
 };

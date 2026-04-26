@@ -51,6 +51,7 @@ export const SuspenseWithErrorBoundary: React.FC<PropsWithChildren<ISuspenseWith
 
 export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, resetErrorBoundary }) => {
   const navigate = useNavigate();
+  const formattedError = formatUnknownError(error);
 
   // Reload page
   const refreshPage = () => {
@@ -61,9 +62,7 @@ export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, reset
   return (
     <div className={styles.error}>
       <p style={{ color: "#4b5563", fontWeight: 500, fontSize: "larger" }}>Something went Wrong!</p>
-      <h1 className={styles["error-heading"]}>
-        {error.name}: {error.message}
-      </h1>
+      <h1 className={styles["error-heading"]}>{formattedError.title}</h1>
       <p className={styles["error-message"]}>
         Try reloading this page. If this issue persists, please{" "}
         <a href='mailto:contact@repeatio.de'>contact a developer</a> (contact@repeatio.de) or{" "}
@@ -74,7 +73,7 @@ export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, reset
         >
           create an issue on GitHub
         </a>
-        . Please attach the Error Stack from below in your message and describe how the error ocurred.
+        . Please attach the Error Stack from below in your message and describe how the error occurred.
       </p>
       <Accordion
         sx={{ backgroundColor: "lightgray", boxShadow: "none", width: "100%", borderRadius: "4px" }}
@@ -88,7 +87,7 @@ export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, reset
             component='pre'
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", fontFamily: "Consolas,monospace" }}
           >
-            {error.stack}
+            {formattedError.stack}
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -126,21 +125,35 @@ export const DefaultFallbackComponent: React.FC<FallbackProps> = ({ error, reset
 
 // This type is from react-error-boundary but doesn't get exported
 type ErrorBoundarySharedProps = PropsWithChildren<{
-  onError?: (error: Error, info: ErrorInfo) => void;
+  onError?: (error: unknown, info: ErrorInfo) => void;
   onReset?: (
     details:
       | {
           reason: "imperative-api";
-          args: any[];
+          args: unknown[];
         }
       | {
           reason: "keys";
-          prev: any[] | undefined;
-          next: any[] | undefined;
-        }
+          prev: unknown[] | undefined;
+          next: unknown[] | undefined;
+        },
   ) => void;
-  resetKeys?: any[];
+  resetKeys?: unknown[];
 }>;
+
+function formatUnknownError(error: unknown) {
+  if (error instanceof Error) {
+    return {
+      title: `${error.name}: ${error.message}`,
+      stack: error.stack ?? "",
+    };
+  }
+
+  return {
+    title: "Unknown error",
+    stack: typeof error === "string" ? error : JSON.stringify(error, null, 2),
+  };
+}
 
 /* const LoadingComponent = () => {
   throw new Promise(() => {});
