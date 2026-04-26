@@ -156,6 +156,7 @@ export const MultipleChoiceEditor = ({
                   data-id={id}
                   onKeyDown={exitSelection}
                   value={text}
+                  style={{ fontSize: "18px" }}
                 />
               }
             />
