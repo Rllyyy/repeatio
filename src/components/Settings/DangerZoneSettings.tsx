@@ -133,7 +133,7 @@ export const DeleteItem: React.FC<PropsWithChildren<IDeleteItem>> = memo(
       <form className={styles.categoryItem}>
         <p className={styles.settingName}>{heading}</p>
         <button
-          className='relative self-center col-start-2 row-start-1 row-end-4 px-4 py-2 text-sm font-semibold text-red-700 transition-colors duration-100 ease-in-out border rounded cursor-pointer bg-slate-50 hover:bg-red-700 hover:border-red-700 hover:text-white border-slate-200'
+          className='relative self-center col-start-2 row-start-1 row-end-4 px-4 py-2 text-sm font-semibold text-red-700 transition-colors duration-100 ease-in-out border rounded-sm cursor-pointer bg-slate-50 hover:bg-red-700 hover:border-red-700 hover:text-white border-slate-200'
           type='button'
           aria-label={buttonAriaLabel ?? heading}
           onClick={() => setShowDeleteConfirmationModal(true)}

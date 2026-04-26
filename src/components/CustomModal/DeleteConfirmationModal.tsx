@@ -52,7 +52,7 @@ export const DeleteConfirmationModal: React.FC<TDeleteConfirmationModal> = ({
         <h2 className='px-2 text-2xl font-semibold text-center text-slate-700'>{title}</h2>
 
         <button
-          className='absolute p-2 rounded-sm right-2 top-2 text-slate-400 hover:text-red-600'
+          className='absolute p-2 rounded-xs right-2 top-2 text-slate-400 hover:text-red-600'
           type='button'
           aria-label='Close Modal'
           onClick={handleCloseModal}
@@ -62,7 +62,7 @@ export const DeleteConfirmationModal: React.FC<TDeleteConfirmationModal> = ({
         <p className='text-base text-center text-slate-500 text-balance'>{message}</p>
         <div className='flex flex-col justify-between gap-1.5'>
           <button
-            className='px-4 py-2 font-medium text-white bg-red-600 border border-red-600 rounded hover:bg-red-700 hover:border-red-700'
+            className='px-4 py-2 font-medium text-white bg-red-600 border border-red-600 rounded-sm hover:bg-red-700 hover:border-red-700'
             onClick={onConfirmDelete}
             aria-label={deleteButtonText}
             type='button'
@@ -70,7 +70,7 @@ export const DeleteConfirmationModal: React.FC<TDeleteConfirmationModal> = ({
             {deleteButtonText}
           </button>
           <button
-            className='px-4 py-2 font-medium bg-transparent border border-gray-300 rounded hover:bg-slate-100 text-slate-700'
+            className='px-4 py-2 font-medium bg-transparent border border-gray-300 rounded-sm hover:bg-slate-100 text-slate-700'
             aria-label='Cancel Deletion'
             type='button'
             onClick={handleCloseModal}

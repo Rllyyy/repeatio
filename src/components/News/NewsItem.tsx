@@ -8,30 +8,26 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeExternalLinks from "rehype-external-links";
 
+import styles from "./news.module.css";
+
 export const NewsItem: React.FC<{ item: TNewsItem }> = ({ item }) => {
   const cleanName = item.name.replace(/ /g, "").replace(/\./g, "_").toLowerCase();
 
   const formattedDate = getFormattedDate(item.published_at);
 
   return (
-    <article
-      className='prose border-t border-gray-300 grid lg:grid-cols-[200px_1fr] items-start max-w-[1100px] w-full lg:py-20 py-6 prose-h2:mt-0 lg:gap-20 gap-12 prose-h2:text-3xl'
-      id={cleanName}
-    >
-      <span
-        className='inline-block text-gray-600 lg:sticky lg:top-5 whitespace-nowrap w-52 shrink-0'
-        style={{ fontSize: "16px" }}
-      >
-        {formattedDate}
-      </span>
+    <article className={`prose ${styles.article}`} id={cleanName}>
+      <span className={styles.date}>{formattedDate}</span>
+
       <div>
         <h2>
-          <Link className='no-underline text-inherit' to={{ hash: cleanName }}>
+          <Link className={styles.link} to={{ hash: cleanName }}>
             {item.name}
           </Link>
         </h2>
+
         <ReactMarkdown
-          className='max-w-full prose prose-ul:list-outside prose-h2:text-xl prose-a:no-underline prose-a:text-indigo-600 hover:prose-a:text-indigo-800 prose-li:text-base prose-code:bg-gray-200 prose-code:rounded prose-code:p-0.5'
+          className={`prose ${styles.markdown}`}
           remarkPlugins={[remarkGfm, remarkGemoji]}
           rehypePlugins={[rehypeRaw, [rehypeExternalLinks, { target: "_blank" }]]}
           urlTransform={normalizeLinkUri}
