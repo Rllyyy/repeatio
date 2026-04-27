@@ -129,7 +129,7 @@ export const MultipleChoiceEditor = ({
                 "& .MuiFormControlLabel-asterisk": {
                   display: "none",
                 },
-                "& .MuiStack-root": {
+                "& > div": {
                   width: "100%",
                 },
               }}
@@ -156,7 +156,7 @@ export const MultipleChoiceEditor = ({
                   data-id={id}
                   onKeyDown={exitSelection}
                   value={text}
-                  style={{ fontSize: "18px" }}
+                  style={{ fontSize: "18px", width: "100%" }}
                 />
               }
             />
