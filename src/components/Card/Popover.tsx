@@ -99,8 +99,10 @@ interface IPopoverMenu {
 export const PopoverMenu: FC<PropsWithChildren<IPopoverMenu>> = ({ anchorEl, handlePopoverClose, children }) => {
   return (
     <StyledMenu
-      MenuListProps={{
-        "aria-labelledby": "Module-actions",
+      slotProps={{
+        list: {
+          "aria-labelledby": "Module-actions",
+        },
       }}
       anchorEl={anchorEl}
       open={!!anchorEl}
