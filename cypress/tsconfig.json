@@ -17,10 +17,10 @@
         "../lib"
       ],
       "@components/*": [
-        "src/components/*"
+        "../src/components/*"
       ],
       "@hooks/*": [
-        "src/hooks/*"
+        "../src/hooks/*"
       ],
     }
   },
