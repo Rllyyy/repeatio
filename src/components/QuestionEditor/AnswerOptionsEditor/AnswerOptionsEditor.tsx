@@ -85,7 +85,7 @@ export const AnswerOptionsEditor = ({
             tempText: replaceSelectionWithGap(
               (answerValues as IGapTextWithTempText)?.tempText,
               selectionStart,
-              selectionEnd
+              selectionEnd,
             ),
           });
         }
@@ -142,7 +142,7 @@ export const AnswerOptionsEditor = ({
           tempText: removeBracketsFromSelection(
             (answerValues as IGapTextWithTempText)?.tempText || "",
             selectionStart,
-            selectionEnd
+            selectionEnd,
           ),
         });
         ref.current.focus();
@@ -199,9 +199,6 @@ export const AnswerOptionsEditor = ({
           <ExtendedMatchEditor
             name='extended-match'
             options={answerValues as IExtendedMatchTemp}
-            /* handleEditorChange={handleEditorChange}
-            lastSelected={lastSelected}
-            setLastSelected={setLastSelected} */
             setQuestion={setQuestion}
             answerOptionsError={answerOptionsError}
             setErrors={setErrors}
@@ -223,7 +220,7 @@ const Switch = ({
   children,
 }: {
   questionType: IQuestion["type"] | "" | undefined;
-  children?: JSX.Element[];
+  children?: React.ReactNode;
 }) => {
   //Return the empty component if question type is undefined
   if (questionType === undefined) {
@@ -231,7 +228,10 @@ const Switch = ({
   }
 
   //Find the question type
-  const child = children?.find((child) => child?.props.name === questionType);
+  const child = React.Children.toArray(children).find(
+    (child): child is React.ReactElement<{ name?: IQuestion["type"] | "" }> =>
+      React.isValidElement<{ name?: IQuestion["type"] | "" }>(child) && child.props?.name === questionType,
+  );
 
   if (child !== undefined) {
     return child;

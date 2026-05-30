@@ -3,7 +3,7 @@
 */
 
 /* ----------------------------------- Imports -------------------------------------------- */
-import { FC, PropsWithChildren } from "react";
+import React, { FC, PropsWithChildren } from "react";
 
 //MaterialUI
 import { styled } from "@mui/material/styles";
@@ -117,11 +117,11 @@ export const PopoverMenu: FC<PropsWithChildren<IPopoverMenu>> = ({ anchorEl, han
 interface IPopoverMenuItem extends Omit<MenuItemProps, "onClick"> {
   handleClick: () => void | Promise<void>;
   text: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   disabled?: boolean;
 }
 
-const IconWithText = ({ icon, text }: { icon: JSX.Element; text: string }) => {
+const IconWithText = ({ icon, text }: { icon: React.ReactElement; text: string }) => {
   return (
     <>
       {icon}

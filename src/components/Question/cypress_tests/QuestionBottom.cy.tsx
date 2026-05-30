@@ -12,7 +12,7 @@ declare var it: Mocha.TestFunction;
 declare var describe: Mocha.SuiteFunction;
 
 interface IRenderComponentWithRouter {
-  component: JSX.Element;
+  component: React.ReactElement;
   order: NonNullable<ISearchParams["order"]>;
   mode: NonNullable<ISearchParams["mode"]>;
   moduleID: Required<IParams["moduleID"]>;
