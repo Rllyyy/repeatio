@@ -1,5 +1,5 @@
 import { Link, LinkProps } from "react-router-dom";
-import { memo, PropsWithChildren, FC } from "react";
+import React, { memo, PropsWithChildren, FC } from "react";
 import { motion, MotionProps } from "framer-motion";
 
 //css
@@ -14,7 +14,7 @@ interface ICard extends MotionProps {
   disabled?: boolean;
   title: string;
   description?: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
 }
 
 //Card Component
