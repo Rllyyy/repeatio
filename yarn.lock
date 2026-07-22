@@ -1936,10 +1936,10 @@
     "@tailwindcss/oxide" "4.3.2"
     tailwindcss "4.3.2"
 
-"@tanstack/eslint-plugin-query@^5.101.2":
-  version "5.101.2"
-  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.101.2.tgz#799af31a1c008ab40a4f0e7b44c29f63b9ecdebe"
-  integrity sha512-cPE99s3XZwlObfn8lCezT4j4JLj2CVzpIEywx0H4hzfPsX/o9QhdwaOwcDXxrQAqx2ds7TbvTinxhB8B/ywb6w==
+"@tanstack/eslint-plugin-query@5.100.10":
+  version "5.100.10"
+  resolved "https://registry.yarnpkg.com/@tanstack/eslint-plugin-query/-/eslint-plugin-query-5.100.10.tgz#55ba25985e66d7f9efbf2a07ae615b699a9124b6"
+  integrity sha512-Ddou3agTWv5rvHSBby4yHlugUFHVh0nyo2fyoZ81qSxaTBIwNCoPgpiJhjo5QkThrH1wGC7k548BcMTszZCkBw==
   dependencies:
     "@typescript-eslint/utils" "^8.58.1"
 
