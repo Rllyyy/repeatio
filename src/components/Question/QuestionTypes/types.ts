@@ -7,7 +7,7 @@ export interface IQuestionTypeComponent {
 
 export interface IForwardRefFunctions {
   checkAnswer: () => boolean;
-  returnAnswer: () => JSX.Element;
+  returnAnswer: () => React.ReactElement;
   resetSelection: () => void;
   resetAndShuffleOptions: () => void;
 }

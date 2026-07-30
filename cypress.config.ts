@@ -1,8 +1,13 @@
-import viteConfig from "./vite.config";
 import { defineConfig } from "cypress";
 import { rmdir, existsSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  projectId: "fdc7av",
+  allowCypressEnv: false,
   e2e: {
     setupNodeEvents(on, config) {
       on("task", {
@@ -10,14 +15,28 @@ export default defineConfig({
       });
     },
     baseUrl: "http://localhost:3000",
+    defaultBrowser: "chrome",
   },
 
   component: {
+    defaultBrowser: "chrome",
     devServer: {
       framework: "react",
       bundler: "vite",
       viteConfig: {
-        ...viteConfig,
+        server: {
+          host: true,
+          port: 3000,
+        },
+        build: {
+          outDir: "build", // Changed output folder, like in CRA
+        },
+        resolve: {
+          alias: {
+            "@components": path.resolve(currentDir, "src/components"),
+            "@hooks": path.resolve(currentDir, "src/hooks"),
+          },
+        },
       },
     },
     setupNodeEvents(on, config) {
@@ -28,7 +47,7 @@ export default defineConfig({
   },
 });
 
-function deleteFolder(folderName: string): Promise<string> {
+function deleteFolder(folderName: string) {
   return new Promise((resolve, reject) => {
     if (existsSync(folderName)) {
       rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {

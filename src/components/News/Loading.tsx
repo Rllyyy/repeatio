@@ -2,40 +2,49 @@ import { Skeleton as MaterialSkeleton } from "@mui/material";
 import styles from "./news.module.css";
 
 export const LoadingNewsSkeleton = () => {
-  return [...Array(2).keys()].map((i) => (
-    <div className={styles.newsItems} style={{ width: "100%" }} key={i}>
-      <div className={styles.newsItem}>
-        <span className={styles.newsItem__date}>
-          <Skeleton.Date />
-        </span>
-        <div>
-          <div className={styles.newsItem__heading}>
-            <Skeleton.Heading />
-          </div>
+  return (
+    <div className={styles.newsItems} aria-busy='true' aria-live='polite' aria-label='News are loading'>
+      {[...Array(2).keys()].map((i) => (
+        <article className={`prose ${styles.article}`} key={i}>
+          <span className={styles.date}>
+            <Skeleton.Date />
+          </span>
+
           <div>
-            <Skeleton.Text />
-            <Skeleton.Text marginBottom={"18px"} />
+            <h2>
+              <div className={styles.link}>
+                <Skeleton.Heading />
+              </div>
+            </h2>
 
-            <Skeleton.Text />
-            <Skeleton.Text marginBottom={"18px"} />
+            <div className={`prose ${styles.markdown}`}>
+              <Skeleton.Text />
+              <Skeleton.Text marginBottom={"18px"} />
 
-            <Skeleton.Text />
-            <Skeleton.Text />
+              <Skeleton.Text />
+              <Skeleton.Text marginBottom={"18px"} />
 
-            <Skeleton.ListHeading />
-            <Skeleton.ListItem />
-            <Skeleton.ListItem />
-            <Skeleton.ListItem />
+              <Skeleton.Text />
+              <Skeleton.Text />
 
-            <Skeleton.ListHeading />
-            <Skeleton.ListItem />
-            <Skeleton.ListItem />
-            <Skeleton.ListItem />
+              <Skeleton.ListHeading />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+
+              <Skeleton.ListHeading />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+              <Skeleton.ListItem />
+            </div>
           </div>
-        </div>
-      </div>
+        </article>
+      ))}
     </div>
-  ));
+  );
 };
 
 function Skeleton() {}

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
@@ -33,7 +34,7 @@ export default {
       "4xl": "2048px",
     },
   },
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [typography],
   future: {
     hoverOnlyWhenSupported: true,
   },

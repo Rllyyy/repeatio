@@ -216,7 +216,7 @@ export const BaseDragAndDropItem = forwardRef<HTMLDivElement, ItemType>(
       <div
         {...props}
         ref={ref}
-        className='grid sm:grid-cols-[min-content_1fr_max-content_max-content_max-content] grid-cols-[min-content_1fr_3rem_max-content] items-center justify-center text-lg min-h-[5rem]  bg-white rounded-md border border-gray-200 cursor-default pl-1'
+        className='grid sm:grid-cols-[min-content_1fr_max-content_max-content_max-content] grid-cols-[min-content_1fr_3rem_max-content] items-center justify-center text-lg min-h-20  bg-white rounded-md border border-gray-200 cursor-default pl-1'
       >
         <BaseComponent moduleId={moduleId} questionId={questionId} questionTitle={questionTitle} index={index}>
           <button
@@ -254,7 +254,7 @@ const OrderWithButton: React.FC<OrderWithButtonProps> = ({
       id={`question-${questionId}`}
       layout
       style={{ position: "relative" }}
-      className='grid sm:grid-cols-[min-content_1fr_max-content_max-content_max-content] grid-cols-[min-content_1fr_3rem_max-content] items-center justify-center text-lg min-h-[5rem]  bg-white rounded-md border border-gray-200 cursor-default pl-1'
+      className='grid sm:grid-cols-[min-content_1fr_max-content_max-content_max-content] grid-cols-[min-content_1fr_3rem_max-content] items-center justify-center text-lg min-h-20  bg-white rounded-md border border-gray-200 cursor-default pl-1'
     >
       <BaseComponent moduleId={moduleId} questionId={questionId} questionTitle={questionTitle} index={index}>
         <div className='flex flex-col justify-center items-center mx-2 text-gray-300'>
@@ -300,11 +300,11 @@ const BaseComponent: React.FC<PropsWithChildren<BaseComponentProps>> = memo(
           {questionId}
         </span>
         <span className='flex px-0.5 justify-around w-full gap-1'>
-          <div className='bg-gray-200 rounded size-5' />
-          <div className='bg-gray-200 rounded size-5' />
+          <div className='bg-gray-200 rounded-sm size-5' />
+          <div className='bg-gray-200 rounded-sm size-5' />
         </span>
         <Link
-          className='flex h-full items-center justify-center w-10 sm:w-14 rounded outline-none text-gray-900 hover:text-prime focus-visible:shadow-[inset_0_0_0_3px_rgb(90,90,245)]'
+          className='flex h-full items-center justify-center w-10 sm:w-14 rounded-sm outline-hidden text-gray-900 hover:text-prime focus-visible:shadow-[inset_0_0_0_3px_rgb(90,90,245)]'
           to={{
             pathname: `/module/${moduleId}/question/${questionId}`,
             search: `?mode=practice&order=chronological`,

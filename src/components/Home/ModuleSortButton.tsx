@@ -79,9 +79,11 @@ export const SortButton: React.FC<ISortButton> = ({ sort, setSort }) => {
             backgroundColor: "var(--custom-border-color-lighter)",
           },
         }}
-        MenuListProps={{
-          "aria-labelledby": "sort-modules-button",
-          role: "listbox",
+        slotProps={{
+          list: {
+            "aria-labelledby": "sort-modules-button",
+            role: "listbox",
+          },
         }}
       >
         {moduleSortOptions.map((option) => (

@@ -16,11 +16,11 @@
   </a>
 </div>
 
-> [!WARNING]  
+> [!WARNING]
 >
 > - **Regularly** backup your data by **exporting** your modules and bookmarked questions!
 > - **Clearing the browser cache** (e.g. before an exam) will result in the **loss of your data**!
-> - Some UI elements are currently not working (e.g. module progress)!  
+> - Some UI elements are currently not working (e.g. module progress)!
 
 ## [:clapper: Watch the Tutorial](https://youtu.be/Rqsy0nL4WK8)
 
@@ -30,10 +30,10 @@
 
 1. Click on `Add Module` in the `Module Overview`
 2. Fill in the fields under `Create new Module`
-    - `ID`: The ID of the module has to be unique!
-    - `Name`: The full name of the new module.
-    - `Language`: The language is used for spellchecking when creating a question.
-    - `Compatibility Version`: This value describes when the module was created. The user can't change this value.
+   - `ID`: The ID of the module has to be unique!
+   - `Name`: The full name of the new module.
+   - `Language`: The language is used for spellchecking when creating a question.
+   - `Compatibility Version`: This value describes when the module was created. The user can't change this value.
 3. Click on `Create`
 4. The new module will appear in the `Module Overview` and can be viewed by clicking on `View >`
 
@@ -94,7 +94,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 ### Edit a existing Question
 
 1. Click on the edit button inside a question  
-  ![Edit Button](./.github/Docs/assets/images/edit-question.png)
+   ![Edit Button](./.github/Docs/assets/images/edit-question.png)
 2. Fill in the required fields ([Learn more](#question-editor) about the Question Editor)
 3. Click on `Update`
 
@@ -121,7 +121,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <p>Multiple-Choice questions have <b>exactly one</b> correct answer and are characterized by a circle in front of each option.<p>
 
-  <i><b>Example:</b></i>
+<i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-multiple-choice.png" alt="Multiple Choice Example" height="180px" />
 
@@ -134,7 +134,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <p>Multiple-Response questions can have <b>multiple</b> correct answers and are characterized by a square in front of each option.<p>
 
-  <i><b>Example:</b></i>
+<i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-multiple-response.png" alt="Multiple Response Example" height="240px" />
 
@@ -147,7 +147,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <p>Gap Text questions require the user to fill in the missing words. In the editor a gap is created by wrapping the correct word(s) inside square brackets and separating multiple correct words with a semicolon like this: [correct; right].<p>
 
-  <i><b>Example:</b></i>
+<i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-gap-text.png" alt="Gap Text Example" />
 
@@ -159,49 +159,39 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <p>The question type Gap Text Dropdown requires the user to select the correct answer for a gap from a dropdown list. A gap is created by a square bracket.<p>
 
-  <i><b>Example:</b></i>
+<i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-gap-text-dropdown.png" alt="Gap Text Dropdown Example" />
 
   <p>You can <b>not</b> add this type of question through the normal UI. Download the module and edit the raw .json file!</p>
   <b><i>.json:</i></b>
 
-  ```json
-  {
-    "id": "qID-4",
-    "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
-    "points": 5,
-    "type": "gap-text-dropdown",
-    "help": "Fill in the blanks with the **correct** Values!",
-    "answerOptions": {
-      "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
-      "dropdowns": [
-        {
-          "id": "select-0",
-          "options": [
-            "Dropdown",
-            "Pickup",
-            "empty"
-          ],
-          "correct": "Dropdown"
-        },
-        {
-          "id": "select-1",
-          "options": [
-            "0%",
-            "25%",
-            "50%",
-            "75%",
-            "100%"
-          ],
-          "correct": "50%"
-        }
-      ]
-    }
+```json
+{
+  "id": "qID-4",
+  "title": "This is a question of the type gap text with preselected values for each gap. Each gap is rated independently, meaning that part points are possible. Choose the correct values for each gap in the following text.",
+  "points": 5,
+  "type": "gap-text-dropdown",
+  "help": "Fill in the blanks with the **correct** Values!",
+  "answerOptions": {
+    "text": "Possible values for each gap can be selected from a []-list. If the user answers 50% of the gaps correctly, he will be awarded [] of the points.",
+    "dropdowns": [
+      {
+        "id": "select-0",
+        "options": ["Dropdown", "Pickup", "empty"],
+        "correct": "Dropdown"
+      },
+      {
+        "id": "select-1",
+        "options": ["0%", "25%", "50%", "75%", "100%"],
+        "correct": "50%"
+      }
+    ]
   }
-  ```
+}
+```
 
-  **_[Result](https://repeatio.netlify.app/module/types_1/question/qID-4?mode=practice&order=chronological)_**
+**_[Result](https://repeatio.netlify.app/module/types_1/question/qID-4?mode=practice&order=chronological)_**
 
 </details>
 
@@ -210,7 +200,7 @@ The questions are in the order that they were saved in. **[Read](#bookmarked-que
 
   <p>Connect the dots with the extended-match question type.<p>
 
-  <i><b>Example:</b></i>
+<i><b>Example:</b></i>
 
   <img src="./.github/Docs/assets/images/example-extended-match.png" alt="Extended Match Example" height="200px"/>
 
@@ -384,7 +374,7 @@ Text outside list
     </tr>
     <tr>
       <td>Ordered List</td>
-<td>  
+<td>
 
 ```markdown
 some text...
@@ -394,7 +384,6 @@ some text...
 3. Last item
 
 Text outside list
-
 ```
 
 </td>
@@ -427,7 +416,7 @@ Text outside list
 > To exit a list in markdown you have to add a blank line between the list and the following content or add two to blank spaces at the end of the last list item
 
 > [!NOTE]  
-> Unordered list in markdown can use asterisks (<code>*</code>), minuses (<code>-</code>) or pluses (<code>+</code>).
+> Unordered list in markdown can use asterisks (<code>\*</code>), minuses (<code>-</code>) or pluses (<code>+</code>).
 
 </details>
 
@@ -452,7 +441,7 @@ some text
 | Item 1    |  Item 2   |
 | Item 3    |  Item 4   |
 
-Text outside table 
+Text outside table
 ```
 
 </td>
@@ -474,7 +463,7 @@ some text...
     <td style="text-align:center">Item 4</td>
   </tr>
 </table>
-Text outside table 
+Text outside table
 ```
 
 </td>
@@ -488,8 +477,9 @@ some text
 | Item 3    |  Item 4   |
 
 Text outside table
-      </td>
-    </tr>
+</td>
+</tr>
+
   </table>
 
 > [!NOTE]  
@@ -524,9 +514,7 @@ Text outside table
   <td>
 
 ```html
-<img
-  src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Markdown.png" 
-  alt="md" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Markdown.png" alt="md" />
 ```
 
 </td>
@@ -555,6 +543,7 @@ Use inline css in combination with html to style an element.
 
 ```markdown
 This text is unaffected
+
 <p style="color: lightblue; font-weight: 700">I am blue</p>
 ```
 
@@ -593,7 +582,8 @@ $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
     <td>
 
 $x =\frac{\sqrt{20}}{3\times(5-10)^2}$
-    </td>
+</td>
+
   </tr>
 </table>
 
@@ -607,7 +597,7 @@ To delete a question click on the trash icon.
 ![Bookmark](./.github/Docs/assets/images/delete-question.png)
 
 > [!WARNING]  
-> There is no undo functionality and no confirm dialog. The question will be deleted immediately!  
+> There is no undo functionality and no confirm dialog. The question will be deleted immediately!
 
 ## Bookmarked Questions
 
@@ -616,7 +606,7 @@ Bookmark a question to later only train with them.
 ### Add a question to the bookmarked list
 
 1. Click on the bookmark icon in the question  
-  ![Bookmark](./.github/Docs/assets/images/bookmark-question.png)
+   ![Bookmark](./.github/Docs/assets/images/bookmark-question.png)
 2. Inside the module click on `Start >` inside `Bookmarked Questions`
 
 <img src="./.github/Docs/assets/images/train-bookmarked-questions.png" alt="Train Bookmarked Questions" height="180px"/>
@@ -624,7 +614,7 @@ Bookmark a question to later only train with them.
 ### Remove a question from the bookmarked list
 
 1. To remove a question from being bookmarked click on the icon again  
-![Bookmark](./.github/Docs/assets/images/unbookmark-question.png)
+   ![Bookmark](./.github/Docs/assets/images/unbookmark-question.png)
 
 ### Export bookmarked Questions
 
@@ -632,7 +622,7 @@ If you want to view your bookmarked questions on a different device or browser y
 
 1. In the module you want to export the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
 2. Now click on `Export`
-  <img src="./.github/Docs/assets/images/export-bookmarked-questions.png" height="180px" />
+   <img src="./.github/Docs/assets/images/export-bookmarked-questions.png" height="180px" />
 3. The browser will either prompt you to choose a file location or download the file directly to the default download folder
 
 ### Import bookmarked Questions
@@ -641,7 +631,7 @@ If you want to view your bookmarked questions on a different device or browser y
 
 1. In the module you want to import the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
 2. Now click on `Import`
-  <img src="./.github/Docs/assets/images/import-bookmarked-questions.png" height="180px" />
+   <img src="./.github/Docs/assets/images/import-bookmarked-questions.png" height="180px" />
 3. A new window should open where you can choose the file
 
 ### Clear bookmarked Questions
@@ -650,7 +640,7 @@ Use these steps to reset your bookmarked questions.
 
 1. In the module you want to clear the bookmarked questions click on the 3 dots (`⋮`) inside `Bookmarked Questions`
 2. Now click on `Delete`
-  <img src="./.github/Docs/assets/images/delete-bookmarked-questions.png" height="180px" />
+   <img src="./.github/Docs/assets/images/delete-bookmarked-questions.png" height="180px" />
 
 ## Editing raw JSON
 
@@ -703,7 +693,7 @@ yarn start
 <details>
   <summary><b>Test</b></summary>
 
-  <p>We use <a href="https://docs.cypress.io/guides/overview/why-cypress">Cypress</a> and <a href="https://jestjs.io/docs/tutorial-react">Jest</a> (in combination with <a href="https://testing-library.com/docs/react-testing-library/intro">React testing library</a>) for testing. Cypress is used for e2e and component testing while Jest only supports component testing. Please you Cypress instead of Jest if you know how to use it.</p>
+  <p>We use <a href="https://docs.cypress.io/guides/overview/why-cypress">Cypress</a> for testing.
 
 **Cypress (with UI):**
 
@@ -727,16 +717,6 @@ yarn cypress run --browser chrome --component
 
 ```bash
 yarn cypress run --browser chrome && yarn cypress run --browser chrome --component
-```
-
-**Jest:**
-
-```bash
-yarn test
-```
-
-```bash
-yarn test --watchAll
 ```
 
 </details>

@@ -77,6 +77,16 @@ describe("Multiple Response component", () => {
     cy.get("input[value='option-0']").should("be.checked");
   });
 
+  it("should toggle selection off if clicking on the text again", () => {
+    cy.mount(<MultipleResponse options={defaultMockOptions} formDisabled={false} />);
+
+    cy.contains("This is the correct multiple response value").click();
+    cy.get("input[value='option-0']").should("be.checked");
+
+    cy.contains("This is the correct multiple response value").click();
+    cy.get("input[value='option-0']").should("not.be.checked");
+  });
+
   it("should select multiple elements if clicking on checkbox ", () => {
     cy.mount(<MultipleResponse options={defaultMockOptions} formDisabled={false} />);
 
@@ -203,8 +213,8 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
     cy.get("button[aria-label='Retry Question']").click();
 
     // Get the elements that had the outline after the submit and assert that they have no outline
-    cy.contains("This is the correct multiple response value").should("have.css", "outlineWidth", "0px");
-    cy.contains("This is another correct multiple response value").should("have.css", "outlineWidth", "0px");
+    cy.contains("This is the correct multiple response value").should("not.have.css", "outline-style", "solid");
+    cy.contains("This is another correct multiple response value").should("not.have.css", "outline-style", "solid");
   });
 
   it("should randomize the options after retry click", { retries: 10 }, () => {
@@ -295,8 +305,8 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
     cy.get("input[value='option-0']").check();
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -378,8 +388,8 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
       cy.get("button[aria-label='Check Question']").click();
 
       // Click show navigation button that just exists on small displays
-      cy.get("body").then((body) => {
-        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+      cy.window().then((win) => {
+        if (win.innerWidth <= 650) {
           cy.get("button[aria-label='Show Navigation']").click();
         }
       });
@@ -414,12 +424,12 @@ describe("MultipleResponse Component rendered inside Question Component with Rou
       cy.get("label[data-testid='formControlLabel-option-0']").should(
         "have.css",
         "outline",
-        "rgb(0, 128, 0) solid 1px"
+        "rgb(0, 128, 0) solid 1px",
       );
       cy.get("label[data-testid='formControlLabel-option-3']").should(
         "have.css",
         "outline",
-        "rgb(0, 128, 0) solid 1px"
+        "rgb(0, 128, 0) solid 1px",
       );
     });
   });

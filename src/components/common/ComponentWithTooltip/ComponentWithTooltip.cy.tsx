@@ -21,7 +21,7 @@ describe("ComponentWithTooltip", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Test Button']").realHover();
+    cy.get("button[aria-label='Test Button']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -29,13 +29,18 @@ describe("ComponentWithTooltip", () => {
   });
 
   it("should show the tooltip if the user has showTooltips enabled", () => {
-    cy.fixtureToLocalStorage("repeatio-settings.json");
+    const settings: TSettings = {
+      showTooltips: true,
+    };
+
+    localStorage.setItem("repeatio-settings", JSON.stringify(settings));
+
     cy.mount(<Component />);
 
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Test Button']").realHover();
+    cy.get("button[aria-label='Test Button']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -55,7 +60,7 @@ describe("ComponentWithTooltip", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Test Button']").realHover();
+    cy.get("button[aria-label='Test Button']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -76,7 +81,7 @@ describe("ComponentWithTooltip", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Test Button']").realHover();
+    cy.get("button[aria-label='Test Button']").trigger("mouseover");
 
     // Assert that the tooltip is not visible
     cy.contains("test").should("not.exist");

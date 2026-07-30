@@ -136,6 +136,7 @@ export const MultipleResponseEditor = ({
                   onKeyDown={exitSelection}
                   data-id={option.id}
                   value={option.text}
+                  style={{ fontSize: "18px" }}
                 />
               }
             />

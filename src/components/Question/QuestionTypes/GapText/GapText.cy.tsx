@@ -115,7 +115,7 @@ describe("GapText", () => {
     cy.mount(
       <div className='question-form'>
         <GapText options={options} formDisabled={false} />
-      </div>
+      </div>,
     );
 
     cy.get("input").should("have.length", 1);
@@ -133,7 +133,7 @@ describe("GapText", () => {
     cy.mount(
       <div className='question-form'>
         <GapText options={options} formDisabled={false} />
-      </div>
+      </div>,
     );
 
     cy.contains("Text before").should("be.visible");
@@ -151,7 +151,7 @@ describe("GapText", () => {
     cy.mount(
       <div className='question-form'>
         <GapText options={options} formDisabled={false} />
-      </div>
+      </div>,
     );
 
     cy.get("table").should("exist").and("be.visible");
@@ -169,7 +169,7 @@ describe("GapText", () => {
     cy.mount(
       <div className='question-form'>
         <GapText options={options} formDisabled={false} />
-      </div>
+      </div>,
     );
 
     cy.get("input").should("have.length", 2);
@@ -189,6 +189,36 @@ describe("GapText", () => {
     cy.get("input").last().type("three").should("have.value", "three");
   });
 
+  it("should allow prepending text after blur/refocus", () => {
+    const options = {
+      text: "[] two []",
+      correctGapValues: [["One"], ["two"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input#input-0").type("middle");
+    cy.get("input#input-1").type("other"); // blur input-0
+    cy.get("input#input-0").click().type("{home}start-");
+
+    cy.get("input#input-0").should("have.value", "start-middle");
+  });
+
+  it("should allow inserting text in the middle after blur/refocus", () => {
+    const options = {
+      text: "[] two []",
+      correctGapValues: [["One"], ["two"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input#input-0").type("abcdef");
+    cy.get("input#input-1").type("other"); // blur input-0
+    cy.get("input#input-0").click().type("{leftarrow}{leftarrow}{leftarrow}MID-");
+
+    cy.get("input#input-0").should("have.value", "abcMID-def");
+  });
+
   it("should disable inputs if disabled is passed from the parent", () => {
     const options = {
       text: "[] two three. One [] three. One two [].",
@@ -198,6 +228,17 @@ describe("GapText", () => {
     cy.mount(<GapText options={options} formDisabled={true} />);
 
     cy.get("input").each(($el) => expect($el).to.be.disabled);
+  });
+
+  it("should enable inputs when not disabled", () => {
+    const options = {
+      text: "[] two three. One [] three. One two [].",
+      correctGapValues: [["One"], ["two"], ["three"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("input").each(($el) => expect($el).to.be.enabled);
   });
 
   it("should render markdown element in first line", () => {
@@ -260,6 +301,31 @@ describe("GapText", () => {
     cy.mount(<GapText options={options} formDisabled={false} />);
     cy.contains("strong", "test");
     cy.get("input").should("exist");
+  });
+
+  it("should ignore gap tokens inside HTML attributes", () => {
+    const options = {
+      text: "<a href='https://example.com/[]'>Link</a> []",
+      correctGapValues: [["gap"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("a").should("have.attr", "href").and("include", "[]");
+    cy.get("input").should("have.length", 1);
+  });
+
+  it("should ignore gap tokens inside inline and block code", () => {
+    const options = {
+      text: "Inline code `[]` should not be a gap.\n\n```\n[]\n```\n\nBut this [] should be.",
+      correctGapValues: [["gap"]],
+    };
+
+    cy.mount(<GapText options={options} formDisabled={false} />);
+
+    cy.get("code").should("contain.text", "[]");
+    cy.get("pre code").should("contain.text", "[]");
+    cy.get("input").should("have.length", 1);
   });
 });
 
@@ -395,8 +461,8 @@ describe("Gap Text component inside Question component", () => {
     cy.get("input#input-0").type("first", { delay: 2 });
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -429,8 +495,8 @@ describe("Gap Text component inside Question component", () => {
     cy.get("button[type='submit']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -636,8 +702,8 @@ describe("Gap Text component inside Question component", () => {
       cy.get("button[aria-label='Check Question']").click();
 
       // Click show navigation button that just exists on small displays
-      cy.get("body").then((body) => {
-        if (body.find("button[aria-label='Show Navigation']").length > 0) {
+      cy.window().then((win) => {
+        if (win.innerWidth <= 650) {
           cy.get("button[aria-label='Show Navigation']").click();
         }
       });

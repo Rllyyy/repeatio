@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, PropsWithChildren } from "react";
 import TextareaAutoSize from "react-textarea-autosize";
-import { useSize } from "../../../../hooks/useSize";
 import { objectWithoutProp } from "../../helpers";
 
 // CSS
@@ -17,6 +16,7 @@ import {
   IExtendedMatchLine,
 } from "../../../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { TErrors } from "../../QuestionEditor";
+import { useElementSize } from "@mantine/hooks";
 
 export interface IExtendedMatchTemp extends Omit<IExtendedMatch, "correctMatches"> {
   correctMatches: IExtendedMatchLine[] | undefined;
@@ -194,7 +194,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           // Return the accumulator for the next iteration
           return accumulator;
         },
-        [] as IExtendedMatchTemp["correctMatches"]
+        [] as IExtendedMatchTemp["correctMatches"],
       );
 
       // Deselect the clicked element and remove the highlight from the opposite side
@@ -287,7 +287,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           // Return the accumulator for the next iteration
           return accumulator;
         },
-        [] as IExtendedMatchTemp["correctMatches"]
+        [] as IExtendedMatchTemp["correctMatches"],
       );
 
       // Deselect the clicked element and remove the highlight from the opposite side
@@ -360,7 +360,7 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           } else {
             return { right: right.current[rightId as keyof IExtendedMatchLine["right"]] };
           }
-        }
+        },
       );
 
       return {
@@ -577,7 +577,9 @@ const AddLineButton: React.FC<IAddLineButton> = ({ id, highlightSelectedCircle, 
         cursor: "pointer",
       }}
       className={`add-line-circle ${highlightSelectedCircle === id ? "editor-highlight-circle" : ""}`}
-      ref={(el) => (sideCurrent[id as keyof IExtendedMatchLine[typeof side]] = el)}
+      ref={(el) => {
+        sideCurrent[id as keyof IExtendedMatchLine[typeof side]] = el;
+      }}
       type='button'
       id={`add-line-${id}`}
       onClick={updateLine}
@@ -593,9 +595,7 @@ interface ISVGElement {
 }
 
 const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove }) => {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-  const svgSize = useSize(svgRef as React.MutableRefObject<HTMLElement | null>);
-  const svgWidth = svgSize?.width;
+  const { ref: svgRef, width: svgWidth } = useElementSize();
 
   const removeLineOnEnter = (e: React.KeyboardEvent<SVGCircleElement>) => {
     if (e.key === "Enter") {
@@ -671,7 +671,7 @@ const SVGElement: React.FC<ISVGElement> = ({ correctMatches, handleLineRemove })
  */
 function findUniqueID(
   existingElements: IExtendedMatch["leftSide"] | IExtendedMatch["rightSide"],
-  side: "left" | "right"
+  side: "left" | "right",
 ) {
   let newID;
   for (let indexID = 0; indexID <= (existingElements?.length ?? 0); indexID++) {

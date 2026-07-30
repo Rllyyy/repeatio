@@ -22,12 +22,21 @@ export const moduleEditorSchema = z.object({
     .refine((value) => !value.includes("module"), {
       message: `The word "module" is a reserved keyword and can't be used inside an ID!`,
     })
-    .refine(hasNoSpaces, (value) => ({
-      message: `The ID has to be one word! Use hyphens ("-") to concat the word (${value.replace(/ /g, "-")})`,
-    }))
-    .refine(isValid, (value) => ({
-      message: `The id contains invalid characters (${value.match(moduleIdRegex)?.join(", ")})`,
-    })),
+    .superRefine((value, ctx) => {
+      if (!hasNoSpaces(value)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `The ID has to be one word! Use hyphens ("-") to concat the word (${value.replace(/ /g, "-")})`,
+        });
+      }
+
+      if (!isValid(value)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `The id contains invalid characters (${value.match(moduleIdRegex)?.join(", ")})`,
+        });
+      }
+    }),
 
   /* Name */
   name: z.string().trim().min(1, { message: "Provide a name for the module." }),
@@ -35,7 +44,7 @@ export const moduleEditorSchema = z.object({
   /* Language */
   lang: z
     .string()
-    .nonempty({ message: "Select a language for the module." })
+    .min(1, { message: "Select a language for the module." })
     .refine(langIsValid, { message: "Language is invalid. Please report this issue at contact@repeatio.de" }),
 
   /* Compatibility */

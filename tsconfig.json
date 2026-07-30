@@ -33,14 +33,13 @@
     /* Modules */
     "module": "ESNext", /* Specify what module code is generated. */
     // "rootDir": "./",                                  /* Specify the root folder within your source files. */
-    "moduleResolution": "node", /* Specify how TypeScript looks up a file from a given module specifier. */
-    "baseUrl": ".", /* Specify the base directory to resolve non-relative module names. */
+    "moduleResolution": "bundler", /* Specify how TypeScript looks up a file from a given module specifier. */
     "paths": {
       "@components/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "@hooks/*": [
-        "src/hooks/*"
+        "./src/hooks/*"
       ],
     }, /* Specify a set of entries that re-map imports to additional lookup locations. */
     /* You will also need to configure these paths inside cypress/tsconfig.json */
@@ -52,10 +51,6 @@
       "vite/client",
       "vite-plugin-svgr/client",
       "cypress-real-events",
-      "@types/jest",
-      "jest",
-      "@testing-library/jest-dom",
-      "@testing-library/react",
       "@types/wicg-file-system-access", /* wicg-file-system is used for showSaveFilePicker (see saveFile.ts for more information) */
     ], /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */

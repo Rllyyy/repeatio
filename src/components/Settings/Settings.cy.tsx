@@ -186,7 +186,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       cy.get("button[aria-label='Delete all Files']").click();
@@ -208,7 +208,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       cy.get("button[aria-label='Delete all modules and bookmarked files']").click();
@@ -231,7 +231,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       // Uncheck
@@ -259,7 +259,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       cy.get("button[aria-label='Delete all modules and bookmarked files']").click();
@@ -267,7 +267,7 @@ describe("<Settings />", () => {
       cy.contains("button", "Delete all Modules").click();
 
       cy.get("button[name='delete-all-modules']").find("svg").should("exist");
-      cy.get("button[name='delete-all-modules']").find("span").should("have.css", "color", "rgb(185, 28, 28)");
+      cy.get("button[name='delete-all-modules']").find("span").should("have.css", "color", "oklch(0.505 0.213 27.518)");
       cy.get("button[name='delete-all-modules']").find("svg").should("not.exist");
     });
 
@@ -279,7 +279,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       cy.get("button[aria-label='Delete Bookmarked Files']").click();
@@ -302,7 +302,7 @@ describe("<Settings />", () => {
       cy.mount(
         <div id='root' style={{ display: "block" }}>
           <Settings />
-        </div>
+        </div>,
       );
 
       cy.get("button[aria-label='Delete Settings']").click();

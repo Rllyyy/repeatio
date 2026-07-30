@@ -63,8 +63,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -81,8 +81,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -102,8 +102,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -122,8 +122,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -145,8 +145,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='random' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -181,8 +181,8 @@ describe("Delete a Question", () => {
     localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(localStorageItem, null, "\t"));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -215,8 +215,8 @@ describe("Delete a Question", () => {
     localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(localStorageItem, null, "\t"));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -249,8 +249,8 @@ describe("Delete a Question", () => {
     localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(localStorageItem, null, "\t"));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -283,8 +283,8 @@ describe("Delete a Question", () => {
     localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(localStorageItem, null, "\t"));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -315,8 +315,8 @@ describe("Delete a Question", () => {
     localStorage.setItem("repeatio-marked-cypress_1", JSON.stringify(localStorageItem, null, "\t"));
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -334,15 +334,15 @@ describe("Delete a Question", () => {
   it("should deselect the current selection if deleting a question", () => {
     cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
     cy.mount(
-      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />
+      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />,
     );
 
     // Select and submit question
     cy.get("input[value='option-0']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -358,7 +358,7 @@ describe("Delete a Question", () => {
   it("should hide the question correction after deleting a question and enable the inputs", () => {
     cy.fixtureToLocalStorage("repeatio-module-multiple_choice.json");
     cy.mount(
-      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />
+      <RenderWithRouter moduleID={"multiple_choice"} questionID={"mc-1"} mode='practice' order='chronological' />,
     );
 
     // Select and submit question
@@ -368,8 +368,8 @@ describe("Delete a Question", () => {
     cy.get("button[aria-label='Check Question']").click();
 
     // Click show navigation button that just exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -393,8 +393,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -414,8 +414,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -423,7 +423,7 @@ describe("Delete a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Delete Question']").realHover();
+    cy.get("button[aria-label='Delete Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("be.visible");
@@ -443,8 +443,8 @@ describe("Delete a Question", () => {
     cy.mount(<RenderWithRouter moduleID={"cypress_1"} questionID={"qID-1"} mode='practice' order='chronological' />);
 
     // Click show navigation button that only exists on small displays
-    cy.get("body").then((body) => {
-      if (body.find("button[aria-label='Show Navigation']").length > 0) {
+    cy.window().then((win) => {
+      if (win.innerWidth <= 650) {
         cy.get("button[aria-label='Show Navigation']").click();
       }
     });
@@ -452,7 +452,7 @@ describe("Delete a Question", () => {
     cy.get("body").realClick();
 
     // Hoover over the delete button
-    cy.get("button[aria-label='Delete Question']").realHover();
+    cy.get("button[aria-label='Delete Question']").trigger("mouseover");
 
     // Assert that the tooltip is visible
     cy.get(".react-tooltip").should("not.exist");

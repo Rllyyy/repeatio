@@ -2,7 +2,7 @@
 
 import { IModule } from "../../src/components/module/module";
 import { parseJSON } from "../../src/utils/parseJSON";
-import { TSettings } from "../../src/utils/types";
+import { TSettings } from "@hooks/useSetting";
 
 describe("Test the module that is provided by the public folder", () => {
   it("should display module", () => {

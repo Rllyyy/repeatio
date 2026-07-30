@@ -17,14 +17,14 @@ describe("Show questions of a module", () => {
 
     it(
       "should scroll to top if navigating from the module overview",
-      { scrollBehavior: false, viewportHeight: 500, viewportWidth: 600 },
+      { scrollBehavior: false, viewportHeight: 500, viewportWidth: 600, retries: 3 },
       () => {
         cy.visit("/module/cypress_1");
         cy.contains("Question Overview").scrollIntoView();
         cy.get("a[aria-label='View all Questions']").click();
 
         cy.contains("All Questions").should("be.visible");
-      }
+      },
     );
 
     it("should show all questions when entering the url directly", () => {

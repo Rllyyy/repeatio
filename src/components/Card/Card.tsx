@@ -1,5 +1,5 @@
 import { Link, LinkProps } from "react-router-dom";
-import { memo, PropsWithChildren, FC } from "react";
+import React, { memo, PropsWithChildren, FC } from "react";
 import { motion, MotionProps } from "framer-motion";
 
 //css
@@ -14,7 +14,7 @@ interface ICard extends MotionProps {
   disabled?: boolean;
   title: string;
   description?: string;
-  icon: JSX.Element;
+  icon: React.ReactNode;
 }
 
 //Card Component
@@ -32,7 +32,7 @@ export const Card: FC<PropsWithChildren<ICard>> = memo(
         <div className='card-bottom'>{children}</div>
       </motion.article>
     );
-  }
+  },
 );
 
 /* ----------------------------------------- LINK -------------------------------------------- */
@@ -56,8 +56,10 @@ export const LinkElement: React.FC<ILinkElement> = ({ linkTo, linkAriaLabel, lin
 };
 
 /* ----------------------------------- BUTTON (Start, View, etc.) ------------------------------- */
-interface IButtonElement
-  extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+interface IButtonElement extends React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> {
   buttonText: string;
   handleClick?: () => void;
 }
