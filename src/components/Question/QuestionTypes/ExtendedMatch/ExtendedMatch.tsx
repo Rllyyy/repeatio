@@ -12,6 +12,7 @@ import "katex/dist/katex.min.css";
 
 //Import Components
 import { AnswerCorrection } from "./AnswerCorrection";
+import { DragLineOverlay, useLineDrag } from "./useLineDrag";
 
 //Import css
 import "./ExtendedMatch.css";
@@ -256,6 +257,43 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     [lines, formDisabled],
   );
 
+  //EventHandler when the user drags from a circle to an element of the other side
+  const connectLine = useCallback(
+    (leftId: string, rightId: string) => {
+      if (formDisabled) return;
+
+      const leftElement = left.current[leftId as keyof IExtendedMatchLine["left"]];
+      const rightElement = right.current[rightId as keyof IExtendedMatchLine["right"]];
+
+      if (!leftElement || !rightElement) return;
+
+      setLines((prev) => {
+        //Drop lines that are missing one of their two points (started with a click but never finished)
+        const completeLines = prev.filter((line) => line.left && line.right);
+
+        const lineExists = completeLines.some((line) => {
+          return (
+            line.left?.getAttribute("data-ident") === leftId && line.right?.getAttribute("data-ident") === rightId
+          );
+        });
+
+        if (lineExists) {
+          console.warn("Line already exists");
+          return completeLines;
+        }
+
+        return [...completeLines, { left: leftElement, right: rightElement }];
+      });
+
+      setHighlightSelectedCircle(null);
+      setHighlightSide(null);
+    },
+    [formDisabled],
+  );
+
+  const { containerRef, handleCirclePointerDown, dragLine, dragSourceId, dropTargetId, highlightDragSide } =
+    useLineDrag({ onConnect: connectLine, disabled: formDisabled });
+
   const handleLineRemove = (e: React.SyntheticEvent) => {
     if (formDisabled) return;
 
@@ -347,11 +385,17 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
     },
   }));
 
+  //A drag highlights the same elements as a click on a circle would
+  const activeHighlightSide = highlightDragSide ?? highlightSide;
+  const activeHighlightCircle = dragSourceId ?? highlightSelectedCircle;
+
   //JSX
   return (
     <div className='question-extended-match'>
-      <div className='extended-match-grid'>
-        <div className={`ext-match-left-side ${highlightSide === "left" ? "highlight-all-left-circles" : ""}`}>
+      <div className='extended-match-grid' ref={containerRef}>
+        {/* Has to be the first element, so the dragged line stays behind the circles */}
+        <DragLineOverlay container={containerRef} dragLine={dragLine} />
+        <div className={`ext-match-left-side ${activeHighlightSide === "left" ? "highlight-all-left-circles" : ""}`}>
           {shuffledLeftOptions?.map((item) => {
             const { text, id } = item;
             return (
@@ -365,14 +409,16 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
-                    highlightSelectedCircle === id && "highlight-single-circle"
-                  }`}
+                    activeHighlightCircle === id ? "highlight-single-circle" : ""
+                  } ${dropTargetId === id ? "highlight-drop-target-circle" : ""}`}
                   ref={(el) => {
                     left.current[id as keyof IExtendedMatchLine["left"]] = el;
                   }}
                   data-ident={id}
+                  data-side='left'
                   type='button'
                   onClick={updateLeftLine}
+                  onPointerDown={handleCirclePointerDown}
                   disabled={formDisabled}
                 />
               </div>
@@ -380,7 +426,7 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
           })}
         </div>
         <SVGElement lines={lines} handleLineRemove={handleLineRemove} formDisabled={formDisabled} mode='drawable' />
-        <div className={`ext-match-right-side ${highlightSide === "right" ? "highlight-all-right-circles" : ""}`}>
+        <div className={`ext-match-right-side ${activeHighlightSide === "right" ? "highlight-all-right-circles" : ""}`}>
           {shuffledRightOptions?.map((item) => {
             const { text, id } = item;
             return (
@@ -394,14 +440,16 @@ export const ExtendedMatch = forwardRef<IForwardRefFunctions, IExtendedMatchProp
                 />
                 <button
                   className={`ext-match-element-circle ${!formDisabled ? "circle-enabled" : "circle-disabled"} ${
-                    highlightSelectedCircle === id && "highlight-single-circle"
-                  }`}
+                    activeHighlightCircle === id ? "highlight-single-circle" : ""
+                  } ${dropTargetId === id ? "highlight-drop-target-circle" : ""}`}
                   ref={(el) => {
                     right.current[id as keyof IExtendedMatchLine["right"]] = el;
                   }}
                   data-ident={id}
+                  data-side='right'
                   type='button'
                   onClick={updateRightLine}
+                  onPointerDown={handleCirclePointerDown}
                   disabled={formDisabled}
                 />
               </div>

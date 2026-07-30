@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, PropsWithChildren } from "react";
+import React, { useState, useRef, useEffect, useCallback, PropsWithChildren } from "react";
 import TextareaAutoSize from "react-textarea-autosize";
 import { objectWithoutProp } from "../../helpers";
 
@@ -17,6 +17,7 @@ import {
 } from "../../../Question/QuestionTypes/ExtendedMatch/ExtendedMatch";
 import { TErrors } from "../../QuestionEditor";
 import { useElementSize } from "@mantine/hooks";
+import { DragLineOverlay, useLineDrag } from "../../../Question/QuestionTypes/ExtendedMatch/useLineDrag";
 
 export interface IExtendedMatchTemp extends Omit<IExtendedMatch, "correctMatches"> {
   correctMatches: IExtendedMatchLine[] | undefined;
@@ -65,7 +66,10 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
     const side = sideShort === "left" ? "leftSide" : "rightSide";
 
     // Create a new element
-    const newElement = { id: `${findUniqueID(options?.[side] ?? [], sideShort)}`, text: "" };
+    const newElement = {
+      id: `${findUniqueID(options?.[side] ?? [], sideShort)}`,
+      text: "",
+    };
 
     setQuestion((prev) => {
       return {
@@ -320,6 +324,56 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
     });
   };
 
+  // Add a line when the user drags from a circle to an element of the other side
+  const createLine = useCallback(
+    (leftId: IExtendedMatchItem["id"], rightId: IExtendedMatchItem["id"]) => {
+      const leftCircle = left.current[leftId as keyof IExtendedMatchLine["left"]];
+      const rightCircle = right.current[rightId as keyof IExtendedMatchLine["right"]];
+
+      if (!leftCircle || !rightCircle) {
+        console.warn("Creating the line failed");
+        return;
+      }
+
+      // Drop lines that are missing one of their two points (started with a click but never finished)
+      const completeMatches = (options.correctMatches ?? []).filter((item) => item.left && item.right);
+
+      const lineExists = completeMatches.some((item) => {
+        return item.left?.id.split("add-line-")[1] === leftId && item.right?.id.split("add-line-")[1] === rightId;
+      });
+
+      if (lineExists) {
+        console.warn("Line already exists");
+      }
+
+      options.correctMatches = lineExists
+        ? completeMatches
+        : [...completeMatches, { left: leftCircle, right: rightCircle }];
+
+      setQuestion((prev) => {
+        return {
+          ...prev,
+          answerOptions: {
+            ...(prev.answerOptions as IExtendedMatchTemp),
+            correctMatches: [...(options.correctMatches || [])],
+          },
+        };
+      });
+
+      setHighlightSelectedCircle(null);
+      setHighlightSide(null);
+
+      // Remove any present errors on the answerOptions
+      if (!lineExists && answerOptionsError) {
+        setErrors((prev) => objectWithoutProp({ object: prev, deleteProp: "answerOptions" }));
+      }
+    },
+    [options, setQuestion, answerOptionsError, setErrors],
+  );
+
+  const { containerRef, handleCirclePointerDown, dragLine, dragSourceId, dropTargetId, highlightDragSide } =
+    useLineDrag({ onConnect: createLine });
+
   // Update the refs inside the state to match after rerender
   useEffect(() => {
     setQuestion((prev) => {
@@ -356,9 +410,13 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
               right: right.current[rightId as keyof IExtendedMatchLine["right"]],
             };
           } else if (leftId) {
-            return { left: left.current[leftId as keyof IExtendedMatchLine["left"]] };
+            return {
+              left: left.current[leftId as keyof IExtendedMatchLine["left"]],
+            };
           } else {
-            return { right: right.current[rightId as keyof IExtendedMatchLine["right"]] };
+            return {
+              right: right.current[rightId as keyof IExtendedMatchLine["right"]],
+            };
           }
         },
       );
@@ -373,10 +431,16 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
     });
   }, [options?.rightSide, options?.leftSide, setQuestion]);
 
+  // A drag highlights the same elements as a click on a circle would
+  const activeHighlightSide = highlightDragSide ?? highlightSide;
+  const activeHighlightCircle = dragSourceId ?? highlightSelectedCircle;
+
   return (
     <>
-      <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-        <SideWrapperComponent side='left' highlightSide={highlightSide}>
+      <div ref={containerRef} style={{ display: "flex", flexDirection: "row", width: "100%", position: "relative" }}>
+        {/* Has to be the first element, so the dragged line stays behind the circles */}
+        <DragLineOverlay container={containerRef} dragLine={dragLine} />
+        <SideWrapperComponent side='left' highlightSide={activeHighlightSide}>
           {options?.leftSide?.map((item) => {
             return (
               <Element key={item.id} id={item.id}>
@@ -384,9 +448,11 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
                 <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
                 <AddLineButton
                   id={item.id}
-                  highlightSelectedCircle={highlightSelectedCircle}
+                  highlightSelectedCircle={activeHighlightCircle}
+                  dropTargetId={dropTargetId}
                   sideCurrent={left.current}
                   updateLine={updateLeftLine}
+                  handleCirclePointerDown={handleCirclePointerDown}
                   side='left'
                 />
               </Element>
@@ -395,16 +461,18 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           <AddElementButton side='left' handleElementAdd={handleElementAdd} />
         </SideWrapperComponent>
         <SVGElement correctMatches={options?.correctMatches} handleLineRemove={handleLineRemove} />
-        <SideWrapperComponent side='right' highlightSide={highlightSide}>
+        <SideWrapperComponent side='right' highlightSide={activeHighlightSide}>
           {options?.rightSide?.map((item) => {
             return (
               <Element key={item.id} id={item.id}>
                 <AddLineButton
                   id={item.id}
-                  highlightSelectedCircle={highlightSelectedCircle}
+                  highlightSelectedCircle={activeHighlightCircle}
+                  dropTargetId={dropTargetId}
                   side='right'
                   sideCurrent={right.current}
                   updateLine={updateRightLine}
+                  handleCirclePointerDown={handleCirclePointerDown}
                 />
                 <ElementTextarea id={item.id} text={item.text} handleTextAreaChange={handleTextAreaChange} />
                 <RemoveElementButton id={item.id} handleElementRemove={handleElementRemove} />
@@ -423,8 +491,8 @@ export const ExtendedMatchEditor: React.FC<Props> = ({ name, options, setQuestio
           marginTop: "20px",
         }}
       >
-        Create a match object by first clicking on the plus button. Then click on the circles to create a connection.
-        Dragging is not supported!
+        Create a match object by first clicking on the plus button. Then click on a circle and on a circle of the other
+        side to create a connection. You can also drag from one circle to a circle of the other side.
       </p>
     </>
   );
@@ -467,7 +535,13 @@ interface IElement {
 const Element: React.FC<PropsWithChildren<IElement>> = ({ id, children }) => {
   return (
     <div
-      style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "2px", position: "relative" }}
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: "2px",
+        position: "relative",
+      }}
       aria-label={`Element ${id}`}
     >
       {children}
@@ -525,7 +599,14 @@ const RemoveElementButton: React.FC<IRemoveElementButton> = ({ id, handleElement
       onClick={handleElementRemove}
       aria-label={`Remove element ${id}`}
     >
-      <HiXMark style={{ strokeWidth: "2", height: "20px", width: "20px", pointerEvents: "none" }} />
+      <HiXMark
+        style={{
+          strokeWidth: "2",
+          height: "20px",
+          width: "20px",
+          pointerEvents: "none",
+        }}
+      />
     </button>
   );
 };
@@ -556,12 +637,22 @@ const ElementTextarea: React.FC<IElementTextarea> = ({ id, text, handleTextAreaC
 interface IAddLineButton {
   id: IExtendedMatchItem["id"];
   highlightSelectedCircle: string | null | undefined;
+  dropTargetId: string | null | undefined;
   side: "left" | "right";
   sideCurrent: (HTMLButtonElement | null)[];
   updateLine: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleCirclePointerDown: (e: React.PointerEvent<HTMLElement>) => void;
 }
 
-const AddLineButton: React.FC<IAddLineButton> = ({ id, highlightSelectedCircle, side, sideCurrent, updateLine }) => {
+const AddLineButton: React.FC<IAddLineButton> = ({
+  id,
+  highlightSelectedCircle,
+  dropTargetId,
+  side,
+  sideCurrent,
+  updateLine,
+  handleCirclePointerDown,
+}) => {
   return (
     <button
       style={{
@@ -576,13 +667,18 @@ const AddLineButton: React.FC<IAddLineButton> = ({ id, highlightSelectedCircle, 
         backgroundColor: "white",
         cursor: "pointer",
       }}
-      className={`add-line-circle ${highlightSelectedCircle === id ? "editor-highlight-circle" : ""}`}
+      className={`add-line-circle ${highlightSelectedCircle === id ? "editor-highlight-circle" : ""} ${
+        dropTargetId === id ? "editor-drop-target-circle" : ""
+      }`}
       ref={(el) => {
         sideCurrent[id as keyof IExtendedMatchLine[typeof side]] = el;
       }}
       type='button'
       id={`add-line-${id}`}
+      data-side={side}
+      data-ident={id}
       onClick={updateLine}
+      onPointerDown={handleCirclePointerDown}
     />
   );
 };

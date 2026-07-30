@@ -1,0 +1,12 @@
+/* Don't select the text of the elements while dragging a line between them */
+body.ext-match-dragging {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Don't scroll the page or show the callout when the drag starts on a circle (touch devices) */
+.add-line-circle,
+.ext-match-element-circle {
+  touch-action: none;
+  -webkit-touch-callout: none;
+}

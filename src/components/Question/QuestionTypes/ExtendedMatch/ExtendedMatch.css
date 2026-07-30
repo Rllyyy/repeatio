@@ -116,6 +116,16 @@
   border-color: rgb(122, 122, 245);
 }
 
+/* Element that would be connected if the dragged line is released now */
+.extended-match-grid .ext-match-element-circle.highlight-drop-target-circle {
+  border-color: var(--custom-prime-color);
+  transform: scale(1.3);
+}
+
+.extended-match-grid .ext-match-element:has(.highlight-drop-target-circle) {
+  border-color: var(--custom-prime-color);
+}
+
 /* Highlight */
 .highlight-all-right-circles .ext-match-element-circle,
 .highlight-all-left-circles .ext-match-element-circle {

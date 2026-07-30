@@ -35,3 +35,11 @@
 .add-line-circle.editor-highlight-circle {
   border-color: rgb(122, 122, 245);
 }
+
+/* Element that would be connected if the dragged line is released now */
+.add-line-circle.editor-drop-target-circle,
+.editor-ext-match-left.highlight-editor-left-circles .add-line-circle.editor-drop-target-circle,
+.editor-ext-match-right.highlight-editor-right-circles .add-line-circle.editor-drop-target-circle {
+  border-color: var(--custom-prime-color);
+  transform: scale(1.3);
+}

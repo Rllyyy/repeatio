@@ -731,4 +731,125 @@ describe("ExtendedMatchEditor", () => {
     cy.realPress("Enter");
     cy.get("button[aria-label='Remove element right-0']").should("not.exist");
   });
+
+  describe("Drag support", () => {
+    beforeEach(() => {
+      cy.get("button[aria-label='Add left element']").click().click();
+      cy.get("button[aria-label='Add right element']").click().click();
+    });
+
+    it("should add a line by dragging from a left circle onto a right element", () => {
+      dragTo("button#add-line-left-0", "div[aria-label='Element right-1']");
+
+      cy.get("g#left-0_right-1").should("exist");
+      cy.get("g.line-container").should("have.length", 1);
+    });
+
+    it("should add a line by dragging from a right circle onto a left element", () => {
+      dragTo("button#add-line-right-0", "div[aria-label='Element left-1']");
+
+      cy.get("g#left-1_right-0").should("exist");
+    });
+
+    it("should add a line by dragging onto the circle of the other side", () => {
+      dragTo("button#add-line-left-0", "button#add-line-right-0");
+
+      cy.get("g#left-0_right-0").should("exist");
+    });
+
+    it("should show the dragged line and highlight the other side while dragging", () => {
+      pointerEvent("button#add-line-left-0", "pointerdown");
+      pointerEvent("div[aria-label='Element right-1']", "pointermove");
+
+      cy.get(".drag-line-overlay line").should("exist");
+      cy.get(".editor-ext-match-right").should("have.class", "highlight-editor-right-circles");
+      cy.get("button#add-line-left-0").should("have.class", "editor-highlight-circle");
+      cy.get("button#add-line-right-1").should("have.class", "editor-drop-target-circle");
+
+      pointerEvent("div[aria-label='Element right-1']", "pointerup");
+
+      cy.get(".drag-line-overlay").should("not.exist");
+      cy.get(".editor-ext-match-right").should("not.have.class", "highlight-editor-right-circles");
+    });
+
+    it("should not add a line if the drag ends on the same side", () => {
+      dragTo("button#add-line-left-0", "div[aria-label='Element left-1']");
+
+      cy.get("g.line-container").should("not.exist");
+      cy.get(".drag-line-overlay").should("not.exist");
+    });
+
+    it("should not add duplicate lines by dragging", () => {
+      dragTo("button#add-line-left-0", "div[aria-label='Element right-0']");
+      dragTo("button#add-line-right-0", "div[aria-label='Element left-0']");
+
+      cy.get("g#left-0_right-0").should("exist").and("have.length", 1);
+      cy.get("g.line-container").should("have.length", 1);
+    });
+
+    it("should update the module with a line that was created by dragging", () => {
+      cy.fixtureToLocalStorage("repeatio-module-cypress_1.json");
+      cy.get("input[name='id']").type("dragged-extended-match", { delay: 2 });
+
+      cy.get("textarea#textarea-left-0").type("left 0");
+      cy.get("textarea#textarea-left-1").type("left 1");
+      cy.get("textarea#textarea-right-0").type("right 0");
+      cy.get("textarea#textarea-right-1").type("right 1");
+
+      dragTo("button#add-line-left-1", "div[aria-label='Element right-0']");
+
+      cy.get("g#left-1_right-0").should("exist");
+
+      cy.contains("button", "Add")
+        .click()
+        .should(() => {
+          const localStorageItem = parseJSON<IModule>(localStorage.getItem("repeatio-module-cypress_1"));
+
+          const answerOptions = localStorageItem?.questions?.[localStorageItem?.questions?.length - 1]
+            .answerOptions as IExtendedMatch;
+
+          expect(answerOptions.correctMatches).to.deep.equal([{ left: "left-1", right: "right-0" }]);
+        });
+    });
+
+    it("should keep a line that was created by clicking when adding a line by dragging", () => {
+      cy.get("button#add-line-left-0").click();
+      cy.get("button#add-line-right-0").click();
+
+      dragTo("button#add-line-left-1", "div[aria-label='Element right-1']");
+
+      cy.get("g#left-0_right-0").should("exist");
+      cy.get("g#left-1_right-1").should("exist");
+      cy.get("g.line-container").should("have.length", 2);
+    });
+
+    it("should remove a line that was created by dragging", () => {
+      dragTo("button#add-line-left-0", "div[aria-label='Element right-0']");
+
+      cy.get("#left-0_right-0_circle").click();
+
+      cy.get("g.line-container").should("not.exist");
+    });
+  });
 });
+
+//Trigger a pointer event in the center of an element
+function pointerEvent(selector: string, event: "pointerdown" | "pointermove" | "pointerup") {
+  cy.get(selector).then(($element) => {
+    const { left, top, width, height } = $element[0].getBoundingClientRect();
+
+    cy.get(selector).trigger(event, {
+      button: 0,
+      pointerId: 1,
+      clientX: left + width / 2,
+      clientY: top + height / 2,
+    });
+  });
+}
+
+//Drag from a circle to an element of the other side
+function dragTo(circleSelector: string, targetSelector: string) {
+  pointerEvent(circleSelector, "pointerdown");
+  pointerEvent(targetSelector, "pointermove");
+  pointerEvent(targetSelector, "pointerup");
+}

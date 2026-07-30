@@ -300,6 +300,128 @@ describe("Extended Match component", () => {
   });
 });
 
+//Trigger a pointer event in the center of an element
+function pointerEvent(selector: string, event: "pointerdown" | "pointermove" | "pointerup", force?: boolean) {
+  cy.get(selector).then(($element) => {
+    const { left, top, width, height } = $element[0].getBoundingClientRect();
+
+    cy.get(selector).trigger(event, {
+      button: 0,
+      pointerId: 1,
+      clientX: left + width / 2,
+      clientY: top + height / 2,
+      force,
+    });
+  });
+}
+
+//Drag from a circle to an element of the other side
+function dragTo(circleSelector: string, targetSelector: string) {
+  pointerEvent(circleSelector, "pointerdown");
+  pointerEvent(targetSelector, "pointermove");
+  pointerEvent(targetSelector, "pointerup");
+}
+
+describe("Extended Match component drag support", () => {
+  it("should create a line by dragging from a left circle onto a right element", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='left-0']", "#element-right-1");
+
+    cy.get("line#left-0_right-1_line").should("exist");
+    cy.get("svg.svg-element>g").should("have.length", 1);
+  });
+
+  it("should create a line by dragging from a right circle onto a left element", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='right-0']", "#element-left-1");
+
+    cy.get("line#left-1_right-0_line").should("exist");
+  });
+
+  it("should create a line by dragging onto the circle of the other side", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='left-0']", ".ext-match-element-circle[data-ident='right-0']");
+
+    cy.get("line#left-0_right-0_line").should("exist");
+  });
+
+  it("should create multiple lines by dragging", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='left-0']", "#element-right-0");
+    dragTo(".ext-match-element-circle[data-ident='left-1']", "#element-right-1");
+
+    cy.get("line#left-0_right-0_line").should("exist");
+    cy.get("line#left-1_right-1_line").should("exist");
+    cy.get("svg.svg-element>g").should("have.length", 2);
+  });
+
+  it("should show the dragged line and highlight the other side while dragging", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    pointerEvent(".ext-match-element-circle[data-ident='left-0']", "pointerdown");
+    pointerEvent("#element-right-1", "pointermove");
+
+    cy.get(".drag-line-overlay line").should("exist");
+    cy.get(".ext-match-right-side").should("have.class", "highlight-all-right-circles");
+    cy.get(".ext-match-element-circle[data-ident='left-0']").should("have.class", "highlight-single-circle");
+    cy.get(".ext-match-element-circle[data-ident='right-1']").should("have.class", "highlight-drop-target-circle");
+
+    pointerEvent("#element-right-1", "pointerup");
+
+    cy.get(".drag-line-overlay").should("not.exist");
+    cy.get(".ext-match-right-side").should("not.have.class", "highlight-all-right-circles");
+  });
+
+  it("should not create a line if the drag ends on the same side", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='left-0']", "#element-left-1");
+
+    cy.get("svg.svg-element>g").should("not.exist");
+    cy.get(".drag-line-overlay").should("not.exist");
+  });
+
+  it("should not create duplicate lines by dragging", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    dragTo(".ext-match-element-circle[data-ident='left-0']", "#element-right-0");
+    dragTo(".ext-match-element-circle[data-ident='right-0']", "#element-left-0");
+
+    cy.get("line#left-0_right-0_line").should("exist").and("have.length", 1);
+    cy.get("svg.svg-element>g").should("have.length", 1);
+  });
+
+  it("should cancel the drag on escape", () => {
+    cy.mount(<ExtendedMatch formDisabled={false} options={defaultMockOptions} />);
+
+    pointerEvent(".ext-match-element-circle[data-ident='left-0']", "pointerdown");
+    pointerEvent("#element-right-0", "pointermove");
+
+    cy.get(".drag-line-overlay").should("exist");
+
+    cy.get("body").trigger("keydown", { key: "Escape" });
+    pointerEvent("#element-right-0", "pointerup");
+
+    cy.get(".drag-line-overlay").should("not.exist");
+    cy.get("svg.svg-element>g").should("not.exist");
+  });
+
+  it("should not create a line by dragging if the form is disabled", () => {
+    cy.mount(<ExtendedMatch formDisabled={true} options={defaultMockOptions} />);
+
+    pointerEvent(".ext-match-element-circle[data-ident='left-0']", "pointerdown", true);
+    pointerEvent("#element-right-0", "pointermove", true);
+    pointerEvent("#element-right-0", "pointerup", true);
+
+    cy.get(".drag-line-overlay").should("not.exist");
+    cy.get("svg.svg-element>g").should("not.exist");
+  });
+});
+
 //Setup Router to access context and useParams
 const RenderQuestionWithRouter = ({ moduleID, questionID }: Required<IParams>) => {
   return (
