@@ -1,6 +1,9 @@
 import { defineConfig } from "cypress";
 import { rmdir, existsSync } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   projectId: "fdc7av",
@@ -30,8 +33,8 @@ export default defineConfig({
         },
         resolve: {
           alias: {
-            "@components": path.resolve(__dirname, "src/components"),
-            "@hooks": path.resolve(__dirname, "src/hooks"),
+            "@components": path.resolve(currentDir, "src/components"),
+            "@hooks": path.resolve(currentDir, "src/hooks"),
           },
         },
       },

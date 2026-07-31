@@ -139,7 +139,7 @@
 
 /* Media Query for devices that can hover */
 @media screen and (hover: hover) and (pointer: fine) {
-  .question-editor-form .buttons .update-add-question:hover:not(:aria-disabled) {
+  .question-editor-form .buttons .update-add-question:hover:not([aria-disabled="true"]) {
     background-color: var(--custom-prime-color-dark);
   }
 
